@@ -579,3 +579,31 @@ if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
     document.documentElement.style.setProperty('--transition-smooth', 'none');
     console.log('⚡ Reduced animations for performance');
 }
+
+// ==========================================
+// DEMO SECTION ANIMATIONS
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+  const observerOptions = {
+    threshold: 0.2,
+    rootMargin: '0px 0px -100px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const steps = entry.target.querySelectorAll('.demo-step');
+        steps.forEach((step, index) => {
+          setTimeout(() => {
+            step.classList.add('animate-in');
+          }, index * 150);
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.demo-steps').forEach(section => {
+    observer.observe(section);
+  });
+});
