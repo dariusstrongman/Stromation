@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stromation - AI-Powered Business Automation</title>
+    <meta name="description" content="AI-powered automations for small businesses - lead generation, workflows, chatbots, and full-stack business automation.">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Header/Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <img src="logo.png" alt="Stromation Logo" class="logo-img">
+            </div>
+            <div class="nav-links">
+                <a href="#automations" class="nav-link">Automations</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#contact" class="nav-link cta-nav">Book Audit</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-background">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <div class="gradient-orb orb-3"></div>
+            <canvas id="networkCanvas"></canvas>
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                <span>AI Automation Agency</span>
+            </div>
+            <h1 class="hero-headline">
+                Automate Everything.<br>
+                <span class="gradient-text">Scale Effortlessly.</span>
+            </h1>
+            <p class="hero-subheadline">
+                Stromation builds AI-powered automations for small businesses — lead generation,
+                workflows, chatbots, and full-stack business automation.
+            </p>
+            <div class="hero-cta">
+                <button class="btn btn-primary glow-button" id="primaryCta">
+                    <span>Book a Free Automation Audit</span>
+                    <div class="btn-glow"></div>
+                </button>
+                <button class="btn btn-secondary">See Live Workflows</button>
+            </div>
+
+            <!-- Animated Workflow Elements -->
+            <div class="workflow-animation">
+                <div class="workflow-node node-1" data-label="Lead Capture"></div>
+                <div class="workflow-node node-2" data-label="AI Processing"></div>
+                <div class="workflow-node node-3" data-label="CRM Update"></div>
+                <div class="workflow-node node-4" data-label="Follow-up"></div>
+                <svg class="workflow-connections" viewBox="0 0 800 200">
+                    <path class="connection-line line-1" d="M 100 100 Q 200 80 300 100" />
+                    <path class="connection-line line-2" d="M 300 100 Q 400 120 500 100" />
+                    <path class="connection-line line-3" d="M 500 100 Q 600 80 700 100" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Animated Showcase Section -->
+    <section class="showcase" id="automations">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Live Automations in Action</h2>
+                <p class="section-description">
+                    Real-time examples of the workflows we build using n8n, Make.com, Python,
+                    cloud integrations, and custom LLM agents.
+                </p>
+            </div>
+
+            <div class="showcase-grid">
+                <!-- Lead Capture Bot Demo -->
+                <div class="showcase-card" data-animation="chat">
+                    <div class="card-glow"></div>
+                    <div class="showcase-visual">
+                        <div class="chat-demo">
+                            <div class="chat-message bot">Hi! Looking to automate your business?</div>
+                            <div class="chat-message user typing">Yes! Tell me more...</div>
+                            <div class="chat-message bot typing-delayed">I can help capture leads 24/7!</div>
+                        </div>
+                    </div>
+                    <div class="showcase-label">
+                        <div class="label-icon">
+                            <div class="icon-pulse"></div>
+                        </div>
+                        <h3>AI Lead Capture Chatbot</h3>
+                        <p>Never miss a lead with 24/7 intelligent chat</p>
+                    </div>
+                </div>
+
+                <!-- Auto CRM Updater -->
+                <div class="showcase-card" data-animation="workflow">
+                    <div class="card-glow"></div>
+                    <div class="showcase-visual">
+                        <div class="workflow-demo">
+                            <div class="workflow-block block-1">Form Submit</div>
+                            <div class="workflow-arrow">→</div>
+                            <div class="workflow-block block-2">AI Parse</div>
+                            <div class="workflow-arrow">→</div>
+                            <div class="workflow-block block-3">CRM Update</div>
+                        </div>
+                    </div>
+                    <div class="showcase-label">
+                        <div class="label-icon">
+                            <div class="icon-pulse"></div>
+                        </div>
+                        <h3>Automated Data Entry → CRM</h3>
+                        <p>Eliminate manual data entry completely</p>
+                    </div>
+                </div>
+
+                <!-- Missed Call Text Back -->
+                <div class="showcase-card" data-animation="phone">
+                    <div class="card-glow"></div>
+                    <div class="showcase-visual">
+                        <div class="phone-demo">
+                            <div class="phone-screen">
+                                <div class="phone-notification">
+                                    <div class="notif-icon">📞</div>
+                                    <div class="notif-content">
+                                        <strong>Missed Call Detected</strong>
+                                        <p>AI sending follow-up SMS...</p>
+                                    </div>
+                                </div>
+                                <div class="sms-sent">
+                                    ✓ Text sent: "Thanks for calling! How can we help?"
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="showcase-label">
+                        <div class="label-icon">
+                            <div class="icon-pulse"></div>
+                        </div>
+                        <h3>Missed-Call → Instant Text Back</h3>
+                        <p>Respond to every call in seconds</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What Stromation Automates</h2>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Lead Capture Chatbots</h3>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Sales Follow-Up Automations</h3>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Review Generation & Auto-Reply</h3>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Instant Quote/Estimate Systems</h3>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Data Entry & Back-Office Automations</h3>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>AI Phone Call Summaries</h3>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Local SEO Boost Systems</h3>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>AI Social Media Pipelines</h3>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Custom Python Automation Agents</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Banner -->
+    <section class="stats-banner">
+        <div class="stats-background">
+            <div class="gradient-wave"></div>
+        </div>
+        <div class="container">
+            <h2 class="stats-title">Let AI Handle the Work While You Focus on Growth</h2>
+            <div class="stats-grid">
+                <div class="stat-card glass">
+                    <div class="stat-value">34 hrs/week</div>
+                    <div class="stat-label">Avg. Time Saved</div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-value">3.1x</div>
+                    <div class="stat-label">Lead Conversion Increase</div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-value">630%</div>
+                    <div class="stat-label">Avg. ROI</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Simple Pricing, Real Results</h2>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card glass">
+                    <div class="pricing-header">
+                        <h3>Starter Automation</h3>
+                        <div class="price">
+                            <span class="price-value">$250</span>
+                            <span class="price-period">/mo</span>
+                        </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ 1 custom workflow</li>
+                        <li>✓ Automation hosting</li>
+                        <li>✓ Monthly updates</li>
+                        <li>✓ Email support</li>
+                    </ul>
+                    <button class="btn btn-outline">Get Started</button>
+                </div>
+
+                <div class="pricing-card glass recommended">
+                    <div class="recommended-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Growth Suite</h3>
+                        <div class="price">
+                            <span class="price-value">$750</span>
+                            <span class="price-period">/mo</span>
+                        </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ 3-5 workflows</li>
+                        <li>✓ AI chatbot</li>
+                        <li>✓ Sales follow-up system</li>
+                        <li>✓ Priority support</li>
+                    </ul>
+                    <button class="btn btn-primary glow-button">Get Started</button>
+                </div>
+
+                <div class="pricing-card glass">
+                    <div class="pricing-header">
+                        <h3>Full Automation Stack</h3>
+                        <div class="price">
+                            <span class="price-value">$1500</span>
+                            <span class="price-period">/mo+</span>
+                        </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ Complete business automation</li>
+                        <li>✓ 24/7 monitoring</li>
+                        <li>✓ Dedicated engineer</li>
+                        <li>✓ Custom AI agents</li>
+                    </ul>
+                    <button class="btn btn-outline">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta" id="contact">
+        <div class="cta-background">
+            <div class="ai-nodes">
+                <div class="ai-node node-a"></div>
+                <div class="ai-node node-b"></div>
+                <div class="ai-node node-c"></div>
+                <div class="ai-node node-d"></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready To Automate Your Business?</h2>
+                <p>Book a free consultation and we'll show you exactly what AI can automate in your business.</p>
+                <button class="btn btn-primary btn-large glow-button">
+                    <span>Get My Free Automation Audit</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-background">
+            <div class="neon-grid"></div>
+        </div>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="logo.png" alt="Stromation">
+                </div>
+                <div class="footer-links">
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#terms">Terms</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © 2025 Stromation — AI Automation Agency
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
