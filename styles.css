@@ -302,6 +302,7 @@ body {
     position: relative;
     padding: 8rem 0;
     z-index: 10;
+    background: rgba(0, 210, 198, 0.02);
 }
 
 .section-header {
