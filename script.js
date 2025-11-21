@@ -116,7 +116,7 @@ class ScrollAnimations {
     }
 
     initFadeIns() {
-        const elements = document.querySelectorAll('.service-card, .benefit-card, .testimonial-card, .stat-card, .pricing-card');
+        const elements = document.querySelectorAll('.service-card, .service-card-large, .demo-video-card, .benefit-card, .testimonial-card, .stat-card, .pricing-card');
 
         const observer = new IntersectionObserver(
             (entries) => {
