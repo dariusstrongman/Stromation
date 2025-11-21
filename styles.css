@@ -82,9 +82,10 @@ body {
 }
 
 .logo-img {
-    height: 50px;
+    height: 200px;
     width: auto;
     object-fit: contain;
+    margin: -5rem 0;
 }
 
 .nav-links {
