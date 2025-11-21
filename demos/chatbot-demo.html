@@ -35,18 +35,20 @@
 
         .step-label {
             position: absolute;
-            top: 15px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 210, 198, 0.1);
-            border: 1px solid #00D2C6;
-            padding: 8px 20px;
+            background: rgba(0, 210, 198, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid #00D2C6;
+            padding: 10px 24px;
             border-radius: 25px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: #00D2C6;
             opacity: 0;
             z-index: 20;
+            box-shadow: 0 4px 20px rgba(0, 210, 198, 0.3);
         }
 
         .chat-window {
@@ -280,28 +282,13 @@
     </div>
 
     <script>
-        const messages = [
-            { type: 'bot', text: '👋 Hi! How can I help you today?', delay: 800 },
-            { type: 'user', text: 'I need a quote for a kitchen remodel.', delay: 1500 },
-            { type: 'typing', delay: 1000 },
-            { type: 'bot', text: 'Great! What's your name?', delay: 1200 },
-            { type: 'user', text: 'Michael Chen', delay: 1300 },
-            { type: 'typing', delay: 900 },
-            { type: 'bot', text: 'Best email to send your quote?', delay: 1400 },
-            { type: 'user', text: 'm.chen@email.com', delay: 1300 },
-            { type: 'typing', delay: 900 },
-            { type: 'bot', text: 'Phone number?', delay: 1200 },
-            { type: 'user', text: '(555) 987-6543', delay: 1300 },
-            { type: 'typing', delay: 1000 },
-            { type: 'bot', text: '✅ Perfect! We'll email you a quote within 2 hours!', delay: 1800 }
-        ];
-
         function runAnimation() {
             const stepLabel = document.getElementById('stepLabel');
             const chatWindow = document.getElementById('chatWindow');
             const chatMessages = document.getElementById('chatMessages');
             const dataCard = document.getElementById('dataCard');
 
+            // Reset everything
             stepLabel.style.opacity = '0';
             stepLabel.style.animation = 'none';
             chatWindow.style.opacity = '0';
@@ -314,55 +301,91 @@
                 const el = document.getElementById(id);
                 el.style.opacity = '0';
                 el.style.animation = 'none';
+                el.style.transform = 'translateX(15px)';
             });
 
-            setTimeout(() => {
-                stepLabel.textContent = 'Step 1: Visitor Arrives';
-                stepLabel.style.animation = 'fadeIn 0.5s forwards';
-                chatWindow.style.animation = 'slideIn 0.7s forwards';
-            }, 300);
+            // Animation timeline
+            const timeline = [
+                { time: 300, action: () => {
+                    stepLabel.textContent = 'Step 1: Visitor Arrives';
+                    stepLabel.style.animation = 'fadeIn 0.5s forwards';
+                    chatWindow.style.animation = 'slideIn 0.7s forwards';
+                }},
+                { time: 1200, action: () => addMessage('bot', '👋 Hi! How can I help you today?') },
+                { time: 2700, action: () => addMessage('user', 'I need a quote for a kitchen remodel.') },
+                { time: 4200, action: () => {
+                    stepLabel.textContent = 'Step 2: AI Qualifies Lead';
+                    addTyping();
+                }},
+                { time: 5200, action: () => {
+                    removeTyping();
+                    addMessage('bot', 'Great! What\'s your name?');
+                }},
+                { time: 6700, action: () => addMessage('user', 'Michael Chen') },
+                { time: 8000, action: () => addTyping() },
+                { time: 8900, action: () => {
+                    removeTyping();
+                    addMessage('bot', 'Best email to send your quote?');
+                }},
+                { time: 10300, action: () => addMessage('user', 'm.chen@email.com') },
+                { time: 11600, action: () => addTyping() },
+                { time: 12500, action: () => {
+                    removeTyping();
+                    addMessage('bot', 'Phone number?');
+                }},
+                { time: 13700, action: () => addMessage('user', '(555) 987-6543') },
+                { time: 15000, action: () => addTyping() },
+                { time: 16000, action: () => {
+                    removeTyping();
+                    addMessage('bot', '✅ Perfect! We\'ll email you a quote within 2 hours!');
+                }},
+                { time: 17800, action: () => {
+                    stepLabel.textContent = 'Step 3: Lead Saved to CRM';
+                    dataCard.style.animation = 'fadeIn 0.7s forwards';
+                }},
+                { time: 18500, action: () => {
+                    ['field1', 'field2', 'field3', 'field4'].forEach((id, index) => {
+                        setTimeout(() => {
+                            document.getElementById(id).style.animation = 'fadeInLeft 0.4s forwards';
+                        }, index * 150);
+                    });
+                }},
+                { time: 22000, action: () => runAnimation() }
+            ];
 
-            let delay = 1200;
-            messages.forEach((msg, index) => {
-                setTimeout(() => {
-                    if (index === 2) stepLabel.textContent = 'Step 2: AI Qualifies';
+            timeline.forEach(step => setTimeout(step.action, step.time));
+        }
 
-                    if (msg.type === 'typing') {
-                        const typingDiv = document.createElement('div');
-                        typingDiv.className = 'message bot';
-                        typingDiv.innerHTML = `
-                            <div class="typing-indicator">
-                                <div class="typing-dot"></div>
-                                <div class="typing-dot"></div>
-                                <div class="typing-dot"></div>
-                            </div>
-                        `;
-                        typingDiv.style.animation = 'fadeInUp 0.3s forwards';
-                        chatMessages.appendChild(typingDiv);
-                        setTimeout(() => typingDiv.remove(), msg.delay - 100);
-                    } else {
-                        const messageDiv = document.createElement('div');
-                        messageDiv.className = `message ${msg.type}`;
-                        messageDiv.innerHTML = `<div class="message-bubble">${msg.text}</div>`;
-                        messageDiv.style.animation = 'fadeInUp 0.4s forwards';
-                        chatMessages.appendChild(messageDiv);
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
-                    }
-                }, delay);
-                delay += msg.delay;
-            });
+        function addMessage(type, text) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `<div class="message-bubble">${text}</div>`;
+            messageDiv.style.animation = 'fadeInUp 0.4s forwards';
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
-            setTimeout(() => {
-                stepLabel.textContent = 'Step 3: Lead to CRM';
-                dataCard.style.animation = 'fadeIn 0.7s forwards';
-                ['field1', 'field2', 'field3', 'field4'].forEach((id, index) => {
-                    setTimeout(() => {
-                        document.getElementById(id).style.animation = 'fadeInLeft 0.4s forwards';
-                    }, index * 150);
-                });
-            }, delay + 800);
+        function addTyping() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typing';
+            typingDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            typingDiv.style.animation = 'fadeInUp 0.3s forwards';
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
-            setTimeout(() => runAnimation(), 16000);
+        function removeTyping() {
+            const typing = document.getElementById('typing');
+            if (typing) typing.remove();
         }
 
         window.addEventListener('load', () => runAnimation());

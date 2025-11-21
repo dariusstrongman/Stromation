@@ -4,6 +4,27 @@
  */
 
 // ==========================================
+// MAINTAIN SCROLL POSITION ON REFRESH
+// ==========================================
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
+// Save scroll position continuously
+let scrollSaveTimer;
+window.addEventListener('scroll', () => {
+    clearTimeout(scrollSaveTimer);
+    scrollSaveTimer = setTimeout(() => {
+        sessionStorage.setItem('scrollPosition', window.pageYOffset.toString());
+    }, 50);
+});
+
+// Save before unload as backup
+window.addEventListener('beforeunload', () => {
+    sessionStorage.setItem('scrollPosition', window.pageYOffset.toString());
+});
+
+// ==========================================
 // GRADIENT CANVAS BACKGROUND
 // ==========================================
 class GradientBackground {

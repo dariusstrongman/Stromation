@@ -12,6 +12,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script>
+        // Restore scroll position immediately
+        (function() {
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+            const savedPosition = sessionStorage.getItem('scrollPosition');
+            if (savedPosition !== null) {
+                window.scrollTo(0, parseInt(savedPosition));
+            }
+        })();
+    </script>
 </head>
 <body>
     <canvas id="gradientCanvas"></canvas>
@@ -143,13 +155,6 @@
     </section>
 
     <section class="demos" id="demos">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">See Automation in Action</h2>
-                <p class="section-subtitle">Real workflows that save hours and generate revenue 24/7</p>
-            </div>
-        </div>
-
         <div class="demo-section">
             <div class="demo-container">
                 <div class="demo-header">
