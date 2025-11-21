@@ -10,549 +10,113 @@
     <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Animated Background Elements -->
-    <canvas id="particleCanvas"></canvas>
+    <canvas id="gradientCanvas"></canvas>
 
-    <!-- Header/Navigation -->
     <header class="header">
         <nav class="nav-container">
             <div class="logo">
                 <img src="logo.png" alt="Stromation Logo" class="logo-img">
             </div>
             <div class="nav-links">
-                <a href="#automations" class="nav-link">Automations</a>
-                <a href="#features" class="nav-link">Features</a>
+                <a href="#services" class="nav-link">Services</a>
+                <a href="#demos" class="nav-link">Demos</a>
                 <a href="#pricing" class="nav-link">Pricing</a>
-                <a href="#contact" class="nav-link cta-nav">Book Audit</a>
+                <a href="#contact" class="nav-link nav-cta">Book Audit</a>
             </div>
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="hero">
-        <div class="hero-background">
-            <div class="gradient-orb orb-1"></div>
-            <div class="gradient-orb orb-2"></div>
-            <div class="gradient-orb orb-3"></div>
-            <canvas id="networkCanvas"></canvas>
-        </div>
-
+    <section class="hero">
         <div class="hero-content">
-            <div class="hero-badge">
-                <span class="badge-dot"></span>
-                <span>AI Automation Agency</span>
-            </div>
-            <h1 class="hero-headline">
-                Automate Everything.<br>
-                <span class="gradient-text">Scale Effortlessly.</span>
-            </h1>
-            <p class="hero-subheadline">
-                Stromation builds AI-powered automations for small businesses — lead generation,
-                workflows, chatbots, and full-stack business automation.
-            </p>
-            <div class="hero-cta">
-                <button class="btn btn-primary glow-button" id="primaryCta">
-                    <span>Book a Free Automation Audit</span>
-                    <div class="btn-glow"></div>
-                </button>
+            <h1 class="hero-title">Automate Everything.<br><span class="gradient-text">Scale Effortlessly.</span></h1>
+            <p class="hero-subtitle">Stromation builds AI-powered automations for small businesses—lead generation, workflows, chatbots, and full-stack business automation that works while you sleep.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Book a Free Automation Audit</button>
                 <button class="btn btn-secondary">See Live Workflows</button>
             </div>
-
-            <!-- Animated Workflow Elements -->
-            <div class="workflow-animation">
-                <div class="workflow-node node-1" data-label="Lead Capture"></div>
-                <div class="workflow-node node-2" data-label="AI Processing"></div>
-                <div class="workflow-node node-3" data-label="CRM Update"></div>
-                <div class="workflow-node node-4" data-label="Follow-up"></div>
-                <svg class="workflow-connections" viewBox="0 0 800 200">
-                    <path class="connection-line line-1" d="M 100 100 Q 200 80 300 100" />
-                    <path class="connection-line line-2" d="M 300 100 Q 400 120 500 100" />
-                    <path class="connection-line line-3" d="M 500 100 Q 600 80 700 100" />
-                </svg>
-            </div>
-        </div>
-
-        <div class="scroll-indicator">
-            <div class="scroll-arrow"></div>
         </div>
     </section>
 
-    <!-- Animated Showcase Section -->
-    <section class="showcase" id="automations">
+    <section class="services" id="services">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Live Automations in Action</h2>
-                <p class="section-description">
-                    Real-time examples of the workflows we build using n8n, Make.com, Python,
-                    cloud integrations, and custom LLM agents.
-                </p>
+                <h2 class="section-title">What We Automate</h2>
+                <p class="section-subtitle">Enterprise-grade AI automation built specifically for small businesses</p>
             </div>
-
-            <div class="showcase-grid">
-                <!-- Lead Capture Bot Demo -->
-                <div class="showcase-card" data-animation="chat">
-                    <div class="card-glow"></div>
-                    <div class="showcase-visual">
-                        <div class="chat-demo">
-                            <div class="chat-message bot">Hi! Looking to automate your business?</div>
-                            <div class="chat-message user typing">Yes! Tell me more...</div>
-                            <div class="chat-message bot typing-delayed">I can help capture leads 24/7!</div>
-                        </div>
-                    </div>
-                    <div class="showcase-label">
-                        <div class="label-icon">
-                            <div class="icon-pulse"></div>
-                        </div>
-                        <h3>AI Lead Capture Chatbot</h3>
-                        <p>Never miss a lead with 24/7 intelligent chat</p>
-                    </div>
-                </div>
-
-                <!-- Auto CRM Updater -->
-                <div class="showcase-card" data-animation="workflow">
-                    <div class="card-glow"></div>
-                    <div class="showcase-visual">
-                        <div class="workflow-demo">
-                            <div class="workflow-block block-1">Form Submit</div>
-                            <div class="workflow-arrow">→</div>
-                            <div class="workflow-block block-2">AI Parse</div>
-                            <div class="workflow-arrow">→</div>
-                            <div class="workflow-block block-3">CRM Update</div>
-                        </div>
-                    </div>
-                    <div class="showcase-label">
-                        <div class="label-icon">
-                            <div class="icon-pulse"></div>
-                        </div>
-                        <h3>Automated Data Entry → CRM</h3>
-                        <p>Eliminate manual data entry completely</p>
-                    </div>
-                </div>
-
-                <!-- Missed Call Text Back -->
-                <div class="showcase-card" data-animation="phone">
-                    <div class="card-glow"></div>
-                    <div class="showcase-visual">
-                        <div class="phone-demo">
-                            <div class="phone-screen">
-                                <div class="phone-notification">
-                                    <div class="notif-icon">📞</div>
-                                    <div class="notif-content">
-                                        <strong>Missed Call Detected</strong>
-                                        <p>AI sending follow-up SMS...</p>
-                                    </div>
-                                </div>
-                                <div class="sms-sent">
-                                    ✓ Text sent: "Thanks for calling! How can we help?"
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="showcase-label">
-                        <div class="label-icon">
-                            <div class="icon-pulse"></div>
-                        </div>
-                        <h3>Missed-Call → Instant Text Back</h3>
-                        <p>Respond to every call in seconds</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 1: Missed Call → Auto Text Back -->
-    <section class="demo-section" id="demo-missed-call">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">Never Miss A Lead Again</h2>
-                <p class="demo-subtitle">Automatically text back missed calls within seconds—turn every call into a conversation.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="missed-call">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Call Comes In</h3>
-                    <p class="step-desc">Customer calls your business number</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M23 7l-7 5 7 5V7z"/>
-                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Missed Call Detected</h3>
-                    <p class="step-desc">System instantly recognizes the missed opportunity</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">Auto Text Sent</h3>
-                    <p class="step-desc">Personalized SMS delivered in under 60 seconds</p>
+                    <h3 class="service-title">AI Lead Capture Chatbots</h3>
+                    <p class="service-desc">24/7 intelligent chat that qualifies leads and books appointments automatically.</p>
                 </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Lead Captured</h3>
-                    <p class="step-desc">Contact info saved to your CRM automatically</p>
-                </div>
-
-                <div class="demo-step" data-step="5">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">You Get Notified</h3>
-                    <p class="step-desc">Dashboard alert + optional Slack/email notification</p>
-                </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 2: AI Lead Capture Chatbot -->
-    <section class="demo-section" id="demo-chatbot">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">AI Chatbot That Never Sleeps</h2>
-                <p class="demo-subtitle">Engage visitors 24/7, qualify leads instantly, and book appointments while you focus on closing deals.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="chatbot">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-                            <line x1="9" y1="9" x2="9.01" y2="9"/>
-                            <line x1="15" y1="9" x2="15.01" y2="9"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Visitor Arrives</h3>
-                    <p class="step-desc">Someone lands on your website looking for help</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                            <path d="M8 10h8M8 14h4"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">AI Engages Instantly</h3>
-                    <p class="step-desc">Chatbot starts natural conversation within 3 seconds</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 11l3 3L22 4"/>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Qualifies Lead</h3>
-                    <p class="step-desc">Asks smart questions to understand needs and budget</p>
-                </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
-                            <line x1="3" y1="10" x2="21" y2="10"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Books Appointment</h3>
-                    <p class="step-desc">Schedules meeting directly on your calendar</p>
-                </div>
-
-                <div class="demo-step" data-step="5">
-                    <div class="step-icon">
+                <div class="service-card">
+                    <div class="service-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                             <polyline points="22,6 12,13 2,6"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">Lead Delivered</h3>
-                    <p class="step-desc">Full conversation + contact info sent to your inbox</p>
+                    <h3 class="service-title">Sales Follow-Up Automations</h3>
+                    <p class="service-desc">Multi-day email and SMS sequences that nurture leads into customers.</p>
                 </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 3: Review Generation + Auto-Reply -->
-    <section class="demo-section" id="demo-reviews">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">5-Star Reviews On Autopilot</h2>
-                <p class="demo-subtitle">Automatically request reviews from happy customers and respond to every review instantly—build trust while you sleep.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="reviews">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Service Completed</h3>
-                    <p class="step-desc">Customer transaction marked complete in your system</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Review Request Sent</h3>
-                    <p class="step-desc">Personalized SMS/email sent 24 hours later</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
+                <div class="service-card">
+                    <div class="service-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">Customer Reviews</h3>
-                    <p class="step-desc">One-click link takes them to Google/Yelp/Facebook</p>
+                    <h3 class="service-title">Review Generation + Auto-Reply</h3>
+                    <p class="service-desc">Automatically request and respond to reviews to build trust and credibility.</p>
                 </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
+                <div class="service-card">
+                    <div class="service-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">AI Auto-Replies</h3>
-                    <p class="step-desc">Branded thank-you response posted within minutes</p>
+                    <h3 class="service-title">Instant Quote & Estimate Systems</h3>
+                    <p class="service-desc">AI-powered quote generation that creates professional proposals in seconds.</p>
                 </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 4: Automated Data Entry → CRM -->
-    <section class="demo-section" id="demo-data-entry">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">Stop Typing. Start Scaling.</h2>
-                <p class="demo-subtitle">Automatically extract data from emails, forms, and documents—then sync it to your CRM in real-time.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="data-entry">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Data Arrives</h3>
-                    <p class="step-desc">Email, form submission, or uploaded document received</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="m21 21-4.35-4.35"/>
-                            <circle cx="11" cy="11" r="3"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">AI Extracts Data</h3>
-                    <p class="step-desc">Name, email, phone, company auto-detected</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Data Validated</h3>
-                    <p class="step-desc">Checks for duplicates and formatting errors</p>
-                </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
+                <div class="service-card">
+                    <div class="service-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
                             <polyline points="13 2 13 9 20 9"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">Synced to CRM</h3>
-                    <p class="step-desc">Contact created/updated in Salesforce, HubSpot, etc.</p>
+                    <h3 class="service-title">Automated Data Entry + Back-Office</h3>
+                    <p class="service-desc">Extract data from emails and documents, then sync to your CRM instantly.</p>
                 </div>
-
-                <div class="demo-step" data-step="5">
-                    <div class="step-icon">
+                <div class="service-card">
+                    <div class="service-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">Workflow Triggered</h3>
-                    <p class="step-desc">Follow-up email sequence or task created automatically</p>
+                    <h3 class="service-title">AI Phone Call Summaries</h3>
+                    <p class="service-desc">Automatically transcribe and summarize every customer call with action items.</p>
                 </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 5: Instant Quote & Estimate Generator -->
-    <section class="demo-section" id="demo-quotes">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">Send Quotes in 60 Seconds</h2>
-                <p class="demo-subtitle">AI-powered quote generator that creates professional estimates, invoices, and proposals instantly.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="quotes">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
+                <div class="service-card">
+                    <div class="service-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                            <line x1="16" y1="13" x2="8" y2="13"/>
-                            <line x1="16" y1="17" x2="8" y2="17"/>
-                            <polyline points="10 9 9 9 8 9"/>
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">Request Received</h3>
-                    <p class="step-desc">Customer fills out simple quote request form</p>
+                    <h3 class="service-title">Local SEO + Review Boost</h3>
+                    <p class="service-desc">Automated Google Business Profile optimization and local directory management.</p>
                 </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">AI Calculates</h3>
-                    <p class="step-desc">Pricing pulled from your catalog + custom logic</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Quote Generated</h3>
-                    <p class="step-desc">Branded PDF created with your logo and terms</p>
-                </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Sent to Customer</h3>
-                    <p class="step-desc">Email delivered with one-click approval button</p>
-                </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 6: Automated Social Media Posting -->
-    <section class="demo-section" id="demo-social">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">Post Once. Publish Everywhere.</h2>
-                <p class="demo-subtitle">AI creates, schedules, and posts optimized content across all your social platforms—daily.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="social">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 20h9"/>
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Content Created</h3>
-                    <p class="step-desc">AI generates posts from your blog, news, or prompts</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <polyline points="21 15 16 10 5 21"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Images Added</h3>
-                    <p class="step-desc">Auto-selects or generates matching visuals</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
-                            <line x1="3" y1="10" x2="21" y2="10"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Scheduled</h3>
-                    <p class="step-desc">Queued for optimal posting times per platform</p>
-                </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
+                <div class="service-card">
+                    <div class="service-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="18" cy="5" r="3"/>
                             <circle cx="6" cy="12" r="3"/>
@@ -561,497 +125,798 @@
                             <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">Published</h3>
-                    <p class="step-desc">Goes live on Facebook, Instagram, LinkedIn, Twitter</p>
+                    <h3 class="service-title">Automated Social Media Posting</h3>
+                    <p class="service-desc">AI creates, schedules, and posts optimized content across all platforms daily.</p>
                 </div>
-
-                <div class="demo-step" data-step="5">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="20" x2="12" y2="10"/>
-                            <line x1="18" y1="20" x2="18" y2="4"/>
-                            <line x1="6" y1="20" x2="6" y2="16"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Analytics Tracked</h3>
-                    <p class="step-desc">Engagement data sent to your dashboard weekly</p>
-                </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 7: AI Email Reply Assistant -->
-    <section class="demo-section" id="demo-email-reply">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">Inbox Zero, Every Day</h2>
-                <p class="demo-subtitle">AI drafts professional email responses in your voice—you just review and send in one click.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="email-reply">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Email Received</h3>
-                    <p class="step-desc">Customer inquiry, question, or request lands in inbox</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="m21 21-4.35-4.35"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">AI Analyzes Intent</h3>
-                    <p class="step-desc">Understands context, sentiment, and urgency</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 20h9"/>
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Response Drafted</h3>
-                    <p class="step-desc">AI writes reply matching your tone and policies</p>
-                </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">You Review</h3>
-                    <p class="step-desc">One-click approve, or tweak before sending</p>
-                </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 8: Sales Follow-Up Automation -->
-    <section class="demo-section" id="demo-followup">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">Never Lose A Lead To Silence</h2>
-                <p class="demo-subtitle">Multi-day AI follow-up sequences via email and SMS—keeps leads warm until they're ready to buy.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="followup">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="8.5" cy="7" r="4"/>
-                            <line x1="20" y1="8" x2="20" y2="14"/>
-                            <line x1="23" y1="11" x2="17" y2="11"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Lead Captured</h3>
-                    <p class="step-desc">New contact added from form, call, or chatbot</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Day 1: Welcome</h3>
-                    <p class="step-desc">Intro email with value-add content sent immediately</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Day 3: SMS Check-In</h3>
-                    <p class="step-desc">Friendly text asking if they have questions</p>
-                </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Day 7: Case Study</h3>
-                    <p class="step-desc">Email with social proof and success story</p>
-                </div>
-
-                <div class="demo-step" data-step="5">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
-                            <line x1="3" y1="10" x2="21" y2="10"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Day 14: Book Now</h3>
-                    <p class="step-desc">Final CTA with calendar link and limited offer</p>
-                </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 9: Client Onboarding Automation -->
-    <section class="demo-section" id="demo-onboarding">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">Onboard Clients While You Sleep</h2>
-                <p class="demo-subtitle">Automated welcome sequences, document collection, and kickoff scheduling—turn signed clients into active projects instantly.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="onboarding">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Contract Signed</h3>
-                    <p class="step-desc">Client signs via DocuSign or e-signature tool</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Welcome Email Sent</h3>
-                    <p class="step-desc">Branded onboarding guide + next steps delivered</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Documents Requested</h3>
-                    <p class="step-desc">Automated form asks for logos, logins, brand assets</p>
-                </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
-                            <line x1="3" y1="10" x2="21" y2="10"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Kickoff Scheduled</h3>
-                    <p class="step-desc">Calendar invite sent for onboarding call</p>
-                </div>
-
-                <div class="demo-step" data-step="5">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                            <polyline points="22 4 12 14.01 9 11.01"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Project Launched</h3>
-                    <p class="step-desc">Files synced, team notified, work begins</p>
-                </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 10: Local SEO + Review Boost System -->
-    <section class="demo-section" id="demo-local-seo">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">Dominate Local Search Results</h2>
-                <p class="demo-subtitle">Automated Google Business Profile updates, review generation, and citation building—rank #1 in your area.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="local-seo">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="m21 21-4.35-4.35"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Profile Optimized</h3>
-                    <p class="step-desc">Google Business Profile auto-updated with keywords</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <polyline points="21 15 16 10 5 21"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Posts Published</h3>
-                    <p class="step-desc">Weekly Google Posts with offers and updates</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Reviews Generated</h3>
-                    <p class="step-desc">Happy customers auto-prompted to leave 5-star reviews</p>
-                </div>
-
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="18" cy="5" r="3"/>
-                            <circle cx="6" cy="12" r="3"/>
-                            <circle cx="18" cy="19" r="3"/>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Citations Built</h3>
-                    <p class="step-desc">Business listed on 50+ local directories automatically</p>
-                </div>
-
-                <div class="demo-step" data-step="5">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="20" x2="12" y2="10"/>
-                            <line x1="18" y1="20" x2="18" y2="4"/>
-                            <line x1="6" y1="20" x2="6" y2="16"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Rankings Tracked</h3>
-                    <p class="step-desc">Monthly SEO report shows keyword position growth</p>
-                </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEMO 11: Custom AI Workflow -->
-    <section class="demo-section" id="demo-custom">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2 class="demo-title">Build Your Dream Automation</h2>
-                <p class="demo-subtitle">Custom AI workflows tailored to your exact business needs—connect any tools, any process, any goal.</p>
-            </div>
-
-            <div class="demo-steps" data-demo="custom">
-                <div class="demo-step" data-step="1">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                            <line x1="12" y1="22.08" x2="12" y2="12"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Discovery Call</h3>
-                    <p class="step-desc">We map your current process and pain points</p>
-                </div>
-
-                <div class="demo-step" data-step="2">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                            <polyline points="2 17 12 22 22 17"/>
-                            <polyline points="2 12 12 17 22 12"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Custom Design</h3>
-                    <p class="step-desc">AI workflow designed specific to your tools and goals</p>
-                </div>
-
-                <div class="demo-step" data-step="3">
-                    <div class="step-icon">
+                <div class="service-card">
+                    <div class="service-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="16 18 22 12 16 6"/>
                             <polyline points="8 6 2 12 8 18"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">Built & Tested</h3>
-                    <p class="step-desc">We build, test, and refine until it's perfect</p>
+                    <h3 class="service-title">Custom AI Workflows</h3>
+                    <p class="service-desc">Tailored automation solutions designed specifically for your unique business needs.</p>
                 </div>
+            </div>
+        </div>
+    </section>
 
-                <div class="demo-step" data-step="4">
-                    <div class="step-icon">
+    <section class="demos" id="demos">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">See Automation in Action</h2>
+                <p class="section-subtitle">Real workflows that save hours and generate revenue 24/7</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">Never Miss A Lead Again</h2>
+                    <p class="demo-subtitle">Automatically text back missed calls within seconds—turn every call into a conversation.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Call Comes In</h3>
+                        <p class="step-desc">Customer calls your business number</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 7l-7 5 7 5V7z"/>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Missed Call Detected</h3>
+                        <p class="step-desc">System instantly recognizes the opportunity</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Auto Text Sent</h3>
+                        <p class="step-desc">Personalized SMS delivered in under 60 seconds</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Lead Captured</h3>
+                        <p class="step-desc">Contact info saved to your CRM automatically</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">You Get Notified</h3>
+                        <p class="step-desc">Dashboard alert + optional Slack notification</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">AI Chatbot That Never Sleeps</h2>
+                    <p class="demo-subtitle">Engage visitors 24/7, qualify leads instantly, and book appointments while you focus on closing deals.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                                <line x1="9" y1="9" x2="9.01" y2="9"/>
+                                <line x1="15" y1="9" x2="15.01" y2="9"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Visitor Arrives</h3>
+                        <p class="step-desc">Someone lands on your website looking for help</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                <path d="M8 10h8M8 14h4"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">AI Engages Instantly</h3>
+                        <p class="step-desc">Natural conversation starts within 3 seconds</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 11l3 3L22 4"/>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Qualifies Lead</h3>
+                        <p class="step-desc">Asks smart questions about needs and budget</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Books Appointment</h3>
+                        <p class="step-desc">Schedules meeting on your calendar directly</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Lead Delivered</h3>
+                        <p class="step-desc">Full conversation + contact info sent to inbox</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">5-Star Reviews On Autopilot</h2>
+                    <p class="demo-subtitle">Automatically request reviews from happy customers and respond to every review instantly.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Service Completed</h3>
+                        <p class="step-desc">Transaction marked complete in your system</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Request Sent</h3>
+                        <p class="step-desc">Personalized SMS/email sent 24 hours later</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Customer Reviews</h3>
+                        <p class="step-desc">One-click link to Google/Yelp/Facebook</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">AI Auto-Replies</h3>
+                        <p class="step-desc">Branded thank-you response posted within minutes</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">Stop Typing. Start Scaling.</h2>
+                    <p class="demo-subtitle">Extract data from emails, forms, and documents—then sync to your CRM in real-time.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Data Arrives</h3>
+                        <p class="step-desc">Email, form, or document received</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">AI Extracts Data</h3>
+                        <p class="step-desc">Name, email, phone, company auto-detected</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Validated</h3>
+                        <p class="step-desc">Checks for duplicates and errors</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                                <polyline points="13 2 13 9 20 9"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Synced to CRM</h3>
+                        <p class="step-desc">Contact created in Salesforce, HubSpot, etc.</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Workflow Triggered</h3>
+                        <p class="step-desc">Follow-up sequence starts automatically</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">Send Quotes in 60 Seconds</h2>
+                    <p class="demo-subtitle">AI-powered quote generator creates professional estimates, invoices, and proposals instantly.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Request Received</h3>
+                        <p class="step-desc">Customer fills out quote request form</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">AI Calculates</h3>
+                        <p class="step-desc">Pricing pulled from catalog + custom logic</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Quote Generated</h3>
+                        <p class="step-desc">Branded PDF with your logo and terms</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Sent to Customer</h3>
+                        <p class="step-desc">Email with one-click approval button</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">Post Once. Publish Everywhere.</h2>
+                    <p class="demo-subtitle">AI creates, schedules, and posts optimized content across all platforms—daily.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Content Created</h3>
+                        <p class="step-desc">AI generates posts from your content</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Images Added</h3>
+                        <p class="step-desc">Auto-selects matching visuals</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Scheduled</h3>
+                        <p class="step-desc">Queued for optimal posting times</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"/>
+                                <circle cx="6" cy="12" r="3"/>
+                                <circle cx="18" cy="19" r="3"/>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Published</h3>
+                        <p class="step-desc">Goes live on all platforms</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="20" x2="12" y2="10"/>
+                                <line x1="18" y1="20" x2="18" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="16"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Analytics Tracked</h3>
+                        <p class="step-desc">Engagement data to your dashboard</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">Inbox Zero, Every Day</h2>
+                    <p class="demo-subtitle">AI drafts professional email responses in your voice—review and send in one click.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Email Received</h3>
+                        <p class="step-desc">Customer inquiry lands in inbox</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">AI Analyzes</h3>
+                        <p class="step-desc">Understands context and urgency</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Response Drafted</h3>
+                        <p class="step-desc">AI writes reply in your tone</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">You Review</h3>
+                        <p class="step-desc">One-click approve or edit</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">Never Lose A Lead To Silence</h2>
+                    <p class="demo-subtitle">Multi-day AI sequences via email and SMS—keeps leads warm until they buy.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="8.5" cy="7" r="4"/>
+                                <line x1="20" y1="8" x2="20" y2="14"/>
+                                <line x1="23" y1="11" x2="17" y2="11"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Lead Captured</h3>
+                        <p class="step-desc">New contact from form or call</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Day 1: Welcome</h3>
+                        <p class="step-desc">Intro email sent immediately</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Day 3: SMS Check-In</h3>
+                        <p class="step-desc">Friendly text with questions</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Day 7: Case Study</h3>
+                        <p class="step-desc">Social proof and success story</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Day 14: Book Now</h3>
+                        <p class="step-desc">Final CTA with calendar link</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">Onboard Clients While You Sleep</h2>
+                    <p class="demo-subtitle">Automated welcome sequences, documents, and kickoff scheduling—turn signed clients into active projects.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Contract Signed</h3>
+                        <p class="step-desc">Client signs via DocuSign</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Welcome Email</h3>
+                        <p class="step-desc">Onboarding guide delivered</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Documents Requested</h3>
+                        <p class="step-desc">Form asks for assets and logins</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Kickoff Scheduled</h3>
+                        <p class="step-desc">Calendar invite sent</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Project Launched</h3>
+                        <p class="step-desc">Files synced, work begins</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">Dominate Local Search Results</h2>
+                    <p class="demo-subtitle">Automated Google Business Profile updates, reviews, and citation building—rank #1 in your area.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Profile Optimized</h3>
+                        <p class="step-desc">Google Business auto-updated</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Posts Published</h3>
+                        <p class="step-desc">Weekly Google Posts with offers</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Reviews Generated</h3>
+                        <p class="step-desc">Auto-prompts for 5-star reviews</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"/>
+                                <circle cx="6" cy="12" r="3"/>
+                                <circle cx="18" cy="19" r="3"/>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Citations Built</h3>
+                        <p class="step-desc">Listed on 50+ directories</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="20" x2="12" y2="10"/>
+                                <line x1="18" y1="20" x2="18" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="16"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Rankings Tracked</h3>
+                        <p class="step-desc">Monthly SEO reports</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <div class="demo-container">
+                <div class="demo-header">
+                    <h2 class="demo-title">Build Your Dream Automation</h2>
+                    <p class="demo-subtitle">Custom AI workflows tailored to your exact business needs—connect any tools, any process.</p>
+                </div>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                <line x1="12" y1="22.08" x2="12" y2="12"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Discovery Call</h3>
+                        <p class="step-desc">We map your process and pain points</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                                <polyline points="2 17 12 22 22 17"/>
+                                <polyline points="2 12 12 17 22 12"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Custom Design</h3>
+                        <p class="step-desc">Workflow designed for your tools</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"/>
+                                <polyline points="8 6 2 12 8 18"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Built & Tested</h3>
+                        <p class="step-desc">We refine until perfect</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Deployed</h3>
+                        <p class="step-desc">Automation goes live</p>
+                    </div>
+                    <div class="demo-step">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 20V10"/>
+                                <path d="M12 20V4"/>
+                                <path d="M6 20v-6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Ongoing Support</h3>
+                        <p class="step-desc">Monitoring and improvements</p>
+                    </div>
+                </div>
+                <div class="demo-actions">
+                    <button class="btn btn-primary">Book This Automation</button>
+                    <button class="btn btn-outline">See Full Automation</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose Stromation</h2>
+                <p class="section-subtitle">Built for small businesses that want to scale without hiring</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <h3 class="benefit-title">Save 20-40 Hours/Week</h3>
+                    <p class="benefit-desc">Eliminate repetitive tasks and focus on high-value work that actually grows your business.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                    </div>
+                    <h3 class="benefit-title">Increase Conversions 2-3x</h3>
+                    <p class="benefit-desc">Never miss a lead again with instant responses and intelligent follow-up sequences.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                    </div>
+                    <h3 class="benefit-title">Never Miss a Customer</h3>
+                    <p class="benefit-desc">24/7 AI-powered responses to calls, texts, emails, and website visitors.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    <h3 class="benefit-title">Automate Repetitive Tasks</h3>
+                    <p class="benefit-desc">Data entry, quote generation, scheduling, and follow-ups run on autopilot.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
                         </svg>
                     </div>
-                    <h3 class="step-title">Deployed</h3>
-                    <p class="step-desc">Automation goes live and starts saving you time</p>
-                </div>
-
-                <div class="demo-step" data-step="5">
-                    <div class="step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 20V10"/>
-                            <path d="M12 20V4"/>
-                            <path d="M6 20v-6"/>
-                        </svg>
-                    </div>
-                    <h3 class="step-title">Ongoing Support</h3>
-                    <p class="step-desc">Monitoring, tweaks, and improvements included</p>
-                </div>
-            </div>
-
-            <div class="demo-actions">
-                <button class="btn-primary">Book This Automation</button>
-                <button class="btn-secondary">See Full Automation</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Grid -->
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">What Stromation Automates</h2>
-            </div>
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h3>Lead Capture Chatbots</h3>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h3>Sales Follow-Up Automations</h3>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h3>Review Generation & Auto-Reply</h3>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h3>Instant Quote/Estimate Systems</h3>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h3>Data Entry & Back-Office Automations</h3>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h3>AI Phone Call Summaries</h3>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h3>Local SEO Boost Systems</h3>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h3>AI Social Media Pipelines</h3>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <h3>Custom Python Automation Agents</h3>
+                    <h3 class="benefit-title">Done-For-You Setup</h3>
+                    <p class="benefit-desc">We build, test, and deploy everything. You just approve and watch it work.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Stats Banner -->
     <section class="stats-banner">
-        <div class="stats-background">
-            <div class="gradient-wave"></div>
-        </div>
         <div class="container">
-            <h2 class="stats-title">Let AI Handle the Work While You Focus on Growth</h2>
             <div class="stats-grid">
-                <div class="stat-card glass">
+                <div class="stat-card">
                     <div class="stat-value">34 hrs/week</div>
                     <div class="stat-label">Avg. Time Saved</div>
                 </div>
-                <div class="stat-card glass">
+                <div class="stat-card">
                     <div class="stat-value">3.1x</div>
                     <div class="stat-label">Lead Conversion Increase</div>
                 </div>
-                <div class="stat-card glass">
+                <div class="stat-card">
                     <div class="stat-value">630%</div>
                     <div class="stat-label">Avg. ROI</div>
                 </div>
@@ -1059,62 +924,53 @@
         </div>
     </section>
 
-    <!-- Pricing Section -->
     <section class="pricing" id="pricing">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Simple Pricing, Real Results</h2>
+                <p class="section-subtitle">Choose the plan that fits your business needs</p>
             </div>
-
             <div class="pricing-grid">
-                <div class="pricing-card glass">
-                    <div class="pricing-header">
-                        <h3>Starter Automation</h3>
-                        <div class="price">
-                            <span class="price-value">$250</span>
-                            <span class="price-period">/mo</span>
-                        </div>
+                <div class="pricing-card">
+                    <div class="pricing-tier">Starter</div>
+                    <div class="pricing-price">
+                        <span class="price-amount">$250</span>
+                        <span class="price-period">/mo</span>
                     </div>
                     <ul class="pricing-features">
-                        <li>✓ 1 custom workflow</li>
-                        <li>✓ Automation hosting</li>
-                        <li>✓ Monthly updates</li>
-                        <li>✓ Email support</li>
+                        <li>1 custom workflow</li>
+                        <li>Automation hosting</li>
+                        <li>Monthly updates</li>
+                        <li>Email support</li>
                     </ul>
                     <button class="btn btn-outline">Get Started</button>
                 </div>
-
-                <div class="pricing-card glass recommended">
-                    <div class="recommended-badge">Most Popular</div>
-                    <div class="pricing-header">
-                        <h3>Growth Suite</h3>
-                        <div class="price">
-                            <span class="price-value">$750</span>
-                            <span class="price-period">/mo</span>
-                        </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-tier">Growth Suite</div>
+                    <div class="pricing-price">
+                        <span class="price-amount">$750</span>
+                        <span class="price-period">/mo</span>
                     </div>
                     <ul class="pricing-features">
-                        <li>✓ 3-5 workflows</li>
-                        <li>✓ AI chatbot</li>
-                        <li>✓ Sales follow-up system</li>
-                        <li>✓ Priority support</li>
+                        <li>3-5 workflows</li>
+                        <li>AI chatbot</li>
+                        <li>Sales follow-up system</li>
+                        <li>Priority support</li>
                     </ul>
-                    <button class="btn btn-primary glow-button">Get Started</button>
+                    <button class="btn btn-primary">Get Started</button>
                 </div>
-
-                <div class="pricing-card glass">
-                    <div class="pricing-header">
-                        <h3>Full Automation Stack</h3>
-                        <div class="price">
-                            <span class="price-value">$1500</span>
-                            <span class="price-period">/mo+</span>
-                        </div>
+                <div class="pricing-card">
+                    <div class="pricing-tier">Automation Suite</div>
+                    <div class="pricing-price">
+                        <span class="price-amount">$1500</span>
+                        <span class="price-period">/mo+</span>
                     </div>
                     <ul class="pricing-features">
-                        <li>✓ Complete business automation</li>
-                        <li>✓ 24/7 monitoring</li>
-                        <li>✓ Dedicated engineer</li>
-                        <li>✓ Custom AI agents</li>
+                        <li>Complete business automation</li>
+                        <li>24/7 monitoring</li>
+                        <li>Dedicated engineer</li>
+                        <li>Custom AI agents</li>
                     </ul>
                     <button class="btn btn-outline">Get Started</button>
                 </div>
@@ -1122,46 +978,85 @@
         </div>
     </section>
 
-    <!-- Final CTA Section -->
-    <section class="final-cta" id="contact">
-        <div class="cta-background">
-            <div class="ai-nodes">
-                <div class="ai-node node-a"></div>
-                <div class="ai-node node-b"></div>
-                <div class="ai-node node-c"></div>
-                <div class="ai-node node-d"></div>
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What Our Clients Say</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Stromation's chatbot converted 3x more leads than our old contact form. We're booking 12+ appointments per week on autopilot."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JS</div>
+                        <div class="author-info">
+                            <div class="author-name">Jason Silva</div>
+                            <div class="author-role">Owner, Silva Roofing</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"The missed call text-back alone saved us from losing $40k+ in deals. Setup took 2 days and it's been running flawlessly for 6 months."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MB</div>
+                        <div class="author-info">
+                            <div class="author-name">Maria Bowman</div>
+                            <div class="author-role">CEO, Bowman HVAC</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"We went from 12 Google reviews to 140 in 4 months. The auto-reply feature keeps our reputation spotless without lifting a finger."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">TC</div>
+                        <div class="author-info">
+                            <div class="author-name">Tom Chen</div>
+                            <div class="author-role">Founder, Chen Plumbing</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Finally hit inbox zero. The AI email assistant drafts perfect responses in my voice. I just review and click send. Saves 10 hours weekly."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">LR</div>
+                        <div class="author-info">
+                            <div class="author-name">Lisa Rodriguez</div>
+                            <div class="author-role">Director, Rodriguez Law</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
+
+    <section class="final-cta" id="contact">
         <div class="container">
             <div class="cta-content">
-                <h2>Ready To Automate Your Business?</h2>
-                <p>Book a free consultation and we'll show you exactly what AI can automate in your business.</p>
-                <button class="btn btn-primary btn-large glow-button">
-                    <span>Get My Free Automation Audit</span>
-                    <div class="btn-glow"></div>
-                </button>
+                <h2 class="cta-title">Ready To Automate Your Business?</h2>
+                <p class="cta-subtitle">Book a free consultation and we'll show you exactly what AI can automate in your business.</p>
+                <button class="btn btn-primary btn-large">Get My Free Automation Audit</button>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
-        <div class="footer-background">
-            <div class="neon-grid"></div>
-        </div>
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
                     <img src="logo.png" alt="Stromation">
                 </div>
                 <div class="footer-links">
-                    <a href="#privacy">Privacy Policy</a>
-                    <a href="#terms">Terms</a>
+                    <a href="#services">Services</a>
+                    <a href="#demos">Demos</a>
+                    <a href="#pricing">Pricing</a>
                     <a href="#contact">Contact</a>
                 </div>
             </div>
-            <div class="footer-copyright">
-                © 2025 Stromation — AI Automation Agency
+            <div class="footer-bottom">
+                <p>&copy; 2025 Stromation — AI Automation Agency</p>
             </div>
         </div>
     </footer>
