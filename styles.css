@@ -515,6 +515,147 @@ body {
 }
 
 /* ==========================================
+   NEW DEMO LAYOUT - GRID SYSTEM
+   ========================================== */
+
+/* 3-Column Grid for Workflow Automation (8 demos) */
+.demo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    margin: 3rem 0;
+}
+
+/* 2-Column Grid for Short-Form Content (2 demos) */
+.demo-grid-dual {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+    margin: 3rem 0;
+    max-width: 1200px;
+}
+
+/* Single Featured Layout for AI Chatbot (1 demo) */
+.demo-single-featured {
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0;
+}
+
+/* Individual Demo Card */
+.demo-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 210, 198, 0.15);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.demo-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 18px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.demo-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 70px rgba(0, 210, 198, 0.4);
+    border-color: var(--primary);
+}
+
+.demo-card:hover::before {
+    opacity: 1;
+}
+
+/* Featured Card Variant */
+.demo-card-featured {
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Demo Iframe Container */
+.demo-frame {
+    width: 100%;
+    height: 450px;
+    border: none;
+    background: #0B0F19;
+    display: block;
+}
+
+.demo-frame-featured {
+    height: 500px;
+}
+
+/* Demo Title Label */
+.demo-card .demo-title {
+    padding: 1.25rem 1.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    background: rgba(0, 210, 198, 0.05);
+    text-align: left;
+    margin: 0;
+    letter-spacing: normal;
+}
+
+/* Demo Caption for Featured Items */
+.demo-caption {
+    padding: 1rem 1.75rem;
+    font-size: 0.95rem;
+    color: var(--light-text);
+    text-align: center;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+/* Responsive Demo Grids */
+@media (min-width: 900px) {
+    .demo-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .demo-grid-dual {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 899px) and (min-width: 600px) {
+    .demo-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .demo-grid-dual {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 599px) {
+    .demo-grid,
+    .demo-grid-dual {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .demo-frame {
+        height: 350px;
+    }
+    .demo-frame-featured {
+        height: 400px;
+    }
+    .demo-card .demo-title {
+        font-size: 0.95rem;
+        padding: 1rem 1.5rem;
+    }
+}
+
+/* ==========================================
    OLD SERVICES SECTION (Preserved but hidden)
    ========================================== */
 
