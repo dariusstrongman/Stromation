@@ -404,6 +404,70 @@ body {
 }
 
 /* ==========================================
+   LIVE INTERACTIVE DEMOS
+   ========================================== */
+.live-demos {
+    position: relative;
+    padding: 8rem 0;
+    background: rgba(0, 210, 198, 0.02);
+    z-index: 10;
+}
+
+.live-demos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(900px, 1fr));
+    gap: 4rem;
+    margin-top: 3rem;
+}
+
+.live-demo-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 210, 198, 0.15);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+}
+
+.live-demo-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 20px 60px rgba(0, 210, 198, 0.25);
+}
+
+.live-demo-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.live-demo-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+}
+
+.live-demo-header p {
+    font-size: 1rem;
+    color: var(--light-text);
+}
+
+.live-demo-frame {
+    width: 100%;
+    height: 500px;
+    background: #0B0F19;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 210, 198, 0.2);
+}
+
+.live-demo-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ==========================================
    DEMO SECTIONS
    ========================================== */
 .demo-section {
@@ -442,6 +506,24 @@ body {
     max-width: 700px;
     margin: 0 auto;
     line-height: 1.7;
+}
+
+.demo-video {
+    width: 100%;
+    max-width: 950px;
+    height: 500px;
+    background: #0B0F19;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 210, 198, 0.2);
+    margin: 0 auto 4rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.demo-video iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
 }
 
 .demo-steps {
@@ -996,6 +1078,14 @@ body {
     .benefits-grid,
     .testimonials-grid {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .live-demos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .live-demo-frame {
+        height: 400px;
     }
 }
 

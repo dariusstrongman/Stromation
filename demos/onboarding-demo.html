@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            overflow: hidden;
+            color: #fff;
+        }
+        .demo-container {
+            width: 100%;
+            max-width: 900px;
+            height: 450px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        .step-label {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 210, 198, 0.1);
+            border: 1px solid #00D2C6;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #00D2C6;
+            opacity: 0;
+            z-index: 20;
+        }
+        .checklist {
+            width: 380px;
+            background: #1a1f2e;
+            border-radius: 16px;
+            border: 1px solid #2a3142;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+        }
+        .checklist-header {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #0f1419;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateX(-15px);
+        }
+        .check-box {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #2a3142;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .checklist-item.completed .check-box {
+            background: #00D2C6;
+            border-color: #00D2C6;
+        }
+        .item-text {
+            flex: 1;
+            font-size: 13px;
+            color: #E5E7EB;
+        }
+        .checklist-item.completed .item-text {
+            color: #999;
+            text-decoration: line-through;
+        }
+        .welcome-package {
+            width: 380px;
+            background: #1a1f2e;
+            border-radius: 16px;
+            border: 1px solid #00D2C6;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 210, 198, 0.3);
+            opacity: 0;
+        }
+        .package-header {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #00D2C6;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .package-item {
+            background: #0f1419;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .item-title {
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .item-desc {
+            color: #E5E7EB;
+            font-size: 11px;
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes fadeInLeft { to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="step-label" id="stepLabel">Client Signs Contract</div>
+
+        <div class="checklist" id="checklist">
+            <div class="checklist-header">📋 Onboarding Tasks</div>
+            <div class="checklist-item" id="task1">
+                <div class="check-box"></div>
+                <div class="item-text">Send welcome email</div>
+            </div>
+            <div class="checklist-item" id="task2">
+                <div class="check-box"></div>
+                <div class="item-text">Create client portal account</div>
+            </div>
+            <div class="checklist-item" id="task3">
+                <div class="check-box"></div>
+                <div class="item-text">Schedule kickoff call</div>
+            </div>
+            <div class="checklist-item" id="task4">
+                <div class="check-box"></div>
+                <div class="item-text">Send onboarding documents</div>
+            </div>
+            <div class="checklist-item" id="task5">
+                <div class="check-box"></div>
+                <div class="item-text">Add to project management</div>
+            </div>
+        </div>
+
+        <div class="welcome-package" id="package">
+            <div class="package-header">📦 Client Received</div>
+            <div class="package-item" id="pkg1">
+                <div class="item-title">Welcome Email</div>
+                <div class="item-desc">Personalized intro + next steps</div>
+            </div>
+            <div class="package-item" id="pkg2">
+                <div class="item-title">Portal Access</div>
+                <div class="item-desc">Login credentials sent</div>
+            </div>
+            <div class="package-item" id="pkg3">
+                <div class="item-title">Kickoff Meeting</div>
+                <div class="item-desc">Calendar invite scheduled</div>
+            </div>
+            <div class="package-item" id="pkg4">
+                <div class="item-title">Resource Library</div>
+                <div class="item-desc">FAQs, guides, contacts</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function runAnimation() {
+            const stepLabel = document.getElementById('stepLabel');
+            const checklist = document.getElementById('checklist');
+            const packageEl = document.getElementById('package');
+
+            [stepLabel, checklist, packageEl].forEach(el => {
+                el.style.opacity = '0';
+                el.style.animation = 'none';
+            });
+
+            ['task1', 'task2', 'task3', 'task4', 'task5'].forEach(id => {
+                const el = document.getElementById(id);
+                el.style.opacity = '0';
+                el.style.animation = 'none';
+                el.classList.remove('completed');
+                el.querySelector('.check-box').textContent = '';
+            });
+
+            ['pkg1', 'pkg2', 'pkg3', 'pkg4'].forEach(id => {
+                document.getElementById(id).style.opacity = '0';
+                document.getElementById(id).style.animation = 'none';
+            });
+
+            const timeline = [
+                { time: 300, action: () => {
+                    stepLabel.textContent = 'Step 1: Client Signed';
+                    stepLabel.style.animation = 'fadeIn 0.5s forwards';
+                    checklist.style.animation = 'slideIn 0.7s forwards';
+                }},
+                { time: 1000, action: () => {
+                    stepLabel.textContent = 'Step 2: Auto-Onboarding';
+                    ['task1', 'task2', 'task3', 'task4', 'task5'].forEach((id, index) => {
+                        setTimeout(() => {
+                            const el = document.getElementById(id);
+                            el.style.animation = 'fadeInLeft 0.4s forwards';
+                            setTimeout(() => {
+                                el.classList.add('completed');
+                                el.querySelector('.check-box').textContent = '✓';
+                            }, 400);
+                        }, index * 400);
+                    });
+                }},
+                { time: 4000, action: () => {
+                    stepLabel.textContent = 'Step 3: Client Gets Everything';
+                    packageEl.style.animation = 'slideIn 0.7s forwards';
+                }},
+                { time: 4700, action: () => {
+                    ['pkg1', 'pkg2', 'pkg3', 'pkg4'].forEach((id, index) => {
+                        setTimeout(() => {
+                            document.getElementById(id).style.animation = 'fadeInUp 0.4s forwards';
+                        }, index * 200);
+                    });
+                }},
+                { time: 7000, action: () => {
+                    stepLabel.textContent = '✓ Onboarded in 5 Minutes';
+                }},
+                { time: 9000, action: () => runAnimation() }
+            ];
+
+            timeline.forEach(step => setTimeout(step.action, step.time));
+        }
+
+        window.addEventListener('load', () => runAnimation());
+    </script>
+</body>
+</html>

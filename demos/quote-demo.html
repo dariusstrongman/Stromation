@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Quote Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .demo-container {
+            width: 100%;
+            max-width: 900px;
+            height: 450px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 210, 198, 0.1);
+            border: 1px solid #00D2C6;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #00D2C6;
+            opacity: 0;
+            z-index: 20;
+        }
+
+        .request-card {
+            width: 280px;
+            background: #1a1f2e;
+            border-radius: 16px;
+            border: 1px solid #2a3142;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+        }
+
+        .card-header {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .request-item {
+            background: #0f1419;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .item-label {
+            color: #E5E7EB;
+            margin-bottom: 4px;
+        }
+
+        .item-value {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .processing-badge {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 210, 198, 0.15);
+            border: 2px solid #00D2C6;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 6px;
+            opacity: 0;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(0, 210, 198, 0.2);
+            border-top: 3px solid #00D2C6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .badge-text {
+            font-size: 10px;
+            color: #00D2C6;
+            font-weight: 700;
+        }
+
+        .quote-document {
+            width: 320px;
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            color: #0B0F19;
+        }
+
+        .doc-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #00D2C6;
+            padding-bottom: 16px;
+        }
+
+        .doc-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0B0F19;
+            margin-bottom: 4px;
+        }
+
+        .doc-subtitle {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .quote-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 12px;
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+
+        .quote-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #00D2C6;
+            border-top: 2px solid #00D2C6;
+            opacity: 0;
+        }
+
+        .email-badge {
+            text-align: center;
+            margin-top: 16px;
+            padding: 10px;
+            background: rgba(0, 210, 198, 0.1);
+            border-radius: 8px;
+            font-size: 11px;
+            color: #00D2C6;
+            font-weight: 600;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="step-label" id="stepLabel">Quote Request</div>
+
+        <div class="request-card" id="requestCard">
+            <div class="card-header">📝 Quote Request</div>
+            <div class="request-item" id="req1">
+                <div class="item-label">Service:</div>
+                <div class="item-value">Deck Installation</div>
+            </div>
+            <div class="request-item" id="req2">
+                <div class="item-label">Size:</div>
+                <div class="item-value">12' x 20'</div>
+            </div>
+            <div class="request-item" id="req3">
+                <div class="item-label">Material:</div>
+                <div class="item-value">Composite</div>
+            </div>
+            <div class="request-item" id="req4">
+                <div class="item-label">Customer:</div>
+                <div class="item-value">John Smith</div>
+            </div>
+        </div>
+
+        <div class="processing-badge" id="processing">
+            <div class="spinner"></div>
+            <div class="badge-text">Calculating...</div>
+        </div>
+
+        <div class="quote-document" id="quoteDoc">
+            <div class="doc-header">
+                <div class="doc-title">PROFESSIONAL QUOTE</div>
+                <div class="doc-subtitle">Quote #2847 • Valid 30 Days</div>
+            </div>
+            <div class="quote-line" id="line1">
+                <span>Composite Decking (240 sq ft)</span>
+                <span>$4,800</span>
+            </div>
+            <div class="quote-line" id="line2">
+                <span>Installation Labor</span>
+                <span>$2,400</span>
+            </div>
+            <div class="quote-line" id="line3">
+                <span>Hardware & Materials</span>
+                <span>$800</span>
+            </div>
+            <div class="quote-total" id="total">
+                <span>TOTAL:</span>
+                <span>$8,000</span>
+            </div>
+            <div class="email-badge" id="email">
+                ✓ Emailed to john@email.com
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function runAnimation() {
+            const stepLabel = document.getElementById('stepLabel');
+            const requestCard = document.getElementById('requestCard');
+            const processing = document.getElementById('processing');
+            const quoteDoc = document.getElementById('quoteDoc');
+            const email = document.getElementById('email');
+
+            [stepLabel, requestCard, processing, quoteDoc, email].forEach(el => {
+                el.style.opacity = '0';
+                el.style.animation = 'none';
+            });
+
+            ['req1', 'req2', 'req3', 'req4', 'line1', 'line2', 'line3', 'total'].forEach(id => {
+                const el = document.getElementById(id);
+                el.style.opacity = '0';
+                el.style.animation = 'none';
+            });
+
+            const timeline = [
+                { time: 300, action: () => {
+                    stepLabel.textContent = 'Step 1: Request Received';
+                    stepLabel.style.animation = 'fadeIn 0.5s forwards';
+                    requestCard.style.animation = 'slideIn 0.7s forwards';
+                }},
+                { time: 1000, action: () => {
+                    ['req1', 'req2', 'req3', 'req4'].forEach((id, index) => {
+                        setTimeout(() => {
+                            document.getElementById(id).style.animation = 'fadeInUp 0.4s forwards';
+                        }, index * 150);
+                    });
+                }},
+                { time: 2800, action: () => {
+                    stepLabel.textContent = 'Step 2: AI Calculating';
+                    processing.style.animation = 'pulse 1s forwards';
+                }},
+                { time: 4500, action: () => {
+                    stepLabel.textContent = 'Step 3: Quote Generated';
+                    quoteDoc.style.animation = 'slideIn 0.7s forwards';
+                }},
+                { time: 5200, action: () => {
+                    ['line1', 'line2', 'line3'].forEach((id, index) => {
+                        setTimeout(() => {
+                            document.getElementById(id).style.animation = 'fadeInLeft 0.4s forwards';
+                        }, index * 200);
+                    });
+                }},
+                { time: 6400, action: () => {
+                    document.getElementById('total').style.animation = 'fadeIn 0.5s forwards';
+                }},
+                { time: 7200, action: () => {
+                    email.style.animation = 'fadeIn 0.5s forwards';
+                }},
+                { time: 8500, action: () => {
+                    stepLabel.textContent = '✓ Quote Sent in 60 Seconds';
+                }},
+                { time: 10000, action: () => runAnimation() }
+            ];
+
+            timeline.forEach(step => setTimeout(step.action, step.time));
+        }
+
+        window.addEventListener('load', () => runAnimation());
+    </script>
+</body>
+</html>

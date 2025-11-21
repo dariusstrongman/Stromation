@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Reply Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .demo-container {
+            width: 100%;
+            max-width: 900px;
+            height: 450px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 210, 198, 0.1);
+            border: 1px solid #00D2C6;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #00D2C6;
+            opacity: 0;
+            z-index: 20;
+        }
+
+        .email-client {
+            width: 700px;
+            background: #1a1f2e;
+            border-radius: 16px;
+            border: 1px solid #2a3142;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        .email-header {
+            background: #0f1419;
+            padding: 16px 20px;
+            border-bottom: 1px solid #2a3142;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #00D2C6, #4AF2E8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .header-text h3 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .header-text p {
+            font-size: 11px;
+            color: #E5E7EB;
+        }
+
+        .email-body {
+            padding: 24px;
+        }
+
+        .email-thread {
+            margin-bottom: 20px;
+        }
+
+        .email-message {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 3px solid #666;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 11px;
+        }
+
+        .message-from {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .message-time {
+            color: #999;
+        }
+
+        .message-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #E5E7EB;
+        }
+
+        .ai-reply {
+            border-left-color: #00D2C6;
+            background: rgba(0, 210, 198, 0.05);
+        }
+
+        .ai-badge {
+            display: inline-block;
+            background: rgba(0, 210, 198, 0.2);
+            color: #00D2C6;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(0, 210, 198, 0.1);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            opacity: 0;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #00D2C6;
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        .typing-text {
+            font-size: 11px;
+            color: #00D2C6;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="step-label" id="stepLabel">Incoming Email</div>
+
+        <div class="email-client" id="emailClient">
+            <div class="email-header">
+                <div class="header-icon">📧</div>
+                <div class="header-text">
+                    <h3>Inbox</h3>
+                    <p>AI Assistant Active</p>
+                </div>
+            </div>
+
+            <div class="email-body">
+                <div class="email-thread">
+                    <div class="email-message" id="incoming">
+                        <div class="message-meta">
+                            <span class="message-from">Lisa Thompson</span>
+                            <span class="message-time">2 min ago</span>
+                        </div>
+                        <div class="message-text">
+                            Hi! I saw your website and I'm interested in getting some landscaping work done. Do you service the north side of town? Also, what's your typical turnaround time? Thanks!
+                        </div>
+                    </div>
+
+                    <div class="typing-indicator" id="typing">
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                        <div class="typing-text">AI composing reply...</div>
+                    </div>
+
+                    <div class="email-message ai-reply" id="reply">
+                        <div class="message-meta">
+                            <span class="message-from">
+                                You
+                                <span class="ai-badge">🤖 AI Reply</span>
+                            </span>
+                            <span class="message-time">Just now</span>
+                        </div>
+                        <div class="message-text">
+                            Hi Lisa!
+
+Thank you for reaching out! Yes, we absolutely service the north side of town. Our typical turnaround for landscaping projects is 2-3 weeks from consultation to completion, depending on the scope.
+
+I'd love to learn more about your project. Would you be available for a quick call this week? I can also send you our portfolio and pricing guide.
+
+Looking forward to working with you!
+
+Best regards,
+[Your Business]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function runAnimation() {
+            const stepLabel = document.getElementById('stepLabel');
+            const emailClient = document.getElementById('emailClient');
+            const incoming = document.getElementById('incoming');
+            const typing = document.getElementById('typing');
+            const reply = document.getElementById('reply');
+
+            [stepLabel, emailClient, incoming, typing, reply].forEach(el => {
+                el.style.opacity = '0';
+                el.style.animation = 'none';
+            });
+
+            const timeline = [
+                { time: 300, action: () => {
+                    stepLabel.textContent = 'Step 1: Email Received';
+                    stepLabel.style.animation = 'fadeIn 0.5s forwards';
+                    emailClient.style.animation = 'slideIn 0.7s forwards';
+                }},
+                { time: 1000, action: () => {
+                    incoming.style.animation = 'fadeInUp 0.6s forwards';
+                }},
+                { time: 2500, action: () => {
+                    stepLabel.textContent = 'Step 2: AI Composing Reply';
+                    typing.style.animation = 'fadeIn 0.5s forwards';
+                }},
+                { time: 5000, action: () => {
+                    typing.style.display = 'none';
+                }},
+                { time: 5200, action: () => {
+                    stepLabel.textContent = 'Step 3: Reply Sent';
+                    reply.style.animation = 'fadeInUp 0.7s forwards';
+                }},
+                { time: 7500, action: () => {
+                    stepLabel.textContent = '✓ Inbox Zero Maintained';
+                }},
+                { time: 9500, action: () => {
+                    typing.style.display = 'flex';
+                    runAnimation();
+                }}
+            ];
+
+            timeline.forEach(step => setTimeout(step.action, step.time));
+        }
+
+        window.addEventListener('load', () => runAnimation());
+    </script>
+</body>
+</html>

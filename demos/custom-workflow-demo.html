@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Workflow Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            overflow: hidden;
+            color: #fff;
+        }
+        .demo-container {
+            width: 100%;
+            max-width: 900px;
+            height: 450px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        .step-label {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 210, 198, 0.1);
+            border: 1px solid #00D2C6;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #00D2C6;
+            opacity: 0;
+            z-index: 20;
+        }
+        .workflow-builder {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .workflow-node {
+            width: 140px;
+            height: 140px;
+            background: #1a1f2e;
+            border: 2px solid #2a3142;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .workflow-node.active {
+            border-color: #00D2C6;
+            background: rgba(0, 210, 198, 0.05);
+            box-shadow: 0 0 30px rgba(0, 210, 198, 0.4);
+        }
+        .node-icon {
+            font-size: 32px;
+        }
+        .node-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #E5E7EB;
+        }
+        .node-sublabel {
+            font-size: 10px;
+            color: #999;
+        }
+        .workflow-arrow {
+            font-size: 24px;
+            color: #2a3142;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        .workflow-arrow.active {
+            color: #00D2C6;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .custom-message {
+            background: #1a1f2e;
+            border: 1px solid #00D2C6;
+            border-radius: 16px;
+            padding: 24px 32px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 210, 198, 0.3);
+            opacity: 0;
+        }
+        .custom-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #00D2C6, #4AF2E8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .custom-desc {
+            font-size: 13px;
+            color: #E5E7EB;
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes scaleIn { to { opacity: 1; transform: scale(1); } }
+        @keyframes slideIn { to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="step-label" id="stepLabel">Building Your Workflow</div>
+
+        <div class="workflow-builder">
+            <div class="workflow-node" id="node1">
+                <div class="node-icon">🎯</div>
+                <div class="node-label">Trigger</div>
+                <div class="node-sublabel">Your Event</div>
+            </div>
+
+            <div class="workflow-arrow" id="arrow1">→</div>
+
+            <div class="workflow-node" id="node2">
+                <div class="node-icon">⚡</div>
+                <div class="node-label">Process</div>
+                <div class="node-sublabel">AI Logic</div>
+            </div>
+
+            <div class="workflow-arrow" id="arrow2">→</div>
+
+            <div class="workflow-node" id="node3">
+                <div class="node-icon">🔄</div>
+                <div class="node-label">Connect</div>
+                <div class="node-sublabel">Your Tools</div>
+            </div>
+
+            <div class="workflow-arrow" id="arrow3">→</div>
+
+            <div class="workflow-node" id="node4">
+                <div class="node-icon">✅</div>
+                <div class="node-label">Complete</div>
+                <div class="node-sublabel">Auto Result</div>
+            </div>
+        </div>
+
+        <div class="custom-message" id="message">
+            <div class="custom-title">We Build Exactly What You Need</div>
+            <div class="custom-desc">No templates. No limitations. Custom automation tailored to your business.</div>
+        </div>
+    </div>
+
+    <script>
+        function runAnimation() {
+            const stepLabel = document.getElementById('stepLabel');
+            const node1 = document.getElementById('node1');
+            const node2 = document.getElementById('node2');
+            const node3 = document.getElementById('node3');
+            const node4 = document.getElementById('node4');
+            const arrow1 = document.getElementById('arrow1');
+            const arrow2 = document.getElementById('arrow2');
+            const arrow3 = document.getElementById('arrow3');
+            const message = document.getElementById('message');
+
+            [stepLabel, node1, node2, node3, node4, message].forEach(el => {
+                el.style.opacity = '0';
+                el.style.animation = 'none';
+                el.classList.remove('active');
+            });
+
+            [arrow1, arrow2, arrow3].forEach(el => {
+                el.style.opacity = '0';
+                el.classList.remove('active');
+            });
+
+            const timeline = [
+                { time: 300, action: () => {
+                    stepLabel.textContent = 'Step 1: Define Trigger';
+                    stepLabel.style.animation = 'fadeIn 0.5s forwards';
+                    node1.style.animation = 'scaleIn 0.6s forwards';
+                    setTimeout(() => node1.classList.add('active'), 600);
+                }},
+                { time: 1500, action: () => {
+                    arrow1.style.opacity = '1';
+                    arrow1.classList.add('active');
+                }},
+                { time: 2000, action: () => {
+                    stepLabel.textContent = 'Step 2: Add AI Logic';
+                    node2.style.animation = 'scaleIn 0.6s forwards';
+                    setTimeout(() => node2.classList.add('active'), 600);
+                }},
+                { time: 2800, action: () => {
+                    arrow2.style.opacity = '1';
+                    arrow2.classList.add('active');
+                }},
+                { time: 3300, action: () => {
+                    stepLabel.textContent = 'Step 3: Connect Systems';
+                    node3.style.animation = 'scaleIn 0.6s forwards';
+                    setTimeout(() => node3.classList.add('active'), 600);
+                }},
+                { time: 4100, action: () => {
+                    arrow3.style.opacity = '1';
+                    arrow3.classList.add('active');
+                }},
+                { time: 4600, action: () => {
+                    stepLabel.textContent = 'Step 4: Automate';
+                    node4.style.animation = 'scaleIn 0.6s forwards';
+                    setTimeout(() => node4.classList.add('active'), 600);
+                }},
+                { time: 5800, action: () => {
+                    stepLabel.textContent = '✓ Your Custom Workflow';
+                    message.style.animation = 'slideIn 0.7s forwards';
+                }},
+                { time: 8500, action: () => runAnimation() }
+            ];
+
+            timeline.forEach(step => setTimeout(step.action, step.time));
+        }
+
+        window.addEventListener('load', () => runAnimation());
+    </script>
+</body>
+</html>
