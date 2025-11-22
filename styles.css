@@ -639,7 +639,7 @@ body {
 /* Demo Iframe Container */
 .demo-frame {
     width: 100%;
-    height: 100%;
+    height: 420px;
     border: none;
     border-radius: 16px;
     background: #0B0F19;
