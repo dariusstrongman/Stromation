@@ -587,6 +587,7 @@ body {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
     transition: var(--transition);
     position: relative;
+    cursor: pointer;
 }
 
 .demo-card h4 {
@@ -629,11 +630,12 @@ body {
 /* Demo Iframe Container */
 .demo-frame {
     width: 100%;
-    height: 420px;
+    height: 500px;
     border: none;
     border-radius: 16px;
     background: #0B0F19;
     display: block;
+    pointer-events: none; /* Disable iframe interactions to allow overlay clicks */
 }
 
 .demo-frame-featured {
@@ -2571,5 +2573,163 @@ body {
 
     .demo-group-description {
         font-size: 1rem;
+    }
+}
+
+/* ==========================================
+   DEMO MODAL FOR FULLSCREEN VIEWING
+   ========================================== */
+.demo-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.demo-modal.active {
+    display: block;
+}
+
+.demo-modal-content {
+    position: relative;
+    margin: 2% auto;
+    width: 90%;
+    max-width: 1400px;
+    height: 90vh;
+    animation: modalSlideIn 0.4s ease-out;
+}
+
+.demo-modal-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    background: #0B0F19;
+    box-shadow: 0 30px 80px rgba(0, 210, 198, 0.5);
+    pointer-events: auto; /* Re-enable interactions in fullscreen */
+}
+
+.demo-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #ffffff;
+    font-size: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10001;
+    transition: var(--transition);
+    background: rgba(255, 0, 0, 0.8);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    line-height: 1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.demo-modal-close:hover,
+.demo-modal-close:focus {
+    color: #ffffff;
+    background: rgba(255, 0, 0, 1);
+    transform: rotate(90deg) scale(1.15);
+    box-shadow: 0 6px 25px rgba(255, 0, 0, 0.6);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Make demo frames clickable with visual indication */
+.demo-frame {
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition);
+}
+
+.demo-frame::after {
+    content: '🔍 Click to expand';
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 210, 198, 0.9);
+    color: var(--dark);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0;
+    transition: var(--transition);
+    pointer-events: none;
+}
+
+.demo-card:hover .demo-frame::after {
+    opacity: 1;
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+    .demo-modal-content {
+        width: 95%;
+        height: 85vh;
+        margin: 5% auto;
+    }
+
+    .demo-modal-close {
+        top: 15px;
+        right: 15px;
+        font-size: 40px;
+        width: 50px;
+        height: 50px;
+        border: 2px solid #ffffff;
+    }
+
+    .demo-frame::after {
+        font-size: 10px;
+        padding: 6px 10px;
+        bottom: 8px;
+        right: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .demo-modal-content {
+        width: 98%;
+        height: 80vh;
+        margin: 8% auto;
+    }
+
+    .demo-modal-close {
+        top: 10px;
+        right: 10px;
+        font-size: 35px;
+        width: 45px;
+        height: 45px;
+        border: 2px solid #ffffff;
+    }
+
+    .demo-modal-frame {
+        border-radius: 8px;
+    }
+
+    .demo-frame::after {
+        font-size: 9px;
+        padding: 5px 8px;
     }
 }

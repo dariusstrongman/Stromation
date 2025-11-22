@@ -411,3 +411,66 @@ document.addEventListener('visibilitychange', () => {
         console.log('▶️ Animations resumed');
     }
 });
+
+// ==========================================
+// DEMO MODAL FULLSCREEN FUNCTIONALITY
+// ==========================================
+function initDemoModal() {
+    const modal = document.getElementById('demoModal');
+    const modalFrame = document.getElementById('modalFrame');
+    const closeBtn = document.querySelector('.demo-modal-close');
+    const demoCards = document.querySelectorAll('.demo-card');
+
+    if (!modal || !modalFrame || !closeBtn) return;
+
+    // Click handler for all demo cards
+    demoCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            // Find the iframe within this card
+            const iframe = this.querySelector('.demo-frame');
+            if (!iframe) return;
+
+            const src = iframe.getAttribute('src');
+            if (!src) return;
+
+            // Set the modal iframe src
+            modalFrame.setAttribute('src', src);
+
+            // Show modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+
+        // Add cursor pointer to show it's clickable
+        card.style.cursor = 'pointer';
+    });
+
+    // Close modal on X button click
+    closeBtn.addEventListener('click', closeModal);
+
+    // Close modal on outside click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    function closeModal() {
+        modal.classList.remove('active');
+        modalFrame.setAttribute('src', ''); // Clear iframe src to stop animations
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+}
+
+// Add to DOMContentLoaded initialization
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize demo modal
+    initDemoModal();
+});
