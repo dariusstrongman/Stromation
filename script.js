@@ -419,15 +419,18 @@ function initDemoModal() {
     const modal = document.getElementById('demoModal');
     const modalFrame = document.getElementById('modalFrame');
     const closeBtn = document.querySelector('.demo-modal-close');
-    const demoCards = document.querySelectorAll('.demo-card');
+    const demoOverlays = document.querySelectorAll('.demo-overlay');
 
     if (!modal || !modalFrame || !closeBtn) return;
 
-    // Click handler for all demo cards
-    demoCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            // Find the iframe within this card
-            const iframe = this.querySelector('.demo-frame');
+    // Click handler for all demo overlays
+    demoOverlays.forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            e.stopPropagation();
+
+            // Find the iframe within the parent wrapper
+            const wrapper = this.parentElement;
+            const iframe = wrapper.querySelector('.demo-frame');
             if (!iframe) return;
 
             const src = iframe.getAttribute('src');
@@ -440,9 +443,6 @@ function initDemoModal() {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden'; // Prevent scrolling
         });
-
-        // Add cursor pointer to show it's clickable
-        card.style.cursor = 'pointer';
     });
 
     // Close modal on X button click

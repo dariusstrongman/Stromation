@@ -627,15 +627,34 @@ body {
     width: 100%;
 }
 
+/* Demo Frame Wrapper */
+.demo-frame-wrapper {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
 /* Demo Iframe Container */
 .demo-frame {
     width: 100%;
-    height: 500px;
+    height: 100%;
     border: none;
     border-radius: 16px;
     background: #0B0F19;
     display: block;
-    pointer-events: none; /* Disable iframe interactions to allow overlay clicks */
+}
+
+/* Clickable overlay for fullscreen */
+.demo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 1;
 }
 
 .demo-frame-featured {
@@ -656,12 +675,10 @@ body {
 
 /* Demo Caption for Featured Items */
 .demo-caption {
-    padding: 1rem 1.75rem;
-    font-size: 0.95rem;
-    color: var(--light-text);
-    text-align: center;
+    margin-top: 0.75rem;
+    font-size: 14px;
+    color: #9ca3af;
     line-height: 1.6;
-    font-style: italic;
 }
 
 /* Responsive Demo Grids */
@@ -2656,14 +2673,8 @@ body {
     }
 }
 
-/* Make demo frames clickable with visual indication */
-.demo-frame {
-    cursor: pointer;
-    position: relative;
-    transition: var(--transition);
-}
-
-.demo-frame::after {
+/* Make demo overlays show click indicator */
+.demo-overlay::after {
     content: '🔍 Click to expand';
     position: absolute;
     bottom: 10px;
@@ -2679,7 +2690,7 @@ body {
     pointer-events: none;
 }
 
-.demo-card:hover .demo-frame::after {
+.demo-card:hover .demo-overlay::after {
     opacity: 1;
 }
 
