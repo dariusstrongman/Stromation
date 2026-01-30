@@ -181,3 +181,71 @@ Added new styles:
 | services.html has `id="pricing"` section | Present |
 | CRM not dominant example | Reduced from 6→4 |
 | Pricing values unchanged | $1k-$2.5k, $2.5k-$6k, $6k-$15k+, $299 |
+
+---
+
+## 2026-01-30 - Production Ready Patches
+
+### Overview
+Made the site production-ready with working form submission, legal pages, and SEO files.
+
+---
+
+### Changes
+
+#### P1: Formspree Endpoint
+- Set real Formspree endpoint: `https://formspree.io/f/mkobkvwl`
+- Contact form now submits to working endpoint
+
+#### P2: Privacy Policy Page
+- Created `privacy.html` with standard privacy policy content
+- Covers: data collection, usage, third-party services, cookies, data retention, user rights, security, children's privacy
+- Uses site's existing header/footer template
+- Includes canonical and OG tags
+
+#### P3: Terms of Service Page
+- Created `terms.html` with standard terms content
+- Covers: scope of services, audit terms, client responsibilities, payment, refunds, IP, liability, acceptable use, confidentiality, termination
+- Uses site's existing header/footer template
+- Includes canonical and OG tags
+
+#### P4: Footer Legal Links
+- Added Privacy and Terms links to footer on all 9 pages
+- New `.footer-legal` CSS styling
+
+#### P5: robots.txt
+- Created `robots.txt` at site root
+- Allows all crawlers, references sitemap
+
+#### P6: sitemap.xml
+- Created `sitemap.xml` at site root
+- Includes all 9 pages with lastmod dates
+
+#### P7: Legal Page SEO
+- Both new pages include: title, meta description, canonical link, OG tags
+
+---
+
+### Files Created
+- `privacy.html`
+- `terms.html`
+- `robots.txt`
+- `sitemap.xml`
+
+### Files Modified
+- `script.js` - Formspree endpoint
+- `styles.css` - Legal content + footer-legal CSS
+- All 7 existing HTML pages - Footer legal links
+
+---
+
+### Acceptance Tests Passed
+| Test | Result |
+|------|--------|
+| Formspree endpoint set | `mkobkvwl` |
+| privacy.html exists | Yes |
+| terms.html exists | Yes |
+| Footer legal links on all pages | 9/9 |
+| robots.txt exists | Yes |
+| sitemap.xml exists | Yes |
+| New pages have SEO tags | Yes |

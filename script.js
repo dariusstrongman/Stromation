@@ -7,7 +7,7 @@
 // FORM ENDPOINT CONFIGURATION
 // Replace YOUR_ID_HERE with your Formspree form ID
 // ==========================================
-const FORM_ENDPOINT = 'https://formspree.io/f/YOUR_ID_HERE';
+const FORM_ENDPOINT = 'https://formspree.io/f/mkobkvwl';
 
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
