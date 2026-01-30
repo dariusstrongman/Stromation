@@ -1442,3 +1442,524 @@ section {
 .mt-2 { margin-top: 1rem; }
 .mt-3 { margin-top: 1.5rem; }
 .mt-4 { margin-top: 2rem; }
+
+/* ==========================================
+   WORKFLOW REPLACEMENT STUDIO ADDITIONS
+   ========================================== */
+
+/* Fit Badges */
+.fit-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fit-badge.best-fit {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.fit-badge.not-fit {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* What We Replace Cards */
+.replace-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.replace-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    transition: var(--transition-slow);
+}
+
+.replace-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+.replace-card .before {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    text-decoration: line-through;
+}
+
+.replace-card .arrow {
+    color: var(--primary);
+    font-size: 1.25rem;
+    margin: 0.75rem 0;
+}
+
+.replace-card .after {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* How It Works Steps - Horizontal */
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.process-card {
+    text-align: center;
+    position: relative;
+}
+
+.process-card::after {
+    content: '→';
+    position: absolute;
+    top: 24px;
+    right: -1rem;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+}
+
+.process-card:last-child::after {
+    display: none;
+}
+
+.process-card .step-num {
+    width: 48px;
+    height: 48px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0 auto 1rem;
+}
+
+.process-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.process-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* Fit Section */
+.fit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.fit-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.fit-card.best {
+    border-color: var(--success);
+}
+
+.fit-card.not {
+    border-color: #EF4444;
+}
+
+.fit-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.fit-card ul {
+    list-style: none;
+}
+
+.fit-card li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.fit-card.best li::before {
+    content: '✓';
+    color: var(--success);
+    font-weight: 700;
+}
+
+.fit-card.not li::before {
+    content: '✗';
+    color: #EF4444;
+    font-weight: 700;
+}
+
+/* Pricing Ranges */
+.pricing-range-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.pricing-range-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: var(--transition-slow);
+}
+
+.pricing-range-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.pricing-range-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.pricing-range-card .range {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.pricing-range-card .examples {
+    list-style: none;
+}
+
+.pricing-range-card .examples li {
+    padding: 0.4rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.pricing-range-card .examples li:last-child {
+    border-bottom: none;
+}
+
+/* Support Tiers */
+.support-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.support-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.support-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.support-card .price {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.support-card .period {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+}
+
+.support-card ul {
+    list-style: none;
+    text-align: left;
+}
+
+.support-card li {
+    padding: 0.5rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.support-card li::before {
+    content: '✓';
+    color: var(--success);
+    font-weight: 700;
+}
+
+/* Workflow Matrix Table */
+.workflow-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.workflow-table th,
+.workflow-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.workflow-table th {
+    background: var(--bg-light);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.workflow-table td {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.workflow-table tr:last-child td {
+    border-bottom: none;
+}
+
+.workflow-table .check {
+    color: var(--success);
+    font-weight: 700;
+}
+
+/* Example Label for Case Studies */
+.example-label {
+    display: inline-block;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.typical-outcomes {
+    background: var(--bg-light);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+}
+
+.typical-outcomes strong {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* Audit Price Highlight */
+.audit-price {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Form Enhancements */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.checkbox-group label:hover {
+    border-color: var(--primary);
+}
+
+.checkbox-group input:checked + span {
+    color: var(--primary);
+}
+
+.checkbox-group input {
+    accent-color: var(--primary);
+}
+
+.form-group select {
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: var(--font-body);
+    background: white;
+    cursor: pointer;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Filter Box */
+.filter-box {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.filter-box h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+/* Deliverables List */
+.deliverables-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.deliverables-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.deliverables-list li::before {
+    content: '→';
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Philosophy Box */
+.philosophy-box {
+    background: var(--bg-light);
+    border-left: 4px solid var(--primary);
+    padding: 1.5rem 2rem;
+    border-radius: 0 12px 12px 0;
+    margin: 2rem 0;
+}
+
+.philosophy-box h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.philosophy-box p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Responsive for new elements */
+@media (max-width: 1024px) {
+    .replace-grid,
+    .pricing-range-grid,
+    .support-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .process-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .process-card:nth-child(2)::after,
+    .process-card:nth-child(4)::after {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .replace-grid,
+    .fit-grid,
+    .pricing-range-grid,
+    .support-grid,
+    .process-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .process-card::after {
+        display: none;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .deliverables-list {
+        grid-template-columns: 1fr;
+    }
+
+    .workflow-table {
+        font-size: 0.85rem;
+    }
+
+    .workflow-table th,
+    .workflow-table td {
+        padding: 0.75rem 0.5rem;
+    }
+}
