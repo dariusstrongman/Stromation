@@ -1,6 +1,6 @@
 /* ==========================================
-   STROMATION - AI AUTOMATION AGENCY
-   Light Professional Design 2025
+   STROMATION - WORKFLOW REPLACEMENT STUDIO
+   Light Professional Design 2026
    ========================================== */
 
 /* ==========================================
@@ -1961,5 +1961,101 @@ section {
     .workflow-table th,
     .workflow-table td {
         padding: 0.75rem 0.5rem;
+    }
+}
+
+/* ==========================================
+   PRICING SECTION ENHANCEMENTS
+   ========================================== */
+
+/* Pricing Audit Note */
+.pricing-audit-note {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(14, 165, 233, 0.08));
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.pricing-audit-note p {
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.pricing-audit-note strong {
+    color: var(--primary);
+}
+
+/* Pricing Badge */
+.pricing-badge {
+    display: inline-block;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+}
+
+/* Pricing Disclaimer */
+.pricing-disclaimer {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    background: var(--bg-light);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+}
+
+/* Homepage Pricing Preview */
+.pricing-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.pricing-preview-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.pricing-preview-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+.pricing-preview-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.pricing-preview-card .preview-price {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+/* Responsive Pricing Preview */
+@media (max-width: 768px) {
+    .pricing-preview-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .pricing-preview-card {
+        padding: 1.25rem;
     }
 }

@@ -122,3 +122,62 @@ Added ~250 lines of new styles for:
 3. **Qualified leads** - Fit/not-fit sections and detailed intake form filter out bad-fit inquiries
 4. **Real pricing signals** - Implementation ranges set expectations; $299 Audit ensures serious inquiries only
 5. **Credibility through specificity** - Example engagements with actual workflow details are more believable than vague success claims
+
+---
+
+## 2026-01-30 - Pricing Visibility & Broadening Update
+
+### Overview
+Made pricing easier to find and broadened examples beyond CRM to clearly fit many workflow types (ops/admin, data entry, support, reporting).
+
+---
+
+### Changes
+
+#### C1: Pricing Nav Link
+- Added "Pricing" nav link on all 7 pages
+- Links directly to `services.html#pricing`
+- Position: after "Services" in nav order
+
+#### C2: Services Pricing Section Upgrade
+- Renamed section to "Pricing (Starting Ranges)"
+- Added audit credit note box above tiers
+- Added "Starting Range" badges to each tier
+- Broadened examples to include:
+  - Spreadsheet/database updates (not just CRM)
+  - Data entry replacement with validation
+  - Recurring reporting automation
+  - AI document extraction (invoices/forms)
+  - AI-generated summaries for tickets/calls
+  - Role-based routing + audit trails
+
+#### C3: Homepage Pricing Preview
+- Added new "Pricing at a Glance" section on index.html
+- Shows 3 tier price ranges in compact cards
+- Includes $299 audit credit note
+- "See Pricing Details" button links to services.html#pricing
+
+#### C4: CRM Overemphasis Reduction
+- Reduced "CRM" mentions from 6 to 4
+- industries.html: Changed "CRM entry" → "database entry"
+- industries.html: Changed "intake → CRM → task" → "intake → database/spreadsheet → task"
+- services.html: Changed "CRM entry" → "database/CRM entry"
+- Remaining CRM mentions are in case-studies where specific to the example
+
+#### C5: Pricing CSS
+Added new styles:
+- `.pricing-audit-note` - Highlighted note box
+- `.pricing-badge` - "Starting Range" label
+- `.pricing-disclaimer` - Bottom reliability note
+- `.pricing-preview-grid` / `.pricing-preview-card` - Homepage pricing cards
+
+---
+
+### Acceptance Tests Passed
+| Test | Result |
+|------|--------|
+| "Pricing" nav link on all pages | 7/7 |
+| Homepage "Pricing at a Glance" section | Present |
+| services.html has `id="pricing"` section | Present |
+| CRM not dominant example | Reduced from 6→4 |
+| Pricing values unchanged | $1k-$2.5k, $2.5k-$6k, $6k-$15k+, $299 |

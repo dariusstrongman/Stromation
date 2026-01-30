@@ -1,7 +1,13 @@
 /**
- * STROMATION - AI AUTOMATION AGENCY
+ * STROMATION - WORKFLOW REPLACEMENT STUDIO
  * Clean JavaScript for Professional Site
  */
+
+// ==========================================
+// FORM ENDPOINT CONFIGURATION
+// Replace YOUR_ID_HERE with your Formspree form ID
+// ==========================================
+const FORM_ENDPOINT = 'https://formspree.io/f/YOUR_ID_HERE';
 
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
@@ -9,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollAnimations();
     initSmoothScroll();
     initActiveNavHighlight();
+    initContactForm();
 });
 
 // ==========================================
@@ -130,25 +137,73 @@ function initActiveNavHighlight() {
 }
 
 // ==========================================
-// CONTACT FORM HANDLING
+// CONTACT FORM HANDLING (FORMSPREE)
 // ==========================================
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+function initContactForm() {
+    const contactForm = document.getElementById('contactForm');
+    if (!contactForm) return;
+
+    // Create message container if not exists
+    let messageContainer = contactForm.querySelector('.form-message');
+    if (!messageContainer) {
+        messageContainer = document.createElement('div');
+        messageContainer.className = 'form-message';
+        messageContainer.style.cssText = 'padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: none;';
+        contactForm.insertBefore(messageContainer, contactForm.firstChild);
+    }
+
+    contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // Get form data
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+
+        // Disable button and show loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        messageContainer.style.display = 'none';
+
+        // Build form data
         const formData = new FormData(this);
-        const data = Object.fromEntries(formData);
 
-        // For now, just show a success message
-        // In production, you would send this to your backend
-        alert('Thank you for your message! We will get back to you within one business day.');
-        this.reset();
+        // Handle checkbox tools - combine into comma-separated string
+        const tools = formData.getAll('tools');
+        formData.delete('tools');
+        if (tools.length > 0) {
+            formData.append('tools', tools.join(', '));
+        }
 
-        // You can integrate with services like:
-        // - Formspree
-        // - Netlify Forms
-        // - Your own backend API
+        try {
+            const response = await fetch(FORM_ENDPOINT, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Success
+                messageContainer.style.display = 'block';
+                messageContainer.style.background = 'rgba(16, 185, 129, 0.1)';
+                messageContainer.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+                messageContainer.style.color = '#059669';
+                messageContainer.innerHTML = '<strong>Thanks!</strong> We reply within 1 business day. If this is a fit, we\'ll send next steps for the $299 Automation Audit (credited toward your build).';
+                this.reset();
+            } else {
+                throw new Error('Form submission failed');
+            }
+        } catch (error) {
+            // Error
+            messageContainer.style.display = 'block';
+            messageContainer.style.background = 'rgba(239, 68, 68, 0.1)';
+            messageContainer.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+            messageContainer.style.color = '#DC2626';
+            messageContainer.innerHTML = '<strong>Something went wrong.</strong> Please try again or email us directly at <a href="mailto:hello@stromation.com">hello@stromation.com</a>.';
+        } finally {
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
     });
 }
