@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Options - Stromation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 2rem 0 1.5rem;
+            padding-left: 1rem;
+            border-left: 4px solid #3b82f6;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .options {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .option {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 2px solid #334155;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+        }
+        .option-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .option-letter {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+        .option-info h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+        }
+        .option-desc {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        .previews {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .preview-box {
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+        }
+        .preview-light {
+            background: white;
+        }
+        .preview-dark {
+            background: #0f172a;
+            border: 1px solid #334155;
+        }
+        .preview-box img {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+        }
+        .preview-dark img {
+            filter: brightness(0) invert(1);
+        }
+        .preview-label {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <h1>Choose Your Logo</h1>
+    <p class="subtitle">Pick your favorite style</p>
+
+    <h3 class="section-title">Lightning Bolt Options</h3>
+    <div class="options">
+        <!-- Option A -->
+        <div class="option">
+            <div class="option-header">
+                <div class="option-letter">A</div>
+                <div class="option-info">
+                    <h2>Sharp Bolt Dot</h2>
+                </div>
+            </div>
+            <p class="option-desc">Clean, sharp lightning bolt replaces the dot on the "i" - subtle but impactful.</p>
+            <div class="previews">
+                <div>
+                    <p class="preview-label">Light</p>
+                    <div class="preview-box preview-light">
+                        <img src="logo-option-a.svg" alt="Option A">
+                    </div>
+                </div>
+                <div>
+                    <p class="preview-label">Dark</p>
+                    <div class="preview-box preview-dark">
+                        <img src="logo-option-a.svg" alt="Option A">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Option B -->
+        <div class="option">
+            <div class="option-header">
+                <div class="option-letter">B</div>
+                <div class="option-info">
+                    <h2>Full Bold Bolt</h2>
+                </div>
+            </div>
+            <p class="option-desc">Entire "i" replaced with a bold lightning bolt - high impact statement.</p>
+            <div class="previews">
+                <div>
+                    <p class="preview-label">Light</p>
+                    <div class="preview-box preview-light">
+                        <img src="logo-option-b.svg" alt="Option B">
+                    </div>
+                </div>
+                <div>
+                    <p class="preview-label">Dark</p>
+                    <div class="preview-box preview-dark">
+                        <img src="logo-option-b.svg" alt="Option B">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Option C -->
+        <div class="option">
+            <div class="option-header">
+                <div class="option-letter">C</div>
+                <div class="option-info">
+                    <h2>Soft Bolt Dot</h2>
+                </div>
+            </div>
+            <p class="option-desc">Softer, rounded lightning bolt as the "i" dot - modern and approachable.</p>
+            <div class="previews">
+                <div>
+                    <p class="preview-label">Light</p>
+                    <div class="preview-box preview-light">
+                        <img src="logo-option-c.svg" alt="Option C">
+                    </div>
+                </div>
+                <div>
+                    <p class="preview-label">Dark</p>
+                    <div class="preview-box preview-dark">
+                        <img src="logo-option-c.svg" alt="Option C">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="section-title">Infinity Symbol Options</h3>
+    <div class="options">
+        <!-- Option D -->
+        <div class="option">
+            <div class="option-header">
+                <div class="option-letter">D</div>
+                <div class="option-info">
+                    <h2>Outlined Infinity O</h2>
+                </div>
+            </div>
+            <p class="option-desc">Clean outlined infinity replaces the first "O" in Stromation - elegant stroke style.</p>
+            <div class="previews">
+                <div>
+                    <p class="preview-label">Light</p>
+                    <div class="preview-box preview-light">
+                        <img src="logo-option-d.svg" alt="Option D">
+                    </div>
+                </div>
+                <div>
+                    <p class="preview-label">Dark</p>
+                    <div class="preview-box preview-dark">
+                        <img src="logo-option-d.svg" alt="Option D">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Option E -->
+        <div class="option">
+            <div class="option-header">
+                <div class="option-letter">E</div>
+                <div class="option-info">
+                    <h2>Solid Infinity O</h2>
+                </div>
+            </div>
+            <p class="option-desc">Filled/solid infinity replaces the first "O" - bold and solid presence.</p>
+            <div class="previews">
+                <div>
+                    <p class="preview-label">Light</p>
+                    <div class="preview-box preview-light">
+                        <img src="logo-option-e.svg" alt="Option E">
+                    </div>
+                </div>
+                <div>
+                    <p class="preview-label">Dark</p>
+                    <div class="preview-box preview-dark">
+                        <img src="logo-option-e.svg" alt="Option E">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Option F -->
+        <div class="option">
+            <div class="option-header">
+                <div class="option-letter">F</div>
+                <div class="option-info">
+                    <h2>Infinity at End</h2>
+                </div>
+            </div>
+            <p class="option-desc">Infinity replaces the "O" in "-tion" at the end - draws the eye to the finish.</p>
+            <div class="previews">
+                <div>
+                    <p class="preview-label">Light</p>
+                    <div class="preview-box preview-light">
+                        <img src="logo-option-f.svg" alt="Option F">
+                    </div>
+                </div>
+                <div>
+                    <p class="preview-label">Dark</p>
+                    <div class="preview-box preview-dark">
+                        <img src="logo-option-f.svg" alt="Option F">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
