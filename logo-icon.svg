@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
   <defs>
     <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#2563EB"/>
@@ -6,26 +6,7 @@
     </linearGradient>
   </defs>
 
-  <!-- Abstract Circuit/Flow Icon -->
-  <!-- Main circular flow element -->
-  <circle cx="25" cy="25" r="22" fill="none" stroke="url(#iconGradient)" stroke-width="3" stroke-dasharray="40 20"/>
-
-  <!-- Center node -->
-  <circle cx="25" cy="25" r="6" fill="url(#iconGradient)"/>
-
-  <!-- Connection nodes -->
-  <circle cx="25" cy="5" r="4" fill="url(#iconGradient)"/>
-  <circle cx="44" cy="18" r="4" fill="url(#iconGradient)"/>
-  <circle cx="44" cy="35" r="4" fill="url(#iconGradient)"/>
-  <circle cx="25" cy="45" r="4" fill="url(#iconGradient)"/>
-  <circle cx="6" cy="35" r="4" fill="url(#iconGradient)"/>
-  <circle cx="6" cy="18" r="4" fill="url(#iconGradient)"/>
-
-  <!-- Flow arrows/lines connecting to center -->
-  <path d="M25 11 L25 19" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
-  <path d="M38 20 L31 23" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
-  <path d="M38 33 L31 28" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
-  <path d="M25 39 L25 31" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
-  <path d="M12 33 L19 28" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
-  <path d="M12 20 L19 23" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
+  <!-- Flow S-Mark -->
+  <path d="M35,6 H21 C7,6 7,24 21,24 H27 C41,24 41,42 27,42 H13"
+        stroke="url(#iconGradient)" stroke-width="5" fill="none" stroke-linecap="round"/>
 </svg>
