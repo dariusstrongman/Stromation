@@ -2251,3 +2251,175 @@ section {
         padding: 7rem 0 2rem;
     }
 }
+
+/* ==========================================
+   BLOG LISTING - HERO LABEL
+   ========================================== */
+.blog-hero-label {
+    display: inline-block;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    padding: 0.4rem 1.25rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.25rem;
+}
+
+/* ==========================================
+   BLOG LISTING - FEATURED ARTICLE
+   ========================================== */
+.blog-featured {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition-slow);
+}
+
+.blog-featured:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-4px);
+}
+
+.blog-featured-visual {
+    background: linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: white;
+    min-height: 220px;
+    position: relative;
+}
+
+.blog-featured-label {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.3rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.blog-featured-body {
+    padding: 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.blog-featured-body h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.blog-featured-body p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.blog-featured-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+    .blog-featured {
+        grid-template-columns: 1fr;
+    }
+    .blog-featured-visual {
+        min-height: 140px;
+    }
+    .blog-featured-body {
+        padding: 1.5rem;
+    }
+}
+
+/* ==========================================
+   BLOG LISTING - TAGS (COLOR CODED)
+   ========================================== */
+.blog-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    width: fit-content;
+}
+
+.tag-strategy {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563EB;
+}
+
+.tag-leads {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.tag-roi {
+    background: rgba(245, 158, 11, 0.1);
+    color: #D97706;
+}
+
+.tag-tools {
+    background: rgba(139, 92, 246, 0.1);
+    color: #7C3AED;
+}
+
+.tag-getting-started {
+    background: rgba(14, 165, 233, 0.1);
+    color: #0284C7;
+}
+
+.tag-case-studies {
+    background: rgba(245, 158, 11, 0.1);
+    color: #D97706;
+}
+
+/* ==========================================
+   BLOG LISTING - SECTION LABEL
+   ========================================== */
+.blog-section-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* ==========================================
+   SECTION DARK (BLOG POST CTA)
+   ========================================== */
+.section-dark {
+    background: var(--text-primary);
+    color: white;
+    padding: 4rem 0;
+}
+
+.section-dark .section-title {
+    color: white;
+}
