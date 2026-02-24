@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B6Z6XV02RT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-B6Z6XV02RT');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comparing Zapier, Make (Integromat), and custom-built automations. Honest breakdown of cost, flexibility, and when each option makes sense.">
+    <title>Zapier vs Make vs Custom Automations: Which Is Right for You? | Stromation</title>
+    <link rel="canonical" href="https://www.stromation.com/blog/zapier-vs-make-vs-custom-automations.html">
+    <meta property="og:title" content="Zapier vs Make vs Custom Automations: Which Is Right for You?">
+    <meta property="og:description" content="Comparing Zapier, Make (Integromat), and custom-built automations. Honest breakdown of cost, flexibility, and when each option makes sense.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.stromation.com/blog/zapier-vs-make-vs-custom-automations.html">
+    <meta property="og:site_name" content="Stromation">
+    <meta property="og:image" content="https://www.stromation.com/logo.png">
+    <meta property="article:published_time" content="2026-02-23">
+    <meta property="article:author" content="Stromation Team">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+    .blog-hero { padding: 8rem 0 3rem; background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-white) 100%); }
+    .blog-hero .container { max-width: 800px; }
+    .blog-hero h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 800; line-height: 1.2; margin-bottom: 1rem; color: var(--text-primary); }
+    .blog-meta { display: flex; gap: 1.5rem; color: var(--text-muted); font-size: 0.9rem; flex-wrap: wrap; }
+    .blog-content { max-width: 800px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    .blog-content h2 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin: 2.5rem 0 1rem; }
+    .blog-content h3 { font-size: 1.35rem; font-weight: 600; color: var(--text-primary); margin: 2rem 0 0.75rem; }
+    .blog-content p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem; }
+    .blog-content ul, .blog-content ol { margin: 1rem 0 1.5rem 1.5rem; color: var(--text-secondary); }
+    .blog-content li { margin-bottom: 0.75rem; font-size: 1.05rem; line-height: 1.7; }
+    .blog-content strong { color: var(--primary); font-weight: 600; }
+    .takeaways { background: var(--bg-light); border-left: 4px solid var(--primary); padding: 1.5rem 2rem; border-radius: 0 12px 12px 0; margin-bottom: 2rem; }
+    .takeaways h3 { color: var(--primary); margin-top: 0; font-size: 1.1rem; margin-bottom: 0.75rem; }
+    .takeaways ul { margin: 0; }
+    .takeaways li { margin-bottom: 0.5rem; color: var(--text-secondary); }
+    .inline-cta { background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(14,165,233,0.08)); border: 1px solid rgba(37,99,235,0.2); border-radius: 12px; padding: 2rem; text-align: center; margin: 2.5rem 0; }
+    .inline-cta h3 { color: var(--text-primary); margin: 0 0 0.5rem; font-size: 1.25rem; }
+    .inline-cta p { color: var(--text-secondary); margin-bottom: 1rem; }
+    .blog-breadcrumb { max-width: 800px; margin: 1rem auto 0; padding: 0 1.5rem; font-size: 0.9rem; color: var(--text-muted); }
+    .blog-breadcrumb a { color: var(--primary); }
+    .related-posts { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .related-posts h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+    .related-card { background: var(--bg-light); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-decoration: none; color: var(--text-primary); transition: var(--transition-slow); }
+    .related-card:hover { border-color: var(--primary); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .related-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary); }
+    .related-card p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+    .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0 2rem; font-size: 0.95rem; }
+    .comparison-table th { background: var(--bg-light); color: var(--text-primary); font-weight: 600; padding: 0.75rem 1rem; text-align: left; border-bottom: 2px solid var(--border); }
+    .comparison-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    .comparison-table tr:hover { background: var(--bg-light); }
+    @media (max-width: 768px) { .blog-hero { padding: 7rem 0 2rem; } .related-grid { grid-template-columns: 1fr; } .comparison-table { font-size: 0.85rem; } .comparison-table th, .comparison-table td { padding: 0.5rem; } }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Zapier vs Make vs Custom Automations: Which Is Right for You?",
+        "description": "Comparing Zapier, Make (Integromat), and custom-built automations. Honest breakdown of cost, flexibility, and when each option makes sense.",
+        "author": {
+            "@type": "Organization",
+            "name": "Stromation Team"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Stromation",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.stromation.com/logo.png"
+            }
+        },
+        "datePublished": "2026-02-23",
+        "dateModified": "2026-02-23",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://www.stromation.com/blog/zapier-vs-make-vs-custom-automations.html"
+        },
+        "url": "https://www.stromation.com/blog/zapier-vs-make-vs-custom-automations.html"
+    }
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="../index.html" class="logo">
+                <img src="../logo.svg" alt="Stromation" class="logo-img">
+            </a>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="../services.html" class="nav-link">Services</a>
+                <a href="../services.html#pricing" class="nav-link">Pricing</a>
+                <a href="../industries.html" class="nav-link">Workflows</a>
+                <a href="../case-studies.html" class="nav-link">Examples</a>
+                <a href="../about.html" class="nav-link">About</a>
+                <a href="../blog/" class="nav-link active">Blog</a>
+                <a href="../contact.html" class="nav-link">Contact</a>
+                <a href="../audit.html" class="nav-link cta-nav">Get the $299 Audit</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Blog Hero -->
+    <section class="blog-hero">
+        <div class="container">
+            <div class="blog-breadcrumb">
+                <a href="../index.html">Home</a> &gt; <a href="../blog/">Blog</a> &gt; Zapier vs Make vs Custom Automations
+            </div>
+            <h1>Zapier vs Make vs Custom Automations: Which Is Right for You?</h1>
+            <div class="blog-meta">
+                <span>By Stromation Team</span>
+                <span>February 23, 2026</span>
+                <span>10 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Content -->
+    <article class="blog-content">
+        <div class="takeaways">
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>Zapier is the fastest to set up and has the largest app library, but costs scale quickly (1,000 tasks/month = $29.99, 50,000 tasks = $299/month)</li>
+                <li>Make (formerly Integromat) offers more complex logic at lower cost, but has a steeper learning curve</li>
+                <li>Custom automations (n8n, direct APIs, scripts) give you full control and the lowest per-task cost, but need a builder</li>
+                <li>Most businesses benefit from a hybrid approach: simple tools for simple jobs, custom builds for complex or high-volume workflows</li>
+                <li>The right choice depends on volume, complexity, and whether you need to own your infrastructure</li>
+            </ul>
+        </div>
+
+        <p>If you have started looking into workflow automation, you have probably seen three categories come up: <strong>Zapier</strong>, <strong>Make</strong> (formerly Integromat), and <strong>custom-built automations</strong>. Each has real strengths. Each has real limitations. And choosing the wrong one can cost you thousands of dollars or months of wasted effort.</p>
+
+        <p>This is an honest comparison. We use all three approaches depending on the project, so we have no incentive to push one over another. Here is what actually matters.</p>
+
+        <h2>Zapier: The Easiest Starting Point</h2>
+
+        <p>Zapier is the most well-known automation platform, and for good reason. It connects over 7,000 apps, the interface is straightforward, and you can have a basic automation running in 15 minutes.</p>
+
+        <h3>What Zapier Does Well</h3>
+
+        <ul>
+            <li><strong>Speed to launch.</strong> If you need to connect two apps with a simple trigger-action pattern (new form submission creates a CRM contact, new email sends a Slack notification), Zapier is the fastest way to do it.</li>
+            <li><strong>App library.</strong> 7,000+ integrations means your tools are almost certainly supported. No custom API work needed for standard connections.</li>
+            <li><strong>No technical knowledge required.</strong> The point-and-click interface is genuinely accessible for non-technical users.</li>
+        </ul>
+
+        <h3>Where Zapier Falls Short</h3>
+
+        <ul>
+            <li><strong>Cost at scale.</strong> Zapier charges by "tasks" (each action in a workflow). A 5-step workflow triggered 100 times per day uses 500 tasks daily, or about 15,000/month. That puts you on a $159/month plan minimum. A business running 10 automations at moderate volume can easily hit $299-$599/month.</li>
+            <li><strong>Limited logic.</strong> Zapier handles if/then logic and basic filters, but complex branching, loops, error handling, and data transformation are either clunky or impossible.</li>
+            <li><strong>No self-hosting.</strong> Your data flows through Zapier's servers. For businesses with data residency requirements or privacy concerns, this is a dealbreaker.</li>
+            <li><strong>Vendor lock-in.</strong> Your automations live inside Zapier. If pricing changes or you need to migrate, you are rebuilding from scratch.</li>
+        </ul>
+
+        <h2>Make (Formerly Integromat): More Power, More Complexity</h2>
+
+        <p>Make sits between Zapier and custom builds. It has a visual workflow builder that supports significantly more complex logic, and its pricing model is more generous at higher volumes.</p>
+
+        <h3>What Make Does Well</h3>
+
+        <ul>
+            <li><strong>Visual complexity.</strong> Make lets you build workflows with branching, loops, aggregators, iterators, error handlers, and routers. If you need a workflow that says "check this condition, then do A or B, then loop through results and transform each one," Make handles that natively.</li>
+            <li><strong>Better pricing.</strong> Make charges by "operations" but gives you significantly more per dollar. Their $10.59/month plan includes 10,000 operations. At equivalent volume, Make typically costs 40-60% less than Zapier.</li>
+            <li><strong>Data transformation.</strong> Built-in functions for text manipulation, date formatting, math, JSON parsing, and array operations. Less need for separate tools or code steps.</li>
+        </ul>
+
+        <h3>Where Make Falls Short</h3>
+
+        <ul>
+            <li><strong>Learning curve.</strong> The visual builder is powerful but not intuitive for beginners. Concepts like iterators, aggregators, and module mapping take time to learn. Most business owners do not want to spend 20 hours learning a tool.</li>
+            <li><strong>Smaller app library.</strong> Make supports about 2,000 integrations, roughly a third of Zapier's library. Most major tools are covered, but niche apps may require custom HTTP modules.</li>
+            <li><strong>Still cloud-hosted.</strong> Same data residency limitations as Zapier, though Make does offer EU data centers.</li>
+            <li><strong>Debugging can be painful.</strong> When complex scenarios break, figuring out where and why can be time-consuming. The execution logs are better than Zapier's, but still limited compared to real development tools.</li>
+        </ul>
+
+        <div class="inline-cta">
+            <h3>Not Sure Which Approach Fits Your Workflow?</h3>
+            <p>Our $299 Automation Audit evaluates your specific needs and recommends the right tools -- no bias, no vendor lock-in.</p>
+            <a href="../audit.html" class="btn btn-primary">Get Your Automation Audit</a>
+        </div>
+
+        <h2>Custom Automations: Full Control, No Limits</h2>
+
+        <p>Custom automations use tools like n8n (an open-source automation platform), direct API integrations, and purpose-built scripts. This is what we build most often for businesses with complex or high-volume needs.</p>
+
+        <h3>What Custom Automations Do Well</h3>
+
+        <ul>
+            <li><strong>Unlimited logic.</strong> Any workflow you can describe, you can build. Complex branching, AI decision-making, multi-step error handling, retry logic, conditional routing based on dozens of variables -- nothing is off the table.</li>
+            <li><strong>Self-hosted option.</strong> Tools like n8n can run on your own server. Your data never leaves your infrastructure. No third-party platform has access to your customer information.</li>
+            <li><strong>No per-task pricing.</strong> Once built, a custom automation costs you server time (typically $20-$50/month for a VPS) regardless of volume. Running 100 tasks or 100,000 tasks costs the same.</li>
+            <li><strong>Full ownership.</strong> You own the code, the workflows, the infrastructure. No vendor lock-in. No surprise pricing changes.</li>
+        </ul>
+
+        <h3>Where Custom Automations Fall Short</h3>
+
+        <ul>
+            <li><strong>You need a builder.</strong> Custom automations require someone who can design, build, and deploy them. That means hiring a developer or an agency like Stromation. There is an upfront cost.</li>
+            <li><strong>More setup time.</strong> A Zapier workflow takes 15 minutes. A custom n8n workflow might take 2-8 hours depending on complexity. Direct API integrations can take days.</li>
+            <li><strong>Maintenance responsibility.</strong> If a third-party API changes, you need to update your integration. Zapier and Make handle this automatically for their supported apps. With custom builds, it is on you (or your builder).</li>
+        </ul>
+
+        <h2>Side-by-Side Comparison</h2>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Factor</th>
+                    <th>Zapier</th>
+                    <th>Make</th>
+                    <th>Custom (n8n / API)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Setup time</td>
+                    <td>15 min</td>
+                    <td>30-60 min</td>
+                    <td>2-40 hours</td>
+                </tr>
+                <tr>
+                    <td>Monthly cost (low volume)</td>
+                    <td>$29.99</td>
+                    <td>$10.59</td>
+                    <td>$20-50 (server)</td>
+                </tr>
+                <tr>
+                    <td>Monthly cost (high volume)</td>
+                    <td>$299-$599</td>
+                    <td>$99-$299</td>
+                    <td>$20-50 (server)</td>
+                </tr>
+                <tr>
+                    <td>Logic complexity</td>
+                    <td>Basic</td>
+                    <td>Intermediate</td>
+                    <td>Unlimited</td>
+                </tr>
+                <tr>
+                    <td>App integrations</td>
+                    <td>7,000+</td>
+                    <td>2,000+</td>
+                    <td>Any (via API)</td>
+                </tr>
+                <tr>
+                    <td>Self-hosting</td>
+                    <td>No</td>
+                    <td>No</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>AI integration</td>
+                    <td>Limited</td>
+                    <td>Moderate</td>
+                    <td>Full (any model)</td>
+                </tr>
+                <tr>
+                    <td>Technical skill needed</td>
+                    <td>None</td>
+                    <td>Some</td>
+                    <td>Developer required</td>
+                </tr>
+                <tr>
+                    <td>Best for</td>
+                    <td>Quick, simple connections</td>
+                    <td>Mid-complexity workflows</td>
+                    <td>Complex, high-volume, or data-sensitive</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Real Cost Comparison at Different Volumes</h2>
+
+        <p>Let's look at what each option actually costs over 12 months for a typical 5-step workflow:</p>
+
+        <h3>Low Volume (500 runs/month)</h3>
+
+        <ul>
+            <li><strong>Zapier:</strong> 2,500 tasks/month = $29.99/month = $360/year</li>
+            <li><strong>Make:</strong> 2,500 operations/month = $10.59/month = $127/year</li>
+            <li><strong>Custom:</strong> $1,500 build + $30/month server = $1,860 first year, $360/year after</li>
+        </ul>
+
+        <p>At low volume, Zapier or Make win on cost in year one. But the custom build breaks even by year two.</p>
+
+        <h3>Medium Volume (5,000 runs/month)</h3>
+
+        <ul>
+            <li><strong>Zapier:</strong> 25,000 tasks/month = $159/month = $1,908/year</li>
+            <li><strong>Make:</strong> 25,000 operations/month = $29.99/month = $360/year</li>
+            <li><strong>Custom:</strong> $2,500 build + $30/month server = $2,860 first year, $360/year after</li>
+        </ul>
+
+        <p>At medium volume, Make is the cheapest option. Custom breaks even in year two. Zapier is noticeably expensive.</p>
+
+        <h3>High Volume (50,000 runs/month)</h3>
+
+        <ul>
+            <li><strong>Zapier:</strong> 250,000 tasks/month = $599/month = $7,188/year</li>
+            <li><strong>Make:</strong> 250,000 operations/month = $179/month = $2,148/year</li>
+            <li><strong>Custom:</strong> $4,000 build + $50/month server = $4,600 first year, $600/year after</li>
+        </ul>
+
+        <p>At high volume, custom automations win decisively. Zapier costs more in 8 months than the entire custom build. Make is reasonable but still 3-4x the ongoing cost of self-hosted.</p>
+
+        <h2>The Hybrid Approach: What We Actually Recommend</h2>
+
+        <p>Most businesses should not pick just one platform. The smartest approach is a hybrid:</p>
+
+        <ul>
+            <li><strong>Use Zapier or Make for simple, low-volume connections.</strong> New form submission creates a CRM record. New deal closed sends a Slack notification. These take 15 minutes to set up and cost a few dollars a month. Building these custom is overkill.</li>
+            <li><strong>Use custom builds for complex, high-volume, or data-sensitive workflows.</strong> AI-powered lead qualification. Multi-step client onboarding with conditional logic. Automated reporting that pulls from five different sources. These are where custom builds shine.</li>
+        </ul>
+
+        <p>The goal is not to use the most sophisticated tool. It is to use the right tool for each job. A $30/month Zapier plan for your simple stuff and a custom n8n deployment for your complex stuff will outperform either approach used alone.</p>
+
+        <h2>How to Decide: Three Questions</h2>
+
+        <ol>
+            <li><strong>How many steps does your workflow have?</strong> If it is 2-3 steps with a simple trigger, start with Zapier or Make. If it is 5+ steps with conditional logic, consider custom.</li>
+            <li><strong>How often does it run?</strong> If a few times a day, any platform works. If hundreds or thousands of times daily, custom will save you significant money within months.</li>
+            <li><strong>Does it involve sensitive data?</strong> If customer data, financial information, or health records flow through the automation, self-hosted custom builds give you control that cloud platforms cannot.</li>
+        </ol>
+
+        <p>If you are still unsure, an automation audit can map your specific workflows and recommend the right approach for each one. No guessing, no bias toward any particular tool.</p>
+    </article>
+
+    <!-- Bottom CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Find the Right Automation Approach for Your Business</h2>
+            <p>Our $299 Automation Audit maps your workflows and recommends the best tools -- Zapier, Make, custom, or a mix. No vendor bias.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="../audit.html" class="btn btn-primary btn-large">Request Your $299 Audit</a>
+                <a href="../contact.html" class="btn btn-secondary btn-large">Ask a Question First</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Articles -->
+    <section class="related-posts">
+        <h2>Related Articles</h2>
+        <div class="related-grid">
+            <a href="what-is-an-automation-audit.html" class="related-card">
+                <h3>What Is an Automation Audit? (And Why It's Worth $299)</h3>
+                <p>A breakdown of what you get, how the process works, and why it is not a sales pitch in disguise.</p>
+            </a>
+            <a href="small-business-automation-save-time.html" class="related-card">
+                <h3>How Small Businesses Save 10+ Hours a Week</h3>
+                <p>Real examples of workflows that were automated and the time savings that followed.</p>
+            </a>
+            <a href="5-signs-business-needs-workflow-automation.html" class="related-card">
+                <h3>5 Signs Your Business Needs Workflow Automation</h3>
+                <p>Is your team drowning in repetitive tasks? Here are 5 clear signs you are ready for automation.</p>
+            </a>
+            <a href="automate-lead-follow-up.html" class="related-card">
+                <h3>How to Automate Lead Follow-Up Without Losing the Personal Touch</h3>
+                <p>Real strategies for automating follow-up while keeping messages personal and effective.</p>
+            </a>
+            <a href="real-cost-of-manual-work.html" class="related-card">
+                <h3>The Real Cost of Manual Work (And How to Fix It)</h3>
+                <p>Calculate the true cost of repetitive tasks in your business and see how automation pays for itself.</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">Stromation</div>
+                    <p>Custom workflow automations that replace repetitive manual work. Your business runs faster, cleaner, and with fewer mistakes.</p>
+                    <div class="social-icons">
+                        <a href="mailto:hello@stromation.com" class="social-icon" aria-label="Email">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </a>
+                        <a href="https://x.com/stromationhq" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="X (Twitter)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <div class="footer-links">
+                        <a href="../index.html">Home</a>
+                        <a href="../services.html">Services</a>
+                        <a href="../industries.html">Workflows</a>
+                        <a href="../case-studies.html">Examples</a>
+                        <a href="../about.html">About</a>
+                        <a href="../blog/">Blog</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Services</h4>
+                    <div class="footer-links">
+                        <a href="../services.html#intake">Intake & Lead Handling</a>
+                        <a href="../services.html#ops">Ops & Admin Workflows</a>
+                        <a href="../services.html#support">Customer Support</a>
+                        <a href="../services.html#reporting">Reporting & Visibility</a>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4 class="footer-heading">Contact</h4>
+                    <p><a href="mailto:hello@stromation.com">hello@stromation.com</a></p>
+                    <p>Remote / Worldwide</p>
+                    <div class="footer-legal">
+                        <a href="../privacy.html">Privacy</a>
+                        <a href="../terms.html">Terms</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Stromation. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>
