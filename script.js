@@ -188,7 +188,7 @@ function initContactForm() {
                 messageContainer.style.background = 'rgba(16, 185, 129, 0.1)';
                 messageContainer.style.border = '1px solid rgba(16, 185, 129, 0.3)';
                 messageContainer.style.color = '#059669';
-                messageContainer.innerHTML = '<strong>Thanks!</strong> We reply within 1 business day. If this is a fit, we\'ll send next steps for the $299 Automation Audit (credited toward your build).';
+                messageContainer.innerHTML = '<strong>Thanks!</strong> We reply within 1 business day. If this is a fit, we\'ll send next steps for the $99 Automation Audit (credited toward your build).';
                 this.reset();
             } else {
                 throw new Error('Form submission failed');
