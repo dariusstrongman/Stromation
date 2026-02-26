@@ -199,7 +199,7 @@ function initContactForm() {
             messageContainer.style.background = 'rgba(239, 68, 68, 0.1)';
             messageContainer.style.border = '1px solid rgba(239, 68, 68, 0.3)';
             messageContainer.style.color = '#DC2626';
-            messageContainer.innerHTML = '<strong>Something went wrong.</strong> Please try again or email us directly at <a href="mailto:hello@stromation.com">hello@stromation.com</a>.';
+            messageContainer.innerHTML = '<strong>Something went wrong.</strong> Please try again or email us directly at <a href="mailto:support@stromation.com">support@stromation.com</a>.';
         } finally {
             // Re-enable button
             submitBtn.disabled = false;
