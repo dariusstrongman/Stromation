@@ -61,7 +61,7 @@
                     A paid diagnostic that maps your workflow, identifies automation opportunities, and produces a build plan. The fee is credited toward your project.
                 </p>
                 <div class="hero-cta">
-                    <a href="contact.html" class="btn btn-primary btn-large">Request Your Audit</a>
+                    <a href="#request" class="btn btn-primary btn-large">Request Your Audit</a>
                 </div>
             </div>
         </div>
@@ -180,14 +180,48 @@
         </div>
     </section>
 
-    <!-- Pricing -->
-    <section>
-        <div class="container">
-            <div class="cta-banner">
-                <h2>$99 Automation Audit</h2>
-                <p>Credited toward your build. Get clarity on what to automate and what it costs.</p>
-                <a href="contact.html" class="btn">Request Your Audit</a>
+    <!-- Quick Request Form -->
+    <section id="request">
+        <div class="container" style="max-width: 600px;">
+            <div class="section-header">
+                <h2 class="section-title">Request Your Audit</h2>
+                <p class="section-subtitle">Fill out the quick form below or <a href="contact.html" style="color: var(--primary);">use our detailed contact form</a>.</p>
             </div>
+            <form class="contact-form" id="contactForm" method="POST" style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 2rem;">
+                <input type="hidden" name="subject" value="Stromation Audit Request (Quick Form)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" name="name" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required placeholder="your@email.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Business / Role</label>
+                        <input type="text" id="company" name="company" placeholder="Your company or role">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="workflow">What do you want to automate? *</label>
+                    <textarea id="workflow" name="workflow" required placeholder="Briefly describe the manual process you want to replace."></textarea>
+                </div>
+                <div style="background: #F0F7FF; border: 2px solid #2563EB; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem;">
+                    <p style="font-weight: 600; font-size: 0.9rem; color: #1E293B; margin-bottom: 0.75rem;">SMS Communication Consent</p>
+                    <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-size: 0.9rem; color: #334155; line-height: 1.6;">
+                        <input type="checkbox" name="sms_consent" value="yes" style="margin-top: 4px; min-width: 18px; min-height: 18px; accent-color: #2563EB;">
+                        <span>By checking this box, I consent to receive text messages from Stromation at the phone number provided above. Messages may include appointment confirmations, follow-up responses, and service updates. Message frequency varies. Reply STOP to cancel. Msg &amp; data rates may apply. View our <a href="privacy.html" style="color: #2563EB; text-decoration: underline;">Privacy Policy</a> and <a href="terms.html" style="color: #2563EB; text-decoration: underline;">Terms of Service</a>.</span>
+                    </label>
+                </div>
+                <button type="submit" class="contact-submit">Request Automation Audit</button>
+            </form>
         </div>
     </section>
 
