@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Say voice="Polly.Matthew">Thanks for calling Stromation. We help businesses automate their workflows so they can stop wasting time on manual work. Leave your name, number, and a brief message, and we will get back to you within one business day.</Say>
-    <Record maxLength="120" action="https://n8n.myaibuffet.com/webhook/voicemail-recording" />
-    <Say voice="Polly.Matthew">We did not receive a recording. Please try again or text us at this number. Goodbye.</Say>
+    <Pause length="1"/>
+    <Say voice="Polly.Matthew">Hi, you've reached Stromation, where we help businesses save time through smart automation.</Say>
+    <Pause length="1"/>
+    <Say voice="Polly.Matthew">We're sorry we missed your call. Please leave your name, your company name, a good callback number, and a brief description of what you're looking to automate. We'll get back to you within one business day.</Say>
+    <Pause length="1"/>
+    <Say voice="Polly.Matthew">Go ahead and leave your message after the tone.</Say>
+    <Record maxLength="120" playBeep="true" action="https://n8n.myaibuffet.com/webhook/voicemail-recording" />
+    <Say voice="Polly.Matthew">We didn't catch a recording. You can also text us at this number or visit stromation dot com. Goodbye.</Say>
 </Response>
