@@ -650,6 +650,12 @@ section {
     justify-content: center;
     margin-bottom: 1.25rem;
     font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.industry-icon svg {
+    width: 24px;
+    height: 24px;
 }
 
 .industry-title {
@@ -1305,6 +1311,14 @@ section {
     .case-study-card {
         grid-template-columns: 1fr;
     }
+
+    .live-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .workflow-list {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1415,6 +1429,15 @@ section {
 
     .contact-form-wrapper {
         padding: 1.5rem;
+    }
+
+    .live-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .live-stat .stat-number {
+        font-size: 1.1rem;
     }
 }
 
@@ -1772,6 +1795,130 @@ section {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 0.5rem;
+}
+
+.live-label {
+    display: inline-block;
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.live-label::before {
+    content: '';
+    position: absolute;
+    left: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: #059669;
+    border-radius: 50%;
+    animation: livePulse 2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(5, 150, 105, 0); }
+}
+
+.case-study-card.live-card {
+    border: 2px solid rgba(5, 150, 105, 0.3);
+}
+
+.case-study-card.live-card .case-study-visual {
+    background: linear-gradient(135deg, #059669, #0d9488);
+}
+
+.live-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.live-stat {
+    background: var(--bg-light);
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.live-stat .stat-number {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #059669;
+    display: block;
+}
+
+.live-stat .stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 0.15rem;
+    display: block;
+}
+
+.live-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #059669;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 1rem;
+    transition: background 0.2s;
+}
+
+.live-link:hover {
+    background: #047857;
+}
+
+.live-link svg {
+    width: 14px;
+    height: 14px;
+}
+
+.workflow-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem 1rem;
+}
+
+.workflow-list li {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    padding: 0.15rem 0;
+    padding-left: 1.1rem;
+    position: relative;
+    line-height: 1.4;
+}
+
+.workflow-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 6px;
+    height: 6px;
+    background: #059669;
+    border-radius: 50%;
 }
 
 .typical-outcomes {
