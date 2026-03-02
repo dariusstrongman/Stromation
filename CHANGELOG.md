@@ -29,7 +29,7 @@ Removed all placeholder and unsubstantiated content:
 - ❌ Unverifiable stats ("300+ automations deployed")
 
 Replaced with:
-- ✅ Real founder name (Darius Stroman)
+- ✅ Real founder first name (Darius)
 - ✅ Real company name (Stromation)
 - ✅ "Example Engagement" labels for anonymized case studies
 - ✅ "Typical Outcomes" instead of guaranteed results
@@ -67,7 +67,7 @@ Replaced with:
 - Simplified to 4 industry cards with common pain points
 
 #### about.html
-- Replaced placeholders with real info (Darius Stroman, Stromation)
+- Replaced placeholders with real info (Stromation)
 - Removed years-of-experience claims
 - Added philosophy: "Replace steps, not jobs"
 - Updated 5-step process: Audit → Scope → Build → Deploy → Support
