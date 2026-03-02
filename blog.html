@@ -50,13 +50,14 @@
     </script>
 </head>
 <body>
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
     <!-- Header -->
     <header class="header">
         <nav class="nav-container">
             <a href="index.html" class="logo">
                 <img src="logo.svg" alt="Stromation" class="logo-img">
             </a>
-            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+            <div class="mobile-menu-toggle" id="mobileMenuToggle" role="button" aria-label="Toggle navigation menu" aria-expanded="false" tabindex="0">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -76,7 +77,7 @@
     </header>
 
     <!-- Hero -->
-    <section class="blog-listing-hero">
+    <section class="blog-listing-hero" id="main-content">
         <div class="container">
             <span class="blog-hero-label">The Stromation Blog</span>
             <h1>Automation Guides for<br>Business Owners</h1>
@@ -177,6 +178,21 @@
                         <span class="blog-card-arrow">&rarr;</span>
                     </div>
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section style="padding: 0 0 2rem;">
+        <div class="container">
+            <div class="newsletter-box">
+                <h3>Get automation tips in your inbox</h3>
+                <p>Practical guides on workflow automation. No spam, unsubscribe anytime.</p>
+                <form id="newsletterForm" class="newsletter-form">
+                    <input type="email" name="email" placeholder="you@example.com" required>
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+                <div id="newsletterMessage" style="display:none; margin-top: 1rem;"></div>
             </div>
         </div>
     </section>

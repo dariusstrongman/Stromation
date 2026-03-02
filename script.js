@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initActiveNavHighlight();
     initContactForm();
+    initNewsletterForm();
 });
 
 // ==========================================
@@ -30,6 +31,15 @@ function initMobileMenu() {
     toggle.addEventListener('click', () => {
         navLinks.classList.toggle('active');
         toggle.classList.toggle('active');
+        toggle.setAttribute('aria-expanded', navLinks.classList.contains('active'));
+    });
+
+    // Keyboard support for toggle
+    toggle.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggle.click();
+        }
     });
 
     // Close menu when clicking a link
@@ -38,6 +48,7 @@ function initMobileMenu() {
         link.addEventListener('click', () => {
             navLinks.classList.remove('active');
             toggle.classList.remove('active');
+            toggle.setAttribute('aria-expanded', 'false');
         });
     });
 
@@ -46,6 +57,7 @@ function initMobileMenu() {
         if (!toggle.contains(e.target) && !navLinks.contains(e.target)) {
             navLinks.classList.remove('active');
             toggle.classList.remove('active');
+            toggle.setAttribute('aria-expanded', 'false');
         }
     });
 }
@@ -267,5 +279,38 @@ function initContactForm() {
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
         }
+    });
+}
+
+// ==========================================
+// NEWSLETTER FORM HANDLING
+// ==========================================
+function initNewsletterForm() {
+    var form = document.getElementById('newsletterForm');
+    if (!form) return;
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var btn = this.querySelector('button');
+        var msg = document.getElementById('newsletterMessage');
+        var email = this.querySelector('input[name="email"]').value.trim();
+        btn.disabled = true;
+        btn.textContent = 'Subscribing...';
+        try {
+            await fetch('https://n8n.myaibuffet.com/webhook/lead-capture', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, source: 'newsletter_signup', first_name: '', last_name: '', landing_page_url: window.location.href })
+            });
+            msg.style.display = 'block';
+            msg.style.color = '#059669';
+            msg.textContent = 'Subscribed! Check your inbox.';
+            this.reset();
+        } catch(err) {
+            msg.style.display = 'block';
+            msg.style.color = '#DC2626';
+            msg.textContent = 'Something went wrong. Try again.';
+        }
+        btn.disabled = false;
+        btn.textContent = 'Subscribe';
     });
 }

@@ -59,13 +59,14 @@
     </script>
 </head>
 <body>
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
     <!-- Header -->
     <header class="header">
         <nav class="nav-container">
             <a href="index.html" class="logo">
                 <img src="logo.svg" alt="Stromation" class="logo-img">
             </a>
-            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+            <div class="mobile-menu-toggle" id="mobileMenuToggle" role="button" aria-label="Toggle navigation menu" aria-expanded="false" tabindex="0">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -85,7 +86,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="main-content">
         <div class="container">
             <div class="hero-split">
                 <div class="hero-text">
@@ -180,6 +181,34 @@
                     <div class="step-num">4</div>
                     <h4>Support</h4>
                     <p>Optional monitoring and maintenance to keep things running.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Proven Results Section -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Proven Results</h2>
+                <p class="section-subtitle">Our own lead generation system, built and running live.</p>
+            </div>
+            <div class="trust-metrics">
+                <div class="trust-metric fade-in">
+                    <span class="metric-value">11</span>
+                    <span class="metric-label">Active Workflows</span>
+                </div>
+                <div class="trust-metric fade-in">
+                    <span class="metric-value">89</span>
+                    <span class="metric-label">Pages Deployed</span>
+                </div>
+                <div class="trust-metric fade-in">
+                    <span class="metric-value">14</span>
+                    <span class="metric-label">Days to Launch</span>
+                </div>
+                <div class="trust-metric fade-in">
+                    <span class="metric-value">24/7</span>
+                    <span class="metric-label">Autonomous Operation</span>
                 </div>
             </div>
         </div>

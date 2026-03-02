@@ -32,13 +32,14 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
     <!-- Header -->
     <header class="header">
         <nav class="nav-container">
             <a href="index.html" class="logo">
                 <img src="logo.svg" alt="Stromation" class="logo-img">
             </a>
-            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+            <div class="mobile-menu-toggle" id="mobileMenuToggle" role="button" aria-label="Toggle navigation menu" aria-expanded="false" tabindex="0">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -58,7 +59,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="main-content">
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">Workflow <span class="highlight">Automation</span> Services</h1>
@@ -89,6 +90,7 @@
                         <strong>Typical Outcome:</strong>
                         <p>Faster response times, no missed leads, and a clear view of your pipeline.</p>
                     </div>
+                    <p class="service-timeline">Typical build: 1-2 weeks</p>
 
                     <a href="audit.html" class="btn btn-primary mt-3">Start with the Audit</a>
                 </div>
@@ -119,6 +121,7 @@
                         <strong>Typical Outcome:</strong>
                         <p>Fewer errors, less admin time, and clean handoffs between steps.</p>
                     </div>
+                    <p class="service-timeline">Typical build: 2-3 weeks</p>
 
                     <a href="audit.html" class="btn btn-primary mt-3">Start with the Audit</a>
                 </div>
@@ -149,6 +152,7 @@
                         <strong>Typical Outcome:</strong>
                         <p>Faster responses for customers, less repetitive work for your team.</p>
                     </div>
+                    <p class="service-timeline">Typical build: 2-4 weeks</p>
 
                     <a href="audit.html" class="btn btn-primary mt-3">Start with the Audit</a>
                 </div>
@@ -179,6 +183,7 @@
                         <strong>Typical Outcome:</strong>
                         <p>Always-current visibility into what matters, without manual data work.</p>
                     </div>
+                    <p class="service-timeline">Typical build: 1-2 weeks</p>
 
                     <a href="audit.html" class="btn btn-primary mt-3">Start with the Audit</a>
                 </div>
