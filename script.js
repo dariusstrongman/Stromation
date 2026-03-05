@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initHeaderScroll();
     initScrollAnimations();
+    initHeroParallax();
+    initStepsProgress();
+    initCountUp();
     initSmoothScroll();
     initActiveNavHighlight();
     initContactForm();
@@ -88,9 +91,9 @@ function initHeaderScroll() {
 // SCROLL ANIMATIONS
 // ==========================================
 function initScrollAnimations() {
-    const fadeElements = document.querySelectorAll('.fade-in');
+    const animElements = document.querySelectorAll('.fade-in, .slide-left, .slide-right');
 
-    if (fadeElements.length === 0) return;
+    if (animElements.length === 0) return;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -104,7 +107,171 @@ function initScrollAnimations() {
         rootMargin: '0px 0px -50px 0px'
     });
 
-    fadeElements.forEach(el => observer.observe(el));
+    animElements.forEach(el => observer.observe(el));
+}
+
+// ==========================================
+// HERO PARALLAX ON SCROLL
+// ==========================================
+function initHeroParallax() {
+    var hero = document.querySelector('.hero');
+    if (!hero) return;
+
+    // Respect reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var heroText = hero.querySelector('.hero-text');
+    var heroIllustration = hero.querySelector('.hero-illustration');
+    var isMobile = window.innerWidth < 768;
+    var ticking = false;
+
+    window.addEventListener('resize', function() {
+        isMobile = window.innerWidth < 768;
+    });
+
+    window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() {
+            if (isMobile) { ticking = false; return; }
+
+            var scrollY = window.pageYOffset;
+            var heroHeight = hero.offsetHeight;
+
+            if (scrollY < heroHeight + 200) {
+                var opacity = Math.max(0, 1 - scrollY / 600);
+                var textY = scrollY * 0.3;
+                var svgY = scrollY * -0.15;
+
+                if (heroText) {
+                    heroText.style.transform = 'translateY(' + textY + 'px)';
+                    heroText.style.opacity = opacity;
+                }
+                if (heroIllustration) {
+                    heroIllustration.style.transform = 'translateY(' + svgY + 'px)';
+                    heroIllustration.style.opacity = opacity;
+                }
+            }
+            ticking = false;
+        });
+    });
+}
+
+// ==========================================
+// STEPS PROGRESS LINE
+// ==========================================
+function initStepsProgress() {
+    var wrapper = document.querySelector('.process-grid-wrapper');
+    if (!wrapper) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var fill = wrapper.querySelector('.steps-progress-fill');
+    var steps = wrapper.querySelectorAll('.process-card[data-step]');
+    if (!fill || steps.length === 0) return;
+
+    var ticking = false;
+    var activated = {};
+
+    window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() {
+            // Hide progress on mobile
+            if (window.innerWidth < 1024) { ticking = false; return; }
+
+            var rect = wrapper.getBoundingClientRect();
+            var windowH = window.innerHeight;
+            var sectionTop = rect.top;
+            var sectionH = rect.height;
+
+            // Calculate progress: 0 when section enters viewport, 1 when it's centered
+            var start = windowH * 0.8;
+            var end = windowH * 0.3;
+            var progress = 0;
+
+            if (sectionTop < start) {
+                progress = Math.min(1, Math.max(0, (start - sectionTop) / (start - end)));
+            }
+
+            fill.style.transform = 'scaleX(' + progress + ')';
+
+            // Activate steps based on progress
+            for (var i = 0; i < steps.length; i++) {
+                var threshold = (i + 0.5) / steps.length;
+                if (progress >= threshold) {
+                    if (!activated[i]) {
+                        steps[i].classList.add('step-active');
+                        activated[i] = true;
+                    }
+                }
+            }
+
+            ticking = false;
+        });
+    });
+}
+
+// ==========================================
+// COUNT-UP ANIMATION
+// ==========================================
+function initCountUp() {
+    var metrics = document.querySelectorAll('.metric-value[data-count]');
+    if (metrics.length === 0) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // Just show final values immediately
+        metrics.forEach(function(el) {
+            var target = el.getAttribute('data-count');
+            el.textContent = target;
+        });
+        return;
+    }
+
+    function easeOutExpo(t) {
+        return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+    }
+
+    function animateCount(el) {
+        var target = el.getAttribute('data-count');
+
+        // Non-numeric values (like "24/7") just fade in
+        if (isNaN(parseInt(target))) {
+            el.textContent = target;
+            return;
+        }
+
+        var end = parseInt(target);
+        var duration = 1500;
+        var start = performance.now();
+
+        function update(now) {
+            var elapsed = now - start;
+            var progress = Math.min(elapsed / duration, 1);
+            var easedProgress = easeOutExpo(progress);
+            var current = Math.round(easedProgress * end);
+            el.textContent = current;
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                el.textContent = end;
+            }
+        }
+
+        requestAnimationFrame(update);
+    }
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                animateCount(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    metrics.forEach(function(el) { observer.observe(el); });
 }
 
 // ==========================================

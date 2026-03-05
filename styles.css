@@ -2798,3 +2798,265 @@ section {
     margin-top: 1rem;
     font-style: italic;
 }
+
+/* ==========================================
+   HERO LOAD ANIMATION (Staggered Entrance)
+   ========================================== */
+@keyframes heroSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-anim {
+    opacity: 0;
+    animation: heroSlideUp 0.7s ease-out forwards;
+    animation-delay: var(--anim-delay, 0s);
+}
+
+/* ==========================================
+   HERO SVG BUILD ANIMATION
+   ========================================== */
+.hero-svg {
+    overflow: visible;
+}
+
+.svg-hub {
+    opacity: 0;
+    transform-origin: 200px 150px;
+    animation: svgHubIn 0.5s ease-out 0.4s forwards;
+}
+
+@keyframes svgHubIn {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.svg-line {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: svgLineDraw 0.6s ease-out forwards;
+}
+.svg-line:nth-of-type(1) { animation-delay: 0.6s; }
+.svg-line:nth-of-type(2) { animation-delay: 0.7s; }
+.svg-line:nth-of-type(3) { animation-delay: 0.8s; }
+.svg-line:nth-of-type(4) { animation-delay: 0.9s; }
+.svg-line:nth-of-type(5) { animation-delay: 1.0s; }
+
+@keyframes svgLineDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.svg-node {
+    opacity: 0;
+    transform-origin: center;
+    animation: svgNodeIn 0.4s ease-out forwards;
+}
+g.svg-node:nth-of-type(1) { animation-delay: 0.8s; }
+g.svg-node:nth-of-type(2) { animation-delay: 0.95s; }
+g.svg-node:nth-of-type(3) { animation-delay: 1.1s; }
+g.svg-node:nth-of-type(4) { animation-delay: 1.25s; }
+g.svg-node:nth-of-type(5) { animation-delay: 1.4s; }
+/* midpoint dots */
+circle.svg-node:nth-of-type(1) { animation-delay: 0.7s; }
+circle.svg-node:nth-of-type(2) { animation-delay: 0.8s; }
+circle.svg-node:nth-of-type(3) { animation-delay: 0.9s; }
+circle.svg-node:nth-of-type(4) { animation-delay: 1.0s; }
+circle.svg-node:nth-of-type(5) { animation-delay: 1.1s; }
+
+@keyframes svgNodeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Orbit rotation */
+.svg-orbit {
+    animation: orbitSpin 60s linear infinite;
+    transform-origin: 200px 150px;
+}
+.svg-orbit--reverse {
+    animation-direction: reverse;
+    animation-duration: 45s;
+}
+
+@keyframes orbitSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   HERO PARALLAX
+   ========================================== */
+.hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-text {
+    will-change: transform, opacity;
+}
+
+.hero-illustration {
+    will-change: transform, opacity;
+}
+
+/* ==========================================
+   DIRECTIONAL SLIDE ANIMATIONS
+   ========================================== */
+.slide-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transition-delay: var(--slide-delay, 0s);
+}
+
+.slide-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slide-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transition-delay: var(--slide-delay, 0s);
+}
+
+.slide-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ==========================================
+   STEPS PROGRESS LINE
+   ========================================== */
+.process-grid-wrapper {
+    position: relative;
+    margin-top: 2rem;
+}
+
+.steps-progress-track {
+    position: absolute;
+    top: 56px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.steps-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    will-change: transform;
+    transition: transform 0.1s linear;
+}
+
+/* Step activation states */
+.process-card {
+    position: relative;
+    z-index: 1;
+    transition: var(--transition-slow);
+}
+
+.process-card.step-active .step-num {
+    box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.15);
+    transform: scale(1.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.process-card.step-active .step-icon img {
+    animation: stepIconPulse 0.5s ease-out;
+}
+
+@keyframes stepIconPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+/* ==========================================
+   COUNT-UP METRICS
+   ========================================== */
+.metric-value {
+    transition: color 0.3s ease;
+}
+
+.metric-value.counting {
+    color: var(--primary);
+}
+
+/* ==========================================
+   PREFERS REDUCED MOTION
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+    .hero-anim {
+        opacity: 1;
+        animation: none;
+    }
+    .svg-hub,
+    .svg-line,
+    .svg-node {
+        opacity: 1;
+        animation: none;
+        stroke-dashoffset: 0;
+        transform: none;
+    }
+    .svg-orbit {
+        animation: none;
+    }
+    .slide-left,
+    .slide-right {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+    .fade-in {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+    .steps-progress-fill {
+        transform: scaleX(1);
+        transition: none;
+    }
+    .process-card.step-active .step-icon img {
+        animation: none;
+    }
+}
+
+/* ==========================================
+   PROGRESS TRACK RESPONSIVE
+   ========================================== */
+@media (max-width: 1024px) {
+    .steps-progress-track {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .steps-progress-track {
+        display: none;
+    }
+}
