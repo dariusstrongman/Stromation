@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initActiveNavHighlight();
     initContactForm();
     initNewsletterForm();
+    initFaqAccordion();
 });
 
 // ==========================================
@@ -484,6 +485,36 @@ function initNewsletterForm() {
         }
         btn.disabled = false;
         btn.textContent = 'Subscribe';
+    });
+}
+
+// ==========================================
+// FAQ ACCORDION
+// ==========================================
+function initFaqAccordion() {
+    const faqItems = document.querySelectorAll('.faq-item');
+    if (!faqItems.length) return;
+
+    faqItems.forEach(function(item) {
+        const button = item.querySelector('.faq-question');
+        if (!button) return;
+
+        button.addEventListener('click', function() {
+            const isActive = item.classList.contains('active');
+
+            // Close all items
+            faqItems.forEach(function(other) {
+                other.classList.remove('active');
+                var otherBtn = other.querySelector('.faq-question');
+                if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+            });
+
+            // Open clicked item if it was closed
+            if (!isActive) {
+                item.classList.add('active');
+                button.setAttribute('aria-expanded', 'true');
+            }
+        });
     });
 }
 
