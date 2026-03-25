@@ -424,6 +424,10 @@ function initContactForm() {
                 // Send to n8n WF01 (fire-and-forget, before form reset)
                 sendToN8N(formData);
 
+                // GA4 conversion tracking
+                var source = (window.location.pathname.indexOf('audit') !== -1) ? 'website_audit' : 'website_contact';
+                gtag('event', 'generate_lead', { event_category: 'form', event_label: source, value: 1 });
+
                 // Success
                 messageContainer.style.display = 'block';
                 messageContainer.style.background = 'rgba(16, 185, 129, 0.1)';
@@ -471,6 +475,7 @@ function initNewsletterForm() {
             msg.style.display = 'block';
             msg.style.color = '#059669';
             msg.textContent = 'Subscribed! Check your inbox.';
+            gtag('event', 'sign_up', { event_category: 'newsletter' });
             this.reset();
         } catch(err) {
             msg.style.display = 'block';
@@ -481,3 +486,15 @@ function initNewsletterForm() {
         btn.textContent = 'Subscribe';
     });
 }
+
+// ==========================================
+// GA4 CTA CLICK TRACKING
+// ==========================================
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('a, button');
+    if (!btn) return;
+    var text = (btn.textContent || '').trim();
+    if (/get a free audit|request your audit/i.test(text)) {
+        gtag('event', 'cta_click', { event_category: 'engagement', event_label: text });
+    }
+});

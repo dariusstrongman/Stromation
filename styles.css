@@ -2888,6 +2888,13 @@ section {
     }
 }
 
+/* Newsletter inline variant for blog posts */
+.newsletter-inline {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem;
+}
+
 /* ==========================================
    SERVICE TIMELINE (Services Page)
    ========================================== */

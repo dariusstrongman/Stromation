@@ -3,6 +3,7 @@
   var history = [];
   var isOpen = false;
   var isLoading = false;
+  var chatStarted = false;
 
   // Build the widget HTML
   var widget = document.createElement('div');
@@ -73,6 +74,7 @@
 
   toggle.addEventListener('click', function() {
     isOpen = !isOpen;
+    if (isOpen) { gtag('event', 'chat_open', { event_category: 'engagement' }); }
     chatWindow.classList.toggle('strom-chat-open', isOpen);
     toggle.classList.toggle('strom-chat-active', isOpen);
     toggleOpen.style.display = isOpen ? 'none' : 'block';
@@ -88,6 +90,7 @@
     if (!msg || isLoading) return;
 
     addUserMessage(msg);
+    if (!chatStarted) { chatStarted = true; gtag('event', 'chat_start', { event_category: 'engagement' }); }
     history.push({ role: 'user', content: msg });
     input.value = '';
     isLoading = true;

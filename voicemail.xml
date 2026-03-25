@@ -6,6 +6,6 @@
     <Say voice="Polly.Matthew">We're sorry we missed your call. Please leave your name, your company name, a good callback number, and a brief description of what you're looking to automate. We'll get back to you within one business day.</Say>
     <Pause length="1"/>
     <Say voice="Polly.Matthew">Go ahead and leave your message after the tone.</Say>
-    <Record maxLength="120" playBeep="true" action="https://n8n.myaibuffet.com/webhook/voicemail-recording" />
+    <Record maxLength="120" playBeep="true" action="https://n8n.myaibuffet.com/webhook/stromation-voicemail" />
     <Say voice="Polly.Matthew">We didn't catch a recording. You can also text us at this number or visit stromation dot com. Goodbye.</Say>
 </Response>
