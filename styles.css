@@ -2752,13 +2752,12 @@ section {
     width: 100%;
     max-width: 280px;
     height: auto;
-    filter: brightness(0) invert(1);
-    opacity: 0.85;
+    border-radius: 8px;
+    opacity: 0.95;
 }
 
 .case-study-card.live-card .case-study-visual img {
-    filter: brightness(0) invert(1);
-    opacity: 0.85;
+    opacity: 0.95;
 }
 
 /* ==========================================
