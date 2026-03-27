@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Stromation Blog</title>
+  <link>https://www.stromation.com/blog.html</link>
+  <description>Automation guides and insights for business owners</description>
+  <language>en-us</language>
+  <lastBuildDate>Mon, 23 Mar 2026 12:00:00 +0000</lastBuildDate>
+  <atom:link href="https://www.stromation.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>Transform Your Business with No-Code Workflow Automation Tools</title>
+    <link>https://www.stromation.com/blog/transform-your-business-with-no-code-workflow-automation-tools.html</link>
+    <description>No-code workflow automation tools can save your business hours every week. Here is how to pick the right one and start automating without writing code.</description>
+    <pubDate>Mon, 23 Mar 2026 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/transform-your-business-with-no-code-workflow-automation-tools.html</guid>
+  </item>
+  <item>
+    <title>The Future of Automation: Integrating AI into Business Workflows</title>
+    <link>https://www.stromation.com/blog/future-of-automation-integrating-ai-business-workflows.html</link>
+    <description>AI is already changing how businesses run their workflows. Here is what that looks like in practice and how to start integrating it into your operations.</description>
+    <pubDate>Mon, 16 Mar 2026 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/future-of-automation-integrating-ai-business-workflows.html</guid>
+  </item>
+  <item>
+    <title>Harnessing AI for Smarter Workflow Automation in Businesses</title>
+    <link>https://www.stromation.com/blog/harnessing-ai-for-smarter-workflow-automation.html</link>
+    <description>Explore how AI can enhance workflow automation in businesses, improving efficiency and decision-making while reducing manual tasks.</description>
+    <pubDate>Mon, 09 Mar 2026 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/harnessing-ai-for-smarter-workflow-automation.html</guid>
+  </item>
+  <item>
+    <title>Maximizing Efficiency: Automating Your Client Follow-Up Process</title>
+    <link>https://www.stromation.com/blog/maximizing-efficiency-automating-client-follow-up-process.html</link>
+    <description>Discover how automating your client follow-up process can boost efficiency, enhance relationships, and drive business growth.</description>
+    <pubDate>Mon, 02 Mar 2026 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/maximizing-efficiency-automating-client-follow-up-process.html</guid>
+  </item>
+  <item>
+    <title>Streamlining Client Onboarding with Automation Tools</title>
+    <link>https://www.stromation.com/blog/streamlining-client-onboarding-with-automation-tools.html</link>
+    <description>Discover how automation tools can streamline your client onboarding process, enhance efficiency, and improve client satisfaction.</description>
+    <pubDate>Sat, 28 Feb 2026 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/streamlining-client-onboarding-with-automation-tools.html</guid>
+  </item>
+  <item>
+    <title>How to Automate Lead Follow-Up Without Losing the Personal Touch</title>
+    <link>https://www.stromation.com/blog/automate-lead-follow-up.html</link>
+    <description>Learn how to automate your lead follow-up process while keeping messages personal. Real strategies for small businesses and agencies.</description>
+    <pubDate>Tue, 17 Feb 2026 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/automate-lead-follow-up.html</guid>
+  </item>
+  <item>
+    <title>How Small Businesses Save 10+ Hours a Week with Automation</title>
+    <link>https://www.stromation.com/blog/small-business-automation-save-time.html</link>
+    <description>Real examples of small businesses saving 10+ hours per week through workflow automation. See the exact processes they automated and the results.</description>
+    <pubDate>Tue, 03 Feb 2026 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/small-business-automation-save-time.html</guid>
+  </item>
+  <item>
+    <title>Top 5 Automation Mistakes Small Businesses Make and How to Avoid Them</title>
+    <link>https://www.stromation.com/blog/top-5-automation-mistakes-small-businesses.html</link>
+    <description>Discover the common mistakes small businesses make in automation and how to avoid them for a smoother workflow and better efficiency.</description>
+    <pubDate>Tue, 20 Jan 2026 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/top-5-automation-mistakes-small-businesses.html</guid>
+  </item>
+  <item>
+    <title>What Is an Automation Audit? (And Why We Offer It Free)</title>
+    <link>https://www.stromation.com/blog/what-is-an-automation-audit.html</link>
+    <description>An automation audit maps your current workflow and identifies exactly where automation will save time and money. Here's what's included and why it works.</description>
+    <pubDate>Mon, 05 Jan 2026 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/what-is-an-automation-audit.html</guid>
+  </item>
+  <item>
+    <title>Zapier vs Make vs Custom Automations: Which Is Right for You?</title>
+    <link>https://www.stromation.com/blog/zapier-vs-make-vs-custom-automations.html</link>
+    <description>Comparing Zapier, Make (Integromat), and custom-built automations. Honest breakdown of cost, flexibility, and when each option makes sense.</description>
+    <pubDate>Mon, 15 Dec 2025 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/zapier-vs-make-vs-custom-automations.html</guid>
+  </item>
+  <item>
+    <title>The Real Cost of Manual Work (And How to Fix It)</title>
+    <link>https://www.stromation.com/blog/real-cost-of-manual-work.html</link>
+    <description>Manual work costs more than you think. Calculate the true cost of repetitive tasks in your business and see how automation pays for itself.</description>
+    <pubDate>Mon, 01 Dec 2025 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/real-cost-of-manual-work.html</guid>
+  </item>
+  <item>
+    <title>5 Signs Your Business Needs Workflow Automation</title>
+    <link>https://www.stromation.com/blog/5-signs-business-needs-workflow-automation.html</link>
+    <description>Is your team drowning in repetitive tasks? Here are 5 clear signs your business is ready for workflow automation, plus how to fix it.</description>
+    <pubDate>Sat, 15 Nov 2025 12:00:00 +0000</pubDate>
+    <guid>https://www.stromation.com/blog/5-signs-business-needs-workflow-automation.html</guid>
+  </item>
+</channel>
+</rss>

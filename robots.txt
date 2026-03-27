@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.stromation.com/sitemap.xml
+
+# RSS Feed
+Allow: /feed.xml
