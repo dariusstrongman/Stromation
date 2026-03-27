@@ -15,6 +15,8 @@
 - Formspree for contact form (mkobkvwl)
 - Chat widget (chat.js) connects to n8n webhook at n8n.myaibuffet.com
 - Schema.org structured data (ProfessionalService) on index.html
+- FAQ schema (FAQPage) on services.html and audit.html
+- RSS feed (feed.xml) for blog syndication
 - OG and Twitter meta tags on all pages
 
 ## CSS Custom Properties
@@ -41,9 +43,10 @@ Defined in `:root` in styles.css:
 | blog.html | Blog index with card grid |
 | privacy.html | Privacy policy |
 | terms.html | Terms of service |
+| checklist.html | Lead magnet -- free automation checklist landing page |
 | 404.html | Custom 404 error page |
 
-### Blog Posts (blog/)
+### Blog Posts (blog/) -- 16 posts
 - 5-signs-business-needs-workflow-automation.html
 - automate-lead-follow-up.html
 - real-cost-of-manual-work.html
@@ -56,6 +59,10 @@ Defined in `:root` in styles.css:
 - harnessing-ai-for-smarter-workflow-automation.html
 - future-of-automation-integrating-ai-business-workflows.html
 - transform-your-business-with-no-code-workflow-automation-tools.html
+- how-to-automate-your-small-business-complete-guide.html
+- automation-roi-calculator-measure-business-impact.html
+- best-crm-automation-workflows-for-small-teams.html
+- email-automation-sequences-that-convert-leads.html
 
 ### Other Key Files
 | File | Purpose |
@@ -63,6 +70,7 @@ Defined in `:root` in styles.css:
 | styles.css | Single global stylesheet |
 | script.js | Main JS -- mobile menu, scroll animations, parallax, forms, FAQ accordion |
 | chat.js | Chat widget connecting to n8n webhook (loaded deferred on all pages) |
+| feed.xml | RSS feed for blog posts |
 | sitemap.xml | XML sitemap for search engines |
 | robots.txt | Robots directives |
 | voicemail.xml | TwiML voice config (Google.en-US-Neural2-J voice) |
@@ -84,7 +92,7 @@ When creating a new blog post:
 6. Include Google Analytics snippet, OG/Twitter meta tags, and canonical URL
 7. Commit message format: `blog: Post Title Here`
 
-## n8n Workflows (n8n.myaibuffet.com)
+## n8n Workflows (n8n.myaibuffet.com) -- 6 active
 | ID | Name | Description |
 |----|------|-------------|
 | 11 | SMS Handler | AI text replies + emails leads to dariusstroman@gmail.com |
@@ -92,7 +100,9 @@ When creating a new blog post:
 | 13 | Reddit Community Bot | Posts to automation subreddits (Mon/Wed/Fri) |
 | 14 | Reddit Comment Bot | Replies to relevant posts (2x daily) |
 | 15 | Reddit Reply Handler | Responds to replies (every 4 hours) |
-| 17 | Reddit Karma Builder | Casual comments on popular posts (daily) |
+| 17 | Reddit Karma Builder | Casual comments on popular posts (3x/day) |
+
+Deleted workflows: 00 (Error Handler), 10 (Voicemail), 16 (Lead Alert) -- no longer needed
 
 - Reddit account: u/dev_darius
 - n8n API requires `X-N8N-API-KEY` header
@@ -147,6 +157,7 @@ When creating a new blog post:
 - Don't add frameworks or build tools -- this is intentionally vanilla HTML/CSS/JS
 - Don't change pricing without explicit request from Darius
 - Don't use Formspree for new features (use n8n email node instead)
+- Don't use SMS for notifications (use n8n email node instead)
 - Don't commit .env files or API keys
 - Don't use inline styles -- use existing CSS classes in styles.css
 - Don't break relative paths in blog posts (they use ../ prefix)
