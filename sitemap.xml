@@ -140,6 +140,30 @@
         <priority>0.7</priority>
     </url>
     <url>
+        <loc>https://www.stromation.com/blog/automate-invoicing-get-paid-faster.html</loc>
+        <lastmod>2026-03-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.stromation.com/blog/automate-appointment-scheduling-reduce-no-shows.html</loc>
+        <lastmod>2026-03-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.stromation.com/blog/automate-google-review-requests.html</loc>
+        <lastmod>2026-03-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.stromation.com/blog/stop-manually-entering-data-between-apps.html</loc>
+        <lastmod>2026-03-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
         <loc>https://www.stromation.com/feed.xml</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>weekly</changefreq>
