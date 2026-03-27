@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Pause length="1"/>
-    <Say voice="Polly.Matthew-Neural">Hey, what's up. You've reached Stromation. We build custom workflow automations for businesses. So if you've got manual processes eating up your time, like lead follow-ups, invoicing, onboarding, data entry, whatever it is, that's what we fix.</Say>
+    <Say voice="Polly.Joey">Hey, what's up. You've reached Stromation. We build custom workflow automations for businesses. So if you've got manual processes eating up your time, like lead follow-ups, invoicing, onboarding, data entry, whatever it is, that's what we fix.</Say>
     <Pause length="1"/>
-    <Say voice="Polly.Matthew-Neural">Go ahead and leave your name, your number, and tell me a little about what workflow you're looking to automate. I'll hit you back within a business day.</Say>
+    <Say voice="Polly.Joey">Go ahead and leave your name, your number, and tell me a little about what workflow you're looking to automate. I'll hit you back within a business day.</Say>
     <Pause length="1"/>
-    <Say voice="Polly.Matthew-Neural">Leave it after the beep.</Say>
+    <Say voice="Polly.Joey">Leave it after the beep.</Say>
     <Record maxLength="120" playBeep="true" action="https://n8n.myaibuffet.com/webhook/stromation-voicemail" />
-    <Say voice="Polly.Matthew-Neural">Looks like we didn't get a message. You can also text this number or hit us up at stromation dot com. Peace.</Say>
+    <Say voice="Polly.Joey">Looks like we didn't get a message. You can also text this number or hit us up at stromation dot com. Peace.</Say>
 </Response>
