@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Pause length="1"/>
-    <Say voice="Polly.Matthew">Hi, you've reached Stromation, where we help businesses save time through smart automation.</Say>
+    <Say voice="Polly.Gregory">Hey, what's up. You've reached Stromation. We build custom workflow automations for businesses. So if you've got manual processes eating up your time, like lead follow-ups, invoicing, onboarding, data entry, whatever it is, that's what we fix.</Say>
     <Pause length="1"/>
-    <Say voice="Polly.Matthew">We're sorry we missed your call. Please leave your name, your company name, a good callback number, and a brief description of what you're looking to automate. We'll get back to you within one business day.</Say>
+    <Say voice="Polly.Gregory">Go ahead and leave your name, your number, and tell me a little about what workflow you're looking to automate. I'll hit you back within a business day.</Say>
     <Pause length="1"/>
-    <Say voice="Polly.Matthew">Go ahead and leave your message after the tone.</Say>
+    <Say voice="Polly.Gregory">Leave it after the beep.</Say>
     <Record maxLength="120" playBeep="true" action="https://n8n.myaibuffet.com/webhook/stromation-voicemail" />
-    <Say voice="Polly.Matthew">We didn't catch a recording. You can also text us at this number or visit stromation dot com. Goodbye.</Say>
+    <Say voice="Polly.Gregory">Looks like we didn't get a message. You can also text this number or hit us up at stromation dot com. Peace.</Say>
 </Response>
