@@ -33,7 +33,7 @@ Defined in `:root` in styles.css:
 ### Root Pages
 | File | Purpose |
 |------|---------|
-| index.html | Homepage -- hero, services overview, how-it-works steps, stats, FAQ |
+| index.html | Homepage -- hero (text only, no illustration), services overview, how-it-works, stats, FAQ |
 | services.html | Detailed service offerings and pricing tiers |
 | industries.html | Industry-specific automation use cases |
 | case-studies.html | Client case studies with results |
@@ -59,10 +59,10 @@ Defined in `:root` in styles.css:
 - harnessing-ai-for-smarter-workflow-automation.html
 - future-of-automation-integrating-ai-business-workflows.html
 - transform-your-business-with-no-code-workflow-automation-tools.html
-- how-to-automate-your-small-business-complete-guide.html
-- automation-roi-calculator-measure-business-impact.html
-- best-crm-automation-workflows-for-small-teams.html
-- email-automation-sequences-that-convert-leads.html
+- automate-invoicing-get-paid-faster.html
+- automate-appointment-scheduling-reduce-no-shows.html
+- automate-google-review-requests.html
+- stop-manually-entering-data-between-apps.html
 
 ### Other Key Files
 | File | Purpose |
@@ -73,7 +73,7 @@ Defined in `:root` in styles.css:
 | feed.xml | RSS feed for blog posts |
 | sitemap.xml | XML sitemap for search engines |
 | robots.txt | Robots directives |
-| voicemail.xml | TwiML voice config (Google.en-US-Neural2-J voice) |
+| voicemail.xml | TwiML voice redirect -- tells callers to text instead (Neural2-J voice) |
 | CNAME | GitHub Pages custom domain |
 | .nojekyll | Disables Jekyll processing |
 
@@ -120,8 +120,9 @@ Deleted workflows: 00 (Error Handler), 10 (Voicemail), 16 (Lead Alert) -- no lon
 
 ## Phone/SMS
 - Number: (855) 932-0493
-- Calls: short voicemail redirecting caller to text (voicemail.xml, Neural2-J voice)
-- Texts: AI-classified via n8n, auto-reply generated, lead emailed to Gmail
+- Calls: short message redirecting caller to text instead (voicemail.xml, Neural2-J voice). No recording/transcription.
+- Texts: AI-classified via GPT, auto-reply sent, lead emailed to dariusstroman@gmail.com
+- Voicemail workflow (10) deleted -- all lead capture happens via text now
 
 ## Pricing (current)
 | Tier | Price |
