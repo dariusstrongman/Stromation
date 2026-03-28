@@ -6,7 +6,7 @@
 // ==========================================
 // FORM ENDPOINT CONFIGURATION
 // ==========================================
-const FORM_ENDPOINT = 'https://formspree.io/f/mkobkvwl';
+const FORM_ENDPOINT = 'https://n8n.myaibuffet.com/webhook/stromation-form';
 const N8N_WEBHOOK_URL = 'https://n8n.myaibuffet.com/webhook/lead-capture';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -413,20 +413,55 @@ function initContactForm() {
         }
 
         try {
+            // Determine source from page
+            var source = 'website_contact';
+            var page = window.location.pathname.split('/').pop() || '';
+            if (page.indexOf('audit') !== -1) source = 'website_audit';
+            if (page.indexOf('checklist') !== -1) source = 'website_checklist';
+
+            // Build JSON payload
+            var fullName = (formData.get('name') || '').trim();
+            var nameParts = fullName.split(/\s+/);
+            var noteParts = [];
+            var workflow = (formData.get('workflow') || '').trim();
+            if (workflow) noteParts.push(workflow);
+            var company = (formData.get('company') || '').trim();
+            if (company) noteParts.push('Company: ' + company);
+            var toolsStr = (formData.get('tools') || '').trim();
+            if (toolsStr) noteParts.push('Tools: ' + toolsStr);
+            var volume = (formData.get('volume') || '').trim();
+            if (volume) noteParts.push('Volume: ' + volume);
+            var outcome = (formData.get('outcome') || '').trim();
+            if (outcome) noteParts.push('Outcome: ' + outcome);
+            var budget = (formData.get('budget') || '').trim();
+            if (budget) noteParts.push('Budget: ' + budget);
+            var timeline = (formData.get('timeline') || '').trim();
+            if (timeline) noteParts.push('Timeline: ' + timeline);
+
+            var payload = {
+                first_name: nameParts[0] || '',
+                last_name: nameParts.slice(1).join(' ') || '',
+                name: fullName,
+                email: (formData.get('email') || '').trim(),
+                phone: (formData.get('phone') || '').trim(),
+                company: company,
+                source: source,
+                notes: noteParts.join(' | '),
+                landing_page_url: window.location.href,
+                sms_opt_in: formData.get('sms_consent') === 'yes'
+            };
+
             const response = await fetch(FORM_ENDPOINT, {
                 method: 'POST',
-                body: formData,
+                body: JSON.stringify(payload),
                 headers: {
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
             });
 
             if (response.ok) {
-                // Send to n8n WF01 (fire-and-forget, before form reset)
-                sendToN8N(formData);
-
                 // GA4 conversion tracking
-                var source = (window.location.pathname.indexOf('audit') !== -1) ? 'website_audit' : 'website_contact';
                 gtag('event', 'generate_lead', { event_category: 'form', event_label: source, value: 1 });
 
                 // Success
