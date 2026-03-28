@@ -92,21 +92,51 @@ When creating a new blog post:
 6. Include Google Analytics snippet, OG/Twitter meta tags, and canonical URL
 7. Commit message format: `blog: Post Title Here`
 
-## n8n Workflows (n8n.myaibuffet.com) -- 6 active
+## n8n Workflows (n8n.myaibuffet.com) -- 14 active (13 OFF)
+
+### Lead Capture & Communication
 | ID | Name | Description |
 |----|------|-------------|
-| 11 | SMS Handler | AI text replies + emails leads to dariusstroman@gmail.com |
+| 11 | SMS Handler | AI text replies + emails leads to Gmail |
 | 12 | Website Chatbot | GPT acts as Darius on stromation.com |
-| 13 | Reddit Community Bot | Posts to automation subreddits (Mon/Wed/Fri) |
-| 14 | Reddit Comment Bot | Replies to relevant posts (2x daily) |
-| 15 | Reddit Reply Handler | Responds to replies (every 4 hours) |
-| 17 | Reddit Karma Builder | Casual comments on popular posts (3x/day) |
+| 22 | Website Form Handler | Audit/contact/checklist forms → Supabase + email |
 
-Deleted workflows: 00 (Error Handler), 10 (Voicemail), 16 (Lead Alert) -- no longer needed
+### Outbound & Outreach
+| ID | Name | Description |
+|----|------|-------------|
+| 18 | Local Business Finder | Google Places API → Supabase (daily 7AM CT) |
+| 19 | Cold Email Outreach | 3-email sequence to new leads (daily 9AM CT) |
+| 20 | Outreach Reply Handler | AI conversation with replies, extracts phone/tools/pain |
+| 23 | Lead Nurture Drip | 3-email drip for website leads (daily 10AM CT, seq 50/51/52) |
+
+### Reddit (u/dev_darius)
+| ID | Name | Description |
+|----|------|-------------|
+| 13 | Reddit Community Bot | **OFF** -- posts flagged due to low karma |
+| 14 | Reddit Comment Bot | Comments on relevant posts (2x daily) |
+| 15 | Reddit Reply Handler | Responds to replies (every 4 hours) |
+| 17 | Reddit Karma Builder | Casual comments on safe subreddits (daily 9AM CT) |
+| 21 | Reddit Lead Digest | Daily 6PM CT digest of high-intent Reddit posts |
+
+### Content & Reporting
+| ID | Name | Description |
+|----|------|-------------|
+| 24 | Weekly Pipeline Digest | Monday 8AM CT stats email to Darius |
+| 25 | Auto Blog Publisher | Weekly blog post via GPT → GitHub (Sunday 6AM CT) |
+
+### Client Management (webhook-triggered)
+| ID | Name | Description | Webhook |
+|----|------|-------------|---------|
+| 26 | Review Request | Sends review request email to client | /webhook/stromation-review-request |
+| 27 | Invoice Generator | Generates and sends professional invoice | /webhook/stromation-invoice |
+| 28 | Client Onboarding | Welcome email + intake questionnaire | /webhook/stromation-onboard |
+
+Deleted: 00 (Error Handler), 10 (Voicemail), 16 (Lead Alert)
 
 - Reddit account: u/dev_darius
 - n8n API requires `X-N8N-API-KEY` header
-- Lead capture webhook: `https://n8n.myaibuffet.com/webhook/lead-capture`
+- Form webhook: `https://n8n.myaibuffet.com/webhook/stromation-form`
+- All email sends use SMTP credential "SMTP - Stromation (leads@)" from leads@stromation.com
 
 ## Key Patterns
 - All pages share the same nav and footer HTML structure
