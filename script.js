@@ -368,7 +368,7 @@ function sendToN8N(formData) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         }).catch(function() {
-            // Silently ignore — Formspree is the primary path
+            // Silently ignore — n8n webhook handles it
         });
     } catch (e) {
         // Never break the user experience
@@ -376,7 +376,7 @@ function sendToN8N(formData) {
 }
 
 // ==========================================
-// CONTACT FORM HANDLING (FORMSPREE)
+// CONTACT FORM HANDLING
 // ==========================================
 function initContactForm() {
     const contactForm = document.getElementById('contactForm');
