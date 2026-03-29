@@ -139,7 +139,7 @@ WF25 (Auto Blog Publisher) handles this automatically every Sunday.
 |----|------|---------|-------------|
 | 26 | Review Request | /webhook/stromation-review-request | Sends Google review request email to client |
 | 27 | Invoice Generator | /webhook/stromation-invoice | Generates HTML invoice, sends to client, CCs Gmail |
-| 28 | Client Onboarding | /webhook/stromation-onboard | Welcome email + intake link, updates Supabase status to 'client' |
+| 28 | Client Onboarding | /webhook/stromation-onboard | Welcome email + intake link, updates Supabase status to 'won' |
 
 ### Deleted Workflows
 - 00 (Error Handler) -- was sending SMS alerts, wasted credits
@@ -174,14 +174,18 @@ WF25 (Auto Blog Publisher) handles this automatically every Sunday.
 | outreach_log | Email history -- business_id, email_num, subject, body, sent_at, status |
 | reddit_leads | Reddit lead posts scored by GPT |
 
-### Outreach Status Values
+### Outreach Status Values (check constraint enforced)
 - `new` -- just added (from website form or business finder)
 - `in_campaign` -- cold email sequence in progress
-- `replied` -- lead replied to outreach
-- `qualified` -- lead shared pain points + expressed interest
-- `client` -- signed client (set by WF28 onboarding)
+- `replied` -- lead replied to outreach (also used for qualified leads)
+- `won` -- signed client (set by WF28 onboarding)
+- `lost` -- deal lost
 - `not_interested` -- declined
 - `sequence_complete` -- finished 3-email sequence, no reply
+- `unsubscribed` -- requested removal
+- `bounced` -- email bounced
+
+INVALID values (will cause 400 error): `qualified`, `client`, `audit_requested`
 
 ### Email Sequence Numbers
 - 1-3: Cold outreach emails (WF19)
