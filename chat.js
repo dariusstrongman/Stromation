@@ -112,13 +112,13 @@
     .then(function(r) { return r.json(); })
     .then(function(data) {
       typingEl.remove();
-      var reply = data.reply || 'Sorry, something went wrong. Try again or email support@stromation.com.';
+      var reply = data.reply || 'Sorry, something went wrong. Try again or email contact@stromation.com.';
       addBotMessage(reply);
       history.push({ role: 'assistant', content: reply });
     })
     .catch(function() {
       typingEl.remove();
-      addBotMessage('Hmm, connection issue on my end. Email me at support@stromation.com or text (855) 932-0493 and I\'ll get right back to you.');
+      addBotMessage('Hmm, connection issue on my end. Email me at contact@stromation.com or text (855) 932-0493 and I\'ll get right back to you.');
     })
     .finally(function() {
       isLoading = false;
