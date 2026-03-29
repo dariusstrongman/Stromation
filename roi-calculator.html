@@ -416,9 +416,65 @@
                         <label for="biggestTask">Biggest manual task *</label>
                         <input type="text" id="biggestTask" name="biggest_manual_task" required placeholder="e.g., Data entry between CRM and spreadsheet">
                     </div>
-                    <button type="submit" class="contact-submit">Get My Automation Plan</button>
+                    <button type="submit" class="contact-submit" id="roiSubmitBtn">Get My Automation Plan</button>
+                    <div id="roiMessage" style="padding: 1rem; border-radius: 8px; margin-top: 1rem; display: none;"></div>
                 </form>
             </div>
+            <script>
+            document.getElementById('roiForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                var btn = document.getElementById('roiSubmitBtn');
+                var msg = document.getElementById('roiMessage');
+                btn.disabled = true;
+                btn.textContent = 'Sending...';
+                msg.style.display = 'none';
+
+                var formData = new FormData(this);
+                var payload = {
+                    name: formData.get('name') || '',
+                    email: formData.get('email') || '',
+                    source: 'website_roi_calculator',
+                    notes: 'Biggest task: ' + (formData.get('biggest_manual_task') || '') +
+                        ' | Hours/week: ' + (formData.get('calc_hours_per_week') || '') +
+                        ' | Hourly cost: $' + (formData.get('calc_hourly_cost') || '') +
+                        ' | People: ' + (formData.get('calc_people') || '') +
+                        ' | Annual cost: $' + (formData.get('calc_annual_cost') || '') +
+                        ' | Annual savings: $' + (formData.get('calc_annual_savings') || ''),
+                    landing_page_url: window.location.href
+                };
+
+                try {
+                    var resp = await fetch('https://n8n.myaibuffet.com/webhook/stromation-form', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (resp.ok) {
+                        msg.style.display = 'block';
+                        msg.style.background = 'rgba(16,185,129,0.1)';
+                        msg.style.border = '1px solid rgba(16,185,129,0.3)';
+                        msg.style.color = '#059669';
+                        msg.innerHTML = '<strong>Got it.</strong> Well put together your automation plan and get back to you within 1 business day.';
+                        this.reset();
+                        if (typeof gtag === 'function') {
+                            gtag('event', 'generate_lead', { event_category: 'form', event_label: 'website_roi_calculator', value: 1 });
+                        }
+                        setTimeout(function() { window.location.href = 'thank-you.html'; }, 2000);
+                    } else {
+                        throw new Error('Failed');
+                    }
+                } catch(err) {
+                    msg.style.display = 'block';
+                    msg.style.background = 'rgba(239,68,68,0.1)';
+                    msg.style.border = '1px solid rgba(239,68,68,0.3)';
+                    msg.style.color = '#DC2626';
+                    msg.innerHTML = '<strong>Something went wrong.</strong> Email us at <a href="mailto:support@stromation.com">support@stromation.com</a>.';
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Get My Automation Plan';
+                }
+            });
+            </script>
         </div>
     </section>
 
