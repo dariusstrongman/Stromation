@@ -49,6 +49,18 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://www.stromation.com/thank-you.html</loc>
+        <lastmod>2026-03-28</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://www.stromation.com/roi-calculator.html</loc>
+        <lastmod>2026-03-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://www.stromation.com/privacy.html</loc>
         <lastmod>2026-03-25</lastmod>
         <changefreq>yearly</changefreq>
@@ -162,6 +174,25 @@
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
+    </url>
+    <!-- Industry Landing Pages -->
+    <url>
+        <loc>https://www.stromation.com/dental.html</loc>
+        <lastmod>2026-03-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.stromation.com/home-services.html</loc>
+        <lastmod>2026-03-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.stromation.com/agencies.html</loc>
+        <lastmod>2026-03-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.stromation.com/feed.xml</loc>

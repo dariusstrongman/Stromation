@@ -471,6 +471,7 @@ function initContactForm() {
                 messageContainer.style.color = '#059669';
                 messageContainer.innerHTML = '<strong>Thanks!</strong> We reply within 1 business day. If this is a fit, we\'ll send next steps for the Free Automation Audit.';
                 this.reset();
+                setTimeout(function() { window.location.href = 'thank-you.html'; }, 2000);
             } else {
                 throw new Error('Form submission failed');
             }
