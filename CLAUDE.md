@@ -6,8 +6,11 @@
 - Repo: github.com/dariusstrongman/Stromation
 - Domain: www.stromation.com (CNAME)
 - Twitter/X: @stromationhq
-- Email: support@stromation.com
+- Business email: darius@stromation.com (SMTP credential: "admin")
+- Contact email: contact@stromation.com (used sitewide)
+- Leads email: leads@stromation.com (SMTP credential: "SMTP - Stromation (leads@)")
 - Darius personal email: dariusstroman@gmail.com
+- Stripe account: Stromation (charges NOT yet enabled — needs onboarding completion)
 
 ## Tech Stack
 - Pure vanilla HTML, CSS, JS -- no frameworks, no build tools, no bundlers
@@ -48,6 +51,13 @@ Defined in `:root` in styles.css:
 | checklist.html | Lead magnet -- free automation readiness checklist with email capture |
 | privacy.html | Privacy policy |
 | terms.html | Terms of service |
+| roi-calculator.html | Interactive ROI calculator with email capture |
+| thank-you.html | Post-form confirmation + Cal.com booking (noindex) |
+| dental.html | Ad landing page for dental practices |
+| home-services.html | Ad landing page for home service businesses |
+| agencies.html | Ad landing page for marketing/creative agencies |
+| admin-invoice.html | Admin: send invoices to clients (noindex, not in nav) |
+| admin-proposal.html | Admin: send proposals/quotes to clients (noindex, not in nav) |
 | 404.html | Custom 404 error page |
 
 ### Blog Posts (blog/) -- 16 posts
@@ -82,6 +92,8 @@ New blog posts are auto-generated weekly by WF25 (Sunday 6AM CT).
 | robots.txt | Robots directives |
 | voicemail.xml | TwiML -- redirects callers to text instead (Google Neural2-J voice) |
 | CNAME | GitHub Pages custom domain |
+| supabase-schema.sql | SQL for creating projects/invoices/proposals tables (run in Supabase SQL editor) |
+| video-thumbnail.png | Thumbnail for showcase video on homepage |
 | .nojekyll | Disables Jekyll processing |
 
 ### Image Assets
@@ -102,7 +114,7 @@ When creating a new blog post:
 
 WF25 (Auto Blog Publisher) handles this automatically every Sunday.
 
-## n8n Workflows (n8n.myaibuffet.com) -- 16 active, 1 off
+## n8n Workflows (n8n.myaibuffet.com) -- 18 active, 1 off
 
 ### Lead Capture & Communication
 | ID | Name | Schedule | Description |
@@ -140,9 +152,15 @@ WF25 (Auto Blog Publisher) handles this automatically every Sunday.
 | 26 | Review Request | /webhook/stromation-review-request | Sends Google review request email to client |
 | 27 | Invoice Generator | /webhook/stromation-invoice | Generates HTML invoice, sends to client, CCs Gmail |
 | 28 | Client Onboarding | /webhook/stromation-onboard | Welcome email + intake link, updates Supabase status to 'won' |
+| 30 | Proposal Generator | /webhook/stromation-proposal | Generates branded proposal, sends to client from darius@ |
+
+### Operations & Monitoring
+| ID | Name | Description |
+|----|------|-------------|
+| 29 | Error Alert | Emails dariusstroman@gmail.com when ANY workflow fails. Wired to all workflows via errorWorkflow setting. |
 
 ### Deleted Workflows
-- 00 (Error Handler) -- was sending SMS alerts, wasted credits
+- 00 (Error Handler v1) -- was sending SMS alerts, wasted credits. Replaced by WF29.
 - 10 (Voicemail Handler) -- replaced by text redirect
 - 16 (Lead Alert) -- replaced by WF21 (Reddit Lead Digest) via email
 
@@ -155,15 +173,26 @@ WF25 (Auto Blog Publisher) handles this automatically every Sunday.
 | /webhook/stromation-review-request | Trigger review request email |
 | /webhook/stromation-invoice | Generate and send invoice |
 | /webhook/stromation-onboard | Client onboarding sequence |
+| /webhook/stromation-proposal | Generate and send proposal/quote |
+
+### SMTP Credentials
+| Credential Name | Email | Used By |
+|----------------|-------|---------|
+| SMTP - Stromation (leads@) | leads@stromation.com | WF11, WF22, WF23, WF24, WF25, WF26, WF29 |
+| admin | darius@stromation.com | WF27 (invoices), WF30 (proposals) |
+| SMTP - Outreach | outreach@stromation.com | WF19 (cold email), WF21 (lead digest) |
 
 ### Key n8n Details
 - Reddit account: u/dev_darius (refresh token with read/submit/identity/history/vote scope)
-- All email sends use SMTP credential "SMTP - Stromation (leads@)" from leads@stromation.com
+- Error workflow: WF29 (37Mu8KJyxksGOe8B) — wired to ALL workflows via settings.errorWorkflow
 - n8n API requires `X-N8N-API-KEY` header
 - All Code nodes use `this.helpers.httpRequest()` (NOT fetch, NOT require)
 - `Buffer.from()` works in n8n but `btoa()` is safer
 - `require('crypto')` is BLOCKED in n8n sandbox
 - All GPT-generated text runs through `fixVoice()` post-processor (strips apostrophes from contractions, removes semicolons/exclamation marks/em dashes)
+- emailSend node v2.1 uses `text` param for plain text body, `html` for HTML body — NOT `message` (will be silently ignored)
+- `appendAttribution: false` must be set in options on ALL email nodes (prevents "sent with n8n" footer)
+- Cal.com booking: https://cal.com/darius-stroman-byeng8/30min (embedded on audit.html and thank-you.html)
 
 ## Supabase (iadzcnzgbtuigyodeqas.supabase.co)
 
@@ -271,7 +300,8 @@ All outbound communication matches Darius's actual writing style:
 - Don't add frameworks or build tools -- this is intentionally vanilla HTML/CSS/JS
 - Don't change pricing without explicit request from Darius
 - Don't use Formspree -- all forms go to n8n webhook stromation-form
-- Don't use SMS for notifications -- use n8n email node (leads@stromation.com)
+- Don't use SMS for cold outreach -- its illegal under TCPA. Use email only.
+- Don't use SMS for notifications -- use n8n email node
 - Don't use `fetch()` in n8n Code nodes -- use `this.helpers.httpRequest()`
 - Don't use `require('crypto')` in n8n -- its blocked in the sandbox
 - Don't commit .env files or API keys
@@ -279,3 +309,15 @@ All outbound communication matches Darius's actual writing style:
 - Don't break relative paths in blog posts (they use ../ prefix)
 - Don't re-enable WF13 (Reddit Community Bot) until karma is 50+
 - Don't modify voicemail.xml without explicit request
+- Don't use `message` parameter on emailSend v2.1 nodes -- use `text` or `html`
+- Don't send emails from an address that doesnt match the SMTP credential user (causes 553 rejection)
+- Don't use `qualified` or `client` as outreach_status values -- they fail the check constraint
+
+## Pre-Launch Checklist (what Darius needs to do)
+- [ ] Finish Stripe onboarding (dashboard.stripe.com) -- charges not enabled yet
+- [ ] Run supabase-schema.sql in Supabase SQL editor (creates projects/invoices/proposals tables)
+- [ ] Set up Google Ads account + get conversion tag ID for ad tracking
+- [ ] Set up Facebook Business Manager + get Pixel ID for retargeting
+- [ ] Get 3-5 client testimonials for social proof
+- [ ] Post genuine Reddit comments manually to build karma (currently -1)
+- [ ] Decide on contract/e-signature tool (DocuSign, PandaDoc, or email approval)
