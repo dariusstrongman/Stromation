@@ -60,7 +60,7 @@ Defined in `:root` in styles.css:
 | admin-proposal.html | Admin: send proposals/quotes to clients (noindex, not in nav) |
 | 404.html | Custom 404 error page |
 
-### Blog Posts (blog/) -- 16 posts
+### Blog Posts (blog/) -- 17 posts
 - 5-signs-business-needs-workflow-automation.html
 - automate-lead-follow-up.html
 - real-cost-of-manual-work.html
@@ -77,6 +77,7 @@ Defined in `:root` in styles.css:
 - automate-appointment-scheduling-reduce-no-shows.html
 - automate-google-review-requests.html
 - stop-manually-entering-data-between-apps.html
+- maximizing-roi-business-process-automation-strategies.html
 
 New blog posts are auto-generated weekly by WF25 (Sunday 6AM CT).
 
@@ -114,7 +115,16 @@ When creating a new blog post:
 
 WF25 (Auto Blog Publisher) handles this automatically every Sunday.
 
-## n8n Workflows (n8n.myaibuffet.com) -- 18 active, 1 off
+## n8n Workflows (n8n.myaibuffet.com) -- 21 active (WF13 active but low-priority)
+
+### Important: n8n Code Node Rules
+- `Buffer.from()` is BLOCKED in n8n sandbox (triggers crypto module restriction)
+- Use pure JS base64 helpers (`b64encode`/`b64decode` or `toBase64`) instead
+- `fetch()` is NOT available -- use `this.helpers.httpRequest()`
+- `require()` is NOT available -- no external modules
+- For functions that use `this.helpers`, either capture `const _helpers = this.helpers` at top level, or call with `.call(this)`
+- All external input must be coerced with `String()` before calling `.trim()`, `.split()`, etc.
+- Template literals (backticks) work fine in n8n Code v2 nodes
 
 ### Lead Capture & Communication
 | ID | Name | Schedule | Description |
@@ -134,15 +144,17 @@ WF25 (Auto Blog Publisher) handles this automatically every Sunday.
 ### Reddit (u/dev_darius -- karma currently low, building up)
 | ID | Name | Schedule | Description |
 |----|------|----------|-------------|
-| 13 | Reddit Community Bot | **OFF** | Posts to subreddits -- disabled until karma recovers |
+| 13 | Reddit Community Bot | Mon/Wed/Fri 11AM CT | Posts to subreddits (active but low karma, building up) |
 | 14 | Reddit Comment Bot | 2x daily (12PM/5PM CT) | Comments on relevant automation posts |
-| 15 | Reddit Reply Handler | Every 4 hours | Responds to replies on our comments |
+| 15 | Reddit Reply Handler | Every 8 hours | Responds to replies on our comments |
 | 17 | Reddit Karma Builder | Daily 9AM CT | Casual comments on safe subreddits (AskReddit, todayilearned, LifeProTips, etc.) max 2 comments/run |
 | 21 | Reddit Lead Digest | Daily 6PM CT | Scans Reddit for high-intent posts, emails digest to Gmail |
 
 ### Content & Reporting
 | ID | Name | Schedule | Description |
 |----|------|----------|-------------|
+| 09a | Blog Auto-Publisher | Webhook (/blog-auto-publisher) | Older blog publisher (schedule + webhook trigger), updates sitemap |
+| 09b | Twitter Auto-Poster | Cron | Posts to X/Twitter |
 | 24 | Weekly Pipeline Digest | Monday 8AM CT | Pipeline stats + hot leads email to Gmail |
 | 25 | Auto Blog Publisher | Sunday 6AM CT | GPT generates blog post → commits to GitHub → updates blog.html + sitemap + RSS |
 
@@ -180,15 +192,16 @@ WF25 (Auto Blog Publisher) handles this automatically every Sunday.
 |----------------|-------|---------|
 | SMTP - Stromation (leads@) | leads@stromation.com | WF11, WF22, WF23, WF24, WF25, WF26, WF29 |
 | admin | darius@stromation.com | WF27 (invoices), WF30 (proposals) |
-| SMTP - Outreach | outreach@stromation.com | WF19 (cold email), WF21 (lead digest) |
+| SMTP - Outreach | outreach@stromation.com | WF19 (cold email) |
 
 ### Key n8n Details
 - Reddit account: u/dev_darius (refresh token with read/submit/identity/history/vote scope)
 - Error workflow: WF29 (37Mu8KJyxksGOe8B) — wired to ALL workflows via settings.errorWorkflow
 - n8n API requires `X-N8N-API-KEY` header
 - All Code nodes use `this.helpers.httpRequest()` (NOT fetch, NOT require)
-- `Buffer.from()` works in n8n but `btoa()` is safer
+- `Buffer.from()` is BLOCKED in n8n sandbox -- use pure JS base64 helpers instead
 - `require('crypto')` is BLOCKED in n8n sandbox
+- External input must be wrapped in `String()` before `.trim()`, `.split()`, etc.
 - All GPT-generated text runs through `fixVoice()` post-processor (strips apostrophes from contractions, removes semicolons/exclamation marks/em dashes)
 - emailSend node v2.1 uses `text` param for plain text body, `html` for HTML body — NOT `message` (will be silently ignored)
 - `appendAttribution: false` must be set in options on ALL email nodes (prevents "sent with n8n" footer)
@@ -303,7 +316,8 @@ All outbound communication matches Darius's actual writing style:
 - Don't use SMS for cold outreach -- its illegal under TCPA. Use email only.
 - Don't use SMS for notifications -- use n8n email node
 - Don't use `fetch()` in n8n Code nodes -- use `this.helpers.httpRequest()`
-- Don't use `require('crypto')` in n8n -- its blocked in the sandbox
+- Don't use `Buffer.from()` in n8n Code nodes -- use pure JS base64 helpers
+- Don't use `require()` in n8n -- all modules are blocked in the sandbox
 - Don't commit .env files or API keys
 - Don't use inline styles -- use existing CSS classes in styles.css
 - Don't break relative paths in blog posts (they use ../ prefix)
