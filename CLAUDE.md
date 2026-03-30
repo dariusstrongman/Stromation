@@ -173,6 +173,9 @@ WF25 (Auto Blog Publisher) handles this automatically every Sunday.
 | businesses | Lead/prospect CRM -- name, email, phone, type, city, outreach_status, pain points, tools, deal_value |
 | outreach_log | Email history -- business_id, email_num, subject, body, sent_at, status |
 | reddit_leads | Reddit lead posts scored by GPT |
+| projects | Client projects -- business_id, name, status (proposed/approved/in_progress/delivered/completed), tier, amount, retainer_amount, timeline, dates |
+| invoices | Invoice tracking -- business_id, project_id, invoice_num, amount, status (draft/sent/paid/overdue/cancelled), stripe fields, due/paid dates |
+| proposals | Proposals/contracts -- business_id, project_title, tier, amount, retainer, timeline, status (sent/viewed/approved/declined/expired) |
 
 ### Outreach Status Values (check constraint enforced)
 - `new` -- just added (from website form or business finder)
