@@ -60,7 +60,7 @@ Defined in `:root` in styles.css:
 | admin-proposal.html | Admin: send proposals/quotes to clients (noindex, not in nav) |
 | 404.html | Custom 404 error page |
 
-### Blog Posts (blog/) -- 17 posts
+### Blog Posts (blog/) -- 18 posts
 - 5-signs-business-needs-workflow-automation.html
 - automate-lead-follow-up.html
 - real-cost-of-manual-work.html
@@ -78,6 +78,7 @@ Defined in `:root` in styles.css:
 - automate-google-review-requests.html
 - stop-manually-entering-data-between-apps.html
 - maximizing-roi-business-process-automation-strategies.html
+- benefits-automating-customer-support-workflows.html
 
 New blog posts are auto-generated weekly by WF25 (Sunday 6AM CT).
 
