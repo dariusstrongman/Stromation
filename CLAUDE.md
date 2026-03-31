@@ -198,9 +198,9 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | businesses | Lead/prospect CRM |
 | outreach_log | Email history (business_id, email_num, subject, body, sent_at, status) |
 | reddit_leads | Reddit posts scored by GPT |
-| projects | PENDING -- run supabase-schema.sql to create |
-| invoices | PENDING -- run supabase-schema.sql to create |
-| proposals | PENDING -- run supabase-schema.sql to create |
+| projects | Client projects -- logged by WF28 (onboarding) |
+| invoices | Invoice tracking -- logged by WF27 (invoice generator) |
+| proposals | Proposals/contracts -- logged by WF30 (proposal generator) |
 
 ### Email Sequence Numbers
 - 1-3: Cold outreach (WF19)
@@ -274,7 +274,8 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - [x] Favicon transparent background -- done 2026-03-31
 - [x] Finish Stripe onboarding (dashboard.stripe.com) -- done 2026-03-31
 - [x] Run docs/supabase-schema.sql in Supabase SQL editor -- done 2026-03-31
-- [ ] Set up Google Search Console + submit sitemap
+- [x] Wire WF27/WF28/WF30 to log to invoices/projects/proposals tables -- done 2026-03-31
+- [x] Set up Google Search Console + submit sitemap -- done 2026-03-31
 - [ ] Set up Google Ads account + conversion tag
 - [ ] Set up Facebook Business Manager + Pixel
 - [ ] Get 3-5 client testimonials
