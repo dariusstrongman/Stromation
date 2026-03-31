@@ -231,7 +231,7 @@
             // Fetch businesses and outreach logs in parallel
             var [businesses, logs] = await Promise.all([
                 fetchData('businesses', 'select=*&order=created_at.desc'),
-                fetchData('outreach_log', 'select=*&order=created_at.desc&limit=10')
+                fetchData('outreach_log', 'select=*&order=sent_at.desc&limit=10')
             ]);
 
             // Stats
