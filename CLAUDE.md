@@ -105,12 +105,24 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | twitter-content-30days.md | 30 days of tweets for @stromationhq |
 | supabase-schema.sql | SQL for projects/invoices/proposals tables |
 
+### workflow-templates/ (reusable n8n templates for client deployments)
+| File | Purpose |
+|------|---------|
+| missed-call-textback.json | Missed Call Text-Back system -- Twilio missed call -> instant SMS -> AI reply -> lead logging |
+| missed-call-setup-guide.md | Step-by-step deployment guide for the missed call system |
+| README.md | Template index and overview |
+
 ### Image Assets
 - `img/` -- SVG illustrations for services, case studies, steps, Stripe tier images
 - `logos/` -- logo.svg, logo.png, stromation-icon.svg, logo-transparent.svg, logo-transparent.png, logo-transparent-white.png
 - Root: logo.svg (nav icon), logo-icon.svg (SVG favicon), logo.png, banner-1500x500.png, profile-pic-400x400.png, favicon.ico
 
-## n8n Workflows (n8n.myaibuffet.com) -- 19 total (18 active, 1 OFF)
+## n8n Workflows (n8n.myaibuffet.com) -- 20 total (18 active, 1 OFF, 1 template)
+
+### Client Templates (inactive, duplicate per client)
+| ID | Name | Description |
+|----|------|-------------|
+| ADsVwfxGwkXDlinp | TEMPLATE - Missed Call Text-Back | Twilio missed call -> SMS text-back -> AI reply handler -> lead logging. Port client number to your Twilio, deploy in 15 min. |
 
 ### Lead Capture & Communication
 | ID | Name | Schedule | Description |
