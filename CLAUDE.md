@@ -9,7 +9,7 @@
 - Business email: darius@stromation.com (SMTP credential: "admin")
 - Contact email: contact@stromation.com (used sitewide, replaced support@)
 - Leads email: leads@stromation.com (SMTP credential: "SMTP - Stromation (leads@)")
-- Outreach email: outreach@stromation.com (SMTP credential: "SMTP - Outreach")
+- Outreach email: chase@stromation.com (SMTP credential: "SMTP - Outreach(Chase)") -- "Chase" is the sales persona
 - Darius personal email: dariusstroman@gmail.com
 - Stripe account: Stromation (charges NOT yet enabled -- needs onboarding completion)
 
@@ -134,9 +134,9 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 ### Outbound & Outreach
 | ID | Name | Schedule | Description |
 |----|------|----------|-------------|
-| 18 | Local Business Finder | Daily 7AM CT | Google Places API → DFW businesses → MX email verification → Supabase |
-| 19 | Cold Email Outreach | Daily 9AM CT | 3-email sequence, Darius voice, fixVoice, dedup check |
-| 20 | Outreach Reply Handler | IMAP trigger | AI conversation, extracts phone/tools/pain/team, updates Supabase |
+| 18 | Local Business Finder | Daily 7AM CT | Google Places API → DFW businesses (15/run, 4 types) → 5-page email scrape → Disify verification → Supabase. No info@ guessing. |
+| 19 | Cold Email Outreach | Daily 9AM CT | 3-email sequence from chase@, Chase persona, fixVoice, dedup check. Build Emails → Send Email + Log & Update (parallel). |
+| 20 | Outreach Reply Handler | IMAP trigger (chase@) | AI replies as Chase, extracts phone/tools/pain, hot leads handed off to Darius. Updates Supabase. |
 | 23 | Lead Nurture Drip | Daily 10AM CT | 3-email drip for website leads (seq 50/51/52) |
 
 ### Reddit (u/dev_darius -- karma -1, building up)
@@ -167,12 +167,15 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 |----|------|-------------|
 | 29 | Error Alert | Emails dariusstroman@gmail.com on ANY workflow failure. Wired to all via errorWorkflow. |
 
-### SMTP Credentials
+### SMTP/IMAP Credentials
 | Credential | Email | Used By |
 |------------|-------|---------|
-| SMTP - Stromation (leads@) | leads@stromation.com | WF11, WF22, WF23, WF24, WF25, WF26, WF29 |
+| SMTP - Stromation (leads@) | leads@stromation.com | WF11, WF21, WF22, WF23, WF24, WF25, WF26, WF29 |
 | admin | darius@stromation.com | WF27 (invoices), WF30 (proposals) |
-| SMTP - Outreach | outreach@stromation.com | WF19 (cold email), WF21 (lead digest) |
+| SMTP - Outreach(Chase) | chase@stromation.com | WF19 (cold email outreach) |
+| IMAP - Outreach(chase) | chase@stromation.com | WF20 (watches inbox for replies) |
+
+**Chase is the outreach persona.** Cold emails go from chase@stromation.com. When a lead gets hot, Chase hands off to Darius. outreach@stromation.com was deleted -- do not reference it.
 
 ### Critical n8n Rules
 - Use `this.helpers.httpRequest()` -- NOT fetch(), NOT require()
@@ -255,15 +258,27 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - Don't send emails from address mismatching SMTP credential
 - Don't use `qualified`, `client`, or `audit_requested` as outreach_status
 - Don't re-enable WF13 until Reddit karma is 50+
+- Don't guess info@ emails in WF18 -- only save emails scraped from websites/mailto links
+- Don't reference outreach@stromation.com -- it's deleted. Use chase@stromation.com for outreach
+- Don't use `Buffer.from()` in n8n Code nodes -- use pure JS base64 helpers
 - Don't modify voicemail.xml without explicit request
 
 ## Pre-Launch Checklist
-- [ ] Finish Stripe onboarding (dashboard.stripe.com)
-- [ ] Run docs/supabase-schema.sql in Supabase SQL editor
-- [ ] Enable RLS read access for anon role on businesses + outreach_log tables (for dashboard)
+- [x] Fix all n8n workflows (Buffer.from, type safety, connections) -- done 2026-03-30
+- [x] Website audit + fix logos, AI phrases, old emails -- done 2026-03-30
+- [x] Enable RLS read access for anon role on businesses + outreach_log -- done 2026-03-31
+- [x] Fix admin dashboard (outreach_log.sent_at not created_at) -- done 2026-03-31
+- [x] Cold outreach pipeline live (9 businesses emailed) -- done 2026-03-31
+- [x] Switch outreach from outreach@ to chase@stromation.com -- done 2026-03-31
+- [x] Build missed call text-back template -- done 2026-03-31
+- [x] Favicon transparent background -- done 2026-03-31
+- [ ] Finish Stripe onboarding (dashboard.stripe.com) -- in progress
+- [ ] Run docs/supabase-schema.sql in Supabase SQL editor (for projects/invoices/proposals tables)
+- [ ] Set up Google Search Console + submit sitemap
 - [ ] Set up Google Ads account + conversion tag
 - [ ] Set up Facebook Business Manager + Pixel
 - [ ] Get 3-5 client testimonials
 - [ ] Build Reddit karma manually (currently -1)
 - [ ] Post LinkedIn content (docs/linkedin-profile.md, docs/linkedin-posts.md)
 - [ ] Start posting tweets (docs/twitter-content-30days.md)
+- [ ] Fix WF25 blog template reference (auto-published posts have old footer)
