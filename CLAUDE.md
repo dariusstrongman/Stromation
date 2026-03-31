@@ -11,7 +11,7 @@
 - Leads email: leads@stromation.com (SMTP credential: "SMTP - Stromation (leads@)")
 - Outreach email: chase@stromation.com (SMTP credential: "SMTP - Outreach(Chase)") -- "Chase" is the sales persona
 - Darius personal email: dariusstroman@gmail.com
-- Stripe account: Stromation (charges NOT yet enabled -- needs onboarding completion)
+- Stripe account: Stromation (live, charges enabled)
 
 ## Tech Stack
 - Pure vanilla HTML, CSS, JS -- no frameworks, no build tools, no bundlers
@@ -272,8 +272,8 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - [x] Switch outreach from outreach@ to chase@stromation.com -- done 2026-03-31
 - [x] Build missed call text-back template -- done 2026-03-31
 - [x] Favicon transparent background -- done 2026-03-31
-- [ ] Finish Stripe onboarding (dashboard.stripe.com) -- in progress
-- [ ] Run docs/supabase-schema.sql in Supabase SQL editor (for projects/invoices/proposals tables)
+- [x] Finish Stripe onboarding (dashboard.stripe.com) -- done 2026-03-31
+- [x] Run docs/supabase-schema.sql in Supabase SQL editor -- done 2026-03-31
 - [ ] Set up Google Search Console + submit sitemap
 - [ ] Set up Google Ads account + conversion tag
 - [ ] Set up Facebook Business Manager + Pixel
@@ -281,4 +281,4 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - [ ] Build Reddit karma manually (currently -1)
 - [ ] Post LinkedIn content (docs/linkedin-profile.md, docs/linkedin-posts.md)
 - [ ] Start posting tweets (docs/twitter-content-30days.md)
-- [ ] Fix WF25 blog template reference (auto-published posts have old footer)
+- [x] Fix WF25 blog template reference -- done 2026-03-31 (now uses 5-signs post)
