@@ -27,6 +27,8 @@
     <meta name="twitter:image" content="https://www.stromation.com/banner-1500x500.png">
     <link rel="icon" type="image/svg+xml" href="logo-icon.svg">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -114,7 +116,8 @@
                 <video
                     width="100%"
                     controls
-                    preload="metadata"
+                    preload="none"
+                    loading="lazy"
                     poster="video-thumbnail.png"
                     style="display: block; aspect-ratio: 16/9; object-fit: cover; background: #0A0F1C;"
                 >
