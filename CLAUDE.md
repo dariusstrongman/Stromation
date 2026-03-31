@@ -247,6 +247,7 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - FAQ link in footer on all pages
 
 ## Don'ts
+- **NEVER delete Supabase data without showing Darius every record first and getting explicit confirmation.** Real data was lost because records were assumed to be test data. Always ask before ANY delete operation. Never use `id=not.is.null` without approval.
 - Don't add frameworks or build tools
 - Don't change pricing without explicit request
 - Don't use Formspree -- all forms → n8n webhook
