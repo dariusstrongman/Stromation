@@ -31,13 +31,13 @@
 <script>
 (function() {
     var k = sessionStorage.getItem('stromation_admin');
-    if (k !== 'darius2026') {
+    if (k !== 'Kyomi123') {
         var p = prompt('Admin access required. Enter password:');
-        if (p !== 'darius2026') {
+        if (p !== 'Kyomi123') {
             document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Inter,sans-serif;color:#64748B;"><p>Access denied.</p></div>';
             return;
         }
-        sessionStorage.setItem('stromation_admin', 'darius2026');
+        sessionStorage.setItem('stromation_admin', 'Kyomi123');
     }
 })();
 </script>
