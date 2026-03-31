@@ -30,6 +30,20 @@
     </style>
 </head>
 <body>
+<script>
+(function() {
+    var k = sessionStorage.getItem('stromation_admin');
+    if (k !== 'darius2026') {
+        var p = prompt('Admin access required. Enter password:');
+        if (p !== 'darius2026') {
+            document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Inter,sans-serif;color:#64748B;"><p>Access denied.</p></div>';
+            return;
+        }
+        sessionStorage.setItem('stromation_admin', 'darius2026');
+    }
+})();
+</script>
+
     <div class="admin-container">
         <div class="admin-header">
             <div class="admin-badge">Admin Only</div>
