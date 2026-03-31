@@ -2,65 +2,62 @@
 
 ## Project Overview
 - **stromation.com** -- Workflow Replacement Studio owned by Darius Stroman
-- Static HTML/CSS/JS site hosted on GitHub Pages
+- Static HTML/CSS/JS site hosted on GitHub Pages (public repo)
 - Repo: github.com/dariusstrongman/Stromation
 - Domain: www.stromation.com (CNAME)
 - Twitter/X: @stromationhq
 - Business email: darius@stromation.com (SMTP credential: "admin")
-- Contact email: contact@stromation.com (used sitewide)
+- Contact email: contact@stromation.com (used sitewide, replaced support@)
 - Leads email: leads@stromation.com (SMTP credential: "SMTP - Stromation (leads@)")
+- Outreach email: outreach@stromation.com (SMTP credential: "SMTP - Outreach")
 - Darius personal email: dariusstroman@gmail.com
-- Stripe account: Stromation (charges NOT yet enabled — needs onboarding completion)
+- Stripe account: Stromation (charges NOT yet enabled -- needs onboarding completion)
 
 ## Tech Stack
 - Pure vanilla HTML, CSS, JS -- no frameworks, no build tools, no bundlers
 - Google Fonts (Inter, weights 400-800)
 - Google Analytics (G-B6Z6XV02RT)
 - Forms submit to n8n webhook (stromation-form), NOT Formspree
-- Chat widget (chat.js) connects to n8n webhook at n8n.myaibuffet.com
-- Schema.org structured data (ProfessionalService) on index.html
-- FAQ schema (FAQPage) on services.html and audit.html
+- Chat widget (chat.js) connects to n8n webhook
+- Schema.org structured data: ProfessionalService (index), FAQPage (services, audit, faq), Service+LocalBusiness (dental, home-services, agencies), BreadcrumbList (all main pages + blog posts)
 - RSS feed (feed.xml) for blog syndication
 - OG and Twitter meta tags on all pages
 - Supabase (iadzcnzgbtuigyodeqas.supabase.co) for lead/business CRM
+- Supabase anon key: sb_publishable_8qa-nssfdtEkCz-42wOSWQ_2P7S4Zj7 (safe for frontend)
+- Supabase service key: REDACTED_USE_N8N_CREDENTIALS (server-side only, never in frontend code)
 - Google Places API for local business discovery
+- Cal.com booking: https://cal.com/darius-stroman-byeng8/30min (embedded on audit.html and thank-you.html)
 - Remotion project at C:/Users/Darius/Desktop/stromation-video for video generation
-
-## CSS Custom Properties
-Defined in `:root` in styles.css:
-- `--primary: #2563EB` / `--primary-dark: #1D4ED8` / `--primary-light: #3B82F6`
-- `--secondary: #0EA5E9`
-- `--bg-white: #FFFFFF` / `--bg-light: #F8FAFC` / `--bg-subtle: #F1F5F9`
-- `--text-primary: #1E293B` / `--text-secondary: #64748B` / `--text-muted: #94A3B8`
-- `--success: #10B981` / `--border: #E2E8F0`
-- Font: `--font-heading` and `--font-body` both use Inter
 
 ## Site Structure
 
-### Root Pages
+### Root Pages (20 pages)
 | File | Purpose |
 |------|---------|
-| index.html | Homepage -- hero, showcase video, services overview, how-it-works, stats, testimonial, FAQ |
-| services.html | Detailed service offerings and pricing tiers (FAQ schema) |
+| index.html | Homepage -- hero, showcase video (lazy loaded), services, how-it-works, stats, testimonial |
+| services.html | Service offerings + pricing tiers (FAQ schema) |
 | industries.html | Industry-specific automation use cases |
 | case-studies.html | Client case studies with results |
-| about.html | About Darius, company story, headshot |
-| contact.html | Contact form (n8n webhook) + info |
-| audit.html | Free automation audit request form (FAQ schema) |
+| about.html | About Darius, company story |
+| contact.html | Contact form (n8n webhook) |
+| audit.html | Free audit form (FAQ schema) + Cal.com booking embed |
 | blog.html | Blog index with card grid |
-| checklist.html | Lead magnet -- free automation readiness checklist with email capture |
+| faq.html | Standalone FAQ page (17 questions, 5 categories, accordion UI, FAQPage schema) |
+| checklist.html | Lead magnet -- automation readiness checklist with email capture |
+| roi-calculator.html | Interactive ROI calculator with live math + email capture |
+| thank-you.html | Post-form confirmation + Cal.com booking (noindex) |
+| dental.html | Ad landing page for dental practices (Service+LocalBusiness schema) |
+| home-services.html | Ad landing page for home service businesses (Service+LocalBusiness schema) |
+| agencies.html | Ad landing page for marketing agencies (Service+LocalBusiness schema) |
+| admin-invoice.html | Admin: send invoices (password protected: Kyomi123, noindex) |
+| admin-proposal.html | Admin: send proposals (password protected: Kyomi123, noindex) |
+| admin-dashboard.html | Admin: live CRM dashboard from Supabase (password protected: Kyomi123, noindex) |
 | privacy.html | Privacy policy |
 | terms.html | Terms of service |
-| roi-calculator.html | Interactive ROI calculator with email capture |
-| thank-you.html | Post-form confirmation + Cal.com booking (noindex) |
-| dental.html | Ad landing page for dental practices |
-| home-services.html | Ad landing page for home service businesses |
-| agencies.html | Ad landing page for marketing/creative agencies |
-| admin-invoice.html | Admin: send invoices to clients (noindex, not in nav) |
-| admin-proposal.html | Admin: send proposals/quotes to clients (noindex, not in nav) |
 | 404.html | Custom 404 error page |
 
 ### Blog Posts (blog/) -- 18 posts
+All posts have reading time badges, breadcrumbs, internal cross-links, and 3 related posts.
 - 5-signs-business-needs-workflow-automation.html
 - automate-lead-follow-up.html
 - real-cost-of-manual-work.html
@@ -80,259 +77,181 @@ Defined in `:root` in styles.css:
 - maximizing-roi-business-process-automation-strategies.html
 - benefits-automating-customer-support-workflows.html
 
-New blog posts are auto-generated weekly by WF25 (Sunday 6AM CT).
+New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 
 ### Other Key Files
 | File | Purpose |
 |------|---------|
-| styles.css | Single global stylesheet |
+| styles.css | Single global stylesheet (includes .breadcrumb CSS) |
 | script.js | Main JS -- mobile menu, scroll animations, parallax, forms, FAQ accordion |
-| chat.js | Chat widget connecting to n8n webhook (loaded deferred on all pages) |
-| stromation-showcase.mp4 | 48s showcase video on homepage (Remotion + OpenAI TTS + music) |
-| feed.xml | RSS feed for blog posts |
+| chat.js | Chat widget connecting to n8n webhook (deferred on all pages) |
+| stromation-showcase.mp4 | 48s showcase video (lazy loaded on homepage) |
+| video-thumbnail.png | Poster image for showcase video |
+| feed.xml | RSS feed (18 blog posts) |
 | sitemap.xml | XML sitemap for search engines |
 | robots.txt | Robots directives |
-| voicemail.xml | TwiML -- redirects callers to text instead (Google Neural2-J voice) |
+| voicemail.xml | TwiML -- redirects callers to text (Google Neural2-J voice) |
 | CNAME | GitHub Pages custom domain |
-| supabase-schema.sql | SQL for creating projects/invoices/proposals tables (run in Supabase SQL editor) |
-| video-thumbnail.png | Thumbnail for showcase video on homepage |
+| .gitignore | Excludes workflow-backups/ |
 | .nojekyll | Disables Jekyll processing |
 
+### docs/ (internal business documents, not served on site)
+| File | Purpose |
+|------|---------|
+| sales-playbook.md | Discovery questions, objection handlers, closing scripts |
+| service-agreement.md | SOW/contract template for client projects |
+| linkedin-profile.md | Optimized LinkedIn profile copy |
+| linkedin-posts.md | 4 weekly LinkedIn posts |
+| twitter-content-30days.md | 30 days of tweets for @stromationhq |
+| supabase-schema.sql | SQL for projects/invoices/proposals tables |
+
 ### Image Assets
-- `img/` -- SVG illustrations for services, case studies, steps, chat icon
-- `logos/` -- Full brand kit: icon, logo, dark/light variants in SVG + PNG (512px to 4096px). The correct logo is `logos/logo.svg` and `logos/logo.png`
-- Root: logo.svg (nav icon), logo-icon.svg, logo-white.svg, logo.png, banner-1500x500.png, profile-pic-400x400.png, favicon.ico
+- `img/` -- SVG illustrations for services, case studies, steps, Stripe tier images
+- `logos/` -- logo.svg, logo.png, stromation-icon.svg, logo-transparent.svg, logo-transparent.png, logo-transparent-white.png
+- Root: logo.svg (nav icon), logo-icon.svg (SVG favicon), logo.png, banner-1500x500.png, profile-pic-400x400.png, favicon.ico
 
-## Blog Workflow
-When creating a new blog post:
-1. Create HTML file in `blog/` matching the structure of an existing post
-2. Add a card to `blog.html` in the blog grid section
-3. Add a `<url>` entry to `sitemap.xml` with `<priority>0.7</priority>`
-4. Add an `<item>` to `feed.xml` (newest first)
-5. Use existing CSS classes from styles.css -- no inline styles needed
-6. Blog posts use relative paths: `../logo.svg`, `../styles.css`, `../blog.html`
-7. Include Google Analytics snippet, OG/Twitter meta tags, and canonical URL
-8. Commit message format: `blog: Post Title Here`
-
-WF25 (Auto Blog Publisher) handles this automatically every Sunday.
-
-## n8n Workflows (n8n.myaibuffet.com) -- 21 active (WF13 active but low-priority)
-
-### Important: n8n Code Node Rules
-- `Buffer.from()` is BLOCKED in n8n sandbox (triggers crypto module restriction)
-- Use pure JS base64 helpers (`b64encode`/`b64decode` or `toBase64`) instead
-- `fetch()` is NOT available -- use `this.helpers.httpRequest()`
-- `require()` is NOT available -- no external modules
-- For functions that use `this.helpers`, either capture `const _helpers = this.helpers` at top level, or call with `.call(this)`
-- All external input must be coerced with `String()` before calling `.trim()`, `.split()`, etc.
-- Template literals (backticks) work fine in n8n Code v2 nodes
+## n8n Workflows (n8n.myaibuffet.com) -- 19 total (18 active, 1 OFF)
 
 ### Lead Capture & Communication
 | ID | Name | Schedule | Description |
 |----|------|----------|-------------|
-| 11 | SMS Handler | Webhook | AI text replies + emails leads to Gmail |
-| 12 | Website Chatbot | Webhook | GPT acts as Darius on stromation.com (casual voice, fixVoice post-processing) |
-| 22 | Website Form Handler | Webhook | Audit/contact/checklist forms → Supabase + email to Gmail |
+| 11 | SMS Handler | Webhook | AI text replies + emails leads to Gmail. Validates: skips empty SMS body. |
+| 12 | Website Chatbot | Webhook | GPT as Darius, fixVoice post-processing, resists prompt injection |
+| 22 | Website Form Handler | Webhook | Forms → Supabase + email. Validates: requires email or phone, checks email format. |
 
 ### Outbound & Outreach
 | ID | Name | Schedule | Description |
 |----|------|----------|-------------|
-| 18 | Local Business Finder | Daily 7AM CT | Google Places API → finds DFW businesses → Supabase |
-| 19 | Cold Email Outreach | Daily 9AM CT | 3-email sequence to new leads (Darius voice, fixVoice) |
-| 20 | Outreach Reply Handler | IMAP trigger | AI conversation with replies, extracts phone/tools/pain → Supabase |
+| 18 | Local Business Finder | Daily 7AM CT | Google Places API → DFW businesses → MX email verification → Supabase |
+| 19 | Cold Email Outreach | Daily 9AM CT | 3-email sequence, Darius voice, fixVoice, dedup check |
+| 20 | Outreach Reply Handler | IMAP trigger | AI conversation, extracts phone/tools/pain/team, updates Supabase |
 | 23 | Lead Nurture Drip | Daily 10AM CT | 3-email drip for website leads (seq 50/51/52) |
 
-### Reddit (u/dev_darius -- karma currently low, building up)
+### Reddit (u/dev_darius -- karma -1, building up)
 | ID | Name | Schedule | Description |
 |----|------|----------|-------------|
-| 13 | Reddit Community Bot | Mon/Wed/Fri 11AM CT | Posts to subreddits (active but low karma, building up) |
-| 14 | Reddit Comment Bot | 2x daily (12PM/5PM CT) | Comments on relevant automation posts |
-| 15 | Reddit Reply Handler | Every 8 hours | Responds to replies on our comments |
-| 17 | Reddit Karma Builder | Daily 9AM CT | Casual comments on safe subreddits (AskReddit, todayilearned, LifeProTips, etc.) max 2 comments/run |
-| 21 | Reddit Lead Digest | Daily 6PM CT | Scans Reddit for high-intent posts, emails digest to Gmail |
+| 13 | Reddit Community Bot | **OFF** | Posts to subreddits -- disabled until karma 50+ |
+| 14 | Reddit Comment Bot | 2x daily | Comments on relevant automation posts |
+| 15 | Reddit Reply Handler | Every 4-8 hours | Responds to replies on our comments |
+| 17 | Reddit Karma Builder | Daily 9AM CT | Casual comments on safe subreddits, max 2/run |
+| 21 | Reddit Lead Digest | Daily 6PM CT | Scans Reddit for high-intent posts, emails digest |
 
 ### Content & Reporting
 | ID | Name | Schedule | Description |
 |----|------|----------|-------------|
-| 09a | Blog Auto-Publisher | Webhook (/blog-auto-publisher) | Older blog publisher (schedule + webhook trigger), updates sitemap |
-| 09b | Twitter Auto-Poster | Cron | Posts to X/Twitter |
 | 24 | Weekly Pipeline Digest | Monday 8AM CT | Pipeline stats + hot leads email to Gmail |
-| 25 | Auto Blog Publisher | Sunday 6AM CT | GPT generates blog post → commits to GitHub → updates blog.html + sitemap + RSS |
+| 25 | Auto Blog Publisher | Sunday 6AM CT | GPT → blog post → GitHub commit → updates blog.html + sitemap + RSS |
 
 ### Client Management (webhook-triggered)
 | ID | Name | Webhook | Description |
 |----|------|---------|-------------|
-| 26 | Review Request | /webhook/stromation-review-request | Sends Google review request email to client |
-| 27 | Invoice Generator | /webhook/stromation-invoice | Generates HTML invoice, sends to client, CCs Gmail |
-| 28 | Client Onboarding | /webhook/stromation-onboard | Welcome email + intake link, updates Supabase status to 'won' |
-| 30 | Proposal Generator | /webhook/stromation-proposal | Generates branded proposal, sends to client from darius@ |
+| 26 | Review Request | /webhook/stromation-review-request | Review request email. Validates: requires client_email. |
+| 27 | Invoice Generator | /webhook/stromation-invoice | Professional invoice + Stripe Pay Now link. Validates: requires email, positive amount. From darius@. |
+| 28 | Client Onboarding | /webhook/stromation-onboard | Welcome email + intake link, status → 'won'. Validates: requires email + name. |
+| 30 | Proposal Generator | /webhook/stromation-proposal | Branded proposal email. Validates: requires email, amount, project_title. From darius@. |
 
-### Operations & Monitoring
+### Operations
 | ID | Name | Description |
 |----|------|-------------|
-| 29 | Error Alert | Emails dariusstroman@gmail.com when ANY workflow fails. Wired to all workflows via errorWorkflow setting. |
-
-### Deleted Workflows
-- 00 (Error Handler v1) -- was sending SMS alerts, wasted credits. Replaced by WF29.
-- 10 (Voicemail Handler) -- replaced by text redirect
-- 16 (Lead Alert) -- replaced by WF21 (Reddit Lead Digest) via email
-
-### Webhook URLs
-| Webhook | Purpose |
-|---------|---------|
-| /webhook/stromation-form | Website forms (audit, contact, checklist) |
-| /webhook/stromation-chat | Website chatbot |
-| /webhook/stromation-sms | Inbound SMS from Twilio |
-| /webhook/stromation-review-request | Trigger review request email |
-| /webhook/stromation-invoice | Generate and send invoice |
-| /webhook/stromation-onboard | Client onboarding sequence |
-| /webhook/stromation-proposal | Generate and send proposal/quote |
+| 29 | Error Alert | Emails dariusstroman@gmail.com on ANY workflow failure. Wired to all via errorWorkflow. |
 
 ### SMTP Credentials
-| Credential Name | Email | Used By |
-|----------------|-------|---------|
+| Credential | Email | Used By |
+|------------|-------|---------|
 | SMTP - Stromation (leads@) | leads@stromation.com | WF11, WF22, WF23, WF24, WF25, WF26, WF29 |
 | admin | darius@stromation.com | WF27 (invoices), WF30 (proposals) |
-| SMTP - Outreach | outreach@stromation.com | WF19 (cold email) |
+| SMTP - Outreach | outreach@stromation.com | WF19 (cold email), WF21 (lead digest) |
 
-### Key n8n Details
-- Reddit account: u/dev_darius (refresh token with read/submit/identity/history/vote scope)
-- Error workflow: WF29 (37Mu8KJyxksGOe8B) — wired to ALL workflows via settings.errorWorkflow
-- n8n API requires `X-N8N-API-KEY` header
-- All Code nodes use `this.helpers.httpRequest()` (NOT fetch, NOT require)
-- `Buffer.from()` is BLOCKED in n8n sandbox -- use pure JS base64 helpers instead
-- `require('crypto')` is BLOCKED in n8n sandbox
-- External input must be wrapped in `String()` before `.trim()`, `.split()`, etc.
-- All GPT-generated text runs through `fixVoice()` post-processor (strips apostrophes from contractions, removes semicolons/exclamation marks/em dashes)
-- emailSend node v2.1 uses `text` param for plain text body, `html` for HTML body — NOT `message` (will be silently ignored)
-- `appendAttribution: false` must be set in options on ALL email nodes (prevents "sent with n8n" footer)
-- Cal.com booking: https://cal.com/darius-stroman-byeng8/30min (embedded on audit.html and thank-you.html)
+### Critical n8n Rules
+- Use `this.helpers.httpRequest()` -- NOT fetch(), NOT require()
+- emailSend v2.1: use `text` or `html` param -- NOT `message` (silently ignored = blank emails)
+- Always set `options: { appendAttribution: false }` on email nodes
+- fromEmail MUST match SMTP credential user (or 553 rejection)
+- Error workflow: WF29 (37Mu8KJyxksGOe8B)
+- Valid outreach_status: new, in_campaign, replied, won, lost, not_interested, sequence_complete, unsubscribed, bounced
+- INVALID status values (400 error): qualified, client, audit_requested
 
-## Supabase (iadzcnzgbtuigyodeqas.supabase.co)
+## Supabase
+
+### Keys
+- Anon (frontend-safe): sb_publishable_8qa-nssfdtEkCz-42wOSWQ_2P7S4Zj7
+- Service (server-only): REDACTED_USE_N8N_CREDENTIALS
 
 ### Tables
 | Table | Purpose |
 |-------|---------|
-| businesses | Lead/prospect CRM -- name, email, phone, type, city, outreach_status, pain points, tools, deal_value |
-| outreach_log | Email history -- business_id, email_num, subject, body, sent_at, status |
-| reddit_leads | Reddit lead posts scored by GPT |
-| projects | Client projects -- business_id, name, status (proposed/approved/in_progress/delivered/completed), tier, amount, retainer_amount, timeline, dates |
-| invoices | Invoice tracking -- business_id, project_id, invoice_num, amount, status (draft/sent/paid/overdue/cancelled), stripe fields, due/paid dates |
-| proposals | Proposals/contracts -- business_id, project_title, tier, amount, retainer, timeline, status (sent/viewed/approved/declined/expired) |
-
-### Outreach Status Values (check constraint enforced)
-- `new` -- just added (from website form or business finder)
-- `in_campaign` -- cold email sequence in progress
-- `replied` -- lead replied to outreach (also used for qualified leads)
-- `won` -- signed client (set by WF28 onboarding)
-- `lost` -- deal lost
-- `not_interested` -- declined
-- `sequence_complete` -- finished 3-email sequence, no reply
-- `unsubscribed` -- requested removal
-- `bounced` -- email bounced
-
-INVALID values (will cause 400 error): `qualified`, `client`, `audit_requested`
+| businesses | Lead/prospect CRM |
+| outreach_log | Email history (business_id, email_num, subject, body, sent_at, status) |
+| reddit_leads | Reddit posts scored by GPT |
+| projects | PENDING -- run supabase-schema.sql to create |
+| invoices | PENDING -- run supabase-schema.sql to create |
+| proposals | PENDING -- run supabase-schema.sql to create |
 
 ### Email Sequence Numbers
-- 1-3: Cold outreach emails (WF19)
-- 50-52: Nurture drip emails (WF23)
+- 1-3: Cold outreach (WF19)
+- 50-52: Nurture drip (WF23)
 - 100+: Conversational replies (WF20)
 
-## Darius Voice (for all AI-generated emails and chat)
-All outbound communication matches Darius's actual writing style:
-- Normal capitalization (first word of sentences, proper nouns, I)
-- NEVER use apostrophes in contractions (dont, cant, Im, youre, Ill, thats, whats, doesnt)
-- No exclamation marks, semicolons, or em dashes
-- Short sentences, fragments ok, casual (gonna, kinda, prob, tbh)
-- Never say: "I noticed", "I help", "I specialize", "dive deeper", "I hear you", "reach out", "touch base", "leverage", "streamline", "absolutely", "great question"
-- Sound like a real person, not a salesperson or AI
-- fixVoice() post-processor strips smart quotes, apostrophes, semicolons, and exclamation marks from all GPT output
-
-## Key Patterns
-- All pages share the same nav and footer HTML structure
-- Nav CTA button: "Get a Free Audit" links to audit.html
-- Logo in nav: workflow node icon (logo.svg) + "Stromation" text span
-- Blog posts reference `../logo.svg` and `../blog.html` (relative paths from blog/)
-- Footer includes stromation-icon.svg from `logos/` folder
-- All pages include `chat.js` with `defer` attribute
-- Forms post to n8n webhook stromation-form (NOT Formspree)
-- Homepage has embedded showcase video (stromation-showcase.mp4)
+## Darius Voice
+- Normal capitalization, no apostrophes in contractions (dont, cant, Im, youre)
+- No exclamation marks, semicolons, em dashes
+- Short sentences, casual (gonna, kinda, prob, tbh)
+- Never say AI phrases ("I noticed", "dive deeper", "leverage", "streamline", etc.)
+- fixVoice() post-processor on all GPT output
 
 ## Phone/SMS
 - Number: (855) 932-0493
-- Calls: short message redirecting caller to text instead (voicemail.xml, Google Neural2-J voice). No recording/transcription.
-- Texts: AI-classified via GPT, auto-reply sent, lead emailed to dariusstroman@gmail.com
-- All lead capture happens via text, website forms, or cold email replies
+- Calls → text redirect (voicemail.xml). No recording.
+- Texts → AI reply + lead emailed to Gmail
+- Cold outreach is EMAIL ONLY (SMS outreach is illegal under TCPA)
 
-## Pricing (current)
+## Pricing
 | Tier | Price |
 |------|-------|
 | Automation Audit | Free |
-| Simple Automation | $1,000 -- $2,500 |
-| AI-Assisted Automation | $2,500 -- $6,000 |
-| End-to-End Automation | $6,000 -- $15,000+ |
-| Retainer (Monitor) | $99/month |
-| Retainer (Maintain) | $149/month |
-| Retainer (Optimize) | $499/month |
+| Simple | $1,000 -- $2,500 |
+| AI-Assisted | $2,500 -- $6,000 |
+| End-to-End | $6,000 -- $15,000+ |
+| Monitor Retainer | $99/month |
+| Maintain Retainer | $149/month |
+| Optimize Retainer | $499/month |
 
-## Custom Commands (.claude/commands/)
-| Command | Description |
-|---------|-------------|
-| /brand-update | Apply a brand update across the entire site |
-| /case-study | Create a new case study |
-| /check-links | Check for broken internal links across all pages |
-| /deploy | Deploy to GitHub Pages |
-| /n8n-form | Create/update n8n workflow for form submissions |
-| /n8n-lead | Design n8n lead handling/follow-up automation |
-| /n8n-workflow | Design or troubleshoot an n8n workflow |
-| /new-blog | Create a new blog post |
-| /new-page | Create a new page for the site |
-| /performance | Audit site for performance issues |
-| /preview | Start local HTTP server (python -m http.server 8000) |
-| /seo-check | Audit SEO across all pages |
-| /sitemap | Update sitemap.xml |
-| /update-footer | Update footer across all pages |
-| /update-nav | Update nav bar across all pages |
+## Admin Pages
+All password protected with `Kyomi123` (sessionStorage, once per session):
+- stromation.com/admin-invoice.html -- send invoices
+- stromation.com/admin-proposal.html -- send proposals
+- stromation.com/admin-dashboard.html -- live CRM dashboard (uses Supabase anon key)
 
-## Custom Subagents (.claude/agents/)
-| Agent | Purpose |
-|-------|---------|
-| blog-reviewer | Reviews blog posts for SEO, formatting, and site consistency |
-| site-validator | Validates entire site for broken links, missing elements |
-| n8n-reviewer | Reviews n8n workflow JSON for bugs, syntax, and best practices |
-
-## Video (Remotion Project)
-- Location: C:/Users/Darius/Desktop/stromation-video
-- Render: `cd stromation-video && npx remotion render StromationShowcase out/stromation-showcase.mp4`
-- 48 seconds, 1920x1080, 30fps
-- Voice: OpenAI TTS HD "echo" voice, segmented per scene for precise sync
-- Music: Kevin MacLeod "Inspired" (CC BY 4.0)
-- Logo outro: SVG draw-on animation matching exact logo from logos/logo.svg
-- Copy output to Stromation/stromation-showcase.mp4 after rendering
+## Performance Optimizations Applied
+- Showcase video: preload=none + loading=lazy (saves 3.5MB initial load)
+- Cal.com iframes: loading=lazy
+- CSS/font preload hints on index.html
+- Reading time badges on all 18 blog posts
+- Breadcrumbs + BreadcrumbList schema on all main pages + blog posts
+- Internal cross-linking between blog posts (33 links)
+- FAQ link in footer on all pages
 
 ## Don'ts
-- Don't add frameworks or build tools -- this is intentionally vanilla HTML/CSS/JS
-- Don't change pricing without explicit request from Darius
-- Don't use Formspree -- all forms go to n8n webhook stromation-form
-- Don't use SMS for cold outreach -- its illegal under TCPA. Use email only.
-- Don't use SMS for notifications -- use n8n email node
-- Don't use `fetch()` in n8n Code nodes -- use `this.helpers.httpRequest()`
-- Don't use `Buffer.from()` in n8n Code nodes -- use pure JS base64 helpers
-- Don't use `require()` in n8n -- all modules are blocked in the sandbox
-- Don't commit .env files or API keys
-- Don't use inline styles -- use existing CSS classes in styles.css
-- Don't break relative paths in blog posts (they use ../ prefix)
-- Don't re-enable WF13 (Reddit Community Bot) until karma is 50+
+- Don't add frameworks or build tools
+- Don't change pricing without explicit request
+- Don't use Formspree -- all forms → n8n webhook
+- Don't use SMS for cold outreach (illegal under TCPA)
+- Don't use `fetch()` or `require()` in n8n Code nodes
+- Don't use `message` param on emailSend v2.1 -- use `text` or `html`
+- Don't put Supabase service key in frontend code (use anon key)
+- Don't commit API keys to the public repo (GitHub push protection blocks it)
+- Don't send emails from address mismatching SMTP credential
+- Don't use `qualified`, `client`, or `audit_requested` as outreach_status
+- Don't re-enable WF13 until Reddit karma is 50+
 - Don't modify voicemail.xml without explicit request
-- Don't use `message` parameter on emailSend v2.1 nodes -- use `text` or `html`
-- Don't send emails from an address that doesnt match the SMTP credential user (causes 553 rejection)
-- Don't use `qualified` or `client` as outreach_status values -- they fail the check constraint
 
-## Pre-Launch Checklist (what Darius needs to do)
-- [ ] Finish Stripe onboarding (dashboard.stripe.com) -- charges not enabled yet
-- [ ] Run supabase-schema.sql in Supabase SQL editor (creates projects/invoices/proposals tables)
-- [ ] Set up Google Ads account + get conversion tag ID for ad tracking
-- [ ] Set up Facebook Business Manager + get Pixel ID for retargeting
-- [ ] Get 3-5 client testimonials for social proof
-- [ ] Post genuine Reddit comments manually to build karma (currently -1)
-- [ ] Decide on contract/e-signature tool (DocuSign, PandaDoc, or email approval)
+## Pre-Launch Checklist
+- [ ] Finish Stripe onboarding (dashboard.stripe.com)
+- [ ] Run docs/supabase-schema.sql in Supabase SQL editor
+- [ ] Enable RLS read access for anon role on businesses + outreach_log tables (for dashboard)
+- [ ] Set up Google Ads account + conversion tag
+- [ ] Set up Facebook Business Manager + Pixel
+- [ ] Get 3-5 client testimonials
+- [ ] Build Reddit karma manually (currently -1)
+- [ ] Post LinkedIn content (docs/linkedin-profile.md, docs/linkedin-posts.md)
+- [ ] Start posting tweets (docs/twitter-content-30days.md)
