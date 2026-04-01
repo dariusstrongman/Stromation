@@ -176,6 +176,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | IMAP - Outreach(chase) | chase@stromation.com | WF20 (watches inbox for replies) |
 
 **Chase is the outreach persona.** Cold emails go from chase@stromation.com. When a lead gets hot, Chase hands off to Darius. outreach@stromation.com was deleted -- do not reference it.
+**BCC:** All cold emails from WF19 are BCC'd to darius@stromation.com so Darius gets a copy of every outreach.
 
 ### Critical n8n Rules
 - Use `this.helpers.httpRequest()` -- NOT fetch(), NOT require()
@@ -247,6 +248,7 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - FAQ link in footer on all pages
 
 ## Don'ts
+- **NEVER delete Supabase data without showing Darius every record first and getting explicit confirmation.** Real leads were lost because records were assumed to be test data. Always ask before ANY delete. Never use `id=not.is.null` without approval.
 - **NEVER delete Supabase data without showing Darius every record first and getting explicit confirmation.** Real data was lost because records were assumed to be test data. Always ask before ANY delete operation. Never use `id=not.is.null` without approval.
 - Don't add frameworks or build tools
 - Don't change pricing without explicit request
