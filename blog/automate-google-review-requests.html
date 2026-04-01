@@ -137,7 +137,7 @@
         <li>Google reviews directly influence local search rankings, trust, and conversion rates.</li>
         <li>Manual review requests fail because of inconsistency, poor timing, and lack of follow-up.</li>
         <li>An automated workflow can send personalized requests at the right moment after every job.</li>
-        <li>No-code tools like Zapier and Make let you connect your CRM to email and SMS in minutes.</li>
+        <li>No-code tools like n8n let you connect your CRM to email and SMS in minutes.</li>
         <li>Smart routing can intercept unhappy customers before they leave a negative public review.</li>
     </ul>
 </div>
@@ -206,24 +206,15 @@
 
 <h2>Step-by-Step Setup with No-Code Tools</h2>
 
-<p>You do not need a developer to build this. Here is how to set it up using <strong>no-code automation tools</strong> like Zapier or Make (formerly Integromat), connected to the tools you already use.</p>
+<p>You do not need a developer to build this. Here is how to set it up using <strong>n8n</strong>, a powerful no-code automation platform, connected to the tools you already use.</p>
 
-<h3>Option A: Zapier Setup</h3>
-
-<ol>
-    <li><strong>Create a new Zap.</strong> Choose your CRM, invoicing tool, or scheduling software as the trigger app. For example, if you use Jobber, select "Jobber" and the trigger event "Job Completed." If you use QuickBooks, select "Payment Received."</li>
-    <li><strong>Add a Delay step.</strong> Use Zapier's built-in "Delay" action. Set it to delay for 1 hour (or your preferred window).</li>
-    <li><strong>Add a "Send SMS" or "Send Email" action.</strong> For SMS, connect Twilio or a service like SimpleTexting. For email, use Gmail or your email marketing tool. Pull in the customer's first name and your Google review link from the trigger data.</li>
-    <li><strong>Add a second path for follow-up.</strong> Use Zapier's "Paths" feature or create a separate Zap that checks after 4 days whether a review was received (you can track this with a Google Sheet). If no review, send the reminder.</li>
-</ol>
-
-<h3>Option B: Make (Integromat) Setup</h3>
+<h3>n8n Setup</h3>
 
 <ol>
-    <li><strong>Create a new Scenario.</strong> Add your CRM module as the trigger (e.g., HubSpot "Deal moved to Closed Won" or ServiceTitan "Job Completed").</li>
-    <li><strong>Add a Sleep module</strong> set to your preferred delay.</li>
-    <li><strong>Add an HTTP or Email/SMS module</strong> to send the review request. Make's flexibility lets you connect almost any tool, even if there is no native integration, by using webhooks.</li>
-    <li><strong>Add a Router</strong> with a filter that checks a Google Sheets log after the delay period and sends a follow-up only to customers who have not yet reviewed.</li>
+    <li><strong>Create a new workflow.</strong> Add your CRM, invoicing tool, or scheduling software as the trigger node. For example, if you use Jobber, use a webhook trigger for "Job Completed." If you use QuickBooks, trigger on "Payment Received."</li>
+    <li><strong>Add a Wait node.</strong> Set it to delay for 1 hour (or your preferred window) before the next step fires.</li>
+    <li><strong>Add a "Send SMS" or "Send Email" node.</strong> For SMS, connect Twilio or a service like SimpleTexting. For email, use Gmail or your email marketing tool. Pull in the customer's first name and your Google review link from the trigger data.</li>
+    <li><strong>Add a second branch for follow-up.</strong> Use n8n's Switch or IF node to check after 4 days whether a review was received (you can track this with a Google Sheet). If no review, send the reminder.</li>
 </ol>
 
 <h3>Getting Your Direct Google Review Link</h3>
@@ -277,7 +268,7 @@
 
 <h3>Building It In Practice</h3>
 
-<p>Use a tool like Typeform or Google Forms for the satisfaction check. In Zapier or Make, route the response based on the score. High scores trigger the Google review request. Low scores trigger an internal Slack notification or email to your operations manager with the customer's details and feedback. That manager can then call the customer within hours to resolve the issue. This kind of fast, personal recovery often turns a potential one-star review into a loyal repeat customer.</p>
+<p>Use a tool like Typeform or Google Forms for the satisfaction check. In n8n, route the response based on the score. High scores trigger the Google review request. Low scores trigger an internal Slack notification or email to your operations manager with the customer's details and feedback. That manager can then call the customer within hours to resolve the issue. This kind of fast, personal recovery often turns a potential one-star review into a loyal repeat customer.</p>
 
 <h3>Real-World Example</h3>
 
@@ -290,7 +281,7 @@
 <p>If this workflow is so effective and relatively simple to build, why do most small businesses still rely on sporadic manual asks or no system at all? A few reasons:</p>
 
 <ul>
-    <li><strong>They don't know it's possible.</strong> Many small business owners are not aware that tools like Zapier and Make exist, or that their CRM can trigger automated messages.</li>
+    <li><strong>They don't know it's possible.</strong> Many small business owners are not aware that tools like n8n exist, or that their CRM can trigger automated messages.</li>
     <li><strong>They think it requires a developer.</strong> It does not. The entire workflow described above can be built in an afternoon with no code.</li>
     <li><strong>They tried once and stopped.</strong> Maybe they set up a basic email template but never automated the trigger, so it still required manual effort and fell off.</li>
     <li><strong>They worry about annoying customers.</strong> A well-timed, polite request with one follow-up is not annoying. Customers expect it. What is annoying is getting asked in person while they are trying to pay.</li>
