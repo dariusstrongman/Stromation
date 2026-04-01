@@ -1,10 +1,18 @@
 -- ============================================================
 -- THE BRASS EFFECT - Division 27 Auto-Bidder System
--- Run in Supabase SQL Editor after creating the project
+-- All tables prefixed with TBE_ to separate from Stromation tables
+-- Run in Supabase SQL Editor
 -- ============================================================
 
--- Bids: every project opportunity
-CREATE TABLE bids (
+-- Drop old unprefixed tables if they exist
+DROP TABLE IF EXISTS bid_activity CASCADE;
+DROP TABLE IF EXISTS bid_items CASCADE;
+DROP TABLE IF EXISTS saved_searches CASCADE;
+DROP TABLE IF EXISTS pricing_defaults CASCADE;
+DROP TABLE IF EXISTS bids CASCADE;
+
+-- TBE_bids: every project opportunity
+CREATE TABLE TBE_bids (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     project_name TEXT NOT NULL,
     source TEXT NOT NULL CHECK (source IN ('sam_gov', 'planhub', 'constructconnect', 'manual', 'referral', 'other')),
@@ -62,10 +70,10 @@ CREATE TABLE bids (
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Line items: materials + labor breakdown per bid
-CREATE TABLE bid_items (
+-- TBE_bid_items: materials + labor breakdown per bid
+CREATE TABLE TBE_bid_items (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    bid_id UUID REFERENCES bids(id) ON DELETE CASCADE,
+    bid_id UUID REFERENCES TBE_bids(id) ON DELETE CASCADE,
     category TEXT NOT NULL,
     item_name TEXT NOT NULL,
     description TEXT,
@@ -78,8 +86,8 @@ CREATE TABLE bid_items (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Pricing templates: default rates Antonio can adjust
-CREATE TABLE pricing_defaults (
+-- TBE_pricing_defaults: default rates Antonio can adjust
+CREATE TABLE TBE_pricing_defaults (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     item_key TEXT UNIQUE NOT NULL,
     item_name TEXT NOT NULL,
@@ -92,7 +100,7 @@ CREATE TABLE pricing_defaults (
 );
 
 -- Insert DFW market default pricing for Division 27
-INSERT INTO pricing_defaults (item_key, item_name, category, default_unit_price, unit, is_labor, notes) VALUES
+INSERT INTO TBE_pricing_defaults (item_key, item_name, category, default_unit_price, unit, is_labor, notes) VALUES
     -- Structured Cabling
     ('cat6_drop', 'Cat6 Data Drop', 'Structured Cabling', 225.00, 'drop', false, 'Includes cable, termination, testing, labeling'),
     ('cat6a_drop', 'Cat6A Data Drop', 'Structured Cabling', 325.00, 'drop', false, 'Includes cable, termination, testing, labeling'),
@@ -142,10 +150,10 @@ INSERT INTO pricing_defaults (item_key, item_name, category, default_unit_price,
     ('profit_pct', 'Profit Margin', 'Rates', 15.00, '%', false, 'Target profit margin')
 ;
 
--- Activity log: tracks every status change
-CREATE TABLE bid_activity (
+-- TBE_bid_activity: tracks every status change
+CREATE TABLE TBE_bid_activity (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    bid_id UUID REFERENCES bids(id) ON DELETE CASCADE,
+    bid_id UUID REFERENCES TBE_bids(id) ON DELETE CASCADE,
     action TEXT NOT NULL,
     old_status TEXT,
     new_status TEXT,
@@ -153,36 +161,60 @@ CREATE TABLE bid_activity (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- TBE_saved_searches: what keywords/filters to monitor
+CREATE TABLE TBE_saved_searches (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name TEXT NOT NULL,
+    keywords TEXT[] NOT NULL,
+    location TEXT DEFAULT 'DFW',
+    min_value NUMERIC(12,2) DEFAULT 1000,
+    active BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Insert default Division 27 search
+INSERT INTO TBE_saved_searches (name, keywords) VALUES (
+    'Division 27 - DFW',
+    ARRAY['division 27', 'low voltage', 'structured cabling', 'fiber optic', 'data cabling',
+          'voice cabling', 'fire alarm', 'access control', 'security camera', 'CCTV',
+          'surveillance', 'audio visual', 'AV system', 'paging system', 'intercom',
+          'distributed antenna', 'DAS', 'telecommunications', 'network infrastructure',
+          'cable plant', 'cat6', 'cat5e', 'fiber termination']
+);
+
 -- Enable RLS
-ALTER TABLE bids ENABLE ROW LEVEL SECURITY;
-ALTER TABLE bid_items ENABLE ROW LEVEL SECURITY;
-ALTER TABLE pricing_defaults ENABLE ROW LEVEL SECURITY;
-ALTER TABLE bid_activity ENABLE ROW LEVEL SECURITY;
+ALTER TABLE TBE_bids ENABLE ROW LEVEL SECURITY;
+ALTER TABLE TBE_bid_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE TBE_pricing_defaults ENABLE ROW LEVEL SECURITY;
+ALTER TABLE TBE_bid_activity ENABLE ROW LEVEL SECURITY;
+ALTER TABLE TBE_saved_searches ENABLE ROW LEVEL SECURITY;
 
 -- Service role full access (for n8n workflows)
-CREATE POLICY "Service role full access" ON bids FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Service role full access" ON bid_items FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Service role full access" ON pricing_defaults FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Service role full access" ON bid_activity FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access" ON TBE_bids FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access" ON TBE_bid_items FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access" ON TBE_pricing_defaults FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access" ON TBE_bid_activity FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access" ON TBE_saved_searches FOR ALL USING (true) WITH CHECK (true);
 
 -- Anon read access (for dashboard)
-CREATE POLICY "Anon read access" ON bids FOR SELECT USING (true);
-CREATE POLICY "Anon read access" ON bid_items FOR SELECT USING (true);
-CREATE POLICY "Anon read access" ON pricing_defaults FOR SELECT USING (true);
-CREATE POLICY "Anon read access" ON bid_activity FOR SELECT USING (true);
+CREATE POLICY "Anon read access" ON TBE_bids FOR SELECT USING (true);
+CREATE POLICY "Anon read access" ON TBE_bid_items FOR SELECT USING (true);
+CREATE POLICY "Anon read access" ON TBE_pricing_defaults FOR SELECT USING (true);
+CREATE POLICY "Anon read access" ON TBE_bid_activity FOR SELECT USING (true);
+CREATE POLICY "Anon read access" ON TBE_saved_searches FOR SELECT USING (true);
 
--- Anon write for dashboard updates (status changes, notes, bid amounts)
-CREATE POLICY "Anon update bids" ON bids FOR UPDATE USING (true) WITH CHECK (true);
-CREATE POLICY "Anon insert activity" ON bid_activity FOR INSERT WITH CHECK (true);
-CREATE POLICY "Anon update pricing" ON pricing_defaults FOR UPDATE USING (true) WITH CHECK (true);
-CREATE POLICY "Anon insert items" ON bid_items FOR INSERT WITH CHECK (true);
-CREATE POLICY "Anon update items" ON bid_items FOR UPDATE USING (true) WITH CHECK (true);
-CREATE POLICY "Anon delete items" ON bid_items FOR DELETE USING (true);
+-- Anon write for dashboard updates
+CREATE POLICY "Anon update bids" ON TBE_bids FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Anon insert activity" ON TBE_bid_activity FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anon update pricing" ON TBE_pricing_defaults FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Anon insert items" ON TBE_bid_items FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anon update items" ON TBE_bid_items FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Anon delete items" ON TBE_bid_items FOR DELETE USING (true);
 
 -- Indexes
-CREATE INDEX idx_bids_status ON bids(status);
-CREATE INDEX idx_bids_deadline ON bids(bid_deadline);
-CREATE INDEX idx_bids_source ON bids(source);
-CREATE INDEX idx_bids_created ON bids(created_at DESC);
-CREATE INDEX idx_bid_items_bid ON bid_items(bid_id);
-CREATE INDEX idx_bid_activity_bid ON bid_activity(bid_id);
+CREATE INDEX idx_tbe_bids_status ON TBE_bids(status);
+CREATE INDEX idx_tbe_bids_deadline ON TBE_bids(bid_deadline);
+CREATE INDEX idx_tbe_bids_source ON TBE_bids(source);
+CREATE INDEX idx_tbe_bids_created ON TBE_bids(created_at DESC);
+CREATE INDEX idx_tbe_bid_items_bid ON TBE_bid_items(bid_id);
+CREATE INDEX idx_tbe_bid_activity_bid ON TBE_bid_activity(bid_id);
