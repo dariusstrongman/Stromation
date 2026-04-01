@@ -304,3 +304,9 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - [ ] Post LinkedIn content (docs/linkedin-profile.md, docs/linkedin-posts.md)
 - [ ] Start posting tweets (docs/twitter-content-30days.md)
 - [x] Fix WF25 blog template reference -- done 2026-03-31 (now uses 5-signs post)
+- [x] Wire WF27/WF28/WF30 Supabase logging -- done 2026-03-31
+- [x] Add honeypot spam filter to all website forms -- done 2026-04-01
+- [x] Switch outreach to chase@stromation.com -- done 2026-03-31
+- [x] Add comparison table, real examples, guarantee to homepage -- done 2026-04-01
+- [x] Add client logos + testimonials (The Brass Effect, ReadyMade Video) -- done 2026-04-01
+- [x] Applied for n8n affiliate partner program -- done 2026-04-01
