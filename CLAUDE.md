@@ -310,3 +310,12 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - [x] Add comparison table, real examples, guarantee to homepage -- done 2026-04-01
 - [x] Add client logos + testimonials (The Brass Effect, ReadyMade Video) -- done 2026-04-01
 - [x] Applied for n8n affiliate partner program -- done 2026-04-01
+- [x] Cold call dashboard built (admin-coldcall.html) -- done 2026-04-01
+- [x] Honeypot spam filter on all forms -- done 2026-04-01
+- [x] WF20 IMAP fix (removed from error alerts, watchdog approach) -- done 2026-04-01
+- [x] WF29 Error Alert deleted (too noisy from IMAP drops) -- done 2026-04-01
+- [x] WF19 cold email prompt rewritten (intro, relevance, proof, CTA) -- done 2026-04-01
+- [x] WF18 corporate filter + junk email blocklist expanded -- done 2026-04-01
+- [x] WF20 bounce detection added (auto-marks bounced in Supabase) -- done 2026-04-01
+- [x] Client logos + testimonials on homepage (Brass Effect, ReadyMade Video) -- done 2026-04-01
+- [ ] The Brass Effect Division 27 Auto-Bidder -- IN PROGRESS
