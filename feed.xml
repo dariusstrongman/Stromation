@@ -5,8 +5,15 @@
   <link>https://www.stromation.com/blog.html</link>
   <description>Automation guides and insights for business owners</description>
   <language>en-us</language>
-  <lastBuildDate>Tue, 31 Mar 2026 11:00:24 GMT</lastBuildDate>
+  <lastBuildDate>Wed, 01 Apr 2026 11:00:55 GMT</lastBuildDate>
   <atom:link href="https://www.stromation.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>How to Automate Customer Feedback Collection to Improve Your Business Strategy</title>
+    <link>https://www.stromation.com/blog/automate-customer-feedback-collection-improve-business-strategy.html</link>
+    <description>Learn how automating feedback collection can enhance your business strategy by streamlining insights and improving customer satisfaction.</description>
+    <pubDate>Wed, 01 Apr 2026 11:00:55 GMT</pubDate>
+    <guid>https://www.stromation.com/blog/automate-customer-feedback-collection-improve-business-strategy.html</guid>
+  </item>
   <item>
     <title>How to Automate Social Media Scheduling to Increase Engagement for Your Small Business</title>
     <link>https://www.stromation.com/blog/automate-social-media-scheduling-increase-engagement.html</link>
@@ -142,3 +149,4 @@
   </item>
 </channel>
 </rss>
+ 
