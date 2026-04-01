@@ -342,11 +342,24 @@ function resetScript() {
 var lastAction = null;
 
 function saveNotes(id) {
-    var notes = document.getElementById('notes-' + id).value.trim();
-    fetch(SUPABASE_URL + '/rest/v1/businesses?id=eq.' + id, {
-        method: 'PATCH',
-        headers: HEADERS,
-        body: JSON.stringify({ notes: notes })
+    var newNotes = document.getElementById('notes-' + id).value.trim();
+    // Fetch existing notes first, then append
+    fetch(SUPABASE_URL + '/rest/v1/businesses?id=eq.' + id + '&select=notes', { headers: HEADERS })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        var existing = (data && data[0] && data[0].notes) ? data[0].notes : '';
+        // If new notes are different from existing, append with timestamp
+        var combined = existing;
+        if (newNotes && newNotes !== existing) {
+            var date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            var callNote = '[Call ' + date + '] ' + newNotes;
+            combined = existing ? existing + '\n' + callNote : callNote;
+        }
+        return fetch(SUPABASE_URL + '/rest/v1/businesses?id=eq.' + id, {
+            method: 'PATCH',
+            headers: HEADERS,
+            body: JSON.stringify({ notes: combined })
+        });
     }).then(function() {
         var btn = document.querySelector('#card-' + id + ' .btn-outcome[onclick*="saveNotes"]');
         if (btn) { btn.textContent = 'Saved'; btn.style.color = '#10B981'; btn.style.borderColor = '#10B981'; }
