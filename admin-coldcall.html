@@ -401,6 +401,29 @@ function logCall(id, outcome) {
         }).catch(function(){});
     }
 
+    // Notify Darius immediately when a lead is interested
+    if (outcome === 'interested') {
+        // Get the lead details from the card
+        var card = document.getElementById('card-' + id);
+        var leadName = card ? card.querySelector('.lead-name').textContent : 'Unknown';
+        var leadPhone = card ? card.querySelector('.lead-phone').textContent : '';
+        var leadType = card ? card.querySelector('.lead-type').textContent : '';
+
+        fetch('https://n8n.myaibuffet.com/webhook/stromation-form', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: leadName,
+                phone: leadPhone,
+                email: '',
+                subject: '[Hot Lead - Cold Call] ' + leadName,
+                workflow: 'Cold call - interested. ' + (notes || 'No notes.'),
+                source: 'cold_call',
+                _hp_website: ''
+            })
+        }).catch(function(){});
+    }
+
     lastAction = { id: id, outcome: outcome, previousOutcome: previousOutcome, previousStatus: previousStatus };
     document.getElementById('undoBar').style.display = 'flex';
     clearTimeout(window._undoTimer);
