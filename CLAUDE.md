@@ -324,8 +324,10 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Bid Tracker Dashboard (admin-bids.html) -- done 2026-04-01
   - [x] 5% Stromation commission auto-tracked -- done 2026-04-01
   - [x] Logo, veteran-owned, exclusions, warranty, standards in quote -- done 2026-04-01
-  - [ ] Quote Sender workflow (Antonio clicks Send -> email to GC)
-  - [ ] SAM.gov Bid Finder (daily scan for Division 27 DFW)
-  - [ ] PlanHub/ConstructConnect email parser
-  - [ ] Deadline Reminders workflow
-  - [ ] Weekly Analytics workflow
+  - [x] Quote Sender workflow (n8n ID: 3IjbS6wWZIxQSj9a, webhook: /tbe-send-quote) -- done 2026-04-01
+  - [x] SAM.gov Bid Finder (n8n ID: Xi7gyvl3tzMqaknK, daily 6AM CT) -- done 2026-04-01
+  - [x] Deadline Reminders (n8n ID: VYQEc5i1Ae2usxN3, daily 8AM CT) -- done 2026-04-01
+  - [x] Weekly Analytics (n8n ID: BittpG8u35xMAuUr, Monday 8AM CT) -- done 2026-04-01
+  - [ ] PlanHub/ConstructConnect email parser (needs Antonio to set up alerts)
+  - [ ] Antonio to verify pricing defaults match his actual vendor rates
+  - [ ] Get Antonio's TX license number for quote template
