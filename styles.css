@@ -1752,9 +1752,12 @@ section {
 /* Pricing Ranges */
 .pricing-range-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
     margin-bottom: 3rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .pricing-range-card {
@@ -2245,7 +2248,6 @@ section {
 /* Responsive for new elements */
 @media (max-width: 1024px) {
     .replace-grid,
-    .pricing-range-grid,
     .support-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -2344,8 +2346,11 @@ section {
 /* Homepage Pricing Preview */
 .pricing-preview-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .pricing-preview-card {
