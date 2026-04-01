@@ -102,6 +102,12 @@
         </div>
     </header>
 
+    <!-- Undo Bar -->
+    <div id="undoBar" style="display:none; position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%); background:#1E293B; color:white; padding:0.75rem 1.5rem; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.3); z-index:100; align-items:center; gap:1rem; font-size:0.9rem;">
+        <span>Action logged</span>
+        <button onclick="undoLast()" style="background:#EF4444; color:white; border:none; padding:0.4rem 1rem; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.85rem;">Undo</button>
+    </div>
+
     <div class="container">
         <!-- Stats -->
         <div class="stats-row">
@@ -333,19 +339,28 @@ function resetScript() {
     document.getElementById('callNotes').value = '';
 }
 
+var lastAction = null;
+
 function logCall(id, outcome) {
+    if (!confirm('Mark this lead as "' + outcome.replace('_',' ') + '"?')) return;
+
     var callLog = JSON.parse(localStorage.getItem('stromation_calls') || '{}');
+    var previousOutcome = callLog[id] || null;
+    var previousStatus = null;
+
     callLog[id] = outcome;
     localStorage.setItem('stromation_calls', JSON.stringify(callLog));
 
     // Update Supabase if interested
     if (outcome === 'interested') {
+        previousStatus = 'in_campaign';
         fetch(SUPABASE_URL + '/rest/v1/businesses?id=eq.' + id, {
             method: 'PATCH',
             headers: HEADERS,
             body: JSON.stringify({ outreach_status: 'replied', reply_summary: 'Interested via cold call' })
         }).catch(function(){});
     } else if (outcome === 'not_interested') {
+        previousStatus = 'in_campaign';
         fetch(SUPABASE_URL + '/rest/v1/businesses?id=eq.' + id, {
             method: 'PATCH',
             headers: HEADERS,
@@ -353,7 +368,37 @@ function logCall(id, outcome) {
         }).catch(function(){});
     }
 
+    lastAction = { id: id, outcome: outcome, previousOutcome: previousOutcome, previousStatus: previousStatus };
+    document.getElementById('undoBar').style.display = 'flex';
+    clearTimeout(window._undoTimer);
+    window._undoTimer = setTimeout(function() { document.getElementById('undoBar').style.display = 'none'; }, 10000);
+
     resetScript();
+    loadLeads();
+}
+
+function undoLast() {
+    if (!lastAction) return;
+    var callLog = JSON.parse(localStorage.getItem('stromation_calls') || '{}');
+
+    if (lastAction.previousOutcome) {
+        callLog[lastAction.id] = lastAction.previousOutcome;
+    } else {
+        delete callLog[lastAction.id];
+    }
+    localStorage.setItem('stromation_calls', JSON.stringify(callLog));
+
+    // Revert Supabase if we changed it
+    if (lastAction.previousStatus) {
+        fetch(SUPABASE_URL + '/rest/v1/businesses?id=eq.' + lastAction.id, {
+            method: 'PATCH',
+            headers: HEADERS,
+            body: JSON.stringify({ outreach_status: lastAction.previousStatus, reply_summary: null })
+        }).catch(function(){});
+    }
+
+    lastAction = null;
+    document.getElementById('undoBar').style.display = 'none';
     loadLeads();
 }
 </script>
