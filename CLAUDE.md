@@ -232,6 +232,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | Tier | Price |
 |------|-------|
 | Automation Audit | Free |
+| Starter Automation | $500 -- $1,000 |
 | Simple | $1,000 -- $2,500 |
 | AI-Assisted | $2,500 -- $6,000 |
 | End-to-End | $6,000 -- $15,000+ |

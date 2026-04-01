@@ -50,6 +50,16 @@
         "areaServed": "Worldwide",
         "serviceType": ["Workflow Automation", "Business Process Automation", "AI Integration"],
         "priceRange": "$0-$15,000+",
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Automation Services",
+            "itemListElement": [
+                {"@type": "Offer", "name": "Starter Automation", "priceCurrency": "USD", "price": "500"},
+                {"@type": "Offer", "name": "Simple Automation", "priceCurrency": "USD", "price": "1000"},
+                {"@type": "Offer", "name": "AI-Assisted Automation", "priceCurrency": "USD", "price": "2500"},
+                {"@type": "Offer", "name": "End-to-End Replacement", "priceCurrency": "USD", "price": "6000"}
+            ]
+        },
         "sameAs": ["https://x.com/stromationhq"]
     }
     </script>
@@ -373,6 +383,10 @@
             </div>
 
             <div class="pricing-preview-grid">
+                <div class="pricing-preview-card">
+                    <h4>Starter Automation</h4>
+                    <div class="preview-price">$500–$1,000</div>
+                </div>
                 <div class="pricing-preview-card">
                     <h4>Simple Automation</h4>
                     <div class="preview-price">$1,000–$2,500</div>
