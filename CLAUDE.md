@@ -31,12 +31,12 @@
 
 ## Site Structure
 
-### Root Pages (21 pages)
+### Root Pages (26 pages)
 | File | Purpose |
 |------|---------|
 | index.html | Homepage -- hero, showcase video (lazy loaded), services, how-it-works, stats, testimonial |
-| services.html | Service offerings + pricing tiers (FAQ schema) |
-| industries.html | Industry-specific automation use cases |
+| services.html | 5 service categories (Intake, Ops, Support, Reporting, Custom Workflows) + 4 pricing tiers + retainers (FAQ schema) |
+| industries.html | Industries hub — 8 cards linking to dedicated landing pages (nav says "Industries" not "Workflows") |
 | case-studies.html | Client case studies with results |
 | about.html | About Darius, company story |
 | contact.html | Contact form (n8n webhook) |
@@ -49,15 +49,21 @@
 | dental.html | Ad landing page for dental practices (Service+LocalBusiness schema) |
 | home-services.html | Ad landing page for home service businesses (Service+LocalBusiness schema) |
 | agencies.html | Ad landing page for marketing agencies (Service+LocalBusiness schema) |
+| real-estate.html | Ad landing page for real estate (Service+LocalBusiness schema) |
+| accounting.html | Ad landing page for accounting firms (Service+LocalBusiness schema) |
+| legal.html | Ad landing page for law firms (Service+LocalBusiness schema) |
+| fitness.html | Ad landing page for gyms/fitness (Service+LocalBusiness schema) |
+| restaurants.html | Ad landing page for restaurants (Service+LocalBusiness schema) |
 | admin-invoice.html | Admin: send invoices (password protected: Kyomi123, noindex) |
 | admin-proposal.html | Admin: send proposals (password protected: Kyomi123, noindex) |
 | admin-dashboard.html | Admin: live CRM dashboard from Supabase (password protected: Kyomi123, noindex) |
+| admin-retainer.html | Admin: set up Stripe subscription retainer billing (password protected: Kyomi123, noindex) |
 | project-status.html | Client project status page (noindex, UUID-based auth, uses anon key) |
 | privacy.html | Privacy policy |
 | terms.html | Terms of service |
 | 404.html | Custom 404 error page |
 
-### Blog Posts (blog/) -- 18 posts
+### Blog Posts (blog/) -- 19 posts
 All posts have reading time badges, breadcrumbs, internal cross-links, and 3 related posts.
 - 5-signs-business-needs-workflow-automation.html
 - automate-lead-follow-up.html
@@ -77,6 +83,7 @@ All posts have reading time badges, breadcrumbs, internal cross-links, and 3 rel
 - stop-manually-entering-data-between-apps.html
 - maximizing-roi-business-process-automation-strategies.html
 - benefits-automating-customer-support-workflows.html
+- automate-social-media-scheduling-increase-engagement.html
 
 New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 
@@ -118,7 +125,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 - `logos/` -- logo.svg, logo.png, stromation-icon.svg, logo-transparent.svg, logo-transparent.png, logo-transparent-white.png
 - Root: logo.svg (nav icon), logo-icon.svg (SVG favicon), logo.png, banner-1500x500.png, profile-pic-400x400.png, favicon.ico
 
-## n8n Workflows (n8n.myaibuffet.com) -- 22 total (20 active, 1 OFF, 1 template)
+## n8n Workflows (n8n.myaibuffet.com) -- 25 total (23 active, 1 OFF, 1 template)
 
 ### Client Templates (inactive, duplicate per client)
 | ID | Name | Description |
@@ -168,6 +175,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | 27 | Invoice Generator | /webhook/stromation-invoice | Professional invoice + Stripe Pay Now link. Validates: requires email, positive amount. From darius@. |
 | 28 | Client Onboarding | /webhook/stromation-onboard | Welcome email + intake link, status → 'won'. Validates: requires email + name. |
 | 30 | Proposal Generator | /webhook/stromation-proposal | Branded proposal email. Validates: requires email, amount, project_title. From darius@. |
+| 33 | Retainer Billing Setup | /webhook/stromation-retainer | Creates Stripe subscription checkout session, sends payment link email. From darius@. |
 
 ### Operations
 | ID | Name | Description |
@@ -242,9 +250,10 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 
 ## Admin Pages
 All password protected with `Kyomi123` (sessionStorage, once per session):
-- stromation.com/admin-invoice.html -- send invoices
-- stromation.com/admin-proposal.html -- send proposals
+- stromation.com/admin-invoice.html -- send invoices (Stripe Pay Now link)
+- stromation.com/admin-proposal.html -- send proposals/quotes
 - stromation.com/admin-dashboard.html -- live CRM dashboard (uses Supabase anon key)
+- stromation.com/admin-retainer.html -- set up Stripe subscription retainer billing
 
 ## Performance Optimizations Applied
 - Showcase video: preload=none + loading=lazy (saves 3.5MB initial load)
@@ -257,7 +266,6 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 
 ## Don'ts
 - **NEVER delete Supabase data without showing Darius every record first and getting explicit confirmation.** Real leads were lost because records were assumed to be test data. Always ask before ANY delete. Never use `id=not.is.null` without approval.
-- **NEVER delete Supabase data without showing Darius every record first and getting explicit confirmation.** Real data was lost because records were assumed to be test data. Always ask before ANY delete operation. Never use `id=not.is.null` without approval.
 - Don't add frameworks or build tools
 - Don't change pricing without explicit request
 - Don't use Formspree -- all forms → n8n webhook
@@ -273,6 +281,8 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - Don't reference outreach@stromation.com -- it's deleted. Use chase@stromation.com for outreach
 - Don't use `Buffer.from()` in n8n Code nodes -- use pure JS base64 helpers
 - Don't modify voicemail.xml without explicit request
+- Don't mention Make or Zapier anywhere on the site — Stromation only uses n8n. Blog post zapier-vs-make-vs-custom-automations.html stays for SEO but all other references removed.
+- Nav says "Industries" not "Workflows" — updated sitewide on 2026-03-31
 
 ## Pre-Launch Checklist
 - [x] Fix all n8n workflows (Buffer.from, type safety, connections) -- done 2026-03-30
