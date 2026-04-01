@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Project Status - Stromation</title>
+    <link rel="icon" type="image/svg+xml" href="logos/logo-transparent.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .status-container { max-width: 640px; margin: 0 auto; padding: 2rem 1rem; min-height: 70vh; }
+        .status-header { text-align: center; padding-top: 2rem; margin-bottom: 2rem; }
+        .status-header h1 { font-size: 1.8rem; color: var(--text-primary, #1E293B); margin-bottom: 0.5rem; }
+        .status-header p { color: var(--text-secondary, #64748B); font-size: 0.95rem; }
+
+        .lookup-form { background: white; border: 1px solid var(--border, #E2E8F0); border-radius: 12px; padding: 2rem; }
+        .lookup-form .form-group { margin-bottom: 1.25rem; }
+        .lookup-form label { display: block; font-weight: 600; font-size: 0.85rem; color: var(--text-primary, #1E293B); margin-bottom: 0.4rem; }
+        .lookup-form input { width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--border, #E2E8F0); border-radius: 8px; font-size: 0.95rem; font-family: inherit; box-sizing: border-box; }
+        .lookup-form input:focus { outline: none; border-color: var(--primary, #2563EB); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .lookup-form .divider { text-align: center; color: var(--text-muted, #94A3B8); font-size: 0.8rem; margin: 1rem 0; text-transform: uppercase; letter-spacing: 1px; }
+        .lookup-btn { width: 100%; padding: 0.75rem; background: var(--primary, #2563EB); color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .lookup-btn:hover { background: var(--primary-dark, #1D4ED8); }
+
+        .project-card { background: white; border: 1px solid var(--border, #E2E8F0); border-radius: 12px; overflow: hidden; }
+        .project-card-header { padding: 28px 32px 20px; border-bottom: 1px solid var(--border-light, #F1F5F9); }
+        .project-card-header h2 { font-size: 1.4rem; color: var(--text-primary, #1E293B); margin: 0 0 4px; }
+        .project-card-header .last-updated { font-size: 0.8rem; color: var(--text-muted, #94A3B8); }
+
+        .progress-section { padding: 24px 32px; }
+        .progress-steps { display: flex; justify-content: space-between; position: relative; margin-bottom: 12px; }
+        .progress-steps::before { content: ''; position: absolute; top: 14px; left: 0; right: 0; height: 3px; background: var(--border, #E2E8F0); z-index: 0; }
+        .progress-bar-fill { position: absolute; top: 14px; left: 0; height: 3px; background: var(--primary, #2563EB); z-index: 1; transition: width 0.6s ease; }
+        .step { text-align: center; position: relative; z-index: 2; flex: 1; }
+        .step-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--bg-light, #F8FAFC); border: 3px solid var(--border, #E2E8F0); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .step-dot svg { display: none; width: 14px; height: 14px; }
+        .step.completed .step-dot { background: var(--primary, #2563EB); border-color: var(--primary, #2563EB); }
+        .step.completed .step-dot svg { display: block; }
+        .step.active .step-dot { border-color: var(--primary, #2563EB); background: white; box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
+        .step-label { font-size: 0.7rem; color: var(--text-muted, #94A3B8); font-weight: 500; text-transform: capitalize; }
+        .step.completed .step-label, .step.active .step-label { color: var(--primary, #2563EB); font-weight: 600; }
+
+        .details-section { padding: 0 32px 28px; }
+        .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-light, #F1F5F9); }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { font-size: 0.85rem; color: var(--text-secondary, #64748B); }
+        .detail-value { font-size: 0.9rem; color: var(--text-primary, #1E293B); font-weight: 500; }
+        .status-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: capitalize; }
+        .status-proposed { background: #F3F4F6; color: #6B7280; }
+        .status-approved { background: #DBEAFE; color: #1D4ED8; }
+        .status-in_progress { background: #FEF3C7; color: #92400E; }
+        .status-delivered { background: #D1FAE5; color: #065F46; }
+        .status-completed { background: #D1FAE5; color: #065F46; }
+
+        .contact-footer { text-align: center; padding: 20px 32px 28px; border-top: 1px solid var(--border-light, #F1F5F9); }
+        .contact-footer p { font-size: 0.85rem; color: var(--text-secondary, #64748B); margin: 0; }
+        .contact-footer a { color: var(--primary, #2563EB); text-decoration: none; font-weight: 500; }
+
+        .error-msg { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; padding: 1rem; border-radius: 8px; text-align: center; font-size: 0.9rem; display: none; }
+        .loading { text-align: center; padding: 3rem; color: var(--text-muted, #94A3B8); }
+        .loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border, #E2E8F0); border-top-color: var(--primary, #2563EB); border-radius: 50%; animation: spin 0.8s linear infinite; margin-left: 8px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .accent-bar { height: 4px; background: linear-gradient(90deg, #2563eb, #00e5ff); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.svg" alt="Stromation" class="logo-img"><span class="logo-text">Stromation</span>
+            </a>
+        </nav>
+    </header>
+
+    <div class="status-container">
+        <div class="accent-bar" style="border-radius: 12px 12px 0 0; margin-bottom: -1px;"></div>
+
+        <!-- Lookup form (shown when no ID) -->
+        <div id="lookupView" style="display:none;">
+            <div class="status-header">
+                <h1>Check Your Project Status</h1>
+                <p>Enter your project ID or email to look up your project.</p>
+            </div>
+            <div class="lookup-form">
+                <div class="form-group">
+                    <label for="projectId">Project ID</label>
+                    <input type="text" id="projectId" placeholder="e.g., a1b2c3d4-e5f6-7890-abcd-ef1234567890">
+                </div>
+                <div id="lookupError" class="error-msg"></div>
+                <button class="lookup-btn" id="lookupBtn" onclick="lookupProject()">View Status</button>
+            </div>
+        </div>
+
+        <!-- Loading state -->
+        <div id="loadingView" style="display:none;">
+            <div class="loading">Loading project status</div>
+        </div>
+
+        <!-- Project display -->
+        <div id="projectView" style="display:none;">
+            <div class="project-card">
+                <div class="project-card-header">
+                    <h2 id="projName"></h2>
+                    <span class="last-updated">Last updated: <span id="projUpdated"></span></span>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-steps" id="progressSteps">
+                        <div class="progress-bar-fill" id="progressFill"></div>
+                        <div class="step" data-step="proposed">
+                            <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                            <div class="step-label">Proposed</div>
+                        </div>
+                        <div class="step" data-step="approved">
+                            <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                            <div class="step-label">Approved</div>
+                        </div>
+                        <div class="step" data-step="in_progress">
+                            <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                            <div class="step-label">In Progress</div>
+                        </div>
+                        <div class="step" data-step="delivered">
+                            <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                            <div class="step-label">Delivered</div>
+                        </div>
+                        <div class="step" data-step="completed">
+                            <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+                            <div class="step-label">Completed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="details-section">
+                    <div class="detail-row">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value"><span class="status-badge" id="projStatus"></span></span>
+                    </div>
+                    <div class="detail-row" id="timelineRow">
+                        <span class="detail-label">Timeline</span>
+                        <span class="detail-value" id="projTimeline"></span>
+                    </div>
+                    <div class="detail-row" id="startRow">
+                        <span class="detail-label">Start Date</span>
+                        <span class="detail-value" id="projStart"></span>
+                    </div>
+                    <div class="detail-row" id="deliveredRow" style="display:none;">
+                        <span class="detail-label">Delivered</span>
+                        <span class="detail-value" id="projDelivered"></span>
+                    </div>
+                </div>
+
+                <div class="contact-footer">
+                    <p>Questions? Email <a href="mailto:darius@stromation.com">darius@stromation.com</a> or text <a href="sms:+18559320493">(855) 932-0493</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error state -->
+        <div id="errorView" style="display:none;">
+            <div class="status-header">
+                <h1>Project Not Found</h1>
+                <p>We couldnt find a project with that ID. Double-check the link from your email or enter your project ID below.</p>
+            </div>
+            <div class="lookup-form">
+                <div class="form-group">
+                    <label for="projectId2">Project ID</label>
+                    <input type="text" id="projectId2" placeholder="e.g., a1b2c3d4-e5f6-7890-abcd-ef1234567890">
+                </div>
+                <button class="lookup-btn" onclick="lookupFromError()">View Status</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer" style="text-align:center;padding:2rem 1rem;border-top:1px solid var(--border, #E2E8F0);">
+        <div style="font-size:0.8rem;color:var(--text-muted, #94A3B8);">Stromation - Workflow Replacement Studio | <a href="index.html" style="color:var(--primary, #2563EB);text-decoration:none;">www.stromation.com</a></div>
+    </footer>
+
+<script>
+(function() {
+    var SUPABASE_URL = "https://iadzcnzgbtuigyodeqas.supabase.co";
+    var SUPABASE_KEY = "sb_publishable_8qa-nssfdtEkCz-42wOSWQ_2P7S4Zj7";
+    var STEPS = ["proposed", "approved", "in_progress", "delivered", "completed"];
+
+    var params = new URLSearchParams(window.location.search);
+    var projectId = params.get("id");
+
+    if (projectId && projectId.trim()) {
+        fetchProject(projectId.trim());
+    } else {
+        document.getElementById("lookupView").style.display = "block";
+    }
+
+    window.lookupProject = function() {
+        var id = document.getElementById("projectId").value.trim();
+        if (!id) {
+            var err = document.getElementById("lookupError");
+            err.textContent = "Please enter a project ID.";
+            err.style.display = "block";
+            return;
+        }
+        window.location.href = "project-status.html?id=" + encodeURIComponent(id);
+    };
+
+    window.lookupFromError = function() {
+        var id = document.getElementById("projectId2").value.trim();
+        if (!id) return;
+        window.location.href = "project-status.html?id=" + encodeURIComponent(id);
+    };
+
+    // Allow enter key on inputs
+    document.getElementById("projectId").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") { e.preventDefault(); window.lookupProject(); }
+    });
+
+    function fetchProject(id) {
+        document.getElementById("loadingView").style.display = "block";
+
+        // Validate UUID format loosely
+        if (!/^[0-9a-f-]{36}$/i.test(id)) {
+            showError();
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", SUPABASE_URL + "/rest/v1/projects?id=eq." + id + "&select=id,name,status,timeline,start_date,delivered_date,completed_date,updated_at,created_at");
+        xhr.setRequestHeader("apikey", SUPABASE_KEY);
+        xhr.setRequestHeader("Authorization", "Bearer " + SUPABASE_KEY);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                if (data && data.length > 0) {
+                    renderProject(data[0]);
+                } else {
+                    showError();
+                }
+            } else {
+                showError();
+            }
+        };
+        xhr.onerror = function() { showError(); };
+        xhr.send();
+    }
+
+    function showError() {
+        document.getElementById("loadingView").style.display = "none";
+        document.getElementById("errorView").style.display = "block";
+    }
+
+    function renderProject(proj) {
+        document.getElementById("loadingView").style.display = "none";
+        document.getElementById("projectView").style.display = "block";
+
+        document.getElementById("projName").textContent = proj.name || "Project";
+
+        var updated = proj.updated_at || proj.created_at;
+        if (updated) {
+            var d = new Date(updated);
+            document.getElementById("projUpdated").textContent = d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+        } else {
+            document.getElementById("projUpdated").textContent = "N/A";
+        }
+
+        // Status badge
+        var status = proj.status || "proposed";
+        var badge = document.getElementById("projStatus");
+        badge.textContent = status.replace(/_/g, " ");
+        badge.className = "status-badge status-" + status;
+
+        // Timeline
+        if (proj.timeline) {
+            document.getElementById("projTimeline").textContent = proj.timeline;
+        } else {
+            document.getElementById("timelineRow").style.display = "none";
+        }
+
+        // Start date
+        if (proj.start_date) {
+            document.getElementById("projStart").textContent = new Date(proj.start_date + "T00:00:00").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+        } else {
+            document.getElementById("startRow").style.display = "none";
+        }
+
+        // Delivered date
+        if (proj.delivered_date) {
+            document.getElementById("deliveredRow").style.display = "flex";
+            document.getElementById("projDelivered").textContent = new Date(proj.delivered_date + "T00:00:00").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+        }
+
+        // Progress bar
+        var currentIdx = STEPS.indexOf(status);
+        if (currentIdx < 0) currentIdx = 0;
+
+        var steps = document.querySelectorAll("#progressSteps .step");
+        for (var s = 0; s < steps.length; s++) {
+            if (s < currentIdx) {
+                steps[s].classList.add("completed");
+            } else if (s === currentIdx) {
+                steps[s].classList.add("active");
+            }
+        }
+
+        // Fill bar width
+        var pct = currentIdx === 0 ? 0 : (currentIdx / (STEPS.length - 1)) * 100;
+        document.getElementById("progressFill").style.width = pct + "%";
+    }
+})();
+</script>
+</body>
+</html>

@@ -31,7 +31,7 @@
 
 ## Site Structure
 
-### Root Pages (20 pages)
+### Root Pages (21 pages)
 | File | Purpose |
 |------|---------|
 | index.html | Homepage -- hero, showcase video (lazy loaded), services, how-it-works, stats, testimonial |
@@ -52,6 +52,7 @@
 | admin-invoice.html | Admin: send invoices (password protected: Kyomi123, noindex) |
 | admin-proposal.html | Admin: send proposals (password protected: Kyomi123, noindex) |
 | admin-dashboard.html | Admin: live CRM dashboard from Supabase (password protected: Kyomi123, noindex) |
+| project-status.html | Client project status page (noindex, UUID-based auth, uses anon key) |
 | privacy.html | Privacy policy |
 | terms.html | Terms of service |
 | 404.html | Custom 404 error page |
@@ -117,7 +118,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 - `logos/` -- logo.svg, logo.png, stromation-icon.svg, logo-transparent.svg, logo-transparent.png, logo-transparent-white.png
 - Root: logo.svg (nav icon), logo-icon.svg (SVG favicon), logo.png, banner-1500x500.png, profile-pic-400x400.png, favicon.ico
 
-## n8n Workflows (n8n.myaibuffet.com) -- 20 total (18 active, 1 OFF, 1 template)
+## n8n Workflows (n8n.myaibuffet.com) -- 22 total (20 active, 1 OFF, 1 template)
 
 ### Client Templates (inactive, duplicate per client)
 | ID | Name | Description |
@@ -154,6 +155,12 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | 24 | Weekly Pipeline Digest | Monday 8AM CT | Pipeline stats + hot leads email to Gmail |
 | 25 | Auto Blog Publisher | Sunday 6AM CT | GPT → blog post → GitHub commit → updates blog.html + sitemap + RSS |
 
+### Client Delivery
+| ID | Name | Schedule | Description |
+|----|------|----------|-------------|
+| 31 | Client Weekly Update | Friday 4PM CT | Queries active projects, sends branded weekly update email with status link. From darius@. |
+| 32 | Post-Delivery Sequence | Daily 11AM CT | Day 1: review request, Day 7: referral ask ($100 off), Day 30: case study questionnaire. Tracks via [SENT:tag] in project notes. From darius@. |
+
 ### Client Management (webhook-triggered)
 | ID | Name | Webhook | Description |
 |----|------|---------|-------------|
@@ -171,7 +178,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | Credential | Email | Used By |
 |------------|-------|---------|
 | SMTP - Stromation (leads@) | leads@stromation.com | WF11, WF21, WF22, WF23, WF24, WF25, WF26, WF29 |
-| admin | darius@stromation.com | WF27 (invoices), WF30 (proposals) |
+| admin | darius@stromation.com | WF27 (invoices), WF30 (proposals), WF31 (weekly update), WF32 (post-delivery) |
 | SMTP - Outreach(Chase) | chase@stromation.com | WF19 (cold email outreach) |
 | IMAP - Outreach(chase) | chase@stromation.com | WF20 (watches inbox for replies) |
 
