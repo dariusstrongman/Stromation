@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Cold Call Dashboard - Stromation Admin</title>
+    <link rel="icon" type="image/svg+xml" href="logos/logo-transparent.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #F8FAFC; color: #1E293B; min-height: 100vh; }
+
+        .dash-header { background: #0F172A; color: #fff; padding: 1.25rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+        .dash-header h1 { font-size: 1.35rem; font-weight: 700; }
+        .dash-header .brand { color: #3B82F6; }
+        .admin-badge { display: inline-block; background: #DBEAFE; color: #1E40AF; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; margin-left: 0.75rem; }
+        .dash-header-right { font-size: 0.8rem; color: #94A3B8; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+
+        /* Stats */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: #fff; border: 1px solid #E2E8F0; border-radius: 12px; padding: 1.25rem; text-align: center; }
+        .stat-label { font-size: 0.75rem; color: #64748B; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 2rem; font-weight: 800; margin-top: 0.25rem; }
+        .blue { color: #2563EB; }
+        .green { color: #10B981; }
+        .amber { color: #F59E0B; }
+        .red { color: #EF4444; }
+
+        /* Script box */
+        .script-box { background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .script-box h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #92400E; margin-bottom: 0.75rem; }
+        .script-box p { font-size: 0.95rem; line-height: 1.7; color: #78350F; }
+        .script-box .variable { background: #FEF3C7; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+
+        /* Lead cards */
+        .lead-card { background: #fff; border: 1px solid #E2E8F0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start; transition: border-color 0.2s; }
+        .lead-card:hover { border-color: #3B82F6; }
+        .lead-card.called { opacity: 0.5; border-color: #E2E8F0; }
+        .lead-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .lead-type { font-size: 0.85rem; color: #64748B; margin-bottom: 0.5rem; }
+        .lead-phone { font-size: 1.1rem; font-weight: 600; color: #2563EB; }
+        .lead-phone a { color: inherit; text-decoration: none; }
+        .lead-phone a:hover { text-decoration: underline; }
+        .lead-meta { font-size: 0.8rem; color: #94A3B8; margin-top: 0.5rem; }
+        .lead-actions { display: flex; flex-direction: column; gap: 0.5rem; min-width: 140px; }
+        .btn-outcome { padding: 0.5rem 1rem; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: white; }
+        .btn-outcome:hover { background: #F1F5F9; }
+        .btn-interested { color: #10B981; border-color: #10B981; }
+        .btn-interested:hover { background: #ECFDF5; }
+        .btn-callback { color: #F59E0B; border-color: #F59E0B; }
+        .btn-callback:hover { background: #FFFBEB; }
+        .btn-voicemail { color: #64748B; border-color: #94A3B8; }
+        .btn-notinterested { color: #EF4444; border-color: #EF4444; }
+        .btn-notinterested:hover { background: #FEF2F2; }
+
+        .empty-state { text-align: center; padding: 3rem; color: #94A3B8; }
+
+        /* Password gate */
+        .pw-gate { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #0F172A; }
+        .pw-box { background: #1E293B; border: 1px solid #334155; border-radius: 16px; padding: 2.5rem; text-align: center; max-width: 360px; width: 100%; }
+        .pw-box h2 { color: #fff; font-size: 1.2rem; margin-bottom: 1.5rem; }
+        .pw-box input { width: 100%; padding: 0.75rem 1rem; border: 1px solid #475569; border-radius: 8px; background: #0F172A; color: #fff; font-size: 1rem; text-align: center; }
+        .pw-box button { margin-top: 1rem; width: 100%; padding: 0.75rem; background: #2563EB; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .pw-error { color: #EF4444; font-size: 0.85rem; margin-top: 0.75rem; display: none; }
+        .hidden { display: none; }
+
+        @media (max-width: 768px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .lead-card { grid-template-columns: 1fr; }
+            .lead-actions { flex-direction: row; flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Password Gate -->
+<div id="pwGate" class="pw-gate">
+    <div class="pw-box">
+        <h2>Cold Call Dashboard</h2>
+        <input type="password" id="pwInput" placeholder="Enter password" onkeyup="if(event.key==='Enter')checkPw()">
+        <button onclick="checkPw()">Access Dashboard</button>
+        <p class="pw-error" id="pwError">Incorrect password</p>
+    </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="hidden">
+    <header class="dash-header">
+        <div>
+            <h1><span class="brand">STROMATION</span> Cold Calls</h1>
+            <span class="admin-badge">ADMIN ONLY</span>
+        </div>
+        <div class="dash-header-right">
+            <span id="refreshStatus"></span>
+            <button onclick="loadLeads()" style="background:#1E40AF;color:white;border:none;padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-size:0.8rem;margin-left:0.5rem;">Refresh</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">To Call</div>
+                <div class="stat-value blue" id="statToCall">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Interested</div>
+                <div class="stat-value green" id="statInterested">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Callback</div>
+                <div class="stat-value amber" id="statCallback">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Not Interested</div>
+                <div class="stat-value red" id="statNot">-</div>
+            </div>
+        </div>
+
+        <!-- Call Script -->
+        <div class="script-box">
+            <h3>Call Script</h3>
+            <p>
+                "Hi, is this the owner? Hey, my name is <span class="variable">NAME</span>, I work with a company called Stromation.
+                We help <span class="variable">BUSINESS TYPE</span> businesses automate things like follow-ups, scheduling, and invoicing so you dont have to do it manually.
+                <br><br>
+                I wanted to see if youd be open to a quick 15-minute call where we look at your workflow and show you what could be automated. Its completely free, no obligation.
+                <br><br>
+                <strong>If interested:</strong> Great, let me get you scheduled. Whats a good email to send the booking link to?
+                <br><br>
+                <strong>If not now:</strong> No worries at all. Can I send you a quick email with some info in case things change? Whats the best email?
+                <br><br>
+                <strong>If voicemail:</strong> Hey this is <span class="variable">NAME</span> from Stromation. We help local businesses automate their manual workflows. Id love to show you what we can do in a quick free call. You can book at stromation.com/audit or just call me back. Thanks.
+            </p>
+        </div>
+
+        <!-- Lead List -->
+        <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Leads to Call</h2>
+        <div id="leadList">
+            <div class="empty-state">Loading leads...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+var SUPABASE_URL = 'https://iadzcnzgbtuigyodeqas.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_8qa-nssfdtEkCz-42wOSWQ_2P7S4Zj7';
+var HEADERS = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' };
+
+function checkPw() {
+    var pw = document.getElementById('pwInput').value;
+    if (pw === 'Kyomi123') {
+        sessionStorage.setItem('cc_auth', 'true');
+        document.getElementById('pwGate').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        loadLeads();
+    } else {
+        document.getElementById('pwError').style.display = 'block';
+    }
+}
+
+if (sessionStorage.getItem('cc_auth') === 'true') {
+    document.getElementById('pwGate').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    loadLeads();
+}
+
+async function loadLeads() {
+    document.getElementById('refreshStatus').textContent = 'Loading...';
+    try {
+        var resp = await fetch(SUPABASE_URL + '/rest/v1/businesses?phone=not.is.null&outreach_status=in.(new,in_campaign)&select=*&order=created_at.desc', { headers: HEADERS });
+        var leads = await resp.json();
+
+        // Get call log from localStorage
+        var callLog = JSON.parse(localStorage.getItem('stromation_calls') || '{}');
+
+        var toCall = 0, interested = 0, callback = 0, notInterested = 0;
+        var html = '';
+
+        if (!leads || leads.length === 0) {
+            html = '<div class="empty-state">No leads with phone numbers right now. WF18 finds new ones daily at 7AM.</div>';
+        } else {
+            leads.forEach(function(lead) {
+                var id = lead.id;
+                var status = callLog[id] || null;
+                var isCalled = status && status !== 'callback';
+
+                if (status === 'interested') interested++;
+                else if (status === 'callback') callback++;
+                else if (status === 'not_interested') notInterested++;
+                else toCall++;
+
+                var phone = lead.phone || '';
+                var cleanPhone = phone.replace(/[^0-9+]/g, '');
+                if (cleanPhone.length === 10) cleanPhone = '+1' + cleanPhone;
+
+                html += '<div class="lead-card' + (isCalled ? ' called' : '') + '" id="card-' + id + '">';
+                html += '<div>';
+                html += '<div class="lead-name">' + (lead.name || 'Unknown') + '</div>';
+                html += '<div class="lead-type">' + (lead.business_type || 'Business') + ' &bull; ' + (lead.city || '') + '</div>';
+                html += '<div class="lead-phone"><a href="tel:' + cleanPhone + '">' + phone + '</a></div>';
+                html += '<div class="lead-meta">';
+                if (lead.email) html += 'Email: ' + lead.email + '<br>';
+                if (lead.website) html += 'Web: <a href="' + lead.website + '" target="_blank" style="color:#3B82F6;">' + lead.website.replace('https://','').replace('http://','').split('/')[0] + '</a><br>';
+                if (lead.rating) html += 'Rating: ' + lead.rating + '/5 (' + (lead.review_count || '?') + ' reviews)';
+                if (status) html += '<br><strong style="color:' + (status === 'interested' ? '#10B981' : status === 'callback' ? '#F59E0B' : '#EF4444') + ';">Status: ' + status.replace('_', ' ').toUpperCase() + '</strong>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="lead-actions">';
+                if (!isCalled) {
+                    html += '<button class="btn-outcome btn-interested" onclick="logCall(\'' + id + '\',\'interested\')">Interested</button>';
+                    html += '<button class="btn-outcome btn-callback" onclick="logCall(\'' + id + '\',\'callback\')">Callback</button>';
+                    html += '<button class="btn-outcome btn-voicemail" onclick="logCall(\'' + id + '\',\'voicemail\')">Voicemail</button>';
+                    html += '<button class="btn-outcome btn-notinterested" onclick="logCall(\'' + id + '\',\'not_interested\')">Not Interested</button>';
+                } else {
+                    html += '<span style="font-size:0.8rem;color:#94A3B8;">Done</span>';
+                }
+                html += '</div>';
+                html += '</div>';
+            });
+        }
+
+        document.getElementById('leadList').innerHTML = html;
+        document.getElementById('statToCall').textContent = toCall;
+        document.getElementById('statInterested').textContent = interested;
+        document.getElementById('statCallback').textContent = callback;
+        document.getElementById('statNot').textContent = notInterested;
+        document.getElementById('refreshStatus').textContent = leads.length + ' leads loaded';
+    } catch(e) {
+        document.getElementById('leadList').innerHTML = '<div class="empty-state" style="color:#EF4444;">Failed to load. Check console.</div>';
+        document.getElementById('refreshStatus').textContent = 'Error';
+        console.error(e);
+    }
+}
+
+function logCall(id, outcome) {
+    var callLog = JSON.parse(localStorage.getItem('stromation_calls') || '{}');
+    callLog[id] = outcome;
+    localStorage.setItem('stromation_calls', JSON.stringify(callLog));
+
+    // Update Supabase if interested
+    if (outcome === 'interested') {
+        fetch(SUPABASE_URL + '/rest/v1/businesses?id=eq.' + id, {
+            method: 'PATCH',
+            headers: HEADERS,
+            body: JSON.stringify({ outreach_status: 'replied', reply_summary: 'Interested via cold call' })
+        }).catch(function(){});
+    } else if (outcome === 'not_interested') {
+        fetch(SUPABASE_URL + '/rest/v1/businesses?id=eq.' + id, {
+            method: 'PATCH',
+            headers: HEADERS,
+            body: JSON.stringify({ outreach_status: 'not_interested', reply_summary: 'Declined via cold call' })
+        }).catch(function(){});
+    }
+
+    loadLeads();
+}
+</script>
+
+</body>
+</html>
