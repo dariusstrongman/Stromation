@@ -356,7 +356,7 @@ async function openBid(id){
     // Actions
     html+='<div class="actions-bar">';
     if(bid.status==='quote_ready'&&bid.gc_email){
-        html+='<button class="btn btn-green" onclick="sendQuote(\''+id+'\')">Send Quote to GC</button>';
+        html+='<button class="btn btn-green" onclick="sendQuote(\''+id+'\')">Send to Antonio</button>';
     }
     if(bid.status==='quote_sent'||bid.status==='submitted'){
         html+='<button class="btn btn-green" onclick="updateBidStatus(\''+id+'\',\'won\')">Mark Won</button>';
@@ -391,7 +391,7 @@ async function saveBidNotes(id){
 }
 
 async function sendQuote(id){
-    if(!confirm('Send this quote to the GC?'))return;
+    if(!confirm('Send this quote to Antonio for review?'))return;
     var bid=allBids.find(function(b){return b.id===id;});
     // Call the quote sender webhook
     try{
@@ -401,7 +401,7 @@ async function sendQuote(id){
             body:JSON.stringify({bid_id:id,gc_email:bid.gc_email,gc_name:bid.general_contractor,project_name:bid.project_name,quote_html:bid.quote_html})
         });
         await updateBidStatus(id,'quote_sent');
-        alert('Quote sent to '+bid.gc_email);
+        alert('Quote sent to Antonio at '+bid.gc_email);
     }catch(e){
         alert('Failed to send: '+e.message);
     }
