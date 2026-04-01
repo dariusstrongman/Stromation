@@ -319,3 +319,13 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - [x] WF20 bounce detection added (auto-marks bounced in Supabase) -- done 2026-04-01
 - [x] Client logos + testimonials on homepage (Brass Effect, ReadyMade Video) -- done 2026-04-01
 - [ ] The Brass Effect Division 27 Auto-Bidder -- IN PROGRESS
+  - [x] Supabase schema (TBE_ prefix, 5 tables, 32 pricing defaults) -- done 2026-04-01
+  - [x] Auto Bidder Engine workflow (n8n ID: uTiy5gtBbhoL2wjo) -- done 2026-04-01
+  - [x] Bid Tracker Dashboard (admin-bids.html) -- done 2026-04-01
+  - [x] 5% Stromation commission auto-tracked -- done 2026-04-01
+  - [x] Logo, veteran-owned, exclusions, warranty, standards in quote -- done 2026-04-01
+  - [ ] Quote Sender workflow (Antonio clicks Send -> email to GC)
+  - [ ] SAM.gov Bid Finder (daily scan for Division 27 DFW)
+  - [ ] PlanHub/ConstructConnect email parser
+  - [ ] Deadline Reminders workflow
+  - [ ] Weekly Analytics workflow
