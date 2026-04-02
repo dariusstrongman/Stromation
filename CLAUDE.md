@@ -144,7 +144,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | BittpG8u35xMAuUr | TBE - Weekly Analytics | Monday 8AM CT | Pipeline stats, win rate, revenue summary email. |
 | MCioEt93wGOlbd7d | TBE - Blueprint Analyzer | Webhook (/tbe-blueprint) | Accepts PDF upload → Claude Sonnet 4.6 vision counts Division 27 devices → feeds counts to auto-bidder (skips GPT). |
 | 6OXGUtj6mQlWSsEQ | TBE - Bid Alert Parser | Every 30 min | Checks bids@ inbox for PlanHub/ConstructConnect ITB emails → extracts project data → auto-feeds to bidder engine. Filters marketing/API emails. |
-| CJlS0xgvY4oHtQsy | TBE - PlanHub File Downloader | Webhook (/tbe-download-plans) | Puppeteer headless Chrome → logs into PlanHub → downloads project files. Chrome at /usr/bin/chromium in Docker. |
+| CJlS0xgvY4oHtQsy | TBE - PlanHub File Downloader | Webhook (/tbe-download-plans) | Pure API (no Puppeteer) → PlanHub REST API with auth token → project details + file list + S3 ZIP download URL. Plans auto-filtered from general docs. |
 
 ### Client Templates (inactive, duplicate per client)
 | ID | Name | Description |
@@ -365,9 +365,11 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Dashboard "New Bid from Blueprint" upload UI -- done 2026-04-02
   - [x] Bid Alert Parser (n8n ID: 6OXGUtj6mQlWSsEQ, checks bids@ every 30 min) -- done 2026-04-02
   - [x] PlanHub File Downloader (n8n ID: CJlS0xgvY4oHtQsy, Puppeteer headless Chrome) -- done 2026-04-02
-  - [x] Puppeteer + Chrome installed in Docker container -- done 2026-04-02
-  - [ ] PlanHub File Downloader needs retest (Chrome path fixed to /usr/bin/chromium, untested)
-  - [ ] PlanHub API access (applied, waiting for response)
+  - [x] PlanHub File Downloader converted from Puppeteer to pure API (reverse-engineered REST endpoints) -- done 2026-04-02
+  - [x] PlanHub API discovered: get-details, get-files, download-all-files at api.planhub.com/api/v1/ -- done 2026-04-02
+  - [ ] Wire File Downloader → Blueprint Analyzer → Auto Bidder (end-to-end) -- IN PROGRESS
+  - [ ] PlanHub auth token refresh (may expire, re-capture from browser DevTools Network tab)
+  - [ ] PlanHub official API access (applied, waiting for response)
   - [ ] ConstructConnect email parser (needs Antonio's paid CC alerts to bids@stromation.com)
   - [ ] Antonio to verify pricing defaults match his actual vendor rates
   - [ ] Get Antonio's TX license number for quote template
