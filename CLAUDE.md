@@ -10,6 +10,8 @@
 - Contact email: contact@stromation.com (used sitewide, replaced support@)
 - Leads email: leads@stromation.com (SMTP credential: "SMTP - Stromation (leads@)")
 - Outreach email: chase@stromation.com (SMTP credential: "SMTP - Outreach(Chase)") -- "Chase" is the sales persona
+- Bids email: bids@stromation.com (alias under darius@, for ConstructConnect/PlanHub alerts)
+- Antonio email: antonio@tbeit.com (TBE quotes sent here)
 - Darius personal email: dariusstroman@gmail.com
 - Stripe account: Stromation (live, charges enabled)
 
@@ -33,7 +35,7 @@
 
 ## Site Structure
 
-### Root Pages (26 pages)
+### Root Pages (28 pages)
 | File | Purpose |
 |------|---------|
 | index.html | Homepage -- hero, showcase video (lazy loaded), services, how-it-works, stats, testimonial |
@@ -60,6 +62,8 @@
 | admin-proposal.html | Admin: send proposals (password protected: Kyomi123, noindex) |
 | admin-dashboard.html | Admin: live CRM dashboard from Supabase (password protected: Kyomi123, noindex) |
 | admin-retainer.html | Admin: set up Stripe subscription retainer billing (password protected: Kyomi123, noindex) |
+| admin-bids.html | Admin: TBE bid tracker dashboard -- pipeline board, quote preview, blueprint upload, send to Antonio (password protected: Kyomi123, noindex) |
+| admin-coldcall.html | Admin: cold call script dashboard for outreach -- step-by-step prompts, notes, outcome logging (password protected: Kyomi123, noindex) |
 | project-status.html | Client project status page (noindex, UUID-based auth, uses anon key) |
 | privacy.html | Privacy policy |
 | terms.html | Terms of service |
@@ -110,6 +114,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 |------|---------|
 | sales-playbook.md | Discovery questions, objection handlers, closing scripts |
 | service-agreement.md | SOW/contract template for client projects |
+| brasseffect-schema.sql | TBE Supabase schema (5 tables, 32+ pricing defaults, TBE_ prefix) |
 | linkedin-profile.md | Optimized LinkedIn profile copy |
 | linkedin-posts.md | 4 weekly LinkedIn posts |
 | twitter-content-30days.md | 30 days of tweets for @stromationhq |
@@ -127,7 +132,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 - `logos/` -- logo.svg, logo.png, stromation-icon.svg, logo-transparent.svg, logo-transparent.png, logo-transparent-white.png
 - Root: logo.svg (nav icon), logo-icon.svg (SVG favicon), logo.png, banner-1500x500.png, profile-pic-400x400.png, favicon.ico
 
-## n8n Workflows (n8n.myaibuffet.com) -- 31 total (28 active, 1 OFF, 1 template, 1 deleted)
+## n8n Workflows (n8n.myaibuffet.com) -- 33 total (30 active, 1 OFF, 1 template, 1 deleted)
 
 ### TBE (The Brass Effect) Workflows
 | ID | Name | Schedule | Description |
@@ -138,6 +143,8 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | VYQEc5i1Ae2usxN3 | TBE - Deadline Reminders | Daily 8AM CT | Queries active bids with upcoming deadlines, emails summary. Skips expired. From leads@. |
 | BittpG8u35xMAuUr | TBE - Weekly Analytics | Monday 8AM CT | Pipeline stats, win rate, revenue summary email. |
 | MCioEt93wGOlbd7d | TBE - Blueprint Analyzer | Webhook (/tbe-blueprint) | Accepts PDF upload → Claude Sonnet 4.6 vision counts Division 27 devices → feeds counts to auto-bidder (skips GPT). |
+| 6OXGUtj6mQlWSsEQ | TBE - Bid Alert Parser | Every 30 min | Checks bids@ inbox for PlanHub/ConstructConnect ITB emails → extracts project data → auto-feeds to bidder engine. Filters marketing/API emails. |
+| CJlS0xgvY4oHtQsy | TBE - PlanHub File Downloader | Webhook (/tbe-download-plans) | Puppeteer headless Chrome → logs into PlanHub → downloads project files. Chrome at /usr/bin/chromium in Docker. |
 
 ### Client Templates (inactive, duplicate per client)
 | ID | Name | Description |
@@ -198,7 +205,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | Credential | Email | Used By |
 |------------|-------|---------|
 | SMTP - Stromation (leads@) | leads@stromation.com | WF11, WF21, WF22, WF23, WF24, WF25, WF26, WF29 |
-| admin | darius@stromation.com | WF27 (invoices), WF30 (proposals), WF31 (weekly update), WF32 (post-delivery) |
+| admin | darius@stromation.com | WF27 (invoices), WF30 (proposals), WF31 (weekly update), WF32 (post-delivery), all TBE workflows |
 | SMTP - Outreach(Chase) | chase@stromation.com | WF19 (cold email outreach) |
 | IMAP - Outreach(chase) | chase@stromation.com | WF20 (watches inbox for replies) |
 
@@ -229,6 +236,11 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | projects | Client projects -- logged by WF28 (onboarding) |
 | invoices | Invoice tracking -- logged by WF27 (invoice generator) |
 | proposals | Proposals/contracts -- logged by WF30 (proposal generator) |
+| TBE_bids | TBE bid opportunities -- pipeline tracking |
+| TBE_bid_items | TBE line items per bid (materials + labor) |
+| TBE_pricing_defaults | TBE default rates (32 items, DFW market) |
+| TBE_bid_activity | TBE status change audit log |
+| TBE_saved_searches | TBE keyword/filter monitoring |
 
 ### Email Sequence Numbers
 - 1-3: Cold outreach (WF19)
@@ -351,6 +363,12 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Quote Sender sends PDF attachment via html2pdf.app API -- done 2026-04-02
   - [x] Deadline Reminders fixed (was every minute, now daily 8AM, skips expired) -- done 2026-04-02
   - [x] Dashboard "New Bid from Blueprint" upload UI -- done 2026-04-02
+  - [x] Bid Alert Parser (n8n ID: 6OXGUtj6mQlWSsEQ, checks bids@ every 30 min) -- done 2026-04-02
+  - [x] PlanHub File Downloader (n8n ID: CJlS0xgvY4oHtQsy, Puppeteer headless Chrome) -- done 2026-04-02
+  - [x] Puppeteer + Chrome installed in Docker container -- done 2026-04-02
+  - [ ] PlanHub File Downloader needs retest (Chrome path fixed to /usr/bin/chromium, untested)
+  - [ ] PlanHub API access (applied, waiting for response)
+  - [ ] ConstructConnect email parser (needs Antonio's paid CC alerts to bids@stromation.com)
   - [ ] Antonio to verify pricing defaults match his actual vendor rates
   - [ ] Get Antonio's TX license number for quote template
   - [ ] SAM.gov production API key (DEMO_KEY works but rate limited)
