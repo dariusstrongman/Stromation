@@ -30,8 +30,9 @@
 - Google Places API for local business discovery
 - Cal.com booking: https://cal.com/darius-stroman-byeng8/30min (embedded on audit.html and thank-you.html)
 - Remotion project at C:/Users/Darius/Desktop/stromation-video for video generation
-- Anthropic API (Claude Sonnet 4.6) for blueprint PDF analysis
+- Anthropic API (Claude Sonnet 4.6) for blueprint PDF analysis (rate limit: queue scans 5 min apart)
 - html2pdf.app API for quote PDF generation
+- PlanHub REST API (api.planhub.com/api/v1/) for project details, file lists, downloads (auth token captured from browser)
 
 ## Site Structure
 
@@ -142,9 +143,9 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 | Xi7gyvl3tzMqaknK | TBE - SAM.gov Bid Finder | Daily 6AM CT | SAM.gov API (DEMO_KEY) → Division 27 opportunities → auto-bidder. |
 | VYQEc5i1Ae2usxN3 | TBE - Deadline Reminders | Daily 8AM CT | Queries active bids with upcoming deadlines, emails summary. Skips expired. From leads@. |
 | BittpG8u35xMAuUr | TBE - Weekly Analytics | Monday 8AM CT | Pipeline stats, win rate, revenue summary email. |
-| MCioEt93wGOlbd7d | TBE - Blueprint Analyzer | Webhook (/tbe-blueprint) | Accepts PDF upload → Claude Sonnet 4.6 vision counts Division 27 devices → feeds counts to auto-bidder (skips GPT). |
-| 6OXGUtj6mQlWSsEQ | TBE - Bid Alert Parser | Every 30 min | Checks bids@ inbox for PlanHub/ConstructConnect ITB emails → extracts project data → auto-feeds to bidder engine. Filters marketing/API emails. |
-| CJlS0xgvY4oHtQsy | TBE - PlanHub File Downloader | Webhook (/tbe-download-plans) | Pure API (no Puppeteer) → PlanHub REST API with auth token → project details + file list + S3 ZIP download URL. Plans auto-filtered from general docs. |
+| MCioEt93wGOlbd7d | TBE - Blueprint Analyzer | Webhook (/tbe-blueprint) | Accepts PDF upload (multipart binary OR JSON with pdf_base64) → Claude Sonnet 4.6 vision counts Division 27 devices → feeds counts to auto-bidder (skips GPT). |
+| 6OXGUtj6mQlWSsEQ | TBE - Bid Alert Parser | Every 30 min | Checks bids@ inbox for PlanHub/ConstructConnect ITB emails → extracts project data → PlanHub ITBs auto-call File Downloader (extracts project ID from email) → plans analyzed → auto-bids. CC/other sources use direct bidder. Filters marketing/API emails. |
+| CJlS0xgvY4oHtQsy | TBE - PlanHub File Downloader | Webhook (/tbe-download-plans) | PlanHub REST API → download PDF/ZIP to disk → auto-detect format (magic bytes) → smart Div 27 filter (E/T sheets, electrical, fire alarm, security) → max 3 PDFs to Blueprint Analyzer. Skips civil/structural/arch/mech. Cleanup after. |
 
 ### Client Templates (inactive, duplicate per client)
 | ID | Name | Description |
@@ -364,10 +365,16 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Deadline Reminders fixed (was every minute, now daily 8AM, skips expired) -- done 2026-04-02
   - [x] Dashboard "New Bid from Blueprint" upload UI -- done 2026-04-02
   - [x] Bid Alert Parser (n8n ID: 6OXGUtj6mQlWSsEQ, checks bids@ every 30 min) -- done 2026-04-02
-  - [x] PlanHub File Downloader (n8n ID: CJlS0xgvY4oHtQsy, Puppeteer headless Chrome) -- done 2026-04-02
-  - [x] PlanHub File Downloader converted from Puppeteer to pure API (reverse-engineered REST endpoints) -- done 2026-04-02
-  - [x] PlanHub API discovered: get-details, get-files, download-all-files at api.planhub.com/api/v1/ -- done 2026-04-02
-  - [ ] Wire File Downloader → Blueprint Analyzer → Auto Bidder (end-to-end) -- IN PROGRESS
+  - [x] PlanHub File Downloader v3: pure API, disk download, smart Div 27 filter, no Puppeteer -- done 2026-04-02
+  - [x] PlanHub API reverse-engineered (get-details, get-files, download-all-files) -- done 2026-04-02
+  - [x] Full pipeline wired: Parser → File Downloader → Blueprint Analyzer → Auto Bidder -- done 2026-04-02
+  - [x] Blueprint Analyzer: retry logic (5x, 60-300s backoff), accepts binary + JSON pdf_base64 -- done 2026-04-02
+  - [x] bid_id pass-through chain (PATCH existing bids, not INSERT duplicates) -- done 2026-04-02
+  - [x] estimate_method field + dashboard badge (GPT Estimate vs Blueprint Scanned) -- done 2026-04-02
+  - [x] Bid Alert Parser: Div 27/28 scope filter, passes bid_id downstream -- done 2026-04-02
+  - [x] Smart file filter: E/T sheet priority, skip civil/structural/arch, max 3 PDFs -- done 2026-04-02
+  - [x] Supabase cleanup: 13 junk entries removed, city parsing fixed -- done 2026-04-02
+  - [x] NODE_FUNCTION_ALLOW_BUILTIN=* added to Docker env -- done 2026-04-02
   - [ ] PlanHub auth token refresh (may expire, re-capture from browser DevTools Network tab)
   - [ ] PlanHub official API access (applied, waiting for response)
   - [ ] ConstructConnect email parser (needs Antonio's paid CC alerts to bids@stromation.com)
