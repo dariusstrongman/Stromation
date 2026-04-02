@@ -28,6 +28,8 @@
 - Google Places API for local business discovery
 - Cal.com booking: https://cal.com/darius-stroman-byeng8/30min (embedded on audit.html and thank-you.html)
 - Remotion project at C:/Users/Darius/Desktop/stromation-video for video generation
+- Anthropic API (Claude Sonnet 4.6) for blueprint PDF analysis
+- html2pdf.app API for quote PDF generation
 
 ## Site Structure
 
@@ -125,7 +127,17 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 - `logos/` -- logo.svg, logo.png, stromation-icon.svg, logo-transparent.svg, logo-transparent.png, logo-transparent-white.png
 - Root: logo.svg (nav icon), logo-icon.svg (SVG favicon), logo.png, banner-1500x500.png, profile-pic-400x400.png, favicon.ico
 
-## n8n Workflows (n8n.myaibuffet.com) -- 25 total (23 active, 1 OFF, 1 template)
+## n8n Workflows (n8n.myaibuffet.com) -- 31 total (28 active, 1 OFF, 1 template, 1 deleted)
+
+### TBE (The Brass Effect) Workflows
+| ID | Name | Schedule | Description |
+|----|------|----------|-------------|
+| uTiy5gtBbhoL2wjo | TBE - Auto Bidder Engine | Webhook (/tbe-bid) | GPT scope analysis OR blueprint bypass → component expansion with real Panduit/i-Pro/Bosch part numbers → professional quote HTML → Supabase. v2: Watson-format quotes. |
+| 3IjbS6wWZIxQSj9a | TBE - Quote Sender | Webhook (/tbe-send-quote) | Generates PDF via html2pdf.app → emails to Darius (test mode) with PDF attachment + notify email. From bids@. |
+| Xi7gyvl3tzMqaknK | TBE - SAM.gov Bid Finder | Daily 6AM CT | SAM.gov API (DEMO_KEY) → Division 27 opportunities → auto-bidder. |
+| VYQEc5i1Ae2usxN3 | TBE - Deadline Reminders | Daily 8AM CT | Queries active bids with upcoming deadlines, emails summary. Skips expired. From leads@. |
+| BittpG8u35xMAuUr | TBE - Weekly Analytics | Monday 8AM CT | Pipeline stats, win rate, revenue summary email. |
+| MCioEt93wGOlbd7d | TBE - Blueprint Analyzer | Webhook (/tbe-blueprint) | Accepts PDF upload → Claude Sonnet 4.6 vision counts Division 27 devices → feeds counts to auto-bidder (skips GPT). |
 
 ### Client Templates (inactive, duplicate per client)
 | ID | Name | Description |
@@ -180,7 +192,7 @@ New posts auto-generated weekly by WF25 (Sunday 6AM CT).
 ### Operations
 | ID | Name | Description |
 |----|------|-------------|
-| 29 | Error Alert | Emails dariusstroman@gmail.com on ANY workflow failure. Wired to all via errorWorkflow. |
+| 29 | Error Alert | **DELETED** -- was too noisy from IMAP drops. |
 
 ### SMTP/IMAP Credentials
 | Credential | Email | Used By |
@@ -280,6 +292,7 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - Don't guess info@ emails in WF18 -- only save emails scraped from websites/mailto links
 - Don't reference outreach@stromation.com -- it's deleted. Use chase@stromation.com for outreach
 - Don't use `Buffer.from()` in n8n Code nodes -- use pure JS base64 helpers
+- leads@stromation.com and bids@stromation.com are aliases for darius@ -- they work with the "admin" SMTP credential, no 553 error
 - Don't modify voicemail.xml without explicit request
 - Don't mention Make or Zapier anywhere on the site — Stromation only uses n8n. Blog post zapier-vs-make-vs-custom-automations.html stays for SEO but all other references removed.
 - Nav says "Industries" not "Workflows" — updated sitewide on 2026-03-31
@@ -333,7 +346,11 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Blank email fix (skip returns empty array, email node doesn't fire) -- done 2026-04-01
   - [x] Quote sends to Antonio (antonio@tbeit.com) not GC. Darius reviews first. -- done 2026-04-01
   - [ ] ConstructConnect email parser (needs Antonio's paid CC alerts to bids@stromation.com)
-  - [ ] Blueprint/spec PDF upload + Claude vision for accurate device counting
+  - [x] Blueprint/spec PDF upload + Claude Sonnet 4.6 vision (n8n ID: MCioEt93wGOlbd7d) -- done 2026-04-02
+  - [x] Auto-bidder v2: component expansion with real vendor part numbers (Panduit, i-Pro, Bosch, HID) -- done 2026-04-02
+  - [x] Quote Sender sends PDF attachment via html2pdf.app API -- done 2026-04-02
+  - [x] Deadline Reminders fixed (was every minute, now daily 8AM, skips expired) -- done 2026-04-02
+  - [x] Dashboard "New Bid from Blueprint" upload UI -- done 2026-04-02
   - [ ] Antonio to verify pricing defaults match his actual vendor rates
   - [ ] Get Antonio's TX license number for quote template
   - [ ] SAM.gov production API key (DEMO_KEY works but rate limited)

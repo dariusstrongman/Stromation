@@ -131,6 +131,7 @@
         </div>
         <div class="header-right">
             <span id="bidCount"></span>
+            <button class="btn btn-primary" onclick="openBlueprintUpload()">📄 New Bid from Blueprint</button>
             <button class="btn btn-amber" onclick="openNewBid()">+ New Bid</button>
             <button class="btn btn-outline" onclick="loadBids()">Refresh</button>
         </div>
@@ -169,6 +170,53 @@
         <div id="modalContent"></div>
     </div>
 </div>
+
+<!-- Blueprint Upload Modal -->
+<div class="modal-overlay" id="blueprintModal">
+    <div class="modal" style="max-width:700px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+            <h2>New Bid from Blueprint</h2>
+            <button class="btn btn-outline" onclick="document.getElementById('blueprintModal').style.display='none'">Close</button>
+        </div>
+        <form id="blueprintForm" onsubmit="submitBlueprint(event)">
+            <div class="modal-field" style="margin-bottom:1.25rem;">
+                <label>Blueprint PDF *</label>
+                <div style="border:2px dashed #475569;border-radius:8px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;" id="dropZone" onclick="document.getElementById('bp_file').click()">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">📄</div>
+                    <div style="color:#94A3B8;font-size:0.9rem;" id="dropLabel">Click to select or drag & drop a PDF</div>
+                    <input type="file" id="bp_file" accept=".pdf,application/pdf" required style="display:none" onchange="handleFileSelect(this)">
+                </div>
+            </div>
+            <div class="modal-grid">
+                <div class="modal-field"><label>Project Name *</label><input id="bp_name" required></div>
+                <div class="modal-field"><label>General Contractor</label><input id="bp_gc"></div>
+                <div class="modal-field"><label>GC Email</label><input id="bp_gc_email" type="email"></div>
+                <div class="modal-field"><label>Location</label><input id="bp_location" value="DFW, TX"></div>
+                <div class="modal-field"><label>Bid Deadline</label><input id="bp_deadline" type="datetime-local"></div>
+                <div class="modal-field"><label>Source</label><select id="bp_source"><option value="constructconnect">ConstructConnect</option><option value="manual">Manual</option><option value="referral">Referral</option><option value="other">Other</option></select></div>
+            </div>
+            <div id="blueprintStatus" style="display:none;margin-top:1rem;padding:1rem;border-radius:8px;background:#0F172A;border:1px solid #334155;">
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <div class="bp-spinner" style="width:20px;height:20px;border:3px solid #334155;border-top:3px solid #F59E0B;border-radius:50%;animation:spin 1s linear infinite;"></div>
+                    <span id="blueprintStatusText" style="color:#F59E0B;font-weight:600;">Analyzing blueprint with AI...</span>
+                </div>
+            </div>
+            <div id="blueprintResults" style="display:none;margin-top:1rem;"></div>
+            <div class="actions-bar">
+                <button type="submit" class="btn btn-primary" id="bpSubmitBtn">Analyze & Generate Quote</button>
+            </div>
+        </form>
+    </div>
+</div>
+<style>
+    @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+    #dropZone.drag-over{border-color:#F59E0B;background:rgba(245,158,11,0.05);}
+    .bp-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.75rem;}
+    .bp-result-card{background:#1E293B;border:1px solid #334155;border-radius:8px;padding:0.75rem;}
+    .bp-result-card h4{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:#64748B;margin-bottom:0.5rem;}
+    .bp-device-row{display:flex;justify-content:space-between;padding:2px 0;font-size:0.85rem;}
+    .bp-device-row .count{font-weight:700;color:#F59E0B;}
+</style>
 
 <!-- New Bid Modal -->
 <div class="modal-overlay" id="newBidModal">
@@ -401,9 +449,9 @@ async function sendQuote(id){
             body:JSON.stringify({bid_id:id,gc_email:bid.gc_email,gc_name:bid.general_contractor,project_name:bid.project_name,quote_html:bid.quote_html})
         });
         await updateBidStatus(id,'quote_sent');
-        alert('Quote sent to Antonio at '+bid.gc_email);
+        alert('Quote sent successfully');
     }catch(e){
-        alert('Failed to send: '+e.message);
+        alert('Failed to send quote');
     }
 }
 
@@ -452,6 +500,163 @@ async function submitNewBid(e){
     }
     btn.textContent='Generate Auto-Quote';
     btn.disabled=false;
+}
+
+// Blueprint Upload Functions
+function openBlueprintUpload(){
+    document.getElementById('blueprintModal').style.display='block';
+    document.getElementById('blueprintStatus').style.display='none';
+    document.getElementById('blueprintResults').style.display='none';
+    document.getElementById('bpSubmitBtn').disabled=false;
+    document.getElementById('bpSubmitBtn').textContent='Analyze & Generate Quote';
+}
+
+function handleFileSelect(input){
+    if(input.files&&input.files[0]){
+        var file=input.files[0];
+        var label=document.getElementById('dropLabel');
+        label.textContent=file.name+' ('+Math.round(file.size/1024)+'KB)';
+        label.style.color='#10B981';
+    }
+}
+
+// Drag and drop
+(function(){
+    var dz=document.getElementById('dropZone');
+    if(!dz)return;
+    dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag-over');});
+    dz.addEventListener('dragleave',function(){dz.classList.remove('drag-over');});
+    dz.addEventListener('drop',function(e){
+        e.preventDefault();
+        dz.classList.remove('drag-over');
+        if(e.dataTransfer.files&&e.dataTransfer.files[0]){
+            document.getElementById('bp_file').files=e.dataTransfer.files;
+            handleFileSelect(document.getElementById('bp_file'));
+        }
+    });
+})();
+
+async function submitBlueprint(e){
+    e.preventDefault();
+    var btn=document.getElementById('bpSubmitBtn');
+    var statusDiv=document.getElementById('blueprintStatus');
+    var statusText=document.getElementById('blueprintStatusText');
+    var resultsDiv=document.getElementById('blueprintResults');
+
+    var fileInput=document.getElementById('bp_file');
+    if(!fileInput.files||!fileInput.files[0]){
+        alert('Please select a blueprint PDF file');
+        return;
+    }
+
+    btn.disabled=true;
+    btn.textContent='Uploading...';
+    statusDiv.style.display='block';
+    resultsDiv.style.display='none';
+    statusText.textContent='Uploading blueprint PDF...';
+
+    var formData=new FormData();
+    formData.append('file',fileInput.files[0]);
+    formData.append('project_name',document.getElementById('bp_name').value);
+    formData.append('general_contractor',document.getElementById('bp_gc').value);
+    formData.append('gc_email',document.getElementById('bp_gc_email').value);
+    formData.append('location',document.getElementById('bp_location').value);
+    formData.append('source',document.getElementById('bp_source').value);
+    var deadline=document.getElementById('bp_deadline').value;
+    if(deadline)formData.append('bid_deadline',new Date(deadline).toISOString());
+
+    statusText.textContent='Analyzing blueprint with AI... (this may take 30-60 seconds)';
+
+    try{
+        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-blueprint',{
+            method:'POST',
+            body:formData
+        });
+
+        var data=await resp.json();
+
+        if(data.success){
+            statusDiv.style.display='none';
+            resultsDiv.style.display='block';
+
+            var a=data.analysis||{};
+            var sys=a.systems||{};
+            var bid=data.bid||{};
+
+            var html='<div style="background:#064E3B;border:1px solid #10B981;border-radius:8px;padding:1rem;margin-bottom:1rem;">';
+            html+='<div style="color:#10B981;font-weight:700;font-size:1.1rem;">Blueprint analyzed successfully</div>';
+            if(a.confidence)html+='<div style="color:#6EE7B7;font-size:0.85rem;margin-top:0.25rem;">Confidence: '+a.confidence+(a.sheets_analyzed?' | Sheets: '+a.sheets_analyzed.join(', '):'')+'</div>';
+            if(bid.total_bid)html+='<div style="color:#fff;font-size:1.5rem;font-weight:800;margin-top:0.5rem;">Total Bid: '+fmtMoney(bid.total_bid)+'</div>';
+            if(bid.line_items)html+='<div style="color:#6EE7B7;font-size:0.85rem;">'+bid.line_items+' line items generated</div>';
+            html+='</div>';
+
+            // Device counts grid
+            html+='<div class="bp-result-grid">';
+
+            if(sys.structured_cabling){
+                html+='<div class="bp-result-card"><h4>Structured Cabling</h4>';
+                html+='<div class="bp-device-row"><span>Cat6A Drops</span><span class="count">'+sys.structured_cabling.cat6a_drops+'</span></div>';
+                html+='<div class="bp-device-row"><span>WiFi APs</span><span class="count">'+sys.structured_cabling.wifi_aps+'</span></div>';
+                html+='</div>';
+            }
+            if(sys.security){
+                html+='<div class="bp-result-card"><h4>Security</h4>';
+                html+='<div class="bp-device-row"><span>Fixed Cameras</span><span class="count">'+sys.security.fixed_cameras+'</span></div>';
+                html+='<div class="bp-device-row"><span>PTZ Cameras</span><span class="count">'+sys.security.ptz_cameras+'</span></div>';
+                html+='<div class="bp-device-row"><span>Access Doors</span><span class="count">'+sys.security.access_control_doors+'</span></div>';
+                html+='<div class="bp-device-row"><span>Motion Detectors</span><span class="count">'+sys.security.motion_detectors+'</span></div>';
+                html+='<div class="bp-device-row"><span>Keypads</span><span class="count">'+sys.security.keypads+'</span></div>';
+                html+='</div>';
+            }
+            if(sys.fire_alarm){
+                html+='<div class="bp-result-card"><h4>Fire Alarm</h4>';
+                html+='<div class="bp-device-row"><span>Smoke Detectors</span><span class="count">'+sys.fire_alarm.smoke_detectors+'</span></div>';
+                html+='<div class="bp-device-row"><span>Horn/Strobes</span><span class="count">'+sys.fire_alarm.horn_strobes+'</span></div>';
+                html+='<div class="bp-device-row"><span>Pull Stations</span><span class="count">'+sys.fire_alarm.pull_stations+'</span></div>';
+                html+='</div>';
+            }
+            if(sys.audio_visual){
+                html+='<div class="bp-result-card"><h4>Audio Visual</h4>';
+                html+='<div class="bp-device-row"><span>Speakers</span><span class="count">'+sys.audio_visual.speakers+'</span></div>';
+                html+='<div class="bp-device-row"><span>Displays</span><span class="count">'+sys.audio_visual.displays+'</span></div>';
+                html+='</div>';
+            }
+            if(sys.infrastructure){
+                html+='<div class="bp-result-card"><h4>Infrastructure</h4>';
+                html+='<div class="bp-device-row"><span>MDF/IDF Rooms</span><span class="count">'+sys.infrastructure.rack_mdf_rooms+'</span></div>';
+                html+='</div>';
+            }
+
+            html+='</div>';
+
+            if(a.notes){
+                html+='<div style="margin-top:0.75rem;padding:0.75rem;background:#0F172A;border-radius:6px;font-size:0.85rem;color:#94A3B8;">'+a.notes+'</div>';
+            }
+
+            resultsDiv.innerHTML=html;
+
+            // Refresh bid list
+            loadBids();
+
+            // Open the bid detail after a short delay
+            if(bid.bid_id){
+                setTimeout(function(){openBid(bid.bid_id);},1000);
+            }
+
+            btn.textContent='Done - Submit Another?';
+            btn.disabled=false;
+        }else{
+            statusDiv.style.display='none';
+            alert('Error: '+(data.error||'Unknown error analyzing blueprint'));
+            btn.textContent='Analyze & Generate Quote';
+            btn.disabled=false;
+        }
+    }catch(err){
+        statusDiv.style.display='none';
+        alert('Failed to analyze blueprint: '+err.message);
+        btn.textContent='Analyze & Generate Quote';
+        btn.disabled=false;
+    }
 }
 </script>
 </body>
