@@ -67,6 +67,10 @@
         .status-lost{background:#7F1D1D20;color:#FCA5A5;}
         .status-no_bid{background:#374151;color:#9CA3AF;}
 
+        .estimate-badge{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-left:0.5rem;}
+        .estimate-gpt{background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);}
+        .estimate-blueprint{background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.3);}
+
         .deadline{font-size:0.75rem;font-weight:600;}
         .deadline.urgent{color:#EF4444;}
         .deadline.soon{color:#F59E0B;}
@@ -334,7 +338,8 @@ function renderBids(){
         }).join('');
 
         html+='<div class="bid-card" onclick="openBid(\''+b.id+'\')">';
-        html+='<div class="bid-top"><div><div class="bid-name">'+b.project_name+'</div></div><div style="text-align:right;">'+statusTag(b.status)+'<div class="bid-total" style="margin-top:0.5rem;">'+fmtMoney(b.total_bid)+'</div></div></div>';
+        var estBadge=b.estimate_method==='blueprint_scan'?'<span class="estimate-badge estimate-blueprint">Blueprint Scanned</span>':'<span class="estimate-badge estimate-gpt">GPT Estimate</span>';
+        html+='<div class="bid-top"><div><div class="bid-name">'+b.project_name+estBadge+'</div></div><div style="text-align:right;">'+statusTag(b.status)+'<div class="bid-total" style="margin-top:0.5rem;">'+fmtMoney(b.total_bid)+'</div></div></div>';
         html+='<div class="bid-meta">';
         if(b.general_contractor)html+='<span>GC: '+b.general_contractor+'</span>';
         if(b.location)html+='<span>'+b.location+'</span>';
@@ -412,7 +417,8 @@ async function openBid(id){
     }
     html+='</div>';
 
-    document.getElementById('modalTitle').textContent=bid.project_name;
+    var mEstBadge=bid.estimate_method==='blueprint_scan'?' [Blueprint Scanned]':' [GPT Estimate]';
+    document.getElementById('modalTitle').textContent=bid.project_name+mEstBadge;
     document.getElementById('modalContent').innerHTML=html;
     document.getElementById('bidModal').style.display='block';
 }
