@@ -388,6 +388,10 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] First successful blueprint analysis: Faith Refuge $12,591 (3 access doors from plans) -- done 2026-04-03
   - [x] City of Melissa East WTP quote: $20,945 from local blueprints, Claude-analyzed (4 access doors, 1 rack, 1 fiber) -- done 2026-04-03
   - [x] Quote Sender fromEmail fixed: bids@ rejected (553), switched to darius@stromation.com -- done 2026-04-03
+  - [x] Blueprint Analyzer prompt v2: reads legends, estimates from context, excludes fire alarm/SCADA per Antonio -- done 2026-04-03
+  - [x] Auto-bidder: project_name protection on PATCH (won't overwrite existing names) -- done 2026-04-03
+  - [x] Auto-bidder GPT prompt excludes fire alarm -- done 2026-04-03
+  - [x] 4 Claude-analyzed quotes generated: Kleberg $81K, Seagoville $117K, Faith Refuge $54K, Melissa $29K -- done 2026-04-03
   - [ ] PlanHub auth token refresh (may expire, re-capture from browser DevTools Network tab)
   - [ ] PlanHub official API access (applied, waiting for response)
   - [ ] ConstructConnect email parser (needs Antonio's paid CC alerts to bids@stromation.com)
