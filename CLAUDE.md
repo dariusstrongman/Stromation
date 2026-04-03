@@ -305,7 +305,8 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - Don't guess info@ emails in WF18 -- only save emails scraped from websites/mailto links
 - Don't reference outreach@stromation.com -- it's deleted. Use chase@stromation.com for outreach
 - Don't use `Buffer.from()` in n8n Code nodes -- use pure JS base64 helpers
-- leads@stromation.com and bids@stromation.com are aliases for darius@ -- they work with the "admin" SMTP credential, no 553 error
+- bids@stromation.com is NOT a valid SMTP alias -- gets 553 rejected. Always use darius@stromation.com with "admin" credential for sending
+- leads@stromation.com alias status unconfirmed -- use darius@stromation.com to be safe
 - Don't modify voicemail.xml without explicit request
 - Don't mention Make or Zapier anywhere on the site — Stromation only uses n8n. Blog post zapier-vs-make-vs-custom-automations.html stays for SEO but all other references removed.
 - Nav says "Industries" not "Workflows" — updated sitewide on 2026-03-31
@@ -385,6 +386,8 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Switched Blueprint Analyzer to Claude Sonnet 4.6 (Tier 2: 450K tokens/min, 1K req/min) -- done 2026-04-03
   - [x] Dashboard: 4 estimate badges (GPT Estimate, Analyzed with Claude, Analyzed with Gemini, Analyzed with GPT) -- done 2026-04-03
   - [x] First successful blueprint analysis: Faith Refuge $12,591 (3 access doors from plans) -- done 2026-04-03
+  - [x] City of Melissa East WTP quote: $20,945 from local blueprints, Claude-analyzed (4 access doors, 1 rack, 1 fiber) -- done 2026-04-03
+  - [x] Quote Sender fromEmail fixed: bids@ rejected (553), switched to darius@stromation.com -- done 2026-04-03
   - [ ] PlanHub auth token refresh (may expire, re-capture from browser DevTools Network tab)
   - [ ] PlanHub official API access (applied, waiting for response)
   - [ ] ConstructConnect email parser (needs Antonio's paid CC alerts to bids@stromation.com)
