@@ -392,6 +392,19 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Auto-bidder: project_name protection on PATCH (won't overwrite existing names) -- done 2026-04-03
   - [x] Auto-bidder GPT prompt excludes fire alarm -- done 2026-04-03
   - [x] 4 Claude-analyzed quotes generated: Kleberg $81K, Seagoville $117K, Faith Refuge $54K, Melissa $29K -- done 2026-04-03
+  - [x] PyPDF2 installed on n8n Docker for large PDF page splitting -- done 2026-04-03
+  - [x] Multi-PDF aggregation: counts combined across all PDFs per bid, ONE auto-bidder call -- done 2026-04-03
+  - [x] skip_autobid flag: Blueprint Analyzer returns analysis only when called from File Downloader -- done 2026-04-03
+  - [x] Skip already-analyzed bids: Prepare Input checks estimate_method before re-scanning (force_rescan=true to override) -- done 2026-04-03
+  - [x] Gemini (free) for index sheet identification, Claude only for device counting -- done 2026-04-03
+  - [x] Analysis cache: Claude results cached per PDF file, no duplicate API calls -- done 2026-04-03
+  - [x] Skip negative-scoring sheets: only send positive/neutral sheets to Claude -- done 2026-04-03
+  - [x] Large PDF splitting: PyPDF2 splits >25MB PDFs into individual pages after ZIP extraction AND from cache -- done 2026-04-03
+  - [x] File Downloader auto-syncs PlanHub project details to Supabase (deadline, GC, location, sq ft) -- done 2026-04-03
+  - [x] Merged PlanHub project ID handling -- done 2026-04-03
+  - [x] 7 Claude-analyzed quotes: Kleberg $81K, Seagoville $117K, Faith Refuge $54K, Melissa $29K, Back Nine $89K, FASST $35K, PT Solutions $8K -- done 2026-04-03
+  - [x] Antonio scope confirmed: NO fire alarm, NO SCADA. Only cabling, cameras, access control, AV, network, intrusion -- done 2026-04-03
+  - [x] Frisco Medical test bid deleted -- done 2026-04-03
   - [ ] PlanHub auth token refresh (may expire, re-capture from browser DevTools Network tab)
   - [ ] PlanHub official API access (applied, waiting for response)
   - [ ] ConstructConnect email parser (needs Antonio's paid CC alerts to bids@stromation.com)
@@ -399,5 +412,5 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [ ] Get Antonio's TX license number for quote template
   - [ ] SAM.gov production API key (DEMO_KEY works but rate limited)
   - [ ] Dashboard inline editing of line item quantities/prices
-  - [ ] Install PyPDF2 on n8n Docker for large PDF page splitting
-  - [ ] Aggregate device counts across multiple PDFs per bid (currently last PDF overwrites)
+  - [ ] Anthropic Batch API for non-urgent bids (50% discount)
+  - [ ] Remaining GPT bids: Bowie HS (no T-sheets on PlanHub), AISD JR High (server issues), Hertz DFW (80MB split), Tarzan Jane (no Div 27 content)
