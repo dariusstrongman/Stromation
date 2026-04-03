@@ -338,7 +338,7 @@ function renderBids(){
         }).join('');
 
         html+='<div class="bid-card" onclick="openBid(\''+b.id+'\')">';
-        var estBadge=b.estimate_method==='blueprint_scan'?'<span class="estimate-badge estimate-blueprint">Blueprint Scanned</span>':'<span class="estimate-badge estimate-gpt">GPT Estimate</span>';
+        var estBadge=(b.estimate_method==='blueprint_claude'||b.estimate_method==='blueprint_scan')?'<span class="estimate-badge estimate-blueprint">Analyzed with Claude</span>':b.estimate_method==='blueprint_gpt'?'<span class="estimate-badge estimate-blueprint">Analyzed with GPT</span>':'<span class="estimate-badge estimate-gpt">GPT Estimate</span>';
         html+='<div class="bid-top"><div><div class="bid-name">'+b.project_name+estBadge+'</div></div><div style="text-align:right;">'+statusTag(b.status)+'<div class="bid-total" style="margin-top:0.5rem;">'+fmtMoney(b.total_bid)+'</div></div></div>';
         html+='<div class="bid-meta">';
         if(b.general_contractor)html+='<span>GC: '+b.general_contractor+'</span>';
@@ -417,7 +417,7 @@ async function openBid(id){
     }
     html+='</div>';
 
-    var mEstBadge=bid.estimate_method==='blueprint_scan'?' [Blueprint Scanned]':' [GPT Estimate]';
+    var mEstBadge=(bid.estimate_method==='blueprint_claude'||bid.estimate_method==='blueprint_scan')?' [Analyzed with Claude]':bid.estimate_method==='blueprint_gpt'?' [Analyzed with GPT]':' [GPT Estimate]';
     document.getElementById('modalTitle').textContent=bid.project_name+mEstBadge;
     document.getElementById('modalContent').innerHTML=html;
     document.getElementById('bidModal').style.display='block';
