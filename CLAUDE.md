@@ -375,6 +375,16 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Smart file filter: E/T sheet priority, skip civil/structural/arch, max 3 PDFs -- done 2026-04-02
   - [x] Supabase cleanup: 13 junk entries removed, city parsing fixed -- done 2026-04-02
   - [x] NODE_FUNCTION_ALLOW_BUILTIN=* added to Docker env -- done 2026-04-02
+  - [x] Full audit + fix: 5 workflows, 27 issues found, all critical/high fixed -- done 2026-04-03
+  - [x] Quote Sender: PDF encoding fix (responseType), dynamic webhook response, em-dash fix -- done 2026-04-03
+  - [x] File Downloader: hyphenated sheet regex, S-prefix fix, addendum/elevator/lighting handling -- done 2026-04-03
+  - [x] Auto Bidder: camera cable (violet), fire alarm + AV + rack parts/expansion/narrative, GPT prompt expanded, training labor, firestop fix -- done 2026-04-03
+  - [x] Blueprint Analyzer v3: two-pass index approach (reads drawing index → identifies Div 27 sheets → scans those), temperature 0.0, size validation, int coercion, try/catch bidder call -- done 2026-04-03
+  - [x] Bid Alert Parser: security keyword fix, intend-to-bid gated, project ID regex widened, missing keywords added -- done 2026-04-03
+  - [x] File Downloader v4: persistent cache (/tmp/planhub_cache/), skip re-download, connection retry, PyPDF2 page splitting for large PDFs -- done 2026-04-03
+  - [x] Switched Blueprint Analyzer to Claude Sonnet 4.6 (Tier 2: 450K tokens/min, 1K req/min) -- done 2026-04-03
+  - [x] Dashboard: 4 estimate badges (GPT Estimate, Analyzed with Claude, Analyzed with Gemini, Analyzed with GPT) -- done 2026-04-03
+  - [x] First successful blueprint analysis: Faith Refuge $12,591 (3 access doors from plans) -- done 2026-04-03
   - [ ] PlanHub auth token refresh (may expire, re-capture from browser DevTools Network tab)
   - [ ] PlanHub official API access (applied, waiting for response)
   - [ ] ConstructConnect email parser (needs Antonio's paid CC alerts to bids@stromation.com)
@@ -382,3 +392,5 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [ ] Get Antonio's TX license number for quote template
   - [ ] SAM.gov production API key (DEMO_KEY works but rate limited)
   - [ ] Dashboard inline editing of line item quantities/prices
+  - [ ] Install PyPDF2 on n8n Docker for large PDF page splitting
+  - [ ] Aggregate device counts across multiple PDFs per bid (currently last PDF overwrites)
