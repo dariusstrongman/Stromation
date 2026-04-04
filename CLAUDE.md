@@ -413,4 +413,10 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [ ] SAM.gov production API key (DEMO_KEY works but rate limited)
   - [ ] Dashboard inline editing of line item quantities/prices
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
-  - [ ] Remaining GPT bids: Bowie HS (no T-sheets on PlanHub), AISD JR High (server issues), Hertz DFW (80MB split), Tarzan Jane (no Div 27 content)
+  - [x] Hertz DFW: 80MB PDF split locally, Claude found 45 drops/6 WAPs/8 cameras/4 AC doors → $103K quote -- done 2026-04-03
+  - [x] Bowie HS: confirmed no Division 27 scope (flooring/lighting renovation only), marked no_bid -- done 2026-04-03
+  - [x] Blueprint Analyzer: removed auto-bidder call entirely, only returns analysis. Caller handles bid. -- done 2026-04-03
+  - [x] PlanHub download pagination: auto-fetches page 1+ when >95 files found -- done 2026-04-03
+  - [x] force_rescan flag: clears file cache + analysis cache for re-download -- done 2026-04-03
+  - [ ] Remaining GPT bids: AISD JR High (server issues), Tarzan Jane (no Div 27 content in available files)
+  - [ ] Large PDF page selection: prioritize 1-8MB pages (floor plans) over tiny (notes) or huge (combined)
