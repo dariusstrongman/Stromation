@@ -425,5 +425,11 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Antonio confirmed: no license number needed on quotes -- done 2026-04-04
   - [ ] Remaining GPT bids: AISD JR High (server issues), Tarzan Jane (no Div 27 content in available files)
   - [ ] Large PDF page selection: prioritize 1-8MB pages (floor plans) over tiny (notes) or huge (combined)
+  - [x] Spec scanning via Gemini (free): reads spec TOC, extracts vendor requirements -- done 2026-04-04
+  - [x] Vendor auto-selection: CommScope vs Panduit, Avigilon vs COSEC based on spec -- done 2026-04-04
+  - [x] CommScope parts profile added (from UTSW Frisco proposal) -- done 2026-04-04
+  - [x] Schedule + symbol counting priority in Claude prompt -- done 2026-04-04
+  - [x] Verification pass for low/medium confidence results -- done 2026-04-04
   - [ ] BidEngine subdomain DNS setup (bidengine.stromation.com → GitHub Pages)
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
+  - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
