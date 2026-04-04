@@ -418,5 +418,12 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] Blueprint Analyzer: removed auto-bidder call entirely, only returns analysis. Caller handles bid. -- done 2026-04-03
   - [x] PlanHub download pagination: auto-fetches page 1+ when >95 files found -- done 2026-04-03
   - [x] force_rescan flag: clears file cache + analysis cache for re-download -- done 2026-04-03
+  - [x] Parts database updated from UTSW Frisco proposal: grounding $6K, labeling $600, Avigilon/HID Signo, wall mount rack, floor faceplates -- done 2026-04-04
+  - [x] All 8 Claude quotes re-generated with updated parts -- done 2026-04-04
+  - [x] BidEngine landing page created at github.com/dariusstrongman/BidEngine -- done 2026-04-04
+  - [x] BidEngine case study added to stromation.com case-studies page -- done 2026-04-04
+  - [x] Antonio confirmed: no license number needed on quotes -- done 2026-04-04
   - [ ] Remaining GPT bids: AISD JR High (server issues), Tarzan Jane (no Div 27 content in available files)
   - [ ] Large PDF page selection: prioritize 1-8MB pages (floor plans) over tiny (notes) or huge (combined)
+  - [ ] BidEngine subdomain DNS setup (bidengine.stromation.com → GitHub Pages)
+  - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
