@@ -148,6 +148,7 @@
             <div class="stat"><div class="stat-label">Submitted</div><div class="stat-val purple" id="sSubmitted">-</div></div>
             <div class="stat"><div class="stat-label">Won</div><div class="stat-val green" id="sWon">-</div></div>
             <div class="stat"><div class="stat-label">Total Revenue</div><div class="stat-val green" id="sRevenue">-</div></div>
+            <div class="stat"><div class="stat-label">Stromation 5%</div><div class="stat-val amber" id="sCommission">-</div></div>
         </div>
 
         <div class="tabs">
@@ -311,6 +312,7 @@ function updateStats(){
     document.getElementById('sWon').textContent=allBids.filter(function(b){return b.status==='won';}).length;
     var rev=allBids.filter(function(b){return b.status==='won';}).reduce(function(s,b){return s+(b.won_amount||b.total_bid||0);},0);
     document.getElementById('sRevenue').textContent=fmtMoney(rev);
+    document.getElementById('sCommission').textContent=fmtMoney(rev*0.05);
 }
 
 function filterBids(f,el){
@@ -414,6 +416,15 @@ async function openBid(id){
     if(bid.status==='quote_sent'||bid.status==='submitted'){
         html+='<button class="btn btn-green" onclick="updateBidStatus(\''+id+'\',\'won\')">Mark Won</button>';
         html+='<button class="btn btn-red" onclick="updateBidStatus(\''+id+'\',\'lost\')">Mark Lost</button>';
+    }
+    if(bid.status==='won'){
+        var wonAmt=bid.won_amount||bid.total_bid||0;
+        var commission=wonAmt*0.05;
+        html+='<div style="margin-top:1rem;padding:1rem;background:#064E3B;border-radius:8px;">';
+        html+='<div style="color:#6EE7B7;font-size:0.85rem;">WON</div>';
+        html+='<div style="color:white;font-size:1.3rem;font-weight:700;">'+fmtMoney(wonAmt)+'</div>';
+        html+='<div style="color:#F59E0B;font-size:1.1rem;font-weight:600;margin-top:0.5rem;">Stromation 5%: '+fmtMoney(commission)+'</div>';
+        html+='</div>';
     }
     html+='</div>';
 
