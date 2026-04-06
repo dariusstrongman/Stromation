@@ -434,5 +434,13 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] BidEngine Chatbot webhookId fix + fixVoice post-processor (was 404, now live) -- done 2026-04-05
   - [x] WF22 honeypot early return fixed (returns [] for bots, no more blank spam emails) -- done 2026-04-05
   - [x] BidEngine waitlist form error handling (loading/error states) -- done 2026-04-05
+  - [x] WF2 File Downloader v5: content-based sheet identification for split PDFs -- done 2026-04-06
+    - extract_sheet_id() reads PDF text to find sheet IDs (T0.01, E5.01, etc.) instead of relying on filenames
+    - rename_split_pages() renames generic page_001.pdf to actual sheet names like T2.30.01.pdf
+    - find_index() checks first 5 pages for index/cover content, not just filenames
+    - match_sheets() matches by extracted sheet ID, not filename substring
+    - Spec scanning detects Division 27 sections in split spec pages by reading text content
+    - Max analysis targets increased from 3 to 5 per project
+    - Fixes Kleberg-class bug where 88MB bundled PDFs were split but T-sheets couldn't be identified
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
   - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
