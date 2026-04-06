@@ -430,6 +430,9 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
   - [x] CommScope parts profile added (from UTSW Frisco proposal) -- done 2026-04-04
   - [x] Schedule + symbol counting priority in Claude prompt -- done 2026-04-04
   - [x] Verification pass for low/medium confidence results -- done 2026-04-04
-  - [ ] BidEngine subdomain DNS setup (bidengine.stromation.com → GitHub Pages)
+  - [x] BidEngine subdomain live at bidengine.stromation.com (GitHub Pages, HTTP 200) -- done 2026-04-05
+  - [x] BidEngine Chatbot webhookId fix + fixVoice post-processor (was 404, now live) -- done 2026-04-05
+  - [x] WF22 honeypot early return fixed (returns [] for bots, no more blank spam emails) -- done 2026-04-05
+  - [x] BidEngine waitlist form error handling (loading/error states) -- done 2026-04-05
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
   - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
