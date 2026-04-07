@@ -66,6 +66,8 @@
         .status-won{background:#064E3B;color:#6EE7B7;}
         .status-lost{background:#7F1D1D20;color:#FCA5A5;}
         .status-no_bid{background:#374151;color:#9CA3AF;}
+        .status-analyzing{background:#7C3AED20;color:#C084FC;animation:pulse-analyze 2s infinite;}
+        @keyframes pulse-analyze{0%,100%{opacity:1;}50%{opacity:0.5;}}
 
         .estimate-badge{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-left:0.5rem;}
         .estimate-gpt{background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);}
@@ -154,6 +156,7 @@
         <div class="tabs">
             <div class="tab active" onclick="filterBids('all',this)">All</div>
             <div class="tab" onclick="filterBids('new',this)">New</div>
+            <div class="tab" onclick="filterBids('analyzing',this)">Analyzing</div>
             <div class="tab" onclick="filterBids('quote_ready',this)">Quotes Ready</div>
             <div class="tab" onclick="filterBids('quote_sent',this)">Sent</div>
             <div class="tab" onclick="filterBids('submitted',this)">Submitted</div>
@@ -290,7 +293,7 @@ function deadlineInfo(d){
 }
 
 function statusTag(s){
-    var labels={'new':'New','reviewing':'Reviewing','estimating':'Estimating','quote_ready':'Quote Ready','quote_sent':'Quote Sent','submitted':'Submitted','won':'Won','lost':'Lost','no_bid':'No Bid','expired':'Expired'};
+    var labels={'new':'New','reviewing':'Reviewing','estimating':'Estimating','analyzing':'Analysis in Progress','quote_ready':'Quote Ready','quote_sent':'Quote Sent','submitted':'Submitted','won':'Won','lost':'Lost','no_bid':'No Bid','expired':'Expired'};
     return '<span class="status-badge status-'+s+'">'+(labels[s]||s)+'</span>';
 }
 
@@ -305,7 +308,7 @@ async function loadBids(){
 }
 
 function updateStats(){
-    var active=['new','reviewing','estimating','quote_ready','quote_sent','submitted'];
+    var active=['new','reviewing','estimating','analyzing','quote_ready','quote_sent','submitted'];
     document.getElementById('sPipeline').textContent=allBids.filter(function(b){return active.indexOf(b.status)!==-1;}).length;
     document.getElementById('sReady').textContent=allBids.filter(function(b){return b.status==='quote_ready';}).length;
     document.getElementById('sSubmitted').textContent=allBids.filter(function(b){return b.status==='submitted'||b.status==='quote_sent';}).length;
@@ -340,7 +343,7 @@ function renderBids(){
         }).join('');
 
         html+='<div class="bid-card" onclick="openBid(\''+b.id+'\')">';
-        var estBadge=(b.estimate_method==='blueprint_claude'||b.estimate_method==='blueprint_scan')?'<span class="estimate-badge estimate-blueprint">Analyzed with Claude</span>':b.estimate_method==='blueprint_gemini'?'<span class="estimate-badge estimate-blueprint">Analyzed with Gemini</span>':b.estimate_method==='blueprint_gpt'?'<span class="estimate-badge estimate-blueprint">Analyzed with GPT</span>':'<span class="estimate-badge estimate-gpt">GPT Estimate</span>';
+        var estBadge=b.status==='analyzing'?'<span class="estimate-badge" style="background:rgba(192,132,252,0.15);color:#C084FC;border:1px solid rgba(192,132,252,0.3);">Analyzing...</span>':(b.estimate_method==='blueprint_claude'||b.estimate_method==='blueprint_scan')?'<span class="estimate-badge estimate-blueprint">Analyzed with Claude</span>':b.estimate_method==='blueprint_gemini'?'<span class="estimate-badge estimate-blueprint">Analyzed with Gemini</span>':b.estimate_method==='blueprint_gpt'?'<span class="estimate-badge estimate-blueprint">Analyzed with GPT</span>':'<span class="estimate-badge estimate-gpt">GPT Estimate</span>';
         html+='<div class="bid-top"><div><div class="bid-name">'+b.project_name+estBadge+'</div></div><div style="text-align:right;">'+statusTag(b.status)+'<div class="bid-total" style="margin-top:0.5rem;">'+fmtMoney(b.total_bid)+'</div></div></div>';
         html+='<div class="bid-meta">';
         if(b.general_contractor)html+='<span>GC: '+b.general_contractor+'</span>';
@@ -410,6 +413,9 @@ async function openBid(id){
 
     // Actions
     html+='<div class="actions-bar">';
+    if(bid.status==='analyzing'){
+        html+='<div style="padding:1rem;background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.3);border-radius:8px;text-align:center;color:#C084FC;font-weight:700;margin-bottom:1rem;">Analysis in Progress... Blueprint is being scanned by Claude. Refresh in a few minutes.</div>';
+    }
     if(bid.status==='quote_ready'){
         html+='<button class="btn btn-green" onclick="sendQuote(\''+id+'\')">Send to Antonio</button>';
     }
