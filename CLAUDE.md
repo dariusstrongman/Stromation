@@ -445,5 +445,6 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - WF4 audit trail: logs old state to tbe_bid_activity before overwrite
     - Kleberg test: 4014 pages split, 19 Div 27 sheet IDs extracted, T2.30.04 analyzed → 72 drops, 14 WAPs, 28 speakers → $128K bid
     - Infrastructure: EXECUTIONS_TIMEOUT=1800, nginx proxy_read_timeout=1800, PyPDF2+pymupdf in Dockerfile
+  - [x] "Analyzing" pipeline status — WF2 sets status to analyzing at start, dashboard shows pulsing badge + disables Send -- done 2026-04-07
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
   - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
