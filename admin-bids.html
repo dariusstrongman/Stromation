@@ -66,8 +66,9 @@
         .status-won{background:#064E3B;color:#6EE7B7;}
         .status-lost{background:#7F1D1D20;color:#FCA5A5;}
         .status-no_bid{background:#374151;color:#9CA3AF;}
-        .status-analyzing{background:#7C3AED20;color:#C084FC;animation:pulse-analyze 2s infinite;}
-        @keyframes pulse-analyze{0%,100%{opacity:1;}50%{opacity:0.5;}}
+        .status-analyzing{background:#7C3AED40;color:#C084FC;animation:pulse-analyze 1.5s infinite;font-size:0.75rem;}
+        @keyframes pulse-analyze{0%,100%{opacity:1;box-shadow:0 0 8px rgba(192,132,252,0.4);}50%{opacity:0.6;box-shadow:0 0 20px rgba(192,132,252,0.8);}}
+        .bid-card-analyzing{border:1px solid rgba(192,132,252,0.5);box-shadow:0 0 12px rgba(192,132,252,0.2);}
 
         .estimate-badge{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-left:0.5rem;}
         .estimate-gpt{background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);}
@@ -376,7 +377,7 @@ function renderBids(){
             return '<span class="tag tag-'+cls+'">'+c+'</span>';
         }).join('');
 
-        html+='<div class="bid-card" onclick="openBid(\''+b.id+'\')">';
+        html+='<div class="bid-card'+(b.status==='analyzing'?' bid-card-analyzing':'')+'" onclick="openBid(\''+b.id+'\')">';
         var estBadge='';
         if(b.status==='analyzing'){estBadge='<span class="estimate-badge" style="background:rgba(192,132,252,0.15);color:#C084FC;border:1px solid rgba(192,132,252,0.3);">Analyzing...</span>';}
         else if(b.estimate_method==='blueprint_claude'||b.estimate_method==='blueprint_scan'){var aDate=b.updated_at?new Date(b.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';estBadge='<span class="estimate-badge estimate-blueprint">Analyzed with Claude'+(aDate?' - '+aDate:'')+'</span>';}
