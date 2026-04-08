@@ -153,15 +153,23 @@
             <div class="stat"><div class="stat-label">Stromation 5%</div><div class="stat-val amber" id="sCommission">-</div></div>
         </div>
 
-        <div class="tabs">
-            <div class="tab active" onclick="filterBids('all',this)">All</div>
-            <div class="tab" onclick="filterBids('new',this)">New</div>
-            <div class="tab" onclick="filterBids('analyzing',this)">Analyzing</div>
-            <div class="tab" onclick="filterBids('quote_ready',this)">Quotes Ready</div>
-            <div class="tab" onclick="filterBids('quote_sent',this)">Sent</div>
-            <div class="tab" onclick="filterBids('submitted',this)">Submitted</div>
-            <div class="tab" onclick="filterBids('won',this)">Won</div>
-            <div class="tab" onclick="filterBids('lost',this)">Lost</div>
+        <div class="tabs" style="justify-content:space-between;align-items:center;">
+            <div style="display:flex;gap:0.5rem;">
+                <div class="tab active" onclick="filterBids('all',this)">All</div>
+                <div class="tab" onclick="filterBids('new',this)">New</div>
+                <div class="tab" onclick="filterBids('analyzing',this)">Analyzing</div>
+                <div class="tab" onclick="filterBids('quote_ready',this)">Quotes Ready</div>
+                <div class="tab" onclick="filterBids('quote_sent',this)">Sent</div>
+                <div class="tab" onclick="filterBids('submitted',this)">Submitted</div>
+                <div class="tab" onclick="filterBids('won',this)">Won</div>
+                <div class="tab" onclick="filterBids('lost',this)">Lost</div>
+            </div>
+            <select onchange="sortBids(this.value)" style="padding:0.4rem 0.75rem;border:1px solid #475569;border-radius:6px;background:#0F172A;color:#E2E8F0;font-family:inherit;font-size:0.8rem;cursor:pointer;">
+                <option value="created_at">Newest First</option>
+                <option value="bid_deadline">Bid Due Date</option>
+                <option value="total_bid">Highest Value</option>
+                <option value="project_name">Name A-Z</option>
+            </select>
         </div>
 
         <div id="bidList"></div>
@@ -262,6 +270,7 @@ var SK='sb_publishable_8qa-nssfdtEkCz-42wOSWQ_2P7S4Zj7';
 var H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'};
 var allBids=[];
 var currentFilter='all';
+var currentSort='created_at';
 
 function checkPw(){
     if(document.getElementById('pwInput').value==='Kyomi123'){
@@ -330,8 +339,28 @@ function filterBids(f,el){
     renderBids();
 }
 
+function sortBids(s){
+    currentSort=s;
+    renderBids();
+}
+
 function renderBids(){
     var filtered=currentFilter==='all'?allBids:allBids.filter(function(b){return b.status===currentFilter;});
+    filtered=filtered.slice().sort(function(a,b){
+        if(currentSort==='bid_deadline'){
+            var da=a.bid_deadline?new Date(a.bid_deadline).getTime():Infinity;
+            var db=b.bid_deadline?new Date(b.bid_deadline).getTime():Infinity;
+            return da-db;
+        }
+        if(currentSort==='total_bid'){
+            return (b.total_bid||0)-(a.total_bid||0);
+        }
+        if(currentSort==='project_name'){
+            return (a.project_name||'').localeCompare(b.project_name||'');
+        }
+        // default: created_at desc
+        return new Date(b.created_at)-new Date(a.created_at);
+    });
     if(filtered.length===0){
         document.getElementById('bidList').innerHTML='<div style="text-align:center;padding:3rem;color:#64748B;">No bids found</div>';
         return;
