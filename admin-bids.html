@@ -297,6 +297,7 @@ function statusTag(s){
     return '<span class="status-badge status-'+s+'">'+(labels[s]||s)+'</span>';
 }
 
+var _analyzeRefreshTimer=null;
 async function loadBids(){
     try{
         var r=await fetch(SB+'/rest/v1/tbe_bids?select=*&order=created_at.desc',{headers:H});
@@ -304,6 +305,14 @@ async function loadBids(){
         updateStats();
         renderBids();
         document.getElementById('bidCount').textContent=allBids.length+' bids';
+        // Auto-refresh every 15s if any bid is being analyzed
+        var hasAnalyzing=allBids.some(function(b){return b.status==='analyzing';});
+        if(hasAnalyzing && !_analyzeRefreshTimer){
+            _analyzeRefreshTimer=setInterval(function(){loadBids();},15000);
+        }else if(!hasAnalyzing && _analyzeRefreshTimer){
+            clearInterval(_analyzeRefreshTimer);
+            _analyzeRefreshTimer=null;
+        }
     }catch(e){console.error(e);}
 }
 
