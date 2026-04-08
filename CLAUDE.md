@@ -449,5 +449,13 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - Dashboard auto-refresh: 60s normal, 15s during analysis. "Analysis in Progress" badge shows in real-time
     - Infrastructure: EXECUTIONS_TIMEOUT=1800, nginx proxy_read_timeout=1800, PyPDF2+pymupdf in Dockerfile
   - [x] "Analyzing" pipeline status — WF2 sets status to analyzing at start, dashboard shows pulsing badge + disables Send -- done 2026-04-07
+  - [x] Pipeline v7 rewrite: clean two-pass architecture, persistent script at /home/node/.n8n/planhub_pipeline.py -- done 2026-04-08
+    - Pass 1: page-by-page scope detection (free, keyword match + index parsing)
+    - Pass 2: Claude analysis only on confirmed scope pages (paid, targeted)
+    - NEEDS_VISION support for scanned/image pages (Gemini free check)
+    - Sheet-ID prioritization in Claude queue (priority over generic keyword matches)
+    - Supabase table name fixed (tbe_bids lowercase)
+    - Kleberg: 1000 pages scanned, 214 SCOPE, 28 INDEX, 19 sheet IDs extracted
+  - [ ] Pipeline v7 bugs: MAX_PAGES=1000 needs increase to 5000, sheet ID matching checks first 300 chars but title blocks are at bottom of text (need full 2000 char search)
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
   - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
