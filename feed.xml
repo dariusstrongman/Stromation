@@ -5,8 +5,15 @@
   <link>https://www.stromation.com/blog.html</link>
   <description>Automation guides and insights for business owners</description>
   <language>en-us</language>
-  <lastBuildDate>Tue, 07 Apr 2026 11:01:01 GMT</lastBuildDate>
+  <lastBuildDate>Wed, 08 Apr 2026 11:01:01 GMT</lastBuildDate>
   <atom:link href="https://www.stromation.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>How to Automate Internal Communication Using Slack Integrations for Small Businesses</title>
+    <link>https://www.stromation.com/blog/automate-internal-communication-with-slack-integrations.html</link>
+    <description>Learn how small businesses can streamline internal communication by automating Slack workflows, saving time and enhancing productivity.</description>
+    <pubDate>Wed, 08 Apr 2026 11:01:01 GMT</pubDate>
+    <guid>https://www.stromation.com/blog/automate-internal-communication-with-slack-integrations.html</guid>
+  </item>
   <item>
     <title>How to Automate Small Business Expense Reporting for Greater Efficiency</title>
     <link>https://www.stromation.com/blog/automate-small-business-expense-reporting.html</link>
@@ -191,4 +198,4 @@
   </item>
 </channel>
 </rss>
-     
+      
