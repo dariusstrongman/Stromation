@@ -443,7 +443,10 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - Stale extracted dir cleanup, existence checks on all file operations, per-page try/except on corrupt pages
     - WF4 project mismatch protection: blocks PATCH if facility names don't match (filters generic construction words)
     - WF4 audit trail: logs old state to tbe_bid_activity before overwrite
-    - Kleberg test: 4014 pages split, 19 Div 27 sheet IDs extracted, T2.30.04 analyzed → 72 drops, 14 WAPs, 28 speakers → $128K bid
+    - Kleberg test: 4014 pages split, 19 Div 27 sheet IDs extracted, 9 sheets analyzed → 135 drops, 14 WAPs, 22 displays, 7 racks → $194K bid
+    - Aggregation fixed: SUM across pages (was MAX — undercounted by 50%+)
+    - One-pass page scanner: reads ALL 4014 pages once, matches by sheet ID count (1-2 matches = drawing, 5+ = index page)
+    - Dashboard auto-refresh: 60s normal, 15s during analysis. "Analysis in Progress" badge shows in real-time
     - Infrastructure: EXECUTIONS_TIMEOUT=1800, nginx proxy_read_timeout=1800, PyPDF2+pymupdf in Dockerfile
   - [x] "Analyzing" pipeline status — WF2 sets status to analyzing at start, dashboard shows pulsing badge + disables Send -- done 2026-04-07
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
