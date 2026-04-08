@@ -456,6 +456,26 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - Sheet-ID prioritization in Claude queue (priority over generic keyword matches)
     - Supabase table name fixed (tbe_bids lowercase)
     - Kleberg: 1000 pages scanned, 214 SCOPE, 28 INDEX, 19 sheet IDs extracted
-  - [ ] Pipeline v7 bugs: MAX_PAGES=1000 needs increase to 5000, sheet ID matching checks first 300 chars but title blocks are at bottom of text (need full 2000 char search)
+  - [x] Pipeline v8 fixes (2026-04-08):
+    - MAX_PAGES: 1000 → 10000 (no page left unscanned)
+    - MAX_CLAUDE_PAGES: 15 → 999, MAX_VISION_PAGES: 5 → 50 (no caps on analysis)
+    - Sheet ID matching: full 2000 chars (was 300, missed title blocks at bottom)
+    - text_preview: 500 → 2000 chars for better sheet ID cross-referencing
+    - Split ALL multi-page PDFs (was only >25MB, missed small bundled permit sets)
+    - Split cached PDFs too (was skipping split on cache hits)
+    - fire alarm moved from NEGATIVE to POSITIVE keywords (was blocking Div 28 scope)
+    - Added keywords: fire pull, pull station, horn strobe, visual alarm, smoke detector, data, telephone, nurse call
+    - Removed "lighting" from NEGATIVE (overlaps with low voltage)
+    - Gemini prompt: removed "Do NOT include fire alarm", added symbol-based detection
+    - Gemini fallback: checks ALL NO_SCOPE pages when Pass 2 returns 0 device counts
+    - Status reset: always sets quote_ready at end of pipeline (was stuck on analyzing)
+    - Disk cleanup: deletes split dir, extracted dir, downloads, and cache after completion
+    - updated_at: Auto Bidder now sets timestamp on every bid update
+    - Dashboard: analyzing cards have purple glow border, analysis date on badges
+    - Dashboard: sort dropdown (bid due date, value, name, newest)
+    - Bid Alert Parser: blocks "status update", "new projects bidding" emails
+    - Concurrent scans: multiple bids can run simultaneously
+    - Back Nine: $90K (12 scope pages analyzed), Hertz: $115K (consistent across rescans)
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
   - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
+  - [ ] NOTE: n8n API PUT only updates draft — must publish from UI for production webhooks
