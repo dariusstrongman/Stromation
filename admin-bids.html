@@ -305,14 +305,10 @@ async function loadBids(){
         updateStats();
         renderBids();
         document.getElementById('bidCount').textContent=allBids.length+' bids';
-        // Auto-refresh every 15s if any bid is being analyzed
+        // Auto-refresh: every 15s if analyzing, every 60s otherwise
         var hasAnalyzing=allBids.some(function(b){return b.status==='analyzing';});
-        if(hasAnalyzing && !_analyzeRefreshTimer){
-            _analyzeRefreshTimer=setInterval(function(){loadBids();},15000);
-        }else if(!hasAnalyzing && _analyzeRefreshTimer){
-            clearInterval(_analyzeRefreshTimer);
-            _analyzeRefreshTimer=null;
-        }
+        if(_analyzeRefreshTimer) clearInterval(_analyzeRefreshTimer);
+        _analyzeRefreshTimer=setInterval(function(){loadBids();}, hasAnalyzing ? 15000 : 60000);
     }catch(e){console.error(e);}
 }
 
