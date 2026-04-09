@@ -487,6 +487,22 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - Removed stray vision_checked increment after Gemini loop
     - Pipeline version tracked in output JSON (pipeline_version, elapsed_seconds fields)
     - Fixed: execution 7771 stuck 12+ hours, Kleberg stuck in "analyzing" since Apr 7
+  - [x] Pipeline v10 accuracy fix — schedule-first dedup architecture (2026-04-09):
+    - Enhanced page classification: SCHEDULE, FLOOR_PLAN, DETAIL, RISER, LEGEND, DEMOLITION (was just SCOPE)
+    - Schedule-first analysis: schedules processed before floor plans, schedule counts = authoritative
+    - Smart aggregation replaces blind SUM: schedule MAX, floor plan dedup (T vs ES series), SUM only across floors
+    - WF3 Blueprint Analyzer v4: new extract_schedule mode for reading device schedule tables
+    - WF3 count_devices prompt updated: anti-dedup fields (is_detail_view, is_demolition, floor_identifier, sheet_series)
+    - WF4 Auto Bidder: review_mode flag, pending_review status, saves device_analysis + page_classification to Supabase
+    - WF4 accepts reviewed_counts from dashboard for post-review quote generation
+    - Dashboard: "Pending Review" tab, editable device counts with source/confidence badges, page classification summary
+    - Dashboard: "Generate Quote with These Counts" button for human-reviewed quotes
+    - Supabase: device_analysis JSONB, page_classification JSONB columns added to tbe_bids
+    - Supabase: pending_review added to status constraint
+    - Flow: pipeline → pending_review → Darius reviews counts → Generate Quote → quote_ready → Send to Antonio
+    - Skips detail views, riser diagrams, legends, demolition plans (prevents overcounting)
+    - T-series + ES-series overlap: security devices use MAX(T,ES) not SUM per floor
+    - MAX_CLAUDE_PAGES raised to 100, MAX_VISION_PAGES to 30
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
   - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
   - [ ] NOTE: n8n API PUT only updates draft — must publish from UI for production webhooks

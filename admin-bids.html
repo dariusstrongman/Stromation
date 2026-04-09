@@ -66,7 +66,18 @@
         .status-won{background:#064E3B;color:#6EE7B7;}
         .status-lost{background:#7F1D1D20;color:#FCA5A5;}
         .status-no_bid{background:#374151;color:#9CA3AF;}
+        .status-pending_review{background:rgba(245,158,11,0.2);color:#FBBF24;font-size:0.75rem;animation:pulse-review 2s infinite;}
+        @keyframes pulse-review{0%,100%{opacity:1;box-shadow:0 0 6px rgba(245,158,11,0.3);}50%{opacity:0.7;box-shadow:0 0 14px rgba(245,158,11,0.6);}}
         .status-analyzing{background:#7C3AED40;color:#C084FC;animation:pulse-analyze 1.5s infinite;font-size:0.75rem;}
+        .review-table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-bottom:1rem;}
+        .review-table th{text-align:left;padding:8px;color:#64748B;font-size:0.7rem;text-transform:uppercase;border-bottom:1px solid #334155;}
+        .review-table td{padding:8px;border-bottom:1px solid #1E293B20;}
+        .review-table input[type=number]{width:70px;padding:4px 6px;border:1px solid #475569;border-radius:4px;background:#0F172A;color:#E2E8F0;font-family:inherit;font-size:0.9rem;text-align:center;}
+        .source-badge{padding:2px 6px;border-radius:3px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;}
+        .source-schedule{background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.3);}
+        .source-floor{background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);}
+        .source-estimate{background:rgba(239,68,68,0.15);color:#F87171;border:1px solid rgba(239,68,68,0.3);}
+        .classification-summary{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:0.75rem 1rem;font-size:0.8rem;color:#94A3B8;margin-bottom:1rem;line-height:1.6;}
         @keyframes pulse-analyze{0%,100%{opacity:1;box-shadow:0 0 8px rgba(192,132,252,0.4);}50%{opacity:0.6;box-shadow:0 0 20px rgba(192,132,252,0.8);}}
         .bid-card-analyzing{border:1px solid rgba(192,132,252,0.5);box-shadow:0 0 12px rgba(192,132,252,0.2);}
 
@@ -159,6 +170,7 @@
                 <div class="tab active" onclick="filterBids('all',this)">All</div>
                 <div class="tab" onclick="filterBids('new',this)">New</div>
                 <div class="tab" onclick="filterBids('analyzing',this)">Analyzing</div>
+                <div class="tab" onclick="filterBids('pending_review',this)">Pending Review</div>
                 <div class="tab" onclick="filterBids('quote_ready',this)">Quotes Ready</div>
                 <div class="tab" onclick="filterBids('quote_sent',this)">Sent</div>
                 <div class="tab" onclick="filterBids('submitted',this)">Submitted</div>
@@ -303,7 +315,7 @@ function deadlineInfo(d){
 }
 
 function statusTag(s){
-    var labels={'new':'New','reviewing':'Reviewing','estimating':'Estimating','analyzing':'Analysis in Progress','quote_ready':'Quote Ready','quote_sent':'Quote Sent','submitted':'Submitted','won':'Won','lost':'Lost','no_bid':'No Bid','expired':'Expired'};
+    var labels={'new':'New','reviewing':'Reviewing','estimating':'Estimating','analyzing':'Analysis in Progress','pending_review':'Pending Review','quote_ready':'Quote Ready','quote_sent':'Quote Sent','submitted':'Submitted','won':'Won','lost':'Lost','no_bid':'No Bid','expired':'Expired'};
     return '<span class="status-badge status-'+s+'">'+(labels[s]||s)+'</span>';
 }
 
@@ -316,7 +328,7 @@ async function loadBids(){
         renderBids();
         document.getElementById('bidCount').textContent=allBids.length+' bids';
         // Auto-refresh: every 15s if analyzing, every 60s otherwise
-        var hasAnalyzing=allBids.some(function(b){return b.status==='analyzing';});
+        var hasAnalyzing=allBids.some(function(b){return b.status==='analyzing'||b.status==='pending_review';});
         if(_analyzeRefreshTimer) clearInterval(_analyzeRefreshTimer);
         _analyzeRefreshTimer=setInterval(function(){loadBids();}, hasAnalyzing ? 15000 : 60000);
     }catch(e){console.error(e);}
@@ -380,6 +392,7 @@ function renderBids(){
         html+='<div class="bid-card'+(b.status==='analyzing'?' bid-card-analyzing':'')+'" onclick="openBid(\''+b.id+'\')">';
         var estBadge='';
         if(b.status==='analyzing'){estBadge='<span class="estimate-badge" style="background:rgba(192,132,252,0.15);color:#C084FC;border:1px solid rgba(192,132,252,0.3);">Analyzing...</span>';}
+        else if(b.status==='pending_review'){estBadge='<span class="estimate-badge" style="background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);">Needs Review</span>';}
         else if(b.estimate_method==='blueprint_claude'||b.estimate_method==='blueprint_scan'){var aDate=b.updated_at?new Date(b.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';estBadge='<span class="estimate-badge estimate-blueprint">Analyzed with Claude'+(aDate?' - '+aDate:'')+'</span>';}
         else if(b.estimate_method==='blueprint_gemini'){var aDate=b.updated_at?new Date(b.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';estBadge='<span class="estimate-badge estimate-blueprint">Analyzed with Gemini'+(aDate?' - '+aDate:'')+'</span>';}
         else if(b.estimate_method==='blueprint_gpt'){estBadge='<span class="estimate-badge estimate-blueprint">Analyzed with GPT</span>';}
@@ -412,7 +425,7 @@ async function openBid(id){
     // Info grid
     html+='<div class="modal-grid" style="margin-bottom:1.5rem;">';
     html+='<div><div class="modal-field"><label>Status</label><select id="editStatus" onchange="updateBidStatus(\''+id+'\',this.value)">';
-    ['new','reviewing','estimating','quote_ready','quote_sent','submitted','won','lost','no_bid'].forEach(function(s){
+    ['new','reviewing','estimating','pending_review','quote_ready','quote_sent','submitted','won','lost','no_bid'].forEach(function(s){
         html+='<option value="'+s+'"'+(bid.status===s?' selected':'')+'>'+s.replace('_',' ').toUpperCase()+'</option>';
     });
     html+='</select></div>';
@@ -428,6 +441,65 @@ async function openBid(id){
     // Scope
     if(bid.scope_summary){
         html+='<div class="modal-section"><h3>Scope</h3><p style="color:#CBD5E1;line-height:1.7;">'+bid.scope_summary+'</p></div>';
+    }
+
+    // Device count review section (for pending_review bids)
+    if(bid.device_analysis || bid.status==='pending_review'){
+        var da=bid.device_analysis||{};
+        var pc=bid.page_classification||{};
+        html+='<div class="modal-section"><h3>Device Count Review</h3>';
+        // Page classification summary
+        if(pc.total_pages){
+            html+='<div class="classification-summary">';
+            html+='<strong>'+pc.total_pages+'</strong> pages scanned';
+            if(pc.schedules_found)html+=' | <strong>'+pc.schedules_found+'</strong> schedules found';
+            if(pc.floor_plans_analyzed)html+=' | <strong>'+pc.floor_plans_analyzed+'</strong> floor plans analyzed';
+            var skipped=[];
+            if(pc.details_skipped)skipped.push(pc.details_skipped+' details');
+            if(pc.risers_skipped)skipped.push(pc.risers_skipped+' risers');
+            if(pc.legends_skipped)skipped.push(pc.legends_skipped+' legends');
+            if(pc.demo_skipped)skipped.push(pc.demo_skipped+' demo plans');
+            if(skipped.length)html+='<br>Skipped: '+skipped.join(', ');
+            if(pc.overlaps_deduped)html+=' | <strong>'+pc.overlaps_deduped+'</strong> overlapping scope drawings deduped';
+            html+='</div>';
+        }
+        // Device counts table
+        var deviceNames={cat6a_drops:'Cat6A Data Drops',wifi_aps:'WiFi Access Points',fixed_cameras:'Fixed Cameras',ptz_cameras:'PTZ Cameras',access_control_doors:'Access Control Doors',motion_detectors:'Motion Detectors',keypads:'Keypads',glass_break_sensors:'Glass Break Sensors',door_contacts:'Door Contacts',speakers:'Speakers',displays:'Displays',intercom_stations:'Intercom Stations',nurse_call_stations:'Nurse Call Stations',rack_mdf_rooms:'MDF/IDF Rooms',fiber_runs:'Fiber Runs'};
+        var deviceCategories={cat6a_drops:'Structured Cabling',wifi_aps:'Structured Cabling',fixed_cameras:'Security',ptz_cameras:'Security',access_control_doors:'Security',motion_detectors:'Security',keypads:'Security',glass_break_sensors:'Security',door_contacts:'Security',speakers:'Audio Visual',displays:'Audio Visual',intercom_stations:'Intercom',nurse_call_stations:'Intercom',rack_mdf_rooms:'Infrastructure',fiber_runs:'Infrastructure'};
+        var systemsMap={cat6a_drops:'structured_cabling',wifi_aps:'structured_cabling',fixed_cameras:'security',ptz_cameras:'security',access_control_doors:'security',motion_detectors:'security',keypads:'security',glass_break_sensors:'security',door_contacts:'security',speakers:'audio_visual',displays:'audio_visual',intercom_stations:'intercom_nurse_call',nurse_call_stations:'intercom_nurse_call',rack_mdf_rooms:'infrastructure',fiber_runs:'infrastructure'};
+        html+='<table class="review-table"><thead><tr><th>Device Type</th><th>Count</th><th>Source</th><th>Confidence</th><th>Notes</th></tr></thead><tbody>';
+        var deviceKeys=Object.keys(deviceNames);
+        var hasAnyDevice=false;
+        var lastCatR='';
+        deviceKeys.forEach(function(dk){
+            var info=da[dk]||{};
+            var count=info.count||0;
+            // If no device_analysis, try to extract from bid items or scope
+            if(!bid.device_analysis && bid.status!=='pending_review')return;
+            if(count<=0 && !bid.device_analysis)return;
+            var catR=deviceCategories[dk]||'';
+            if(catR!==lastCatR){lastCatR=catR;html+='<tr><td colspan="5" style="padding:6px 8px;color:#F59E0B;font-weight:700;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;">'+catR+'</td></tr>';}
+            var src=info.source||'estimate';
+            var conf=info.confidence||'low';
+            var srcBadge='<span class="source-badge source-'+(src==='schedule'?'schedule':src==='floor_plan_sum'?'floor':'estimate')+'">'+src.replace('_',' ')+'</span>';
+            var confColor=conf==='high'?'#10B981':conf==='medium'?'#F59E0B':'#EF4444';
+            html+='<tr>';
+            html+='<td>'+deviceNames[dk]+'</td>';
+            html+='<td><input type="number" min="0" value="'+count+'" id="rc_'+dk+'"></td>';
+            html+='<td>'+srcBadge+'</td>';
+            html+='<td style="color:'+confColor+';font-weight:600;text-transform:uppercase;font-size:0.75rem;">'+conf+'</td>';
+            html+='<td style="font-size:0.75rem;color:#94A3B8;">'+(info.notes||'-')+'</td>';
+            html+='</tr>';
+            hasAnyDevice=true;
+        });
+        html+='</tbody></table>';
+        if(bid.status==='pending_review'){
+            html+='<div style="display:flex;gap:0.75rem;align-items:center;">';
+            html+='<button class="btn btn-amber" onclick="generateQuoteFromReview(\''+bid.id+'\')">Generate Quote with These Counts</button>';
+            html+='<span style="font-size:0.75rem;color:#64748B;">Review and adjust counts above, then generate the quote</span>';
+            html+='</div>';
+        }
+        html+='</div>';
     }
 
     // Line items table
@@ -516,6 +588,74 @@ async function sendQuote(id){
         alert('Quote sent successfully');
     }catch(e){
         alert('Failed to send quote');
+    }
+}
+
+async function generateQuoteFromReview(bidId){
+    var bid=allBids.find(function(b){return b.id===bidId;});
+    if(!bid)return;
+    if(!confirm('Generate quote from the reviewed device counts?'))return;
+
+    var counts={
+        structured_cabling:{
+            cat6a_drops:parseInt(document.getElementById('rc_cat6a_drops')?.value)||0,
+            wifi_aps:parseInt(document.getElementById('rc_wifi_aps')?.value)||0
+        },
+        security:{
+            fixed_cameras:parseInt(document.getElementById('rc_fixed_cameras')?.value)||0,
+            ptz_cameras:parseInt(document.getElementById('rc_ptz_cameras')?.value)||0,
+            access_control_doors:parseInt(document.getElementById('rc_access_control_doors')?.value)||0,
+            motion_detectors:parseInt(document.getElementById('rc_motion_detectors')?.value)||0,
+            keypads:parseInt(document.getElementById('rc_keypads')?.value)||0,
+            glass_break_sensors:parseInt(document.getElementById('rc_glass_break_sensors')?.value)||0,
+            door_contacts:parseInt(document.getElementById('rc_door_contacts')?.value)||0
+        },
+        audio_visual:{
+            speakers:parseInt(document.getElementById('rc_speakers')?.value)||0,
+            displays:parseInt(document.getElementById('rc_displays')?.value)||0
+        },
+        intercom_nurse_call:{
+            intercom_stations:parseInt(document.getElementById('rc_intercom_stations')?.value)||0,
+            nurse_call_stations:parseInt(document.getElementById('rc_nurse_call_stations')?.value)||0
+        },
+        infrastructure:{
+            rack_mdf_rooms:parseInt(document.getElementById('rc_rack_mdf_rooms')?.value)||0,
+            fiber_runs:parseInt(document.getElementById('rc_fiber_runs')?.value)||0
+        }
+    };
+
+    try{
+        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-bid',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+                bid_id:bidId,
+                reviewed_counts:counts,
+                review_mode:false,
+                estimate_method:'blueprint_claude_v2_reviewed',
+                project_name:bid.project_name,
+                general_contractor:bid.general_contractor||'',
+                gc_email:bid.gc_email||'',
+                location:bid.location||'',
+                city:bid.city||'',
+                building_type:bid.building_type||'',
+                square_footage:bid.square_footage||null,
+                num_floors:bid.num_floors||1,
+                bid_deadline:bid.bid_deadline||null,
+                source:bid.source||'planhub'
+            })
+        });
+        var data=await resp.json();
+        if(data.success){
+            closeModal();
+            loadBids();
+            alert('Quote generated: '+fmtMoney(data.total_bid)+' ('+data.line_items+' line items)');
+            setTimeout(function(){openBid(bidId);},500);
+        }else{
+            alert('Error: '+(data.error||'Unknown'));
+        }
+    }catch(e){
+        alert('Failed: '+e.message);
     }
 }
 
