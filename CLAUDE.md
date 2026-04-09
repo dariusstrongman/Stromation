@@ -476,6 +476,17 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - Bid Alert Parser: blocks "status update", "new projects bidding" emails
     - Concurrent scans: multiple bids can run simultaneously
     - Back Nine: $90K (12 scope pages analyzed), Hertz: $115K (consistent across rescans)
+  - [x] Pipeline v9 reliability fixes (2026-04-09):
+    - Global 25-minute deadline: checked before every Claude/Gemini API call, raises DeadlineExceeded
+    - MAX_CLAUDE_PAGES: 999 → 50, MAX_VISION_PAGES: 50 → 20 (practical caps)
+    - Circuit breaker: 5 consecutive Claude failures = abort Pass 2
+    - Title block fix: extract_text_from_page returns first 2000 + last 500 chars (was first 2000 only, missed sheet IDs in bottom title blocks)
+    - try/finally in main(): ALWAYS resets bid status to quote_ready on ANY exit (crash, deadline, error)
+    - bid_id loaded early (before run_pipeline) so finally block can always reset status
+    - 30-minute timeout added to n8n executeCommand node (was unlimited)
+    - Removed stray vision_checked increment after Gemini loop
+    - Pipeline version tracked in output JSON (pipeline_version, elapsed_seconds fields)
+    - Fixed: execution 7771 stuck 12+ hours, Kleberg stuck in "analyzing" since Apr 7
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
   - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
   - [ ] NOTE: n8n API PUT only updates draft — must publish from UI for production webhooks
