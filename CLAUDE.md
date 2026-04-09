@@ -510,6 +510,27 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
       - try/finally block reset status from analyzing → quote_ready
       - device_analysis and page_classification remain null (v10 aggregation never completed)
       - Old $194K quote unchanged — WF4 was never called with new counts
+  - [x] Pipeline v11 cost fixes (2026-04-09):
+    - File dedup by hash before splitting (Project Manual = Specs = same file, saved 1756 duplicate pages)
+    - Div 27 schedule filter: only data/security/fire alarm schedules sent to Claude (was ALL schedules)
+    - Text density filter: pages >800 chars = spec text → NO_SCOPE (not FLOOR_PLAN)
+    - Floor plan Div 27 filter: only keyword-matched floor plans go to Claude
+    - MAX_SCHEDULE_PAGES = 20 cap added
+    - Kleberg cost reduction: 1066 Claude calls → ~50 estimated ($27 → ~$1.25)
+  - [x] Pipeline v12 Phase 1 batch classification (2026-04-09):
+    - Replaces keyword matching with Claude Sonnet text-only batch calls
+    - 50 page text previews per API call (~$0.01/batch)
+    - Claude classifies: DRAWING (send to vision), SCHEDULE, INDEX, or SKIP
+    - Hill Elementary: 104 vision calls → estimated ~15 vision calls (85% reduction)
+    - Anthropic API key added to pipeline script for direct Claude calls
+    - Code pushed and published, needs testing on stable n8n instance
+  - [ ] Infrastructure blockers:
+    - n8n task runner 60s timeout kills WF3 Claude calls (need N8N_RUNNERS_TASK_TIMEOUT=300)
+    - Zombie executions after Docker restart (must Stop All + republish WF2)
+    - 480MB ZIP downloads take 10-15 min on EC2
+    - Anthropic credits at $0 (need refill at console.anthropic.com)
+  - [ ] Phase 2: Claude managed agent with tools (get_drawing_index, analyze_page_vision, submit_counts)
+  - [ ] Workflow backups saved to ~/Desktop/tbe-workflow-backups-2026-04-09/
       - Lesson: always check Anthropic credit balance before triggering large rescans
   - [ ] Add cost guard to pipeline: log estimated Claude calls + cost before Pass 2 starts
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
