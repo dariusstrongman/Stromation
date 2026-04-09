@@ -529,7 +529,17 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - Zombie executions after Docker restart (must Stop All + republish WF2)
     - 480MB ZIP downloads take 10-15 min on EC2
     - Anthropic credits at $0 (need refill at console.anthropic.com)
-  - [ ] Phase 2: Claude managed agent with tools (get_drawing_index, analyze_page_vision, submit_counts)
+  - [x] Phase 2: Claude agent pipeline (replaces fixed v12 pipeline) (2026-04-09):
+    - Agent has 4 tools: list_pages, read_page_text, analyze_page_vision, submit_counts
+    - Claude decides which pages to analyze (reads index first, then schedules, then floor plans)
+    - list_pages: paginated (100/page), text previews, optional filter — FREE
+    - read_page_text: full 3000-char text extraction — FREE
+    - analyze_page_vision: sends PDF to WF3 webhook for device counting — ~$0.03-0.10/call
+    - submit_counts: calls auto-bidder with review_mode=True → pending_review status
+    - Up to 40 conversation turns, deadline-checked, caches vision results
+    - System prompt guides agent: schedule-first, skip details/risers/legends/demo, SUM floors, MAX T/ES overlap
+    - Cost-aware: agent minimizes vision calls by reading schedules as text first
+    - WF2 pushed (draft) — needs publish from n8n UI to go live
   - [ ] Workflow backups saved to ~/Desktop/tbe-workflow-backups-2026-04-09/
       - Lesson: always check Anthropic credit balance before triggering large rescans
   - [ ] Add cost guard to pipeline: log estimated Claude calls + cost before Pass 2 starts
