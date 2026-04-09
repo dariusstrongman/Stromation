@@ -503,6 +503,17 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - Skips detail views, riser diagrams, legends, demolition plans (prevents overcounting)
     - T-series + ES-series overlap: security devices use MAX(T,ES) not SUM per floor
     - MAX_CLAUDE_PAGES raised to 100, MAX_VISION_PAGES to 30
+    - WF2/WF3/WF4 all published 2026-04-09
+    - Kleberg rescan triggered (force_rescan=true, execution 8125) but hit Anthropic API credit limit mid-run
+      - Pass 1 (free text classification) likely completed — classified 4000+ pages
+      - Pass 2 (Claude vision calls via WF3) exhausted credits before finishing
+      - try/finally block reset status from analyzing → quote_ready
+      - device_analysis and page_classification remain null (v10 aggregation never completed)
+      - Old $194K quote unchanged — WF4 was never called with new counts
+      - Lesson: always check Anthropic credit balance before triggering large rescans
+  - [ ] Add cost guard to pipeline: log estimated Claude calls + cost before Pass 2 starts
+  - [ ] Anthropic Batch API for non-urgent bids (50% discount)
+  - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
   - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
   - [ ] NOTE: n8n API PUT only updates draft — must publish from UI for production webhooks
