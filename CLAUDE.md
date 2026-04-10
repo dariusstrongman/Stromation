@@ -529,17 +529,36 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - Zombie executions after Docker restart (must Stop All + republish WF2)
     - 480MB ZIP downloads take 10-15 min on EC2
     - Anthropic credits at $0 (need refill at console.anthropic.com)
-  - [x] Phase 2: Claude agent pipeline (replaces fixed v12 pipeline) (2026-04-09):
-    - Agent has 4 tools: list_pages, read_page_text, analyze_page_vision, submit_counts
-    - Claude decides which pages to analyze (reads index first, then schedules, then floor plans)
-    - list_pages: paginated (100/page), text previews, optional filter — FREE
-    - read_page_text: full 3000-char text extraction — FREE
-    - analyze_page_vision: sends PDF to WF3 webhook for device counting — ~$0.03-0.10/call
-    - submit_counts: calls auto-bidder with review_mode=True → pending_review status
-    - Up to 40 conversation turns, deadline-checked, caches vision results
-    - System prompt guides agent: schedule-first, skip details/risers/legends/demo, SUM floors, MAX T/ES overlap
-    - Cost-aware: agent minimizes vision calls by reading schedules as text first
-    - WF2 pushed (draft) — needs publish from n8n UI to go live
+  - [x] Phase 2 agent pipeline ATTEMPTED, ABANDONED (2026-04-09):
+    - Built Claude agent with 4 tools: list_pages, read_page_text, analyze_page_vision, submit_counts
+    - Tested on Hill Elementary (project 543586) — 4 runs total
+    - Agent DID work: classified pages, read schedules, made intelligent vision calls
+    - Bug discovered: agent sent flat device counts but WF4 expects nested systems format
+    - Fixed the bug, verified with direct WF4 test (pending_review + device_analysis saved correctly)
+    - FATAL PROBLEM: each conversation turn sends GROWING message history
+      - Turn 1: ~1K input tokens
+      - Turn 15: 50K+ input tokens (all prior tool results accumulate in context)
+      - Hill Elementary cost: ~$5 per run (estimated $0.50, actual was 10x)
+    - Abandoned in favor of v12 fixed pipeline (see below)
+  - [x] Pipeline v12 (REBUILT, REPLACES AGENT) (2026-04-10):
+    - Fixed pipeline with batch classification, NOT agent-based
+    - dedup_files_by_hash before splitting (saves duplicate Project Manual/Specs)
+    - Text density filter: pages >800 chars + >50% alphabetic = NO_SCOPE (spec text)
+    - batch_classify_pages: Claude text-only, 50 pages per API call (~$0.01/batch)
+    - Classification: DRAWING / SCHEDULE / INDEX / SKIP
+    - Only DRAWING pages get vision analysis
+    - MAX_SCHEDULE_PAGES = 20 cap
+    - submit_to_autobidder sends nested systems format (fixes the agent bug at pipeline level)
+    - Still has v10 smart aggregation (schedule-first, T/ES dedup, device_analysis)
+    - WF2 pushed (draft) 2026-04-10 — needs publish to go live
+  - [x] Cost comparison (per Hill Elementary-sized project ~300 pages):
+    - **Original v1-v9 (blind SUM, 999 Claude calls)**: ~$27+ per project
+    - **v10 (50-100 Claude calls, smart aggregation)**: ~$1.50-3 per project
+    - **Agent pipeline (abandoned)**: ~$5 per project (growing context)
+    - **v12 fixed pipeline (current)**: ~$0.30-0.50 per project
+      - Batch classify: ~$0.01-0.05 (6 batches x $0.01)
+      - Vision calls: ~10-15 pages x $0.03-0.05 = $0.30-0.75
+      - Total predictable, no runaway cost from growing context
   - [ ] Workflow backups saved to ~/Desktop/tbe-workflow-backups-2026-04-09/
       - Lesson: always check Anthropic credit balance before triggering large rescans
   - [ ] Add cost guard to pipeline: log estimated Claude calls + cost before Pass 2 starts
