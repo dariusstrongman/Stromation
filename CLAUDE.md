@@ -561,7 +561,17 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
       - Total predictable, no runaway cost from growing context
   - [ ] Workflow backups saved to ~/Desktop/tbe-workflow-backups-2026-04-09/
       - Lesson: always check Anthropic credit balance before triggering large rescans
-  - [ ] Add cost guard to pipeline: log estimated Claude calls + cost before Pass 2 starts
+  - [x] Pipeline v13 cost guard (2026-04-10):
+    - **CRITICAL FIX**: v12 was shipped with MAX_CLAUDE_PAGES=999 and MAX_VISION_PAGES=50 (old v10 values)
+    - These uncapped values caused ~$10 per bid despite "v12" label
+    - v13 restores MAX_CLAUDE_PAGES=50, MAX_VISION_PAGES=20
+    - Added MAX_COST_USD=$3.00 hard limit per project
+    - Running cost tracking: every Claude call increments actual_cost_running
+    - Pre-flight estimate: trims page queue if projected cost > $3
+    - Hard stop mid-run if actual cost hits $3 (in both Pass 2 loop and Gemini fallback)
+    - Fixed stray `vision_checked += 1` bug outside loop
+    - Expected cost: ~$0.75-$1.00/bid typical, $3 worst case
+    - Pushed to WF2 draft 2026-04-10, needs publish
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
   - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
