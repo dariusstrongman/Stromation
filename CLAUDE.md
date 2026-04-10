@@ -561,17 +561,34 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
       - Total predictable, no runaway cost from growing context
   - [ ] Workflow backups saved to ~/Desktop/tbe-workflow-backups-2026-04-09/
       - Lesson: always check Anthropic credit balance before triggering large rescans
-  - [x] Pipeline v13 cost guard (2026-04-10):
-    - **CRITICAL FIX**: v12 was shipped with MAX_CLAUDE_PAGES=999 and MAX_VISION_PAGES=50 (old v10 values)
-    - These uncapped values caused ~$10 per bid despite "v12" label
-    - v13 restores MAX_CLAUDE_PAGES=50, MAX_VISION_PAGES=20
-    - Added MAX_COST_USD=$3.00 hard limit per project
-    - Running cost tracking: every Claude call increments actual_cost_running
-    - Pre-flight estimate: trims page queue if projected cost > $3
-    - Hard stop mid-run if actual cost hits $3 (in both Pass 2 loop and Gemini fallback)
-    - Fixed stray `vision_checked += 1` bug outside loop
-    - Expected cost: ~$0.75-$1.00/bid typical, $3 worst case
-    - Pushed to WF2 draft 2026-04-10, needs publish
+  - [x] Pipeline v13 (2026-04-10) - WORKING END-TO-END, A/B TESTED:
+    - **v12 bug**: shipped with MAX_CLAUDE_PAGES=999 (old v10 values), caused ~$10/bid
+    - **Cost guard**: MAX_CLAUDE_PAGES=50, MAX_VISION_PAGES=20, MAX_COST_USD=$3
+    - **Running cost tracking**: logs $X.XX per call, hard stops at $3 mid-run
+    - **Pre-flight estimate**: trims page queue if projected cost > $3
+    - **Fixed stray `vision_checked += 1`** bug outside Gemini loop
+    - **Text density filter fix**: was over-filtering drawings as spec text
+      - Was: runs before keyword check, 800 chars, 50% alpha, killed 27/28 Jimmy Johns pages
+      - Now: runs AFTER keyword/prefix check, 2000 chars, 60% alpha, only if NO Div 27 signals
+    - **extract_counts_from_result rewrite**: handles nested Claude format
+      - WF3 returns `{systems: {structured_cabling: {cat6a_drops: 64}}}`
+      - Old code did `int(dict)` → silently failed, returned {}
+      - New code walks nested dicts, extracts both flat and `{total: N}` shapes
+      - Skips `is_detail_view: true` and `is_demolition: true` pages
+      - Added all WF3 field names: cat6a_drops, fixed_cameras, access_control_doors, etc.
+    - **submit_to_autobidder fixes**:
+      - estimate_method: "Analyzed with Claude" → "blueprint_claude" (valid enum)
+      - Removed `source: "pipeline_v13"` (not in tbe_bids_source_check constraint)
+      - Moved to `pipeline_version` field instead
+      - WF4 defaults source to 'manual' which is valid
+    - **Jimmy John's A/B test results (project 543380, 1 PDF, 28 pages):**
+      - Before: text density killed all pages → $0, no analysis
+      - After: 20 pages analyzed, $1.00 actual cost
+      - Device counts: 56 cat6a_drops, 6 cameras, 7 racks, 10 speakers, 2 WAPs, 2 intercoms, 2 displays, 1 access door
+      - Old quote: $62,498 (GPT estimate)
+      - New quote: **$39,819 (blueprint_claude)** - more realistic for single QSR
+      - Quote number: TBE-2026-0410-0K2Z
+    - Pipeline pushed and tested live via API (no UI publish needed once webhook is active)
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
   - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
