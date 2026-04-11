@@ -5,8 +5,15 @@
   <link>https://www.stromation.com/blog.html</link>
   <description>Automation guides and insights for business owners</description>
   <language>en-us</language>
-  <lastBuildDate>Fri, 10 Apr 2026 11:00:56 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 11 Apr 2026 11:00:56 GMT</lastBuildDate>
   <atom:link href="https://www.stromation.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>How to Automate the Recruitment Process for Your Small Business</title>
+    <link>https://www.stromation.com/blog/automate-recruitment-process-small-business.html</link>
+    <description>Learn how to streamline hiring by automating job postings, applicant tracking, and interview scheduling for small businesses.</description>
+    <pubDate>Sat, 11 Apr 2026 11:00:56 GMT</pubDate>
+    <guid>https://www.stromation.com/blog/automate-recruitment-process-small-business.html</guid>
+  </item>
   <item>
     <title>How to Automate Employee Performance Reviews for Your Small Business</title>
     <link>https://www.stromation.com/blog/automate-small-business-employee-performance-reviews.html</link>
@@ -212,4 +219,4 @@
   </item>
 </channel>
 </rss>
-        
+          
