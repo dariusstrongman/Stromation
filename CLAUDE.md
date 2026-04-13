@@ -298,7 +298,7 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
 - Don't use `fetch()` or `require()` in n8n Code nodes
 - Don't use `message` param on emailSend v2.1 -- use `text` or `html`
 - Don't put Supabase service key in frontend code (use anon key)
-- Don't commit API keys to the public repo (GitHub push protection blocks it)
+- **NEVER commit API keys, JWTs, bearer tokens, or service-role secrets to ANY tracked file — including CLAUDE.md, SQL files, or comments.** GitHub push protection doesn't catch all key formats (e.g. Google AIza keys). Assume any key in a public-repo commit is compromised within seconds and must be rotated. Reference values by where they live (n8n credential name, `~/Documents/mcp/n8n_api_key.txt`, Google AI Studio, Supabase dashboard) instead of pasting the actual string.
 - Don't send emails from address mismatching SMTP credential
 - Don't use `qualified`, `client`, or `audit_requested` as outreach_status
 - Don't re-enable WF13 until Reddit karma is 50+
