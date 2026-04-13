@@ -58,6 +58,8 @@
 
         .status-badge{padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
         .status-new{background:#1E40AF;color:#93C5FD;}
+        .status-awaiting_blueprints{background:rgba(56,189,248,0.15);color:#7DD3FC;border:1px dashed rgba(56,189,248,0.4);font-size:0.7rem;}
+        .status-expired{background:#374151;color:#9CA3AF;opacity:0.7;}
         .status-reviewing{background:#7C3AED20;color:#A78BFA;}
         .status-estimating{background:#B4530020;color:#FBBF24;}
         .status-quote_ready{background:#065F4620;color:#34D399;}
@@ -388,7 +390,7 @@ function deadlineInfo(d){
 }
 
 function statusTag(s){
-    var labels={'new':'New','reviewing':'Reviewing','estimating':'Estimating','analyzing':'Analysis in Progress','pending_review':'Pending Review','quote_ready':'Quote Ready','quote_sent':'Quote Sent','submitted':'Submitted','won':'Won','lost':'Lost','no_bid':'No Bid','expired':'Expired'};
+    var labels={'new':'New','awaiting_blueprints':'Ready for Analysis','reviewing':'Reviewing','estimating':'Estimating','analyzing':'Analysis in Progress','pending_review':'Pending Review','quote_ready':'Quote Ready','quote_sent':'Quote Sent','submitted':'Submitted','won':'Won','lost':'Lost','no_bid':'No Bid','expired':'Expired'};
     return '<span class="status-badge status-'+s+'">'+(labels[s]||s)+'</span>';
 }
 
@@ -499,7 +501,7 @@ async function openBid(id){
     // Info grid
     html+='<div class="modal-grid" style="margin-bottom:1.5rem;">';
     html+='<div><div class="modal-field"><label>Status</label><select id="editStatus" onchange="updateBidStatus(\''+id+'\',this.value)">';
-    ['new','analyzing','reviewing','estimating','pending_review','quote_ready','quote_sent','submitted','won','lost','no_bid','expired'].forEach(function(s){
+    ['new','awaiting_blueprints','analyzing','reviewing','estimating','pending_review','quote_ready','quote_sent','submitted','won','lost','no_bid','expired'].forEach(function(s){
         html+='<option value="'+s+'"'+(bid.status===s?' selected':'')+'>'+s.replace('_',' ').toUpperCase()+'</option>';
     });
     html+='</select></div>';
