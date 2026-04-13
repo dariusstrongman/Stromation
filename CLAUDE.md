@@ -607,7 +607,7 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - **Status constraint final:** `new, awaiting_blueprints, analyzing, pending_review, reviewing, estimating, quote_ready, quote_sent, submitted, won, lost, no_bid, expired`
     - **Dashboard status badges:** `Ready for Analysis` (dashed cyan) for awaiting_blueprints. Status dropdown in modal expanded to all 13 values (was 10). Expired bids visually muted.
     - **Cleanup:** 7 past-deadline bids manually marked `expired` via API PATCH (JV Entry Door, South Euless Park, Seagoville Prek-8th, DISD West Dallas JR High, DISD Resource Center STEM, Org 372, ORG 318). All have activity log entries.
-    - **Gemini API key in WF4:** `AIzaSyC-yTfvwZlrWluomtWe9JPK39-TSO7dPVg` (only `gemini-2.5-flash-lite` accessible on this key's free tier; 2.0-flash and 2.5-pro return quota errors).
+    - **Gemini API key in WF4:** hardcoded (do NOT document the value here — use Google AI Studio to rotate/view). Only `gemini-2.5-flash-lite` accessible on this key's free tier; 2.0-flash and 2.5-pro return quota errors.
     - **Self-test confirmed working:** Jimmy John's counts (56 drops, 6 cameras, 7 racks) → Gemini verdict `clearly_wrong` 95% confidence, flagged "7 MDF rooms for a Jimmy John's is extremely high" + suggested {rack_mdf_rooms: 1, cat6a_drops: 20, fixed_cameras: 4}. Would correctly park in pending_review.
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
   - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
