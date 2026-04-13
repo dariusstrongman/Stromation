@@ -591,6 +591,28 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - Pipeline pushed and tested live via API (no UI publish needed once webhook is active)
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
   - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
+  - [x] Pipeline v14 (2026-04-13) - PHASED PIPELINE + GEMINI CRITIC + AUTOPILOT:
+    - **WF4 Auto Bidder fully rewritten:** GPT-estimate path removed (was 84 lines, ~3.5KB saved). OPENAI_KEY constant deleted. Bids without `body.systems` now mark `status=awaiting_blueprints` + set `download` phase to `failed` instead of erroring out.
+    - **Gemini critic added:** Gemini 2.5-flash-lite (free tier) reviews Claude's device counts after quote built. Returns `{verdict, confidence, issues, suggestions}`. Verdict drives autopilot routing.
+    - **Autopilot logic:** if Gemini=`looks_right` AND heuristic sanity passes → auto-POST to WF5 Quote Sender → status=`quote_sent`. Else → park in `pending_review` with banner. If WF5 fails → `quote_ready` with error in notes.
+    - **Heuristic sanity check stays:** floor/ceiling ($500/$2.5M BLOCK), drops/racks ratio, cameras vs drops, drop density, labor %. Layered with Gemini.
+    - **Phased pipeline tracking:** new `pipeline_phases` JSONB column on tbe_bids tracks 7 phases (download, classify, claude_counts, gemini_verify, quote_built, pending_review, sent). Each phase has `{status, updated_at, detail}`. WF4 writes all of these on completion.
+    - **Dashboard stepper:** horizontal 7-dot progress bar on each bid card (compact) + detailed stepper in modal with phase detail text + Verify block showing Gemini verdict/confidence/issues. Colors: green=complete, yellow=in_progress (pulsing), red=failed, gray=not_started.
+    - **Re-scan Blueprints button:** added to dashboard for `pending_review`/`quote_ready` bids. Auto-extracts PlanHub project ID from `source_url` or prompts. POSTs to WF2 with `force_rescan: true`. Sets status=`analyzing` immediately so glow appears.
+    - **WF5 Quote Sender:** flipped toEmail to antonio@tbeit.com via API for autopilot test, then reverted back to dariusstroman@gmail.com (still in test mode). CC=darius@stromation.com always. Added autopilot warnings block to email body — Gemini flags render inline before sending.
+    - **Schema migrations applied to prod (3 SQL files):**
+      - `docs/tbe-schema-sync-v13.sql`: pipeline_version column, status constraint expanded with analyzing + pending_review
+      - `docs/tbe-schema-phases.sql`: pipeline_phases JSONB column + backfill for existing 30+ bids
+      - `docs/tbe-schema-awaiting.sql`: status constraint expanded with awaiting_blueprints
+    - **Status constraint final:** `new, awaiting_blueprints, analyzing, pending_review, reviewing, estimating, quote_ready, quote_sent, submitted, won, lost, no_bid, expired`
+    - **Dashboard status badges:** `Ready for Analysis` (dashed cyan) for awaiting_blueprints. Status dropdown in modal expanded to all 13 values (was 10). Expired bids visually muted.
+    - **Cleanup:** 7 past-deadline bids manually marked `expired` via API PATCH (JV Entry Door, South Euless Park, Seagoville Prek-8th, DISD West Dallas JR High, DISD Resource Center STEM, Org 372, ORG 318). All have activity log entries.
+    - **Gemini API key in WF4:** `AIzaSyC-yTfvwZlrWluomtWe9JPK39-TSO7dPVg` (only `gemini-2.5-flash-lite` accessible on this key's free tier; 2.0-flash and 2.5-pro return quota errors).
+    - **Self-test confirmed working:** Jimmy John's counts (56 drops, 6 cameras, 7 racks) → Gemini verdict `clearly_wrong` 95% confidence, flagged "7 MDF rooms for a Jimmy John's is extremely high" + suggested {rack_mdf_rooms: 1, cat6a_drops: 20, fixed_cameras: 4}. Would correctly park in pending_review.
+  - [ ] Anthropic Batch API for non-urgent bids (50% discount)
+  - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
   - [ ] NOTE: Always use Gemini (free) for testing pipeline changes before Claude
-  - [ ] NOTE: n8n API PUT only updates draft — must publish from UI for production webhooks
+  - [ ] NOTE: n8n API PUT only updates draft — must publish from UI for production webhooks. Workaround: deactivate/reactivate via API forces reload of latest version.
+  - [ ] NOTE: n8n API key at /home/darius/Documents/mcp/n8n_api_key.txt expires periodically — regen at n8n.myaibuffet.com → Settings → n8n API → Create API Key
+  - [ ] NOTE: WF5 toEmail is in test mode (dariusstroman@gmail.com). To go fully zero-touch: flip to antonio@tbeit.com. Currently autopilot quotes land in Darius's Gmail with CC, then Darius forwards to Antonio.
