@@ -609,6 +609,39 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - **Cleanup:** 7 past-deadline bids manually marked `expired` via API PATCH (JV Entry Door, South Euless Park, Seagoville Prek-8th, DISD West Dallas JR High, DISD Resource Center STEM, Org 372, ORG 318). All have activity log entries.
     - **Gemini API key in WF4:** hardcoded (do NOT document the value here — use Google AI Studio to rotate/view). Only `gemini-2.5-flash-lite` accessible on this key's free tier; 2.0-flash and 2.5-pro return quota errors.
     - **Self-test confirmed working:** Jimmy John's counts (56 drops, 6 cameras, 7 racks) → Gemini verdict `clearly_wrong` 95% confidence, flagged "7 MDF rooms for a Jimmy John's is extremely high" + suggested {rack_mdf_rooms: 1, cat6a_drops: 20, fixed_cameras: 4}. Would correctly park in pending_review.
+  - [x] Pipeline v15 (2026-04-14) - SCOPE INVENTORY + CABLING MATH FIXES:
+    - **scope_inventory JSONB column** added to tbe_bids (docs/tbe-schema-scope-inventory.sql). Shape: `{has_telecom_sheets, has_security_sheets, has_fire_alarm_sheets, has_av_sheets, has_access_control_sheets, lv_sheet_count, lv_sheet_ids:[], cover_sheet_flags:{}}`
+    - **WF2 pipeline v15**: emits scope_inventory after Pass 1. Scans sheet-ID prefixes (T\d, TS, ES, FA, AV) + keyword buckets (telecom, security, fire alarm, AV, access control). Parses cover-sheet flags like "FIRE ALARM: NO" to override signals.
+    - **WF4 cabling math fixes**: jacks = drops × 1 (was × 2 — over-counting for dual-port faceplates that get blanks, not jacks). Cable boxes = ceil(drops/16) (was +1 buffer causing 2x for any project ≥13 drops). Same fixes applied to WAP and camera cabling.
+    - **WF4 scope gating on tier minimums**: cameras/keypads/motion only added via tier min if `has_security_sheets=true`. Speakers/displays only if `has_av_sheets=true`. Access doors only if `has_access_control_sheets=true`. Kiosk fitouts no longer get phantom scope.
+    - **WF4 auto-flag single-LV-sheet**: `lv_sheet_count ≤ 1 && no security/av/fa` → force `status=pending_review` with banner "Single LV sheet detected — likely owner-furnished POS or kiosk scope".
+    - **WF6 Gemini Verifier v15**: receives scope_inventory in prompt, knows what categories are in/out of scope. Stops suggesting cameras/keypads for kiosk jobs.
+    - **WF7 Claude Arbitrator v15**: auto-rejects Gemini suggestions that add devices to out-of-scope categories. Anchors on drawings over heuristics.
+  - [x] Pipeline v16 (2026-04-14) - ARCHITECTURE FIX: KILL TIER PADDING + A/B VALIDATION:
+    - **Problem**: v15 still padded tier minimums (e.g. QSR always gets 4 cameras, 1 door, 4 speakers even when drawings show zero). This fabricated scope on every bid shape except standard Jimmy John's. 6 different bids, 6 different breakage patterns.
+    - **New rule: QUOTE WHAT'S DRAWN.** applyTierMinimums() no longer pads device counts. Only enforces ONE minimum: `rack_mdf_rooms=1 if drops>0` (structural necessity — terminated cable has to land somewhere).
+    - **Scope-gap flagging**: if `scope_inventory.has_X=true` but Claude counted 0 → add review flag + force `pending_review` with banner "Scope gap detected — scope_inventory says X sheets exist but Claude counted 0 — review drawings". No padding, just visibility.
+    - **Core infrastructure always added** when drops>0: rack, UPS, PDU, switch, grounding, labeling. Not scope padding — infrastructure is required.
+    - **Network switch tier defaults added** to WF4 (Dell N1524 for QSR $500, Dell N3024 for commercial $850, Cisco C1000-48P for enterprise $2200). Switches were previously only added if spec'd, leaving bids without switches (broken).
+    - **Real-SKU catalog entries in PARTS**: EWR-12-17, EWR-18-17, PD-915RV-R, PD-NRP6-RN, PD-815R, MRK-3231, BGR-4536, N1524, N3024, N3048, PowerConnect 3524, C1000-24P, C1000-48P, PA2120, MISC-AV-SM, QM43R. Replaces placeholder SKUs (RACK-12U-WALL, RACK-PDU, AV-DISPLAY, AMP-240W-for-small-jobs).
+    - **Rack labor tier-aware**: QSR wall mount 6hr (was 20hr), commercial wall 14hr, enterprise floor 20hr. Saves ~$1,500 labor on QSR kiosk bids.
+    - **Cable box sharing**: WAPs <5 with drops>0 share the data cable box instead of buying their own 1000ft box. Same for cameras <5. Saves ~$1,400 material on small mixed scopes.
+    - **Speaker rounding bug fixed**: `Math.round(speakers * 0.7) + remainder` instead of `ceil(0.7)+ceil(0.3)` which added a phantom speaker (4 → 5).
+    - **Right-sized amp for QSR**: speakers<8 gets PA2120 120W ($650) instead of AMP-240W ($1,200).
+    - **MISC-AV scales with scope**: full `MISC-AV $1,200` only for speakers≥8. MISC-AV-SM $400 for 4-7 speakers. Nothing for <4. Kills placeholder bloat on small jobs.
+    - **A/B validation on 4 real PDFs (Angie's, Whitebox, The Gem, Melissa) + 1 synthetic full-scope QSR:**
+      - Angie's (kiosk fitout, 1 LV sheet E2.2, 15 drops+3 menu boards): system $15,144 vs manual $15,125 → **99.87% agreement**, pending_review banner fires
+      - Full-scope QSR synthetic (20 drops, 4 cams, 1 door, 4 speakers, 2 displays, 1 rack): system $34,541 vs manual $34,498 → **99.88% agreement**, autopilot allowed
+      - Sparse scope (security sheets exist, Claude counted 0 cams): $15,604, pending_review with scope-gap banner
+      - Whitebox (shell only, 0 Div 27 sheets): pipeline returns `no_scope` at Pass 1, WF4 never called ✓
+      - The Gem (rough-in only, owner-furnished LV): pipeline returns `no_scope` ✓
+      - Melissa (water plant SCADA, no Div 27 for Antonio): pipeline returns `no_scope` ✓
+    - **Final verdict accuracy**: 100% on the 4 real PDFs (bid/no_bid decisions all correct). Pricing accuracy given inputs: 99.9%. Remaining variance is Claude's vision count accuracy (unmeasured) — not the pricing engine or scope logic.
+    - **4 clean bid shapes the system now handles predictably:**
+      1. No-scope → Pass 1 returns `no_scope`, WF4 never runs
+      2. Kiosk fitout (≤1 LV sheet) → quote + pending_review + single-LV banner
+      3. Sparse scope (sheets exist but Claude counted 0) → quote + pending_review + scope-gap banner
+      4. Full scope (multiple LV sheets, Claude found devices) → autopilot quote (within Gemini/heuristic gates)
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
   - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
