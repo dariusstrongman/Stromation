@@ -111,6 +111,20 @@
         .verify-suspicious{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#FBBF24;}
         .verify-clearly_wrong{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#FCA5A5;}
 
+        /* Quick-action row on bid cards */
+        .bid-actions{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem;}
+        .btn-card{padding:6px 12px;border-radius:6px;font-size:0.75rem;font-weight:600;border:none;cursor:pointer;transition:all 0.15s;}
+        .btn-card:hover{transform:translateY(-1px);}
+        .btn-card:disabled{opacity:0.5;cursor:wait;}
+        .btn-card-amber{background:#F59E0B;color:#1F2937;}
+        .btn-card-amber:hover{background:#FBBF24;}
+        .btn-card-green{background:#10B981;color:#062f25;}
+        .btn-card-green:hover{background:#34D399;}
+        .btn-card-red{background:#EF4444;color:#fff;}
+        .btn-card-red:hover{background:#F87171;}
+        .btn-card-outline{background:transparent;color:#CBD5E1;border:1px solid #475569;}
+        .btn-card-outline:hover{background:#1E293B;border-color:#64748B;}
+
         .estimate-badge{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-left:0.5rem;}
         .estimate-gpt{background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);}
         .estimate-blueprint{background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.3);}
@@ -490,6 +504,23 @@ function renderBids(){
         if(b.scope_summary)html+='<div class="bid-scope">'+b.scope_summary.substring(0,200)+'</div>';
         if(cats)html+='<div class="bid-tags">'+cats+'</div>';
         if(b.pipeline_phases)html+=renderPhases(b.pipeline_phases,false);
+
+        // Quick-action row on the card itself (stopPropagation so buttons don't open the modal)
+        var cardGv=(b.pipeline_phases && b.pipeline_phases.gemini_verify && b.pipeline_phases.gemini_verify.status)||'not_started';
+        if(b.status==='quote_ready'||b.status==='pending_review'){
+            html+='<div class="bid-actions" onclick="event.stopPropagation()">';
+            if(cardGv==='not_started'||cardGv==='failed'){
+                html+='<button class="btn-card btn-card-amber" onclick="event.stopPropagation();verifyWithGemini(\''+b.id+'\')">Verify with Gemini</button>';
+            } else if(cardGv==='complete'){
+                var gvVerdict=(b.pipeline_phases.gemini_verify.verdict)||'';
+                var vTone = gvVerdict==='clearly_wrong'?'btn-card-red':gvVerdict==='suspicious'?'btn-card-amber':'btn-card-outline';
+                html+='<button class="btn-card '+vTone+'" onclick="event.stopPropagation();verifyWithGemini(\''+b.id+'\')">Re-verify ('+gvVerdict.replace(/_/g,\' \')+')</button>';
+            }
+            if(b.status==='quote_ready'){
+                html+='<button class="btn-card btn-card-green" onclick="event.stopPropagation();sendQuote(\''+b.id+'\')">Send to Antonio</button>';
+            }
+            html+='</div>';
+        }
         html+='</div>';
     });
     document.getElementById('bidList').innerHTML=html;
