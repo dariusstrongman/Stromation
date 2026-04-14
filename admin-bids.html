@@ -355,6 +355,7 @@ function fmtDate(d){if(!d)return'-';return new Date(d).toLocaleDateString('en-US
 var PHASE_LABELS=[
     ['download','Download'],
     ['classify','Classify'],
+    ['spec_extract','Specs'],
     ['claude_counts','Claude'],
     ['gemini_verify','Verify'],
     ['quote_built','Quote'],
@@ -498,7 +499,19 @@ function renderBids(){
         else if(b.estimate_method==='blueprint_gemini'){var aDate=b.updated_at?new Date(b.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';estBadge='<span class="estimate-badge estimate-blueprint">Analyzed with Gemini'+(aDate?' - '+aDate:'')+'</span>';}
         else if(b.estimate_method==='blueprint_gpt'){estBadge='<span class="estimate-badge estimate-blueprint">Analyzed with GPT</span>';}
         else{estBadge='<span class="estimate-badge estimate-gpt">GPT Estimate</span>';}
-        html+='<div class="bid-top"><div><div class="bid-name">'+b.project_name+estBadge+'</div></div><div style="text-align:right;">'+statusTag(b.status)+'<div class="bid-total" style="margin-top:0.5rem;">'+fmtMoney(b.total_bid)+'</div></div></div>';
+        // Tier badge
+        var tierBadge='';
+        if(b.project_tier){
+            var tBg=b.project_tier==='qsr'?'rgba(34,197,94,0.15)':b.project_tier==='commercial'?'rgba(59,130,246,0.15)':'rgba(168,85,247,0.15)';
+            var tFg=b.project_tier==='qsr'?'#86EFAC':b.project_tier==='commercial'?'#93C5FD':'#D8B4FE';
+            tierBadge='<span class="estimate-badge" style="background:'+tBg+';color:'+tFg+';margin-left:0.4rem;">Tier: '+b.project_tier.toUpperCase()+'</span>';
+        }
+        // Spec source badge
+        var specBadge='';
+        if(b.spec_data && b.spec_data.device_specs && Object.keys(b.spec_data.device_specs).length>0){
+            specBadge='<span class="estimate-badge" style="background:rgba(245,158,11,0.15);color:#FBBF24;margin-left:0.4rem;" title="Specs extracted: '+(b.spec_data.summary||'').replace(/"/g,"&quot;")+'">SPEC ('+Object.keys(b.spec_data.device_specs).length+')</span>';
+        }
+        html+='<div class="bid-top"><div><div class="bid-name">'+b.project_name+estBadge+tierBadge+specBadge+'</div></div><div style="text-align:right;">'+statusTag(b.status)+'<div class="bid-total" style="margin-top:0.5rem;">'+fmtMoney(b.total_bid)+'</div></div></div>';
         html+='<div class="bid-meta">';
         if(b.general_contractor)html+='<span>GC: '+b.general_contractor+'</span>';
         if(b.location)html+='<span>'+b.location+'</span>';
@@ -511,8 +524,15 @@ function renderBids(){
 
         // Quick-action row on the card itself (stopPropagation so buttons don't open the modal)
         var cardGv=(b.pipeline_phases && b.pipeline_phases.gemini_verify && b.pipeline_phases.gemini_verify.status)||'not_started';
-        if(b.status==='quote_ready'||b.status==='pending_review'){
+        var cardSpec=(b.pipeline_phases && b.pipeline_phases.spec_extract && b.pipeline_phases.spec_extract.status)||'not_started';
+        var cardHasSpec=b.spec_data && b.spec_data.device_specs && Object.keys(b.spec_data.device_specs).length>0;
+        if(b.status==='quote_ready'||b.status==='pending_review'||b.status==='awaiting_blueprints'){
             html+='<div class="bid-actions" onclick="event.stopPropagation()">';
+            if(!cardHasSpec){
+                html+='<button class="btn-card btn-card-outline" onclick="event.stopPropagation();uploadSpec(\''+b.id+'\')">Upload Spec PDF</button>';
+            } else {
+                html+='<button class="btn-card btn-card-outline" onclick="event.stopPropagation();uploadSpec(\''+b.id+'\')">Re-upload Spec</button>';
+            }
             if(cardGv==='not_started'||cardGv==='failed'){
                 html+='<button class="btn-card btn-card-amber" onclick="event.stopPropagation();verifyWithGemini(\''+b.id+'\')">Verify with Gemini</button>';
             } else if(cardGv==='complete'){
@@ -569,6 +589,35 @@ async function openBid(id){
         html+=renderPhases(bid.pipeline_phases,true);
         html+=renderVerifyBlock(bid.pipeline_phases);
         html+='</div>';
+    }
+
+    // Spec data block (what the spec book actually said)
+    if(bid.spec_data && bid.spec_data.device_specs){
+        html+='<div class="modal-section"><h3>Specifications Extracted</h3>';
+        html+='<div style="background:#0F172A;border:1px solid #1E293B;border-radius:8px;padding:1rem;">';
+        html+='<div style="color:#94A3B8;font-size:0.85rem;margin-bottom:0.75rem;">From: '+(bid.spec_data.spec_pdf||'unknown')+' • Sections: '+((bid.spec_data.sections_found||[]).join(', ')||'none')+'</div>';
+        if(bid.spec_data.summary){html+='<div style="color:#CBD5E1;margin-bottom:0.75rem;font-size:0.9rem;">'+bid.spec_data.summary+'</div>';}
+        var ds=bid.spec_data.device_specs||{};
+        if(Object.keys(ds).length){
+            html+='<table class="items-table" style="font-size:0.85rem;"><thead><tr><th>Device</th><th>Manufacturer</th><th>Model</th><th>Section</th><th>Notes</th></tr></thead><tbody>';
+            Object.keys(ds).forEach(function(k){
+                var s=ds[k]||{};
+                var altText=(s.alternates && s.alternates.length)?(' / '+s.alternates.slice(0,2).join(', ')):'';
+                html+='<tr>';
+                html+='<td>'+k+'</td>';
+                html+='<td>'+(s.manufacturer||'-')+altText+'</td>';
+                html+='<td>'+(s.model||'-')+'</td>';
+                html+='<td>'+(s.spec_section||'-')+'</td>';
+                html+='<td style="font-size:0.75rem;color:#94A3B8;">'+(s.qty_rule||'')+(s.color?(' • '+s.color):'')+(s.notes?(' • '+s.notes):'')+'</td>';
+                html+='</tr>';
+            });
+            html+='</tbody></table>';
+        }
+        var gr=bid.spec_data.general_requirements||{};
+        if(Object.keys(gr).length){
+            html+='<div style="margin-top:0.75rem;font-size:0.8rem;color:#94A3B8;"><strong>Requirements:</strong> '+Object.keys(gr).map(function(k){return k+': '+gr[k];}).join(' • ')+'</div>';
+        }
+        html+='</div></div>';
     }
 
     // Scope
@@ -637,14 +686,20 @@ async function openBid(id){
 
     // Line items table
     html+='<div class="modal-section"><h3>Line Items ('+items.length+')</h3>';
-    html+='<table class="items-table"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th></tr></thead><tbody>';
+    html+='<table class="items-table"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th><th>Source</th></tr></thead><tbody>';
     var lastCat='';
     items.forEach(function(item){
         if(item.category!==lastCat){
             lastCat=item.category;
-            html+='<tr class="cat-row"><td colspan="5" style="padding:10px 8px;">'+item.category+'</td></tr>';
+            html+='<tr class="cat-row"><td colspan="6" style="padding:10px 8px;">'+item.category+'</td></tr>';
         }
-        html+='<tr><td>'+item.item_name+'</td><td>'+item.quantity+'</td><td>'+item.unit+'</td><td style="text-align:right">'+fmtMoney(item.unit_price)+'</td><td style="text-align:right;font-weight:600;">'+fmtMoney(item.total_price)+'</td></tr>';
+        var srcLabel=item.source||'';
+        var srcStyle='font-size:0.7rem;color:#64748B;';
+        if(srcLabel.indexOf('spec:')===0){srcStyle='font-size:0.7rem;color:#FBBF24;font-weight:600;';}
+        else if(srcLabel.indexOf('tier:qsr')===0){srcStyle='font-size:0.7rem;color:#86EFAC;';}
+        else if(srcLabel.indexOf('tier:commercial')===0){srcStyle='font-size:0.7rem;color:#93C5FD;';}
+        else if(srcLabel.indexOf('tier:enterprise')===0){srcStyle='font-size:0.7rem;color:#D8B4FE;';}
+        html+='<tr><td>'+item.item_name+'</td><td>'+item.quantity+'</td><td>'+item.unit+'</td><td style="text-align:right">'+fmtMoney(item.unit_price)+'</td><td style="text-align:right;font-weight:600;">'+fmtMoney(item.total_price)+'</td><td style="'+srcStyle+'">'+srcLabel+'</td></tr>';
     });
     html+='</tbody></table></div>';
 
@@ -665,6 +720,10 @@ async function openBid(id){
     // device-count critique and fallback quote-plausibility critique for pre-v10 bids).
     var gvStatus=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify && bid.pipeline_phases.gemini_verify.status)||'not_started';
     var hasDeviceAnalysis=bid.device_analysis && Object.keys(bid.device_analysis).length>0;
+    var modalHasSpec=bid.spec_data && bid.spec_data.device_specs && Object.keys(bid.spec_data.device_specs).length>0;
+    if(bid.status==='quote_ready'||bid.status==='pending_review'||bid.status==='awaiting_blueprints'){
+        html+='<button class="btn btn-outline" onclick="uploadSpec(\''+id+'\')" style="margin-right:0.5rem;">'+(modalHasSpec?'Re-upload':'Upload')+' Spec PDF</button>';
+    }
     if(bid.status==='quote_ready'||bid.status==='pending_review'){
         var verifyLabel = hasDeviceAnalysis ? 'Verify with Gemini' : 'Verify with Gemini (quote plausibility)';
         if(gvStatus==='not_started'||gvStatus==='failed'){
@@ -768,6 +827,59 @@ function buildSystemsFromGemini(bid){
         if(cat && key && systems[cat]){ systems[cat][key]=count; }
     });
     return systems;
+}
+
+async function uploadSpec(id){
+    var bid=allBids.find(function(b){return b.id===id;});
+    if(!bid)return;
+    // Hidden file input
+    var inp=document.createElement('input');
+    inp.type='file';
+    inp.accept='application/pdf';
+    inp.onchange=async function(){
+        var file=inp.files && inp.files[0];
+        if(!file)return;
+        if(file.size>22*1024*1024){alert('PDF must be under 22MB. Split larger spec books.');return;}
+        if(!confirm('Extract Division 27/28 specs from "'+file.name+'" ('+(file.size/1024/1024).toFixed(1)+'MB)?\n\nClaude Sonnet will read the PDF and extract manufacturer/model per device category.\nCost: ~$0.50-3 depending on size.'))return;
+
+        // Show progress in browser
+        var oldTitle=document.title;
+        document.title='Extracting specs...';
+
+        // Read file as base64
+        var b64=await new Promise(function(resolve,reject){
+            var reader=new FileReader();
+            reader.onload=function(){resolve(reader.result.split(',')[1]);};
+            reader.onerror=reject;
+            reader.readAsDataURL(file);
+        });
+
+        try{
+            var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-extract-specs',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({bid_id:id,pdf_filename:file.name,pdf_base64:b64})
+            });
+            var data=await resp.json();
+            if(data.success){
+                var msg='Spec extracted!\n\n';
+                msg+='Sections found: '+(data.sections_found||[]).join(', ')+'\n';
+                msg+='Device categories specified: '+(data.device_categories||[]).join(', ')+'\n';
+                msg+='Cost: $'+(data.cost_usd||0).toFixed(3)+'\n\n';
+                msg+=(data.summary||'');
+                alert(msg);
+            } else {
+                alert('Spec extraction failed: '+(data.error||'unknown'));
+            }
+        } catch(e){
+            alert('Spec extraction error: '+e.message);
+        } finally {
+            document.title=oldTitle;
+            await loadBids();
+            setTimeout(function(){openBid(id);},300);
+        }
+    };
+    inp.click();
 }
 
 async function rebidWithGemini(id){
