@@ -28,6 +28,10 @@
         .btn-outline:hover{border-color:#94A3B8;}
         .btn-blue{background:#3B82F6;color:white;}
         .btn-blue:hover{background:#60A5FA;}
+        .btn-purple{background:#A855F7;color:white;}
+        .btn-purple:hover{background:#C084FC;}
+        .btn-card-purple{background:#A855F7;color:white;}
+        .btn-card-purple:hover{background:#C084FC;}
 
         .container{max-width:1400px;margin:0 auto;padding:1.5rem;}
 
@@ -355,6 +359,7 @@ function fmtDate(d){if(!d)return'-';return new Date(d).toLocaleDateString('en-US
 var PHASE_LABELS=[
     ['download','Download'],
     ['classify','Classify'],
+    ['drawing_audit','Audit'],
     ['spec_extract','Specs'],
     ['claude_counts','Claude'],
     ['gemini_verify','Verify'],
@@ -526,8 +531,14 @@ function renderBids(){
         var cardGv=(b.pipeline_phases && b.pipeline_phases.gemini_verify && b.pipeline_phases.gemini_verify.status)||'not_started';
         var cardSpec=(b.pipeline_phases && b.pipeline_phases.spec_extract && b.pipeline_phases.spec_extract.status)||'not_started';
         var cardHasSpec=b.spec_data && b.spec_data.device_specs && Object.keys(b.spec_data.device_specs).length>0;
+        var cardAudit=(b.pipeline_phases && b.pipeline_phases.drawing_audit && b.pipeline_phases.drawing_audit.status)||'not_started';
         if(b.status==='quote_ready'||b.status==='pending_review'||b.status==='awaiting_blueprints'){
             html+='<div class="bid-actions" onclick="event.stopPropagation()">';
+            if(cardAudit==='not_started'||cardAudit==='failed'){
+                html+='<button class="btn-card btn-card-purple" onclick="event.stopPropagation();auditDrawings(\''+b.id+'\')">Audit Drawings</button>';
+            } else if(cardAudit==='complete'){
+                html+='<button class="btn-card btn-card-outline" onclick="event.stopPropagation();auditDrawings(\''+b.id+'\')">Re-audit</button>';
+            }
             if(!cardHasSpec){
                 html+='<button class="btn-card btn-card-outline" onclick="event.stopPropagation();uploadSpec(\''+b.id+'\')">Upload Spec PDF</button>';
             } else {
@@ -589,6 +600,47 @@ async function openBid(id){
         html+=renderPhases(bid.pipeline_phases,true);
         html+=renderVerifyBlock(bid.pipeline_phases);
         html+='</div>';
+    }
+
+    // Drawing audit block (estimator-grade analysis)
+    var audit=bid.pipeline_phases && bid.pipeline_phases.drawing_audit;
+    if(audit && audit.status==='complete'){
+        var sd=bid.spec_data||{};
+        var validations=sd.validations||[];
+        var validationFails=validations.filter(function(v){return v.status==='warn'||v.status==='fail';});
+        var auditConfColor=audit.confidence==='high'?'#10B981':audit.confidence==='medium'?'#F59E0B':'#EF4444';
+        html+='<div class="modal-section"><h3>Drawing Audit <span style="color:'+auditConfColor+';font-size:0.8rem;font-weight:600;">'+(audit.confidence||'?')+' confidence</span></h3>';
+        html+='<div style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.3);border-radius:8px;padding:1rem;">';
+        html+='<div style="color:#94A3B8;font-size:0.85rem;margin-bottom:0.5rem;">Data sheet: <strong style="color:#D8B4FE;">'+(sd.data_sheet||audit.data_sheet||'?')+'</strong> • Method: '+(audit.method||'drawing_audit_v1')+' • Cost: $'+(audit.cost_usd||0).toFixed(2)+'</div>';
+        if(sd.summary){html+='<div style="color:#E2E8F0;font-size:0.9rem;line-height:1.5;margin-bottom:0.75rem;">'+sd.summary+'</div>';}
+        if(validationFails.length){
+            html+='<div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:0.6rem 0.75rem;margin-bottom:0.75rem;font-size:0.85rem;color:#FBBF24;"><strong>Cross-validation flags ('+validationFails.length+'):</strong><ul style="margin:4px 0 0 18px;">';
+            validationFails.forEach(function(v){html+='<li>'+v.check+': counted '+v.counted+' vs expected max '+v.expected_max+(v.detail?(' — '+v.detail):'')+'</li>';});
+            html+='</ul></div>';
+        }
+        // Equipment list
+        if(sd.equipment_list && sd.equipment_list.length){
+            html+='<details style="margin-top:0.5rem;"><summary style="cursor:pointer;color:#D8B4FE;font-size:0.85rem;">Equipment spec extracted from drawings ('+sd.equipment_list.length+' parts)</summary>';
+            html+='<table class="items-table" style="margin-top:0.5rem;font-size:0.8rem;"><thead><tr><th>Manufacturer</th><th>Model</th><th>Role</th><th>Qty</th></tr></thead><tbody>';
+            sd.equipment_list.forEach(function(e){
+                html+='<tr><td>'+(e.manufacturer||'?')+'</td><td>'+(e.model||'?')+'</td><td style="color:#94A3B8;">'+(e.role||'')+'</td><td>'+(e.qty||1)+'</td></tr>';
+            });
+            html+='</tbody></table></details>';
+        }
+        // Symbol legend
+        if(sd.symbol_legend && sd.symbol_legend.length){
+            html+='<details style="margin-top:0.5rem;"><summary style="cursor:pointer;color:#D8B4FE;font-size:0.85rem;">Symbol legend used ('+sd.symbol_legend.length+' symbols)</summary>';
+            html+='<table class="items-table" style="margin-top:0.5rem;font-size:0.8rem;"><thead><tr><th>Symbol</th><th>Meaning</th><th>Counting Rule</th></tr></thead><tbody>';
+            sd.symbol_legend.forEach(function(s){
+                html+='<tr><td><strong>'+(s.symbol_text||'?')+'</strong></td><td>'+(s.meaning||'?')+'</td><td style="color:#94A3B8;">'+(s.counting_rule||'')+'</td></tr>';
+            });
+            html+='</tbody></table></details>';
+        }
+        // Limitations
+        if(sd.limitations && sd.limitations.length){
+            html+='<div style="margin-top:0.75rem;font-size:0.8rem;color:#94A3B8;"><strong>Limitations noted:</strong> '+sd.limitations.join('; ')+'</div>';
+        }
+        html+='</div></div>';
     }
 
     // Spec data block (what the spec book actually said)
@@ -721,7 +773,10 @@ async function openBid(id){
     var gvStatus=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify && bid.pipeline_phases.gemini_verify.status)||'not_started';
     var hasDeviceAnalysis=bid.device_analysis && Object.keys(bid.device_analysis).length>0;
     var modalHasSpec=bid.spec_data && bid.spec_data.device_specs && Object.keys(bid.spec_data.device_specs).length>0;
+    var modalAudit=(bid.pipeline_phases && bid.pipeline_phases.drawing_audit && bid.pipeline_phases.drawing_audit.status)||'not_started';
     if(bid.status==='quote_ready'||bid.status==='pending_review'||bid.status==='awaiting_blueprints'){
+        var auditLabel = (modalAudit==='complete') ? 'Re-audit Drawings' : 'Audit Drawings (deep)';
+        html+='<button class="btn btn-purple" onclick="auditDrawings(\''+id+'\')" style="margin-right:0.5rem;">'+auditLabel+'</button>';
         html+='<button class="btn btn-outline" onclick="uploadSpec(\''+id+'\')" style="margin-right:0.5rem;">'+(modalHasSpec?'Re-upload':'Upload')+' Spec PDF</button>';
     }
     if(bid.status==='quote_ready'||bid.status==='pending_review'){
@@ -827,6 +882,61 @@ function buildSystemsFromGemini(bid){
         if(cat && key && systems[cat]){ systems[cat][key]=count; }
     });
     return systems;
+}
+
+async function auditDrawings(id){
+    var bid=allBids.find(function(b){return b.id===id;});
+    if(!bid)return;
+    var inp=document.createElement('input');
+    inp.type='file';
+    inp.accept='application/pdf';
+    inp.onchange=async function(){
+        var file=inp.files && inp.files[0];
+        if(!file)return;
+        if(file.size>22*1024*1024){alert('PDF must be under 22MB. Split larger drawing sets.');return;}
+        if(!confirm('Run deep drawing audit on "'+file.name+'" ('+(file.size/1024/1024).toFixed(1)+'MB)?\n\nClaude Sonnet will:\n  • Identify the data plan sheet (E1xx/T1xx)\n  • Read the symbol legend\n  • Extract embedded equipment specs\n  • Count devices targeted by symbol type\n  • Cross-validate against equipment capacity\n\nThe audit OVERWRITES current device counts and rebuilds the quote.\nCost: ~$0.30-1.00 depending on PDF size. Takes 60-180s.'))return;
+
+        var oldTitle=document.title;
+        document.title='Auditing drawings...';
+
+        var b64=await new Promise(function(resolve,reject){
+            var reader=new FileReader();
+            reader.onload=function(){resolve(reader.result.split(',')[1]);};
+            reader.onerror=reject;
+            reader.readAsDataURL(file);
+        });
+
+        try{
+            var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-audit-drawings',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({bid_id:id,pdf_filename:file.name,pdf_base64:b64,auto_apply:true})
+            });
+            var data=await resp.json();
+            if(data.success){
+                var msg='Audit complete!\n\n';
+                msg+='Data sheet: '+(data.data_sheet_found||'?')+'\n';
+                msg+='Devices counted: '+data.total_devices+' across '+data.device_categories+' categories\n';
+                msg+='Equipment specs found: '+data.equipment_spec_count+'\n';
+                msg+='Validations flagged: '+data.validations_flagged+'\n';
+                msg+='Project tier: '+data.project_tier+'\n';
+                msg+='Confidence: '+data.confidence+'\n';
+                if(data.new_total){msg+='\nNew quote total: $'+Number(data.new_total).toLocaleString()+'\n';}
+                msg+='\nCost: $'+(data.cost_usd||0).toFixed(2)+'\n\n';
+                msg+=data.summary;
+                alert(msg);
+            } else {
+                alert('Audit failed: '+(data.error||'unknown'));
+            }
+        } catch(e){
+            alert('Audit error: '+e.message);
+        } finally {
+            document.title=oldTitle;
+            await loadBids();
+            setTimeout(function(){openBid(id);},300);
+        }
+    };
+    inp.click();
 }
 
 async function uploadSpec(id){
