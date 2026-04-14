@@ -514,7 +514,8 @@ function renderBids(){
             } else if(cardGv==='complete'){
                 var gvVerdict=(b.pipeline_phases.gemini_verify.verdict)||'';
                 var vTone = gvVerdict==='clearly_wrong'?'btn-card-red':gvVerdict==='suspicious'?'btn-card-amber':'btn-card-outline';
-                html+='<button class="btn-card '+vTone+'" onclick="event.stopPropagation();verifyWithGemini(\''+b.id+'\')">Re-verify ('+gvVerdict.replace(/_/g,\' \')+')</button>';
+                var vLabel = gvVerdict.split('_').join(' ');
+                html+='<button class="btn-card '+vTone+'" onclick="event.stopPropagation();verifyWithGemini(\''+b.id+'\')">Re-verify ('+vLabel+')</button>';
             }
             if(b.status==='quote_ready'){
                 html+='<button class="btn-card btn-card-green" onclick="event.stopPropagation();sendQuote(\''+b.id+'\')">Send to Antonio</button>';
