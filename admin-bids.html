@@ -778,47 +778,33 @@ async function rebidWithGemini(id){
     var sugCount=Object.keys(sugs).length;
     if(!sugCount){ alert('No Gemini suggestions stored on this bid. Run Verify first.'); return; }
 
-    // Preview the changes
     var lines=[];
     Object.keys(sugs).forEach(function(path){
         lines.push('  '+path+' -> '+sugs[path]);
     });
-    if(!confirm('Rebid using Gemini corrections?\n\n'+lines.join('\n')+'\n\nThis regenerates the quote with these numbers. No Claude API cost.'))return;
+    if(!confirm('Rebid with Claude arbitrating Gemini\'s corrections?\n\nGemini suggested:\n'+lines.join('\n')+'\n\nClaude (Haiku) reviews each disagreement and picks the final number based on what it actually saw in the blueprint vs Gemini\'s industry-norm critique. Cost: ~$0.01-0.05.'))return;
 
     var btn=document.getElementById('rebidBtn_'+id);
-    if(btn){btn.disabled=true;btn.textContent='Rebidding...';}
-
-    var systems=buildSystemsFromGemini(bid);
+    if(btn){btn.disabled=true;btn.textContent='Arbitrating...';}
 
     try{
-        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-bid',{
+        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-arbitrate',{
             method:'POST',
             headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                bid_id:id,
-                reviewed_counts:systems,
-                review_mode:false,
-                estimate_method:'blueprint_claude',
-                project_name:bid.project_name,
-                general_contractor:bid.general_contractor||'',
-                gc_email:bid.gc_email||'',
-                location:bid.location||'',
-                city:bid.city||'',
-                building_type:bid.building_type||'',
-                square_footage:bid.square_footage||null,
-                num_floors:bid.num_floors||1,
-                bid_deadline:bid.bid_deadline||null,
-                source:bid.source||'manual',
-                device_analysis:bid.device_analysis||null,
-                page_classification:bid.page_classification||null,
-                description:'Rebid with Gemini corrections: '+Object.keys(sugs).join(', ')
-            })
+            body:JSON.stringify({bid_id:id})
         });
         var data=await resp.json();
         if(data.success){
-            alert('Rebid complete.\nNew total: $'+Number(data.total_bid||0).toLocaleString()+'\n\nStatus reset to quote_ready. Click Verify again to re-check.');
+            var sum=data.summary||{};
+            var msg='Rebid complete.\n\nClaude arbitration:\n'+
+                '  Agreed with Gemini: '+(sum.agreed_with_gemini||0)+'\n'+
+                '  Kept Claude original: '+(sum.kept_original||0)+'\n'+
+                '  Compromised: '+(sum.compromised||0)+'\n\n'+
+                'Method: '+(data.method||'?')+'\n\n'+
+                'Status reset. Click Verify again to re-check the new numbers.';
+            alert(msg);
         } else {
-            alert('Rebid failed: '+(data.error||'unknown error'));
+            alert('Rebid failed: '+(data.error||data.arbitrate_error||data.rebid_error||'unknown error'));
         }
     }catch(e){
         alert('Rebid error: '+e.message);
