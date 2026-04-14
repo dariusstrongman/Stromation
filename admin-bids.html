@@ -612,8 +612,16 @@ async function openBid(id){
     if(bid.status==='analyzing'){
         html+='<div style="padding:1rem;background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.3);border-radius:8px;text-align:center;color:#C084FC;font-weight:700;margin-bottom:1rem;">Analysis in Progress... Blueprint is being scanned by Claude. Refresh in a few minutes.</div>';
     }
+    // Verify with Gemini: show for blueprint-analyzed bids that haven't been verified yet
+    var gvStatus=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify && bid.pipeline_phases.gemini_verify.status)||'not_started';
+    var isBlueprint=bid.estimate_method && bid.estimate_method.indexOf('blueprint')===0;
+    if((bid.status==='quote_ready'||bid.status==='pending_review') && isBlueprint && (gvStatus==='not_started'||gvStatus==='failed')){
+        html+='<button class="btn btn-amber" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')">Verify with Gemini</button>';
+    } else if((bid.status==='quote_ready'||bid.status==='pending_review') && isBlueprint && gvStatus==='complete'){
+        html+='<button class="btn btn-outline" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')" style="margin-right:0.5rem;">Re-verify</button>';
+    }
     if(bid.status==='quote_ready'){
-        html+='<button class="btn btn-green" onclick="sendQuote(\''+id+'\')">Send to Antonio</button>';
+        html+='<button class="btn btn-green" onclick="sendQuote(\''+id+'\')" style="margin-left:0.5rem;">Send to Antonio</button>';
     }
     if(bid.status==='pending_review'||bid.status==='quote_ready'){
         html+='<button class="btn btn-outline" onclick="rescanBlueprints(\''+id+'\')" style="margin-left:0.5rem;">Re-scan Blueprints</button>';
@@ -675,6 +683,35 @@ async function sendQuote(id){
         alert('Quote sent successfully');
     }catch(e){
         alert('Failed to send quote');
+    }
+}
+
+async function verifyWithGemini(id){
+    var btn=document.getElementById('verifyBtn_'+id);
+    if(btn){btn.disabled=true;btn.textContent='Verifying... (10-20s)';}
+    try{
+        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-verify',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({bid_id:id})
+        });
+        var data=await resp.json();
+        if(data.success){
+            var verdict=data.verdict||'looks_right';
+            var conf=data.confidence||0;
+            var msg='Gemini verdict: '+verdict.replace(/_/g,' ').toUpperCase()+' ('+conf+'% confidence)';
+            if(data.issues && data.issues.length){
+                msg+='\n\nIssues:\n - '+data.issues.join('\n - ');
+            }
+            alert(msg);
+        } else {
+            alert('Verify failed: '+(data.error||'unknown error'));
+        }
+    } catch(e){
+        alert('Verify error: '+e.message);
+    } finally {
+        await loadBids();
+        setTimeout(function(){openBid(id);},300);
     }
 }
 
