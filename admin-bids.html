@@ -95,6 +95,8 @@
         .step.in_progress .step-label{color:#FBBF24;font-weight:600;}
         .step.failed .step-dot{background:#EF4444;box-shadow:0 0 4px rgba(239,68,68,0.8);}
         .step.failed .step-label{color:#FCA5A5;}
+        .step.flagged .step-dot{background:#F59E0B;box-shadow:0 0 4px rgba(245,158,11,0.8);}
+        .step.flagged .step-label{color:#FBBF24;}
         .step.not_started .step-dot{background:#334155;}
         .step.not_started .step-label{color:#475569;}
         @keyframes pulse-step{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.6;transform:scale(1.3);}}
@@ -349,6 +351,12 @@ function renderPhases(phases,detailed){
         var k=p[0],label=p[1];
         var ph=phases[k]||{status:'not_started'};
         var status=ph.status||'not_started';
+        // For gemini_verify, map verdict onto the step color so "complete + clearly_wrong" isn't green
+        if(k==='gemini_verify' && status==='complete' && ph.verdict){
+            if(ph.verdict==='suspicious')     status='flagged';
+            else if(ph.verdict==='clearly_wrong') status='failed';
+            // looks_right stays 'complete' (green)
+        }
         var titleAttr=ph.detail?('title="'+String(ph.detail).replace(/"/g,'&quot;')+'"'):'';
         html+='<div class="step '+status+'" '+titleAttr+'>';
         html+='<span class="step-dot"></span>';
