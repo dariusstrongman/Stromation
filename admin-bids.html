@@ -620,15 +620,17 @@ async function openBid(id){
     if(bid.status==='analyzing'){
         html+='<div style="padding:1rem;background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.3);border-radius:8px;text-align:center;color:#C084FC;font-weight:700;margin-bottom:1rem;">Analysis in Progress... Blueprint is being scanned by Claude. Refresh in a few minutes.</div>';
     }
-    // Verify with Gemini: only show when bid actually has device_analysis to critique
+    // Verify with Gemini: available on any quote_ready/pending_review bid (WF6 handles both
+    // device-count critique and fallback quote-plausibility critique for pre-v10 bids).
     var gvStatus=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify && bid.pipeline_phases.gemini_verify.status)||'not_started';
     var hasDeviceAnalysis=bid.device_analysis && Object.keys(bid.device_analysis).length>0;
-    if((bid.status==='quote_ready'||bid.status==='pending_review') && hasDeviceAnalysis && (gvStatus==='not_started'||gvStatus==='failed')){
-        html+='<button class="btn btn-amber" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')">Verify with Gemini</button>';
-    } else if((bid.status==='quote_ready'||bid.status==='pending_review') && hasDeviceAnalysis && gvStatus==='complete'){
-        html+='<button class="btn btn-outline" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')" style="margin-right:0.5rem;">Re-verify</button>';
-    } else if((bid.status==='quote_ready'||bid.status==='pending_review') && !hasDeviceAnalysis){
-        html+='<div style="padding:0.5rem 0.75rem;background:rgba(148,163,184,0.1);border:1px dashed #475569;border-radius:6px;color:#94A3B8;font-size:0.8rem;margin-bottom:0.5rem;">No device analysis stored — re-scan to enable Gemini verify.</div>';
+    if(bid.status==='quote_ready'||bid.status==='pending_review'){
+        var verifyLabel = hasDeviceAnalysis ? 'Verify with Gemini' : 'Verify with Gemini (quote plausibility)';
+        if(gvStatus==='not_started'||gvStatus==='failed'){
+            html+='<button class="btn btn-amber" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')">'+verifyLabel+'</button>';
+        } else if(gvStatus==='complete'){
+            html+='<button class="btn btn-outline" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')" style="margin-right:0.5rem;">Re-verify</button>';
+        }
     }
     if(bid.status==='quote_ready'){
         html+='<button class="btn btn-green" onclick="sendQuote(\''+id+'\')" style="margin-left:0.5rem;">Send to Antonio</button>';
