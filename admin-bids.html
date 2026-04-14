@@ -26,6 +26,8 @@
         .btn-red{background:#EF4444;color:white;}
         .btn-outline{background:transparent;border:1px solid #475569;color:#CBD5E1;}
         .btn-outline:hover{border-color:#94A3B8;}
+        .btn-blue{background:#3B82F6;color:white;}
+        .btn-blue:hover{background:#60A5FA;}
 
         .container{max-width:1400px;margin:0 auto;padding:1.5rem;}
 
@@ -124,6 +126,8 @@
         .btn-card-red:hover{background:#F87171;}
         .btn-card-outline{background:transparent;color:#CBD5E1;border:1px solid #475569;}
         .btn-card-outline:hover{background:#1E293B;border-color:#64748B;}
+        .btn-card-blue{background:#3B82F6;color:#fff;}
+        .btn-card-blue:hover{background:#60A5FA;}
 
         .estimate-badge{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-left:0.5rem;}
         .estimate-gpt{background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);}
@@ -513,9 +517,14 @@ function renderBids(){
                 html+='<button class="btn-card btn-card-amber" onclick="event.stopPropagation();verifyWithGemini(\''+b.id+'\')">Verify with Gemini</button>';
             } else if(cardGv==='complete'){
                 var gvVerdict=(b.pipeline_phases.gemini_verify.verdict)||'';
+                var gvSugs=(b.pipeline_phases.gemini_verify.suggestions)||{};
+                var gvSugCount=Object.keys(gvSugs).length;
                 var vTone = gvVerdict==='clearly_wrong'?'btn-card-red':gvVerdict==='suspicious'?'btn-card-amber':'btn-card-outline';
                 var vLabel = gvVerdict.split('_').join(' ');
                 html+='<button class="btn-card '+vTone+'" onclick="event.stopPropagation();verifyWithGemini(\''+b.id+'\')">Re-verify ('+vLabel+')</button>';
+                if((gvVerdict==='clearly_wrong'||gvVerdict==='suspicious') && gvSugCount>0){
+                    html+='<button class="btn-card btn-card-blue" id="rebidBtn_'+b.id+'" onclick="event.stopPropagation();rebidWithGemini(\''+b.id+'\')">Rebid with '+gvSugCount+' Gemini fix'+(gvSugCount===1?'':'es')+'</button>';
+                }
             }
             if(b.status==='quote_ready'){
                 html+='<button class="btn-card btn-card-green" onclick="event.stopPropagation();sendQuote(\''+b.id+'\')">Send to Antonio</button>';
@@ -662,6 +671,12 @@ async function openBid(id){
             html+='<button class="btn btn-amber" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')">'+verifyLabel+'</button>';
         } else if(gvStatus==='complete'){
             html+='<button class="btn btn-outline" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')" style="margin-right:0.5rem;">Re-verify</button>';
+            var modalGv=bid.pipeline_phases.gemini_verify||{};
+            var modalVerdict=modalGv.verdict||'';
+            var modalSugs=modalGv.suggestions||{};
+            if((modalVerdict==='clearly_wrong'||modalVerdict==='suspicious') && Object.keys(modalSugs).length>0){
+                html+='<button class="btn btn-blue" onclick="rebidWithGemini(\''+id+'\')" style="margin-right:0.5rem;">Rebid with Gemini fixes</button>';
+            }
         }
     }
     if(bid.status==='quote_ready'){
@@ -727,6 +742,89 @@ async function sendQuote(id){
         alert('Quote sent successfully');
     }catch(e){
         alert('Failed to send quote');
+    }
+}
+
+// Gemini device-key mapping (flat key -> which nested system)
+var DEVICE_SYSTEM_MAP = {cat6a_drops:'structured_cabling',wifi_aps:'structured_cabling',fixed_cameras:'security',ptz_cameras:'security',access_control_doors:'security',motion_detectors:'security',keypads:'security',glass_break_sensors:'security',door_contacts:'security',speakers:'audio_visual',displays:'audio_visual',intercom_stations:'intercom_nurse_call',nurse_call_stations:'intercom_nurse_call',rack_mdf_rooms:'infrastructure',fiber_runs:'infrastructure'};
+
+// Flatten Gemini suggestions (dot-path OR flat key) into nested systems, merged with current device_analysis
+function buildSystemsFromGemini(bid){
+    var systems={structured_cabling:{},security:{},audio_visual:{},intercom_nurse_call:{},infrastructure:{}};
+    var da=bid.device_analysis||{};
+    // Seed with current counts
+    Object.keys(da).forEach(function(k){
+        var cat=DEVICE_SYSTEM_MAP[k]; if(!cat) return;
+        var v=da[k]; var count=(v && typeof v==='object' && typeof v.count==='number')?v.count:(typeof v==='number'?v:0);
+        systems[cat][k]=count;
+    });
+    // Apply Gemini overrides
+    var sugs=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify && bid.pipeline_phases.gemini_verify.suggestions)||{};
+    Object.keys(sugs).forEach(function(path){
+        var count=Number(sugs[path])||0;
+        var cat,key;
+        if(path.indexOf('.')!==-1){ var parts=path.split('.'); cat=parts[0]; key=parts[1]; }
+        else { key=path; cat=DEVICE_SYSTEM_MAP[key]; }
+        if(cat && key && systems[cat]){ systems[cat][key]=count; }
+    });
+    return systems;
+}
+
+async function rebidWithGemini(id){
+    var bid=allBids.find(function(b){return b.id===id;});
+    if(!bid)return;
+    var gv=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify)||{};
+    var sugs=gv.suggestions||{};
+    var sugCount=Object.keys(sugs).length;
+    if(!sugCount){ alert('No Gemini suggestions stored on this bid. Run Verify first.'); return; }
+
+    // Preview the changes
+    var lines=[];
+    Object.keys(sugs).forEach(function(path){
+        lines.push('  '+path+' -> '+sugs[path]);
+    });
+    if(!confirm('Rebid using Gemini corrections?\n\n'+lines.join('\n')+'\n\nThis regenerates the quote with these numbers. No Claude API cost.'))return;
+
+    var btn=document.getElementById('rebidBtn_'+id);
+    if(btn){btn.disabled=true;btn.textContent='Rebidding...';}
+
+    var systems=buildSystemsFromGemini(bid);
+
+    try{
+        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-bid',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+                bid_id:id,
+                reviewed_counts:systems,
+                review_mode:false,
+                estimate_method:'blueprint_claude',
+                project_name:bid.project_name,
+                general_contractor:bid.general_contractor||'',
+                gc_email:bid.gc_email||'',
+                location:bid.location||'',
+                city:bid.city||'',
+                building_type:bid.building_type||'',
+                square_footage:bid.square_footage||null,
+                num_floors:bid.num_floors||1,
+                bid_deadline:bid.bid_deadline||null,
+                source:bid.source||'manual',
+                device_analysis:bid.device_analysis||null,
+                page_classification:bid.page_classification||null,
+                description:'Rebid with Gemini corrections: '+Object.keys(sugs).join(', ')
+            })
+        });
+        var data=await resp.json();
+        if(data.success){
+            alert('Rebid complete.\nNew total: $'+Number(data.total_bid||0).toLocaleString()+'\n\nStatus reset to quote_ready. Click Verify again to re-check.');
+        } else {
+            alert('Rebid failed: '+(data.error||'unknown error'));
+        }
+    }catch(e){
+        alert('Rebid error: '+e.message);
+    } finally {
+        await loadBids();
+        setTimeout(function(){openBid(id);},300);
     }
 }
 
