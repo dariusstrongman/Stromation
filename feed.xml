@@ -5,8 +5,15 @@
   <link>https://www.stromation.com/blog.html</link>
   <description>Automation guides and insights for business owners</description>
   <language>en-us</language>
-  <lastBuildDate>Mon, 13 Apr 2026 11:00:56 GMT</lastBuildDate>
+  <lastBuildDate>Tue, 14 Apr 2026 11:00:56 GMT</lastBuildDate>
   <atom:link href="https://www.stromation.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>How to Automate Customer Segmentation for Your Small Business</title>
+    <link>https://www.stromation.com/blog/automate-customer-segmentation-small-business.html</link>
+    <description>Discover how automating customer segmentation can enhance marketing strategies and improve customer engagement for small businesses.</description>
+    <pubDate>Tue, 14 Apr 2026 11:00:56 GMT</pubDate>
+    <guid>https://www.stromation.com/blog/automate-customer-segmentation-small-business.html</guid>
+  </item>
   <item>
     <title>How to Automate Your Customer Referral Program for Small Business Growth</title>
     <link>https://www.stromation.com/blog/automate-customer-referral-program-small-business.html</link>
@@ -233,4 +240,4 @@
   </item>
 </channel>
 </rss>
-           
+             
