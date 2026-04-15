@@ -642,6 +642,35 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
       2. Kiosk fitout (≤1 LV sheet) → quote + pending_review + single-LV banner
       3. Sparse scope (sheets exist but Claude counted 0) → quote + pending_review + scope-gap banner
       4. Full scope (multiple LV sheets, Claude found devices) → autopilot quote (within Gemini/heuristic gates)
+  - [x] Pipeline v16-autopilot (2026-04-15) - REAL AUTOPILOT CHAIN + INTAKE FIXES:
+    - **Problem discovered**: CLAUDE.md described an autopilot chain (WF4 → WF6 Gemini → WF5 Quote Sender) but the chain **did not exist in code**. WF4 built the quote and stopped. Every bid required manual dashboard clicks to verify and send. "Autopilot" was docs-only.
+    - **WF4 autopilot chain now wired in code**:
+      (1) Heuristic sanity — hard blocks on total <$500, total >$2.5M, drops/rack ratio <4, labor >55% or <10% of total, cameras > drops×1.5
+      (2) Gemini verify — WF4 auto-POSTs to `/webhook/tbe-verify` with bid_id, receives verdict + confidence + issues, timeout 45s
+      (3) Auto-send — only if Gemini=`looks_right` AND sanity passed, WF4 POSTs to `/webhook/tbe-send-quote` and flips status to `quote_sent`
+      Any gate fail → `pending_review` with specific reason in banner detail
+    - **N8N_BASE constant** added to WF4 (`https://n8n.myaibuffet.com`)
+    - **Scope-gap flag fix**: was over-firing when AV sheets exist + speakers=0 but displays>0 (Black Sheep hit this — coffee shop has menu boards, no paging speakers needed). Fixed to flag only when ENTIRE category is zero (speakers + displays both 0, or all security devices 0).
+    - **WF1 Bid Alert Parser — intake opened up**: was rejecting any sender not in `[planhub, constructconnect, isqft, cmd group, bidclerk]`. Now also accepts any email with a PDF attachment (lets Antonio forward direct-from-GC bid emails to bids@).
+    - **WF1 stricter Div 27 scope filter**: weighted keyword scoring — strong keywords (1 hit = pass: "division 27/28", "structured cabling", "video surveillance", "fire alarm", "access control", product names like Avigilon/Bosch/Panduit) vs weak keywords (need 2+ to pass: "telecom", "data cabling", "wifi", "MDF"). PDF attachment always passes (WF9 decides). Skipped emails logged.
+    - **WF1 dedup rebuilt**: was exact-match on project_name only. Now also dedups by source_url (PlanHub re-sends), PlanHub project ID substring, and normalized name (strips "ITB", "REV X", "Project:", punctuation). Skipped duplicates logged.
+    - **WF1 auto-handoff to WF9**: when email has PDF attachment and no PlanHub project ID, WF1 POSTs the PDF base64 to `/webhook/tbe-audit-drawings` (WF9). WF9 builds scope_inventory, runs audit, and auto-applies counts to WF4. Full zero-touch email → quote pipeline on non-PlanHub emails.
+    - **WF9 emits scope_inventory**: previously WF9 (Drawing Audit upload) skipped the v15 scope_inventory logic. Now emits the same shape as WF2 pipeline with pipeline_version='wf9_drawing_audit_v1', so the tier-gating + auto-flag logic in WF4 works on the manual-upload path too.
+    - **WF9 show-your-work `keyed_notes_inventory`**: before producing counts, Claude enumerates EVERY keyed note with its exact text + devices_extracted. Final counts MUST be the sum across the inventory. Persists to `spec_data.keyed_notes_inventory` for Antonio's dashboard review. Round 1 Black Sheep missed the drive-thru (13 drops); Round 2 with show-your-work prompt caught it (19 drops) — ground-truth match.
+    - **WF9 literal display rule**: don't infer `displays` from "data ports at enclosure". Only count when note LITERALLY says `monitor`/`display`/`screen`/`TV`/`menu board`/`KDS`. Fixed 2-display overcount on Black Sheep (7 → 5).
+    - **WF9 recommended_additions**: for each building type, Claude generates a list of typical-but-not-drawn scope items (coffee shop → 2 WAPs + 4-5 cameras; QSR → speakers + paging + access control). Persists to `spec_data.recommended_additions` AND surfaces in the `pending_review` banner. Antonio sees "Recommended: 2x wifi_aps (customer WiFi), 5x fixed_cameras (POS + back door + DT + safe)" as explicit review items — not silent padding. Gemini's suspicious verdict also surfaces here.
+    - **WF4 intercom expansion**: added `bpSys.intercom_nurse_call.intercom_stations` handler. 1 intercom_station → HME EOS HD ($8,500) + HME speaker post ($1,850) + 8hr labor. Covers drive-thru QSR scope Antonio owns.
+    - **WF4 real-SKU PARTS entries** added: EOS HD, HME-SPEAKER-POST, IC-STATION-DOOR, PA2120, MISC-AV-SM, QM43R, N1524, N3024, N3048, C1000-24P, C1000-48P, PowerConnect 3524, EWR-12-17, EWR-18-17, PD-915RV-R, PD-NRP6-RN, PD-815R, MRK-3231, BGR-4536.
+    - **Black Sheep Coffee Stonebrook A/B test (real PDF on desktop)**:
+      - Coffee shop with drive-thru, 2,397 sqft, Frisco TX
+      - No dedicated data/telecom plan sheet — all Div 27 scope in keyed notes on E0-1 and E1-1
+      - Ground truth: 19 drops, 5 menu monitors, 1 HME drive-thru speaker post
+      - R1 (before v16-autopilot): $11,060 — missed drive-thru entirely, missed all displays
+      - R2 (show-your-work prompt): $19,252 — caught all drops + displays, missed HME hardware expansion
+      - R3 (intercom handler): $33,261 — perfect literal counts but over-counted displays by 2 (Claude inferred DT enclosure = display)
+      - R4 (literal display rule): $31,416 — matches strict manual audit of $31,400 → **99.95% on literal drawn scope**
+      - R5 (autopilot): chain fires correctly — heuristics pass, Gemini=suspicious 75% (flags no WAPs + no cameras typical for coffee shop), parks `pending_review`, does NOT auto-send. Banner surfaces Gemini's concerns + recommended_additions for Antonio's 1-click review.
+    - **Workflow now moves end-to-end matching how a careful bidder operates**: intake → read drawings → build quote with real parts → sanity check → second opinion → auto-send if confident OR park with specific concerns if not. No silent scope fabrication, no docs-only autopilot.
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
   - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
