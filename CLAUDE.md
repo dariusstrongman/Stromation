@@ -671,6 +671,30 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
       - R4 (literal display rule): $31,416 — matches strict manual audit of $31,400 → **99.95% on literal drawn scope**
       - R5 (autopilot): chain fires correctly — heuristics pass, Gemini=suspicious 75% (flags no WAPs + no cameras typical for coffee shop), parks `pending_review`, does NOT auto-send. Banner surfaces Gemini's concerns + recommended_additions for Antonio's 1-click review.
     - **Workflow now moves end-to-end matching how a careful bidder operates**: intake → read drawings → build quote with real parts → sanity check → second opinion → auto-send if confident OR park with specific concerns if not. No silent scope fabrication, no docs-only autopilot.
+  - [x] Pipeline v16-critical (2026-04-15) — DEVICE_TO_SYSTEM BUG + SCALE FIXES:
+    - **Critical bug discovered**: the pipeline's `DEVICE_TO_SYSTEM` mapping used wrong category names (`security_cameras`, `av_paging`, `wireless`, `network_infrastructure`, `access_control`, `intrusion`) that WF4's nested-system handlers didn't recognize. Every bid running through WF1→WF2→WF4 was silently dropping most device categories, quoting only structured cabling. Under-billing by 50-100%.
+    - **Fix**: rewrote `DEVICE_TO_SYSTEM` to use WF4's expected structure: `structured_cabling` (cat6a_drops, wifi_aps), `security` (fixed_cameras, access_control_doors, motion_detectors, keypads, etc.), `audio_visual` (speakers, displays), `intercom_nurse_call` (intercom_stations), `infrastructure` (rack_mdf_rooms, fiber_runs). FA devices intentionally unmapped (fall through to 'other' — Antonio excludes FA).
+    - **Live production batch results (22 real PlanHub bids from WF1 on 2026-04-15)**:
+      - 4 arrived already expired → Patch 1 correctly skipped them (no DB row, no pipeline spend)
+      - 19 triggered WF2 → v15 buggy mapping produced under-quoted totals
+      - v16 mapping fix re-ran 6 of them and totals jumped dramatically:
+        - Texas Roadhouse Granbury: $31K → $48K (added AV/displays)
+        - Dunkin' Plano: $18.5K → $59K (added security + AV; rack cap 5→1)
+        - JP Starks School Renovation: $125K → $275K (full system expansion)
+        - MyDrNow #TX004: $18.5K → $27K
+        - PT Solutions: $2K → $12.5K (silent-fail flag forced review banner)
+        - Talkin' Taco: $8.4K → $25.9K
+    - **Other v16-critical fixes shipped**:
+      - WF1 intake: past-deadline emails skipped entirely, not even created as DB rows (was creating clutter with status='expired')
+      - WF1 intake: follows PlanHub `ls/click` redirect at intake to extract the real project_id from the resolved `app.planhub.com/.../projectDetails/NNNNNN` URL. Regex now catches 4 PlanHub URL patterns: `/projects/NNN`, `project_id=NNN`, `/p/NNN`, `/projectDetails/NNN`.
+      - WF4 silent-fail sanity: if scope_inventory.lv_sheet_count ≥ 1 but total device count < 3, forces `pending_review` with banner "Pipeline returned suspiciously few devices — re-scan with focus or re-upload higher-res PDF".
+      - WF4 rack cap: caps `rack_mdf_rooms` at `max(1, ceil(drops/80))`. Prevents over-count when same physical rack appears on multiple sheets. Dunkin's 5→1, 7Brew's 2→1.
+      - WF2 pipeline: patches bid row with `square_footage`, `building_type`, `city`, `state`, `general_contractor` from PlanHub `get-details` API response so bid rows don't sit with null metadata.
+      - WF2 pipeline: page_classification now sent as `{total_pages, floor_plans_analyzed, schedules_found, indexes_found, skipped_pages}` summary shape WF4's classify-phase UI expects, instead of the raw `{filename: class}` map. Fixes the "0 floor plans, 0 schedules" cosmetic bug on the dashboard stepper.
+    - **Daily auto-expire cron live** (workflow `P8pO5V6vewkRAPFa`, active): runs 1 AM Central, PATCHes any bid whose `bid_deadline < now()` and status is still active (new/awaiting/analyzing/pending/quote_ready) to `status='expired'`. Keeps the dashboard clean without manual cleanup.
+    - **Focused re-scan mode** (shipped earlier this session): WF9 accepts `focus_categories: [wifi_aps, fixed_cameras, speakers, access_control_doors, ...]` and does a targeted second read of the PDF looking specifically for those symbols/notes. Used when Gemini flags "typical for this building type but drawings don't show it" — instead of blindly padding the quote (which was the old "Accept All Recommended Additions" button, since removed), the system verifies by re-reading the drawings. Every added device must cite a specific sheet+note in keyed_notes_inventory.
+    - **admin-bids.html full rewrite**: next-step banner per bid, hot-bids section, toast notifications, activity log timeline, keyed-notes-inventory "show your work" table, recommended_additions panel now clearly labeled "Flagged for Verification" (not fabricated), scope-inventory chips, 1-click focused re-scan.
+    - **Honest accuracy read**: ~95% automated + 5% human click-through = 99% effective on tested bid shapes (QSR kiosk + full scope QSR + coffee shop w/ drive-thru + no-scope verdicts). Vision counting is the remaining ceiling — Claude is probabilistic on small/faded symbols. Zoom/tile mode exists as manual focused re-scan button. Auto-tile-when-sparse deferred (requires server-side PDF caching).
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
   - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)
