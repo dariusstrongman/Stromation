@@ -555,11 +555,12 @@ function decideNextStep(b){
         var phases = b.pipeline_phases || {};
         var gv = phases.gemini_verify || {};
         var verdict = gv.verdict || '';
+        var gvRan = gv.status === 'complete';
         var sugCount = Object.keys(gv.suggestions||{}).length;
         var recAdds = ((b.spec_data||{}).recommended_additions)||[];
         var desc = phases.pending_review && phases.pending_review.detail
             ? phases.pending_review.detail
-            : 'Gemini or heuristics flagged this bid for human review before sending.';
+            : 'Flagged for human review before sending.';
         var actions = [];
         if(verdict==='clearly_wrong' || verdict==='suspicious'){
             if(sugCount>0){
@@ -569,17 +570,31 @@ function decideNextStep(b){
         if(recAdds.length>0){
             actions.push({label:'🔍 Re-scan drawings for '+recAdds.length+' flagged items', fn:"focusedRescan('"+b.id+"')", btnClass:'btn-purple'});
         }
-        actions.push({label:'Re-verify with Gemini', fn:"verifyWithGemini('"+b.id+"')", btnClass:'btn-amber'});
+        // v16 fix: label matches actual state
+        actions.push({label:(gvRan ? 'Re-verify with Gemini' : 'Verify with Gemini'), fn:"verifyWithGemini('"+b.id+"')", btnClass:'btn-amber'});
         actions.push({label:'Send As-Is', fn:"sendQuote('"+b.id+"')", btnClass:'btn-green'});
         return {kind:'action-required', icon:'⚠️', title:'Review before sending', desc:desc, actions:actions};
     }
     if(b.status==='quote_ready'){
-        return {kind:'ready', icon:'✅', title:'Ready to send', desc:'Sanity + Gemini both passed. Click Send to email to Antonio.',
-            actions:[
-                {label:'Send to Antonio', fn:"sendQuote('"+b.id+"')", btnClass:'btn-green'},
-                {label:'Re-verify', fn:"verifyWithGemini('"+b.id+"')", btnClass:'btn-outline'},
-                {label:'Re-audit Drawings', fn:"auditDrawings('"+b.id+"')", btnClass:'btn-outline'}
-            ]};
+        // v16 fix: check whether gemini actually verified before claiming "both passed"
+        var qphases = b.pipeline_phases || {};
+        var qgv = qphases.gemini_verify || {};
+        var qgvRan = qgv.status === 'complete';
+        var qgvVerdict = qgv.verdict || '';
+        var readyDesc;
+        if(qgvRan && qgvVerdict === 'looks_right'){
+            readyDesc = 'Sanity + Gemini both passed. Click Send to email to Antonio.';
+        } else if(qgvRan){
+            readyDesc = 'Sanity passed. Gemini verdict: '+qgvVerdict.replace(/_/g,' ')+'. Review before sending.';
+        } else {
+            readyDesc = 'Quote built but Gemini never verified it. Run Verify before sending to catch obvious errors.';
+        }
+        var readyActions = [
+            {label:'Send to Antonio', fn:"sendQuote('"+b.id+"')", btnClass:'btn-green'},
+            {label:(qgvRan ? 'Re-verify' : 'Verify with Gemini'), fn:"verifyWithGemini('"+b.id+"')", btnClass:qgvRan ? 'btn-outline' : 'btn-amber'},
+            {label:'Re-audit Drawings', fn:"auditDrawings('"+b.id+"')", btnClass:'btn-outline'}
+        ];
+        return {kind:'ready', icon:'✅', title:'Ready to send', desc:readyDesc, actions:readyActions};
     }
     return {kind:'info', icon:'ℹ️', title:statusLabel(b.status), desc:'No specific next step defined.', actions:[]};
 }
