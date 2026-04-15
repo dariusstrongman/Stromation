@@ -567,7 +567,7 @@ function decideNextStep(b){
             }
         }
         if(recAdds.length>0){
-            actions.push({label:'Accept '+recAdds.length+' Recommended Additions', fn:"acceptRecommendedAdditions('"+b.id+"')", btnClass:'btn-purple'});
+            actions.push({label:'🔍 Re-scan drawings for '+recAdds.length+' flagged items', fn:"focusedRescan('"+b.id+"')", btnClass:'btn-purple'});
         }
         actions.push({label:'Re-verify with Gemini', fn:"verifyWithGemini('"+b.id+"')", btnClass:'btn-amber'});
         actions.push({label:'Send As-Is', fn:"sendQuote('"+b.id+"')", btnClass:'btn-green'});
@@ -776,7 +776,7 @@ function bidCardHtml(b,isHot){
     var recAdds = ((b.spec_data||{}).recommended_additions)||[];
     var recBadge='';
     if(recAdds.length>0){
-        recBadge='<span class="estimate-badge" style="background:rgba(167,139,250,0.15);color:#C4B5FD;margin-left:0.3rem;">'+recAdds.length+' rec\'d adds</span>';
+        recBadge='<span class="estimate-badge" style="background:rgba(167,139,250,0.15);color:#C4B5FD;margin-left:0.3rem;" title="Gemini pattern-matched — NOT verified in drawings">'+recAdds.length+' to verify</span>';
     }
 
     var html='<div class="bid-card'+hotClass+sentClass+analyzingClass+'" onclick="openBid(\''+b.id+'\')">';
@@ -900,20 +900,23 @@ async function openBid(id){
         html+='</div></div>';
     }
 
-    // ===== RECOMMENDED ADDITIONS =====
+    // ===== FLAGGED FOR VERIFICATION (pattern-matched, NOT verified from drawings) =====
     var recAdds = ((bid.spec_data||{}).recommended_additions)||[];
     if(recAdds.length>0){
-        html+='<div class="modal-section"><h3>💡 Recommended Additions</h3>';
+        html+='<div class="modal-section"><h3>🔍 Flagged for Verification</h3>';
         html+='<div class="rec-adds">';
-        html+='<h4>Typical for '+esc(bid.building_type||'this project type')+' but not drawn</h4>';
+        html+='<h4>Typical for '+esc(bid.building_type||'this project type')+' — BUT NOT VERIFIED AGAINST DRAWINGS</h4>';
+        html+='<div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:0.6rem 0.75rem;margin-bottom:0.75rem;font-size:0.8rem;color:#FBBF24;">';
+        html+='⚠️ Gemini + scope heuristics flagged these as "probably in scope" based on building type. <strong>Gemini did not look at the drawings</strong> — it only saw the counts. Before adding any of these to the quote, re-scan the PDF to confirm they\'re actually drawn (or confirmed absent).';
+        html+='</div>';
         recAdds.forEach(function(r){
             html+='<div class="rec-add-item">';
             html+='<div class="rec-add-info"><span class="rec-add-qty">'+(r.qty||'?')+'</span> <strong>'+esc(r.category||'')+'</strong>'+(r.reason?('<span class="rec-add-reason">'+esc(r.reason)+'</span>'):'')+'</div>';
             html+='</div>';
         });
-        html+='<div style="margin-top:0.75rem;display:flex;gap:0.5rem;">';
-        html+='<button class="btn btn-purple" onclick="acceptRecommendedAdditions(\''+id+'\')">Accept All & Regenerate Quote</button>';
-        html+='<span style="align-self:center;font-size:0.75rem;color:#94A3B8;">These are surfaced because drawings don\'t show them but they\'re standard for this project type. Review before accepting.</span>';
+        html+='<div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">';
+        html+='<button class="btn btn-purple" onclick="focusedRescan(\''+id+'\')">🔍 Re-scan drawings for these items</button>';
+        html+='<span style="align-self:center;font-size:0.75rem;color:#94A3B8;">Uploads the drawings again, tells Claude to specifically look for each flagged category, adds counts only for items found on actual sheets.</span>';
         html+='</div>';
         html+='</div></div>';
     }
@@ -1321,47 +1324,47 @@ async function generateQuoteFromReview(bidId){
     }
 }
 
-// Accept recommended additions: adds the quantities to current device_analysis and regens quote
-async function acceptRecommendedAdditions(id){
+// Focused re-scan: re-upload the PDF and tell Claude (WF9) to look specifically
+// for the flagged categories. No silent padding — every added device must come
+// from an actual sheet+note on the drawings, or be explicitly confirmed absent.
+async function focusedRescan(id){
     var bid=allBids.find(function(b){return b.id===id;});
     if(!bid) return;
     var rec=((bid.spec_data||{}).recommended_additions)||[];
-    if(!rec.length){toast('No recommended additions','warn');return;}
-    if(!confirm('Add '+rec.length+' recommended items to the scope and regenerate quote?\n\n'+rec.map(function(r){return '  '+r.qty+'x '+r.category;}).join('\n')))return;
+    if(!rec.length){toast('Nothing flagged for re-scan','warn');return;}
+    var categories = rec.map(function(r){return r.category;}).filter(Boolean);
+    var catList = categories.join(', ');
+    if(!confirm('Re-upload the drawings PDF. Claude will do a focused second read looking specifically for:\n\n  '+categories.map(function(c){return '• '+c;}).join('\n  ')+'\n\nIf found on any sheet: added to counts with keyed-note evidence.\nIf confirmed not drawn: counts stay at 0, banner confirms reviewed.\n\nNo guessing, no fabrication.\n\nCost: $0.30-1.00 | Time: 60-180s'))return;
 
-    // Merge with current device_analysis
-    var CAT_MAP = {cat6a_drops:'structured_cabling',wifi_aps:'structured_cabling',fixed_cameras:'security',ptz_cameras:'security',access_control_doors:'security',motion_detectors:'security',keypads:'security',glass_break_sensors:'security',door_contacts:'security',speakers:'audio_visual',displays:'audio_visual',intercom_stations:'intercom_nurse_call',nurse_call_stations:'intercom_nurse_call',rack_mdf_rooms:'infrastructure',fiber_runs:'infrastructure'};
-    var nested = {structured_cabling:{},security:{},audio_visual:{},intercom_nurse_call:{},infrastructure:{}};
-    var da = bid.device_analysis || {};
-    Object.keys(da).forEach(function(k){
-        var cat = CAT_MAP[k]; if(!cat) return;
-        var v = da[k]; var c = (v&&typeof v==='object'&&typeof v.count==='number')?v.count:(typeof v==='number'?v:0);
-        nested[cat][k] = c;
-    });
-    rec.forEach(function(r){
-        var cat = CAT_MAP[r.category]; if(!cat) return;
-        nested[cat][r.category] = (nested[cat][r.category]||0) + (Number(r.qty)||0);
-    });
-
-    toast('Regenerating with recommended additions...','info');
-    try{
-        var r=await fetch(WEBHOOKS.bid,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-            bid_id:id,reviewed_counts:nested,review_mode:false,estimate_method:'blueprint_claude',
-            project_name:bid.project_name,general_contractor:bid.general_contractor||'',gc_email:bid.gc_email||'',
-            location:bid.location||'',city:bid.city||'',building_type:bid.building_type||'',
-            square_footage:bid.square_footage||null,source:bid.source||'manual'
-        })});
-        var data=await r.json();
-        if(data.success){
-            toast('Added recommendations. New total: '+fmtMoney(data.total_bid),'success');
-        } else {
-            toast('Regenerate failed: '+(data.error||'unknown'),'error');
+    var inp=document.createElement('input');
+    inp.type='file';
+    inp.accept='application/pdf';
+    inp.onchange=async function(){
+        var file=inp.files && inp.files[0];
+        if(!file) return;
+        if(file.size>22*1024*1024){toast('PDF must be under 22MB','error');return;}
+        toast('Uploading for focused re-scan on: '+catList,'info');
+        try{
+            var b64=await new Promise(function(resolve,reject){
+                var r=new FileReader();r.onload=function(){resolve(r.result.split(',')[1]);};r.onerror=reject;r.readAsDataURL(file);
+            });
+            var resp=await fetch(WEBHOOKS.audit,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+                bid_id:id,pdf_filename:file.name,pdf_base64:b64,auto_apply:true,
+                focus_categories:categories
+            })});
+            var data=await resp.json();
+            if(data.success){
+                toast('Focused re-scan complete — '+data.total_devices+' devices counted. New total: '+fmtMoney(data.new_total||0),'success');
+            } else {
+                toast('Re-scan failed: '+(data.error||'unknown'),'error');
+            }
+        }catch(e){toast('Re-scan error: '+e.message,'error');}
+        finally{
+            await loadBids();
+            setTimeout(function(){openBid(id);},300);
         }
-    }catch(e){toast('Error: '+e.message,'error');}
-    finally{
-        await loadBids();
-        setTimeout(function(){openBid(id);},300);
-    }
+    };
+    inp.click();
 }
 
 // ============================================================
