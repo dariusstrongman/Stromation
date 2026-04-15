@@ -13,84 +13,103 @@
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
         body{font-family:'Inter',-apple-system,sans-serif;background:#0F172A;color:#E2E8F0;min-height:100vh;}
 
-        .header{background:#1E293B;border-bottom:1px solid #334155;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+        .header{background:#1E293B;border-bottom:1px solid #334155;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
         .header h1{font-size:1.2rem;font-weight:700;color:#fff;}
         .header .tbe{color:#F59E0B;}
-        .header-right{display:flex;align-items:center;gap:1rem;}
+        .header-right{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
         .header-right span{font-size:0.8rem;color:#94A3B8;}
-        .btn{padding:0.4rem 1rem;border:none;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+
+        .btn{padding:0.45rem 1rem;border:none;border-radius:6px;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:0.35rem;}
+        .btn:disabled{opacity:0.5;cursor:wait;}
         .btn-primary{background:#2563EB;color:white;}
         .btn-primary:hover{background:#1D4ED8;}
         .btn-amber{background:#F59E0B;color:#0F172A;}
+        .btn-amber:hover{background:#FBBF24;}
         .btn-green{background:#10B981;color:white;}
+        .btn-green:hover{background:#059669;}
         .btn-red{background:#EF4444;color:white;}
+        .btn-red:hover{background:#DC2626;}
         .btn-outline{background:transparent;border:1px solid #475569;color:#CBD5E1;}
-        .btn-outline:hover{border-color:#94A3B8;}
+        .btn-outline:hover{border-color:#94A3B8;background:#1E293B;}
         .btn-blue{background:#3B82F6;color:white;}
-        .btn-blue:hover{background:#60A5FA;}
+        .btn-blue:hover{background:#2563EB;}
         .btn-purple{background:#A855F7;color:white;}
-        .btn-purple:hover{background:#C084FC;}
-        .btn-card-purple{background:#A855F7;color:white;}
-        .btn-card-purple:hover{background:#C084FC;}
+        .btn-purple:hover{background:#9333EA;}
 
         .container{max-width:1400px;margin:0 auto;padding:1.5rem;}
 
-        .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.5rem;}
-        .stat{background:#1E293B;border:1px solid #334155;border-radius:10px;padding:1rem 1.25rem;text-align:center;}
-        .stat-label{font-size:0.7rem;color:#64748B;text-transform:uppercase;letter-spacing:1px;}
-        .stat-val{font-size:1.8rem;font-weight:800;margin-top:0.25rem;}
-        .stat-val.blue{color:#3B82F6;}.stat-val.amber{color:#F59E0B;}.stat-val.green{color:#10B981;}.stat-val.red{color:#EF4444;}.stat-val.purple{color:#A78BFA;}
+        /* Stats row */
+        .stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:0.75rem;margin-bottom:1.25rem;}
+        .stat{background:#1E293B;border:1px solid #334155;border-radius:10px;padding:0.9rem 1rem;text-align:center;transition:all 0.15s;cursor:pointer;}
+        .stat:hover{border-color:#475569;}
+        .stat.active{border-color:#F59E0B;background:#1a2034;}
+        .stat-label{font-size:0.68rem;color:#64748B;text-transform:uppercase;letter-spacing:1px;}
+        .stat-val{font-size:1.7rem;font-weight:800;margin-top:0.2rem;line-height:1;}
+        .stat-val.blue{color:#3B82F6;}
+        .stat-val.amber{color:#F59E0B;}
+        .stat-val.green{color:#10B981;}
+        .stat-val.red{color:#EF4444;}
+        .stat-val.purple{color:#A78BFA;}
+        .stat-val.pink{color:#F472B6;}
 
-        .tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;border-bottom:1px solid #334155;padding-bottom:0.75rem;}
-        .tab{padding:0.5rem 1rem;border-radius:6px;font-size:0.85rem;font-weight:500;cursor:pointer;color:#94A3B8;transition:all 0.2s;}
+        /* Tabs + sort */
+        .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;border-bottom:1px solid #334155;padding-bottom:0.75rem;}
+        .tabs{display:flex;gap:0.35rem;flex-wrap:wrap;}
+        .tab{padding:0.45rem 0.85rem;border-radius:6px;font-size:0.82rem;font-weight:500;cursor:pointer;color:#94A3B8;transition:all 0.15s;white-space:nowrap;}
         .tab:hover{color:#E2E8F0;background:#1E293B;}
         .tab.active{color:#fff;background:#2563EB;}
+        .tab-count{font-size:0.7rem;color:inherit;opacity:0.7;margin-left:0.3rem;}
+        select.tbe-select{padding:0.4rem 0.75rem;border:1px solid #475569;border-radius:6px;background:#0F172A;color:#E2E8F0;font-family:inherit;font-size:0.8rem;cursor:pointer;}
 
-        .bid-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:1.25rem;margin-bottom:1rem;cursor:pointer;transition:all 0.2s;}
-        .bid-card:hover{border-color:#475569;transform:translateY(-1px);}
-        .bid-top{display:flex;justify-content:space-between;align-items:start;margin-bottom:0.75rem;}
-        .bid-name{font-size:1.05rem;font-weight:700;color:#fff;}
-        .bid-total{font-size:1.1rem;font-weight:800;color:#10B981;}
-        .bid-meta{display:flex;gap:1.5rem;flex-wrap:wrap;font-size:0.8rem;color:#94A3B8;margin-bottom:0.75rem;}
-        .bid-meta span{display:flex;align-items:center;gap:0.3rem;}
-        .bid-scope{font-size:0.85rem;color:#CBD5E1;line-height:1.6;margin-bottom:0.75rem;}
-        .bid-tags{display:flex;gap:0.4rem;flex-wrap:wrap;}
-        .tag{padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+        /* Bid cards */
+        .bid-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:1.15rem 1.25rem;margin-bottom:0.85rem;cursor:pointer;transition:all 0.15s;}
+        .bid-card:hover{border-color:#475569;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+        .bid-card.hot{border-left:4px solid #F59E0B;}
+        .bid-card.sent{opacity:0.75;}
+        .bid-card-analyzing{border:1px solid rgba(192,132,252,0.5);box-shadow:0 0 12px rgba(192,132,252,0.2);}
+        .bid-top{display:flex;justify-content:space-between;align-items:start;gap:1rem;margin-bottom:0.5rem;}
+        .bid-name{font-size:1.05rem;font-weight:700;color:#fff;line-height:1.3;}
+        .bid-total{font-size:1.15rem;font-weight:800;color:#10B981;white-space:nowrap;}
+        .bid-meta{display:flex;gap:1.2rem;flex-wrap:wrap;font-size:0.78rem;color:#94A3B8;margin-bottom:0.5rem;}
+        .bid-scope{font-size:0.83rem;color:#CBD5E1;line-height:1.5;margin-bottom:0.5rem;}
+        .bid-tags{display:flex;gap:0.35rem;flex-wrap:wrap;margin-top:0.4rem;}
+
+        .tag{padding:2px 8px;border-radius:4px;font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
         .tag-blue{background:rgba(59,130,246,0.15);color:#60A5FA;}
         .tag-amber{background:rgba(245,158,11,0.15);color:#FBBF24;}
         .tag-green{background:rgba(16,185,129,0.15);color:#34D399;}
         .tag-red{background:rgba(239,68,68,0.15);color:#F87171;}
         .tag-purple{background:rgba(167,139,250,0.15);color:#A78BFA;}
 
-        .status-badge{padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+        /* Status badges */
+        .status-badge{padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;}
         .status-new{background:#1E40AF;color:#93C5FD;}
-        .status-awaiting_blueprints{background:rgba(56,189,248,0.15);color:#7DD3FC;border:1px dashed rgba(56,189,248,0.4);font-size:0.7rem;}
+        .status-awaiting_blueprints{background:rgba(56,189,248,0.15);color:#7DD3FC;border:1px dashed rgba(56,189,248,0.4);}
         .status-expired{background:#374151;color:#9CA3AF;opacity:0.7;}
-        .status-reviewing{background:#7C3AED20;color:#A78BFA;}
-        .status-estimating{background:#B4530020;color:#FBBF24;}
-        .status-quote_ready{background:#065F4620;color:#34D399;}
-        .status-quote_sent{background:#0F766E20;color:#5EEAD4;}
+        .status-reviewing{background:rgba(124,58,237,0.15);color:#A78BFA;}
+        .status-estimating{background:rgba(180,83,0,0.15);color:#FBBF24;}
+        .status-quote_ready{background:rgba(6,95,70,0.3);color:#34D399;}
+        .status-quote_sent{background:rgba(15,118,110,0.3);color:#5EEAD4;}
         .status-submitted{background:#1E3A5F;color:#7DD3FC;}
         .status-won{background:#064E3B;color:#6EE7B7;}
-        .status-lost{background:#7F1D1D20;color:#FCA5A5;}
+        .status-lost{background:rgba(127,29,29,0.3);color:#FCA5A5;}
         .status-no_bid{background:#374151;color:#9CA3AF;}
-        .status-pending_review{background:rgba(245,158,11,0.2);color:#FBBF24;font-size:0.75rem;animation:pulse-review 2s infinite;}
-        @keyframes pulse-review{0%,100%{opacity:1;box-shadow:0 0 6px rgba(245,158,11,0.3);}50%{opacity:0.7;box-shadow:0 0 14px rgba(245,158,11,0.6);}}
-        .status-analyzing{background:#7C3AED40;color:#C084FC;animation:pulse-analyze 1.5s infinite;font-size:0.75rem;}
-        .review-table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-bottom:1rem;}
-        .review-table th{text-align:left;padding:8px;color:#64748B;font-size:0.7rem;text-transform:uppercase;border-bottom:1px solid #334155;}
-        .review-table td{padding:8px;border-bottom:1px solid #1E293B20;}
-        .review-table input[type=number]{width:70px;padding:4px 6px;border:1px solid #475569;border-radius:4px;background:#0F172A;color:#E2E8F0;font-family:inherit;font-size:0.9rem;text-align:center;}
-        .source-badge{padding:2px 6px;border-radius:3px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;}
-        .source-schedule{background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.3);}
-        .source-floor{background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);}
-        .source-estimate{background:rgba(239,68,68,0.15);color:#F87171;border:1px solid rgba(239,68,68,0.3);}
-        .classification-summary{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:0.75rem 1rem;font-size:0.8rem;color:#94A3B8;margin-bottom:1rem;line-height:1.6;}
-        @keyframes pulse-analyze{0%,100%{opacity:1;box-shadow:0 0 8px rgba(192,132,252,0.4);}50%{opacity:0.6;box-shadow:0 0 20px rgba(192,132,252,0.8);}}
-        .bid-card-analyzing{border:1px solid rgba(192,132,252,0.5);box-shadow:0 0 12px rgba(192,132,252,0.2);}
+        .status-pending_review{background:rgba(245,158,11,0.25);color:#FBBF24;animation:pulse-review 2s infinite;}
+        .status-analyzing{background:rgba(124,58,237,0.3);color:#C084FC;animation:pulse-analyze 1.5s infinite;}
+        @keyframes pulse-review{0%,100%{opacity:1;box-shadow:0 0 6px rgba(245,158,11,0.3);}50%{opacity:0.75;box-shadow:0 0 12px rgba(245,158,11,0.6);}}
+        @keyframes pulse-analyze{0%,100%{opacity:1;box-shadow:0 0 8px rgba(192,132,252,0.4);}50%{opacity:0.65;box-shadow:0 0 18px rgba(192,132,252,0.8);}}
 
-        /* Phased pipeline stepper */
-        .stepper{display:flex;flex-wrap:wrap;gap:0;align-items:center;margin-top:0.75rem;padding:0.5rem 0.6rem;background:#0F172A;border:1px solid #1E293B;border-radius:6px;font-size:0.7rem;}
+        /* Estimate / tier / spec micro-badges */
+        .estimate-badge{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;}
+        .estimate-blueprint{background:rgba(16,185,129,0.15);color:#34D399;}
+        .estimate-gpt{background:rgba(245,158,11,0.15);color:#FBBF24;}
+        .deadline{font-size:0.76rem;font-weight:600;}
+        .deadline.urgent{color:#EF4444;}
+        .deadline.soon{color:#F59E0B;}
+        .deadline.ok{color:#94A3B8;}
+
+        /* Pipeline stepper */
+        .stepper{display:flex;flex-wrap:wrap;gap:0;align-items:center;margin-top:0.6rem;padding:0.5rem 0.6rem;background:#0F172A;border:1px solid #1E293B;border-radius:6px;font-size:0.7rem;}
         .step{display:flex;align-items:center;gap:4px;padding:3px 7px;border-radius:12px;position:relative;}
         .step + .step::before{content:'';position:absolute;left:-8px;top:50%;width:8px;height:1px;background:#334155;}
         .step-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;}
@@ -105,67 +124,107 @@
         .step.flagged .step-label{color:#FBBF24;}
         .step.not_started .step-dot{background:#334155;}
         .step.not_started .step-label{color:#475569;}
-        @keyframes pulse-step{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.6;transform:scale(1.3);}}
-
-        .stepper-modal{margin-bottom:1.25rem;padding:1rem;background:#0F172A;border:1px solid #1E293B;border-radius:8px;}
+        @keyframes pulse-step{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.55;transform:scale(1.35);}}
+        .stepper-modal{margin-bottom:1rem;padding:0.9rem;background:#0F172A;border:1px solid #1E293B;border-radius:8px;}
         .stepper-modal .step{padding:6px 10px;font-size:0.85rem;}
         .stepper-modal .step-dot{width:10px;height:10px;}
         .step-detail{display:block;color:#64748B;font-size:0.7rem;margin-top:2px;}
         .stepper-modal .step-detail{font-size:0.75rem;color:#94A3B8;}
-        .verify-block{margin-top:0.75rem;padding:0.75rem 1rem;border-radius:6px;font-size:0.85rem;}
+
+        /* Verify block */
+        .verify-block{margin-top:0.7rem;padding:0.75rem 1rem;border-radius:6px;font-size:0.85rem;}
         .verify-looks_right{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#6EE7B7;}
         .verify-suspicious{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#FBBF24;}
         .verify-clearly_wrong{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#FCA5A5;}
 
-        /* Quick-action row on bid cards */
-        .bid-actions{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem;}
-        .btn-card{padding:6px 12px;border-radius:6px;font-size:0.75rem;font-weight:600;border:none;cursor:pointer;transition:all 0.15s;}
+        /* Bid action buttons (card-level) */
+        .bid-actions{display:flex;gap:0.45rem;flex-wrap:wrap;margin-top:0.75rem;}
+        .btn-card{padding:6px 12px;border-radius:6px;font-size:0.75rem;font-weight:600;border:none;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:0.25rem;}
         .btn-card:hover{transform:translateY(-1px);}
         .btn-card:disabled{opacity:0.5;cursor:wait;}
         .btn-card-amber{background:#F59E0B;color:#1F2937;}
-        .btn-card-amber:hover{background:#FBBF24;}
         .btn-card-green{background:#10B981;color:#062f25;}
-        .btn-card-green:hover{background:#34D399;}
         .btn-card-red{background:#EF4444;color:#fff;}
-        .btn-card-red:hover{background:#F87171;}
         .btn-card-outline{background:transparent;color:#CBD5E1;border:1px solid #475569;}
-        .btn-card-outline:hover{background:#1E293B;border-color:#64748B;}
+        .btn-card-outline:hover{background:#0F172A;border-color:#64748B;}
         .btn-card-blue{background:#3B82F6;color:#fff;}
-        .btn-card-blue:hover{background:#60A5FA;}
+        .btn-card-purple{background:#A855F7;color:#fff;}
 
-        .estimate-badge{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-left:0.5rem;}
-        .estimate-gpt{background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);}
-        .estimate-blueprint{background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.3);}
+        /* Next-step banner */
+        .next-step{padding:1rem 1.25rem;border-radius:10px;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+        .next-step.action-required{background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.4);}
+        .next-step.ready{background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05));border:1px solid rgba(16,185,129,0.4);}
+        .next-step.blocked{background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.05));border:1px solid rgba(239,68,68,0.4);}
+        .next-step.info{background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(59,130,246,0.05));border:1px solid rgba(59,130,246,0.4);}
+        .next-step-icon{font-size:1.5rem;}
+        .next-step-body{flex:1;}
+        .next-step-title{font-size:1rem;font-weight:700;color:#fff;margin-bottom:0.15rem;}
+        .next-step-desc{font-size:0.85rem;color:#CBD5E1;}
+        .next-step-actions{display:flex;gap:0.5rem;flex-shrink:0;}
 
-        .deadline{font-size:0.75rem;font-weight:600;}
-        .deadline.urgent{color:#EF4444;}
-        .deadline.soon{color:#F59E0B;}
-        .deadline.ok{color:#94A3B8;}
+        /* Recommended additions */
+        .rec-adds{margin-top:0.75rem;padding:0.9rem 1rem;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.3);border-radius:8px;}
+        .rec-adds h4{font-size:0.8rem;font-weight:700;color:#C4B5FD;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.4rem;}
+        .rec-add-item{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.85rem;}
+        .rec-add-item:last-child{border:none;}
+        .rec-add-info{flex:1;color:#E2E8F0;}
+        .rec-add-qty{background:#A78BFA;color:#0F172A;padding:2px 8px;border-radius:4px;font-weight:700;margin-right:0.6rem;font-size:0.75rem;}
+        .rec-add-reason{display:block;font-size:0.75rem;color:#94A3B8;margin-top:0.15rem;}
+
+        /* Keyed notes */
+        .keyed-notes-table{width:100%;border-collapse:collapse;font-size:0.8rem;}
+        .keyed-notes-table th{text-align:left;padding:6px 8px;color:#64748B;font-size:0.7rem;text-transform:uppercase;border-bottom:1px solid #334155;}
+        .keyed-notes-table td{padding:6px 8px;border-bottom:1px solid #1a2034;vertical-align:top;}
+        .keyed-notes-table .note-text{color:#CBD5E1;line-height:1.4;}
+        .keyed-notes-table .extracted{font-family:monospace;color:#10B981;font-size:0.75rem;}
+
+        /* Activity timeline */
+        .activity-list{max-height:320px;overflow-y:auto;background:#0F172A;border:1px solid #1E293B;border-radius:8px;padding:0.75rem;}
+        .activity-item{display:flex;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid #1a2034;}
+        .activity-item:last-child{border:none;}
+        .activity-dot{width:8px;height:8px;border-radius:50%;background:#475569;margin-top:6px;flex-shrink:0;}
+        .activity-dot.won{background:#10B981;}
+        .activity-dot.sent{background:#5EEAD4;}
+        .activity-dot.lost{background:#F87171;}
+        .activity-content{flex:1;}
+        .activity-action{font-size:0.85rem;color:#E2E8F0;}
+        .activity-meta{font-size:0.72rem;color:#64748B;margin-top:0.15rem;}
 
         /* Modal */
-        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;overflow-y:auto;padding:2rem;}
-        .modal{background:#1E293B;border:1px solid #334155;border-radius:16px;max-width:1000px;margin:0 auto;padding:2rem;}
-        .modal h2{font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:1.5rem;}
-        .modal-section{margin-bottom:1.5rem;}
-        .modal-section h3{font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;color:#64748B;margin-bottom:0.75rem;}
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;overflow-y:auto;padding:2rem;}
+        .modal-overlay.show{display:block;}
+        .modal{background:#1E293B;border:1px solid #334155;border-radius:16px;max-width:1100px;margin:0 auto;padding:1.75rem;}
+        .modal h2{font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:0.25rem;}
+        .modal-subtitle{font-size:0.85rem;color:#94A3B8;margin-bottom:1.25rem;}
+        .modal-section{margin-bottom:1.4rem;}
+        .modal-section h3{font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;color:#64748B;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.4rem;}
         .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
         .modal-field{margin-bottom:0.75rem;}
-        .modal-field label{display:block;font-size:0.75rem;color:#64748B;margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.5px;}
+        .modal-field label{display:block;font-size:0.72rem;color:#64748B;margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.5px;}
         .modal-field input,.modal-field select,.modal-field textarea{width:100%;padding:0.5rem 0.75rem;border:1px solid #475569;border-radius:6px;background:#0F172A;color:#E2E8F0;font-family:inherit;font-size:0.9rem;}
         .modal-field textarea{min-height:80px;resize:vertical;}
 
-        .items-table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-bottom:1rem;}
-        .items-table th{text-align:left;padding:8px;color:#64748B;font-size:0.75rem;text-transform:uppercase;border-bottom:1px solid #334155;}
-        .items-table td{padding:8px;border-bottom:1px solid #1E293B;}
-        .items-table tr:hover{background:#0F172A20;}
+        /* Review/device table */
+        .review-table,.items-table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-bottom:1rem;}
+        .review-table th,.items-table th{text-align:left;padding:8px;color:#64748B;font-size:0.7rem;text-transform:uppercase;border-bottom:1px solid #334155;}
+        .review-table td,.items-table td{padding:8px;border-bottom:1px solid #1a2034;}
+        .review-table input[type=number]{width:70px;padding:4px 6px;border:1px solid #475569;border-radius:4px;background:#0F172A;color:#E2E8F0;font-family:inherit;font-size:0.9rem;text-align:center;}
+        .items-table tr:hover{background:rgba(15,23,42,0.3);}
         .items-table .cat-row{background:#0F172A;font-weight:700;color:#F59E0B;}
-        .items-table .total-row{font-weight:700;color:#10B981;}
 
-        .quote-preview{background:#fff;color:#1E293B;border-radius:8px;padding:2rem;max-height:600px;overflow-y:auto;}
+        .source-badge{padding:2px 6px;border-radius:3px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;}
+        .source-schedule{background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.3);}
+        .source-floor{background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);}
+        .source-estimate{background:rgba(239,68,68,0.15);color:#F87171;border:1px solid rgba(239,68,68,0.3);}
+        .source-reviewed{background:rgba(59,130,246,0.15);color:#60A5FA;border:1px solid rgba(59,130,246,0.3);}
+        .source-drawing_audit{background:rgba(167,139,250,0.15);color:#A78BFA;border:1px solid rgba(167,139,250,0.3);}
+        .source-tier_minimum_default{background:rgba(100,116,139,0.15);color:#94A3B8;border:1px solid rgba(100,116,139,0.3);}
 
-        .actions-bar{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #334155;}
+        .classification-summary{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:0.7rem 1rem;font-size:0.8rem;color:#94A3B8;margin-bottom:1rem;line-height:1.6;}
 
-        /* Password */
+        .actions-bar{display:flex;gap:0.6rem;justify-content:flex-end;flex-wrap:wrap;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #334155;}
+
+        /* Password gate */
         .pw-gate{display:flex;align-items:center;justify-content:center;min-height:100vh;}
         .pw-box{background:#1E293B;border:1px solid #334155;border-radius:16px;padding:2.5rem;text-align:center;max-width:360px;width:100%;}
         .pw-box h2{color:#fff;font-size:1.2rem;margin-bottom:0.5rem;}
@@ -173,12 +232,32 @@
         .pw-box input{width:100%;padding:0.75rem;border:1px solid #475569;border-radius:8px;background:#0F172A;color:#fff;font-size:1rem;text-align:center;}
         .pw-box button{margin-top:1rem;width:100%;padding:0.75rem;background:#F59E0B;color:#0F172A;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.95rem;}
         .pw-error{color:#EF4444;font-size:0.85rem;margin-top:0.75rem;display:none;}
-        .hidden{display:none;}
+        .hidden{display:none !important;}
 
-        @media(max-width:768px){
+        /* Toast notifications */
+        .toast-container{position:fixed;top:1rem;right:1rem;z-index:1000;display:flex;flex-direction:column;gap:0.5rem;max-width:380px;}
+        .toast{padding:0.8rem 1rem;border-radius:8px;font-size:0.85rem;color:#fff;display:flex;align-items:center;gap:0.6rem;animation:slideIn 0.3s ease-out;max-width:380px;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+        .toast.success{background:#065F46;border:1px solid #10B981;}
+        .toast.error{background:#7F1D1D;border:1px solid #EF4444;}
+        .toast.info{background:#1E3A5F;border:1px solid #3B82F6;}
+        .toast.warn{background:#78350F;border:1px solid #F59E0B;}
+        .toast-close{background:none;border:none;color:#fff;cursor:pointer;font-size:1.2rem;opacity:0.7;}
+        .toast-close:hover{opacity:1;}
+        @keyframes slideIn{from{transform:translateX(400px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+        /* Loading spinner */
+        .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;}
+        @keyframes spin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+
+        @media(max-width:900px){
+            .stats-row{grid-template-columns:repeat(3,1fr);}
+        }
+        @media(max-width:600px){
             .stats-row{grid-template-columns:repeat(2,1fr);}
             .modal-grid{grid-template-columns:1fr;}
             .bid-top{flex-direction:column;gap:0.5rem;}
+            .next-step{flex-direction:column;align-items:flex-start;}
+            .container{padding:1rem;}
         }
     </style>
 </head>
@@ -201,52 +280,87 @@
         </div>
         <div class="header-right">
             <span id="bidCount"></span>
-            <button class="btn btn-primary" onclick="openBlueprintUpload()">📄 New Bid from Blueprint</button>
-            <button class="btn btn-amber" onclick="openNewBid()">+ New Bid</button>
-            <button class="btn btn-outline" onclick="loadBids()">Refresh</button>
+            <button class="btn btn-primary" onclick="openBlueprintUpload()">+ Blueprint</button>
+            <button class="btn btn-amber" onclick="openNewBid()">+ Manual Bid</button>
+            <button class="btn btn-outline" onclick="loadBids()">↻ Refresh</button>
         </div>
     </header>
 
     <div class="container">
+        <!-- Stats -->
         <div class="stats-row">
-            <div class="stat"><div class="stat-label">Pipeline</div><div class="stat-val blue" id="sPipeline">-</div></div>
-            <div class="stat"><div class="stat-label">Quotes Ready</div><div class="stat-val amber" id="sReady">-</div></div>
-            <div class="stat"><div class="stat-label">Submitted</div><div class="stat-val purple" id="sSubmitted">-</div></div>
-            <div class="stat"><div class="stat-label">Won</div><div class="stat-val green" id="sWon">-</div></div>
-            <div class="stat"><div class="stat-label">Total Revenue</div><div class="stat-val green" id="sRevenue">-</div></div>
-            <div class="stat"><div class="stat-label">Stromation 5%</div><div class="stat-val amber" id="sCommission">-</div></div>
+            <div class="stat" onclick="filterBids('__attention',this,true)" data-filter-key="__attention">
+                <div class="stat-label">Needs Attention</div>
+                <div class="stat-val pink" id="sAttention">-</div>
+            </div>
+            <div class="stat" onclick="filterBids('analyzing',this,true)" data-filter-key="analyzing">
+                <div class="stat-label">Analyzing</div>
+                <div class="stat-val purple" id="sAnalyzing">-</div>
+            </div>
+            <div class="stat" onclick="filterBids('pending_review',this,true)" data-filter-key="pending_review">
+                <div class="stat-label">Pending Review</div>
+                <div class="stat-val amber" id="sPending">-</div>
+            </div>
+            <div class="stat" onclick="filterBids('quote_ready',this,true)" data-filter-key="quote_ready">
+                <div class="stat-label">Ready to Send</div>
+                <div class="stat-val blue" id="sReady">-</div>
+            </div>
+            <div class="stat" onclick="filterBids('won',this,true)" data-filter-key="won">
+                <div class="stat-label">Won</div>
+                <div class="stat-val green" id="sWon">-</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Pipeline Value</div>
+                <div class="stat-val green" id="sRevenue">-</div>
+            </div>
         </div>
 
-        <div class="tabs" style="justify-content:space-between;align-items:center;">
-            <div style="display:flex;gap:0.5rem;">
-                <div class="tab active" onclick="filterBids('all',this)">All</div>
-                <div class="tab" onclick="filterBids('new',this)">New</div>
-                <div class="tab" onclick="filterBids('analyzing',this)">Analyzing</div>
-                <div class="tab" onclick="filterBids('pending_review',this)">Pending Review</div>
-                <div class="tab" onclick="filterBids('quote_ready',this)">Quotes Ready</div>
-                <div class="tab" onclick="filterBids('quote_sent',this)">Sent</div>
-                <div class="tab" onclick="filterBids('submitted',this)">Submitted</div>
-                <div class="tab" onclick="filterBids('won',this)">Won</div>
-                <div class="tab" onclick="filterBids('lost',this)">Lost</div>
+        <!-- Hot Bids -->
+        <div id="hotSection" class="hidden" style="margin-bottom:1.25rem;">
+            <h3 style="font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;color:#F59E0B;margin-bottom:0.5rem;">🔥 Hot — Needs Your Attention</h3>
+            <div id="hotList"></div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="tabs" id="tabs">
+                <div class="tab active" onclick="filterBids('all',this)">All <span class="tab-count" id="tc_all"></span></div>
+                <div class="tab" onclick="filterBids('new',this)">New <span class="tab-count" id="tc_new"></span></div>
+                <div class="tab" onclick="filterBids('analyzing',this)">Analyzing <span class="tab-count" id="tc_analyzing"></span></div>
+                <div class="tab" onclick="filterBids('pending_review',this)">Pending Review <span class="tab-count" id="tc_pending_review"></span></div>
+                <div class="tab" onclick="filterBids('quote_ready',this)">Ready to Send <span class="tab-count" id="tc_quote_ready"></span></div>
+                <div class="tab" onclick="filterBids('quote_sent',this)">Sent <span class="tab-count" id="tc_quote_sent"></span></div>
+                <div class="tab" onclick="filterBids('won',this)">Won <span class="tab-count" id="tc_won"></span></div>
+                <div class="tab" onclick="filterBids('lost',this)">Lost <span class="tab-count" id="tc_lost"></span></div>
+                <div class="tab" onclick="filterBids('no_bid',this)">No Bid <span class="tab-count" id="tc_no_bid"></span></div>
             </div>
-            <select onchange="sortBids(this.value)" style="padding:0.4rem 0.75rem;border:1px solid #475569;border-radius:6px;background:#0F172A;color:#E2E8F0;font-family:inherit;font-size:0.8rem;cursor:pointer;">
-                <option value="created_at">Newest First</option>
-                <option value="bid_deadline">Bid Due Date</option>
-                <option value="total_bid">Highest Value</option>
-                <option value="project_name">Name A-Z</option>
-            </select>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+                <input type="text" placeholder="Search..." id="searchBox" oninput="renderBids()" style="padding:0.4rem 0.75rem;border:1px solid #475569;border-radius:6px;background:#0F172A;color:#E2E8F0;font-family:inherit;font-size:0.8rem;width:180px;">
+                <select class="tbe-select" onchange="sortBids(this.value)">
+                    <option value="created_at">Newest First</option>
+                    <option value="bid_deadline">Deadline (Soonest)</option>
+                    <option value="total_bid">Highest Value</option>
+                    <option value="project_name">Name A-Z</option>
+                </select>
+            </div>
         </div>
 
         <div id="bidList"></div>
     </div>
 </div>
 
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
 <!-- Bid Detail Modal -->
 <div class="modal-overlay" id="bidModal">
     <div class="modal">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-            <h2 id="modalTitle">Bid Details</h2>
-            <button class="btn btn-outline" onclick="closeModal()">Close</button>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;gap:1rem;">
+            <div style="flex:1;">
+                <h2 id="modalTitle">Bid Details</h2>
+                <div class="modal-subtitle" id="modalSubtitle"></div>
+            </div>
+            <button class="btn btn-outline" onclick="closeModal()">✕ Close</button>
         </div>
         <div id="modalContent"></div>
     </div>
@@ -255,16 +369,16 @@
 <!-- Blueprint Upload Modal -->
 <div class="modal-overlay" id="blueprintModal">
     <div class="modal" style="max-width:700px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
             <h2>New Bid from Blueprint</h2>
-            <button class="btn btn-outline" onclick="document.getElementById('blueprintModal').style.display='none'">Close</button>
+            <button class="btn btn-outline" onclick="document.getElementById('blueprintModal').classList.remove('show')">Close</button>
         </div>
         <form id="blueprintForm" onsubmit="submitBlueprint(event)">
             <div class="modal-field" style="margin-bottom:1.25rem;">
                 <label>Blueprint PDF *</label>
-                <div style="border:2px dashed #475569;border-radius:8px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;" id="dropZone" onclick="document.getElementById('bp_file').click()">
+                <div style="border:2px dashed #475569;border-radius:8px;padding:2rem;text-align:center;cursor:pointer;" id="dropZone" onclick="document.getElementById('bp_file').click()">
                     <div style="font-size:2rem;margin-bottom:0.5rem;">📄</div>
-                    <div style="color:#94A3B8;font-size:0.9rem;" id="dropLabel">Click to select or drag & drop a PDF</div>
+                    <div style="color:#94A3B8;font-size:0.9rem;" id="dropLabel">Click to select or drag &amp; drop a PDF</div>
                     <input type="file" id="bp_file" accept=".pdf,application/pdf" required style="display:none" onchange="handleFileSelect(this)">
                 </div>
             </div>
@@ -276,67 +390,74 @@
                 <div class="modal-field"><label>Bid Deadline</label><input id="bp_deadline" type="datetime-local"></div>
                 <div class="modal-field"><label>Source</label><select id="bp_source"><option value="constructconnect">ConstructConnect</option><option value="manual">Manual</option><option value="referral">Referral</option><option value="other">Other</option></select></div>
             </div>
-            <div id="blueprintStatus" style="display:none;margin-top:1rem;padding:1rem;border-radius:8px;background:#0F172A;border:1px solid #334155;">
+            <div id="blueprintStatus" class="hidden" style="margin-top:1rem;padding:1rem;border-radius:8px;background:#0F172A;border:1px solid #334155;">
                 <div style="display:flex;align-items:center;gap:0.75rem;">
-                    <div class="bp-spinner" style="width:20px;height:20px;border:3px solid #334155;border-top:3px solid #F59E0B;border-radius:50%;animation:spin 1s linear infinite;"></div>
+                    <div class="spinner"></div>
                     <span id="blueprintStatusText" style="color:#F59E0B;font-weight:600;">Analyzing blueprint with AI...</span>
                 </div>
             </div>
-            <div id="blueprintResults" style="display:none;margin-top:1rem;"></div>
+            <div id="blueprintResults" class="hidden" style="margin-top:1rem;"></div>
             <div class="actions-bar">
                 <button type="submit" class="btn btn-primary" id="bpSubmitBtn">Analyze & Generate Quote</button>
             </div>
         </form>
     </div>
 </div>
-<style>
-    @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-    #dropZone.drag-over{border-color:#F59E0B;background:rgba(245,158,11,0.05);}
-    .bp-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.75rem;}
-    .bp-result-card{background:#1E293B;border:1px solid #334155;border-radius:8px;padding:0.75rem;}
-    .bp-result-card h4{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:#64748B;margin-bottom:0.5rem;}
-    .bp-device-row{display:flex;justify-content:space-between;padding:2px 0;font-size:0.85rem;}
-    .bp-device-row .count{font-weight:700;color:#F59E0B;}
-</style>
 
 <!-- New Bid Modal -->
 <div class="modal-overlay" id="newBidModal">
     <div class="modal" style="max-width:700px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-            <h2>Submit New Bid for Auto-Quote</h2>
-            <button class="btn btn-outline" onclick="document.getElementById('newBidModal').style.display='none'">Close</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+            <h2>New Manual Bid</h2>
+            <button class="btn btn-outline" onclick="document.getElementById('newBidModal').classList.remove('show')">Close</button>
         </div>
+        <p style="color:#94A3B8;font-size:0.85rem;margin-bottom:1rem;">Create a bid row for a project where blueprints will be uploaded later. Status starts as "Awaiting Blueprints".</p>
         <form onsubmit="submitNewBid(event)">
             <div class="modal-grid">
                 <div class="modal-field"><label>Project Name *</label><input id="nb_name" required></div>
-                <div class="modal-field"><label>Building Type</label><input id="nb_type" placeholder="Office, Medical, School, Warehouse..."></div>
+                <div class="modal-field"><label>Building Type</label><input id="nb_type" placeholder="restaurant, retail, office, etc."></div>
                 <div class="modal-field"><label>Square Footage</label><input id="nb_sqft" type="number"></div>
-                <div class="modal-field"><label>Floors</label><input id="nb_floors" type="number" value="1"></div>
-                <div class="modal-field"><label>Location</label><input id="nb_location" value="DFW, TX"></div>
                 <div class="modal-field"><label>City</label><input id="nb_city"></div>
                 <div class="modal-field"><label>General Contractor</label><input id="nb_gc"></div>
                 <div class="modal-field"><label>GC Email</label><input id="nb_gc_email" type="email"></div>
-                <div class="modal-field"><label>GC Phone</label><input id="nb_gc_phone"></div>
-                <div class="modal-field"><label>Architect</label><input id="nb_architect"></div>
                 <div class="modal-field"><label>Bid Deadline</label><input id="nb_deadline" type="datetime-local"></div>
-                <div class="modal-field"><label>Source</label><select id="nb_source"><option value="manual">Manual Entry</option><option value="planhub">PlanHub</option><option value="constructconnect">ConstructConnect</option><option value="sam_gov">SAM.gov</option><option value="referral">Referral</option></select></div>
+                <div class="modal-field"><label>Source</label><select id="nb_source"><option value="manual">Manual Entry</option><option value="planhub">PlanHub</option><option value="constructconnect">ConstructConnect</option><option value="referral">Referral</option></select></div>
             </div>
-            <div class="modal-field"><label>Project Description / Scope Notes</label><textarea id="nb_desc" placeholder="Describe the Division 27 scope... structured cabling, fire alarm, security, AV, etc."></textarea></div>
+            <div class="modal-field"><label>Notes</label><textarea id="nb_desc" placeholder="Scope hints, special conditions, etc."></textarea></div>
             <div class="actions-bar">
-                <button type="submit" class="btn btn-amber" id="nbSubmitBtn">Generate Auto-Quote</button>
+                <button type="submit" class="btn btn-amber" id="nbSubmitBtn">Create Bid</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+// ============================================================
+// CONFIG
+// ============================================================
 var SB='https://iadzcnzgbtuigyodeqas.supabase.co';
 var SK='sb_publishable_8qa-nssfdtEkCz-42wOSWQ_2P7S4Zj7';
 var H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'};
+var N8N='https://n8n.myaibuffet.com';
+var WEBHOOKS={
+    download: N8N+'/webhook/tbe-download-plans',       // WF2
+    bid:      N8N+'/webhook/tbe-bid',                  // WF4
+    send:     N8N+'/webhook/tbe-send-quote',           // WF5
+    verify:   N8N+'/webhook/tbe-verify',               // WF6
+    arbitrate:N8N+'/webhook/tbe-arbitrate',            // WF7
+    spec:     N8N+'/webhook/tbe-extract-specs',        // WF8
+    audit:    N8N+'/webhook/tbe-audit-drawings',       // WF9
+    blueprint:N8N+'/webhook/tbe-blueprint'             // WF3 (legacy blueprint upload)
+};
+
 var allBids=[];
 var currentFilter='all';
 var currentSort='created_at';
+var _refreshTimer=null;
 
+// ============================================================
+// AUTH
+// ============================================================
 function checkPw(){
     if(document.getElementById('pwInput').value==='Kyomi123'){
         sessionStorage.setItem('tbe_auth','1');
@@ -353,9 +474,119 @@ if(sessionStorage.getItem('tbe_auth')==='1'){
     loadBids();
 }
 
+// ============================================================
+// HELPERS
+// ============================================================
 function fmtMoney(n){return '$'+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});}
 function fmtDate(d){if(!d)return'-';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function fmtDateTime(d){if(!d)return'-';return new Date(d).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}
+function esc(s){return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
+function toast(msg,kind){
+    kind = kind || 'info';
+    var c = document.getElementById('toastContainer');
+    var el = document.createElement('div');
+    el.className = 'toast '+kind;
+    el.innerHTML = '<span style="flex:1;">'+esc(msg)+'</span><button class="toast-close" onclick="this.parentNode.remove()">✕</button>';
+    c.appendChild(el);
+    setTimeout(function(){if(el.parentNode)el.remove();}, kind==='error' ? 10000 : 5000);
+}
+
+function deadlineInfo(d){
+    if(!d)return{text:'No deadline',cls:'ok',days:Infinity};
+    var diff=Math.floor((new Date(d)-new Date())/(86400000));
+    if(diff<0)return{text:'EXPIRED',cls:'urgent',days:diff};
+    if(diff===0)return{text:'DUE TODAY',cls:'urgent',days:0};
+    if(diff<=3)return{text:diff+'d left',cls:'urgent',days:diff};
+    if(diff<=7)return{text:diff+'d left',cls:'soon',days:diff};
+    return{text:diff+'d left',cls:'ok',days:diff};
+}
+
+function statusLabel(s){
+    var labels={'new':'New','awaiting_blueprints':'Awaiting Blueprints','reviewing':'Reviewing','estimating':'Estimating','analyzing':'Analyzing','pending_review':'Pending Review','quote_ready':'Ready to Send','quote_sent':'Sent','submitted':'Submitted','won':'Won','lost':'Lost','no_bid':'No Bid','expired':'Expired'};
+    return labels[s]||s;
+}
+function statusTag(s){return '<span class="status-badge status-'+s+'">'+statusLabel(s)+'</span>';}
+
+function needsAttention(b){
+    // Bids that want Darius's eyes
+    if(b.status==='new') return true;
+    if(b.status==='awaiting_blueprints') return true;
+    if(b.status==='pending_review') return true;
+    if(b.status==='quote_ready') return true;
+    // Expired but not marked
+    if(b.bid_deadline){
+        var days = Math.floor((new Date(b.bid_deadline)-new Date())/86400000);
+        if(days<0 && b.status!=='lost' && b.status!=='won' && b.status!=='no_bid' && b.status!=='expired') return true;
+    }
+    return false;
+}
+
+// ============================================================
+// NEXT-STEP DECIDER
+// ============================================================
+function decideNextStep(b){
+    // Returns { kind, title, desc, actions: [{label, fn, btnClass}] }
+    if(b.status==='won'){
+        return {kind:'ready', icon:'🏆', title:'WON — $'+(b.won_amount||b.total_bid||0).toLocaleString(), desc:'Stromation commission: '+fmtMoney((b.won_amount||b.total_bid||0)*0.05)+'. Nothing more to do here.', actions:[]};
+    }
+    if(b.status==='lost' || b.status==='no_bid' || b.status==='expired'){
+        return {kind:'info', icon:'📁', title:statusLabel(b.status), desc:'Archived. No action needed.', actions:[]};
+    }
+    if(b.status==='analyzing'){
+        return {kind:'info', icon:'🔄', title:'Pipeline running', desc:'Claude is analyzing blueprints. Status will auto-update when done. Usually 60-180s for direct upload, 5-15 min for PlanHub.', actions:[]};
+    }
+    if(b.status==='awaiting_blueprints' || b.status==='new'){
+        return {kind:'action-required', icon:'📄', title:'Need blueprints', desc:'Upload drawings to run the audit, or paste a PlanHub project URL to re-scan.',
+            actions:[
+                {label:'Upload Drawing PDF', fn:"auditDrawings('"+b.id+"')", btnClass:'btn-amber'},
+                {label:'Upload Spec PDF', fn:"uploadSpec('"+b.id+"')", btnClass:'btn-outline'},
+                {label:'Re-scan PlanHub', fn:"rescanBlueprints('"+b.id+"')", btnClass:'btn-outline'}
+            ]};
+    }
+    if(b.status==='quote_sent' || b.status==='submitted'){
+        return {kind:'info', icon:'📤', title:'Sent to Antonio', desc:'Waiting on bid outcome. Mark Won or Lost when you hear back.',
+            actions:[
+                {label:'Mark Won', fn:"updateBidStatus('"+b.id+"','won')", btnClass:'btn-green'},
+                {label:'Mark Lost', fn:"updateBidStatus('"+b.id+"','lost')", btnClass:'btn-red'}
+            ]};
+    }
+    if(b.status==='pending_review'){
+        var phases = b.pipeline_phases || {};
+        var gv = phases.gemini_verify || {};
+        var verdict = gv.verdict || '';
+        var sugCount = Object.keys(gv.suggestions||{}).length;
+        var recAdds = ((b.spec_data||{}).recommended_additions)||[];
+        var desc = phases.pending_review && phases.pending_review.detail
+            ? phases.pending_review.detail
+            : 'Gemini or heuristics flagged this bid for human review before sending.';
+        var actions = [];
+        if(verdict==='clearly_wrong' || verdict==='suspicious'){
+            if(sugCount>0){
+                actions.push({label:'Rebid with Gemini\'s '+sugCount+' fixes', fn:"rebidWithGemini('"+b.id+"')", btnClass:'btn-blue'});
+            }
+        }
+        if(recAdds.length>0){
+            actions.push({label:'Accept '+recAdds.length+' Recommended Additions', fn:"acceptRecommendedAdditions('"+b.id+"')", btnClass:'btn-purple'});
+        }
+        actions.push({label:'Re-verify with Gemini', fn:"verifyWithGemini('"+b.id+"')", btnClass:'btn-amber'});
+        actions.push({label:'Send As-Is', fn:"sendQuote('"+b.id+"')", btnClass:'btn-green'});
+        return {kind:'action-required', icon:'⚠️', title:'Review before sending', desc:desc, actions:actions};
+    }
+    if(b.status==='quote_ready'){
+        return {kind:'ready', icon:'✅', title:'Ready to send', desc:'Sanity + Gemini both passed. Click Send to email to Antonio.',
+            actions:[
+                {label:'Send to Antonio', fn:"sendQuote('"+b.id+"')", btnClass:'btn-green'},
+                {label:'Re-verify', fn:"verifyWithGemini('"+b.id+"')", btnClass:'btn-outline'},
+                {label:'Re-audit Drawings', fn:"auditDrawings('"+b.id+"')", btnClass:'btn-outline'}
+            ]};
+    }
+    return {kind:'info', icon:'ℹ️', title:statusLabel(b.status), desc:'No specific next step defined.', actions:[]};
+}
+
+// ============================================================
+// PIPELINE STEPPER
+// ============================================================
 var PHASE_LABELS=[
     ['download','Download'],
     ['classify','Classify'],
@@ -375,18 +606,16 @@ function renderPhases(phases,detailed){
         var k=p[0],label=p[1];
         var ph=phases[k]||{status:'not_started'};
         var status=ph.status||'not_started';
-        // For gemini_verify, map verdict onto the step color so "complete + clearly_wrong" isn't green
         if(k==='gemini_verify' && status==='complete' && ph.verdict){
-            if(ph.verdict==='suspicious')     status='flagged';
+            if(ph.verdict==='suspicious') status='flagged';
             else if(ph.verdict==='clearly_wrong') status='failed';
-            // looks_right stays 'complete' (green)
         }
-        var titleAttr=ph.detail?('title="'+String(ph.detail).replace(/"/g,'&quot;')+'"'):'';
+        var titleAttr=ph.detail?('title="'+esc(ph.detail)+'"'):'';
         html+='<div class="step '+status+'" '+titleAttr+'>';
         html+='<span class="step-dot"></span>';
         html+='<span class="step-label">'+label+'</span>';
         if(detailed && ph.detail){
-            html+='<span class="step-detail">'+String(ph.detail).replace(/</g,'&lt;')+'</span>';
+            html+='<span class="step-detail">'+esc(ph.detail)+'</span>';
         }
         html+='</div>';
     });
@@ -396,205 +625,252 @@ function renderPhases(phases,detailed){
 function renderVerifyBlock(phases){
     if(!phases||!phases.gemini_verify)return '';
     var gv=phases.gemini_verify;
+    if(gv.status!=='complete' && gv.status!=='failed')return '';
     var verdict=gv.verdict||'looks_right';
     var conf=gv.confidence||0;
     var issues=gv.issues||[];
-    var method=gv.method||'unknown';
+    var method=gv.method||'gemini';
     var html='<div class="verify-block verify-'+verdict+'">';
-    html+='<strong>Verify: '+verdict.replace(/_/g,' ')+' ('+conf+'% confidence, '+method+')</strong>';
+    html+='<strong>Gemini: '+verdict.replace(/_/g,' ')+' ('+conf+'% confidence)</strong>';
     if(issues.length){
         html+='<ul style="margin:6px 0 0 18px;">';
-        issues.forEach(function(i){html+='<li>'+String(i).replace(/</g,'&lt;')+'</li>';});
+        issues.forEach(function(i){html+='<li>'+esc(i)+'</li>';});
         html+='</ul>';
     }
     html+='</div>';
     return html;
 }
 
-function deadlineInfo(d){
-    if(!d)return{text:'No deadline',cls:'ok'};
-    var diff=Math.floor((new Date(d)-new Date())/(86400000));
-    if(diff<0)return{text:'EXPIRED',cls:'urgent'};
-    if(diff===0)return{text:'DUE TODAY',cls:'urgent'};
-    if(diff<=3)return{text:diff+'d left',cls:'urgent'};
-    if(diff<=7)return{text:diff+'d left',cls:'soon'};
-    return{text:diff+'d left',cls:'ok'};
-}
-
-function statusTag(s){
-    var labels={'new':'New','awaiting_blueprints':'Ready for Analysis','reviewing':'Reviewing','estimating':'Estimating','analyzing':'Analysis in Progress','pending_review':'Pending Review','quote_ready':'Quote Ready','quote_sent':'Quote Sent','submitted':'Submitted','won':'Won','lost':'Lost','no_bid':'No Bid','expired':'Expired'};
-    return '<span class="status-badge status-'+s+'">'+(labels[s]||s)+'</span>';
-}
-
-var _analyzeRefreshTimer=null;
+// ============================================================
+// DATA LOAD
+// ============================================================
 async function loadBids(){
     try{
         var r=await fetch(SB+'/rest/v1/tbe_bids?select=*&order=created_at.desc',{headers:H});
         allBids=await r.json();
         updateStats();
+        updateTabCounts();
+        renderHot();
         renderBids();
         document.getElementById('bidCount').textContent=allBids.length+' bids';
-        // Auto-refresh: every 15s if analyzing, every 60s otherwise
-        var hasAnalyzing=allBids.some(function(b){return b.status==='analyzing'||b.status==='pending_review';});
-        if(_analyzeRefreshTimer) clearInterval(_analyzeRefreshTimer);
-        _analyzeRefreshTimer=setInterval(function(){loadBids();}, hasAnalyzing ? 15000 : 60000);
-    }catch(e){console.error(e);}
+        var hasActive=allBids.some(function(b){return b.status==='analyzing';});
+        if(_refreshTimer) clearInterval(_refreshTimer);
+        _refreshTimer=setInterval(loadBids, hasActive ? 15000 : 60000);
+    }catch(e){
+        console.error(e);
+        toast('Failed to load bids: '+e.message,'error');
+    }
 }
 
 function updateStats(){
-    var active=['new','reviewing','estimating','analyzing','quote_ready','quote_sent','submitted'];
-    document.getElementById('sPipeline').textContent=allBids.filter(function(b){return active.indexOf(b.status)!==-1;}).length;
-    document.getElementById('sReady').textContent=allBids.filter(function(b){return b.status==='quote_ready';}).length;
-    document.getElementById('sSubmitted').textContent=allBids.filter(function(b){return b.status==='submitted'||b.status==='quote_sent';}).length;
-    document.getElementById('sWon').textContent=allBids.filter(function(b){return b.status==='won';}).length;
-    var rev=allBids.filter(function(b){return b.status==='won';}).reduce(function(s,b){return s+(b.won_amount||b.total_bid||0);},0);
-    document.getElementById('sRevenue').textContent=fmtMoney(rev);
-    document.getElementById('sCommission').textContent=fmtMoney(rev*0.05);
+    var attention = allBids.filter(needsAttention).length;
+    document.getElementById('sAttention').textContent = attention;
+    document.getElementById('sAnalyzing').textContent = allBids.filter(function(b){return b.status==='analyzing';}).length;
+    document.getElementById('sPending').textContent   = allBids.filter(function(b){return b.status==='pending_review';}).length;
+    document.getElementById('sReady').textContent     = allBids.filter(function(b){return b.status==='quote_ready';}).length;
+    document.getElementById('sWon').textContent       = allBids.filter(function(b){return b.status==='won';}).length;
+    var pipe = allBids.filter(function(b){return ['new','awaiting_blueprints','analyzing','pending_review','quote_ready','quote_sent','submitted'].indexOf(b.status)!==-1;})
+                     .reduce(function(s,b){return s+(b.total_bid||0);},0);
+    document.getElementById('sRevenue').textContent = fmtMoney(pipe);
 }
 
-function filterBids(f,el){
+function updateTabCounts(){
+    document.getElementById('tc_all').textContent = '('+allBids.length+')';
+    ['new','analyzing','pending_review','quote_ready','quote_sent','won','lost','no_bid'].forEach(function(s){
+        var el = document.getElementById('tc_'+s);
+        if(el) el.textContent = '('+allBids.filter(function(b){return b.status===s;}).length+')';
+    });
+}
+
+function renderHot(){
+    var hot = allBids.filter(needsAttention).slice(0,3);
+    var sec = document.getElementById('hotSection');
+    var list = document.getElementById('hotList');
+    if(hot.length===0){
+        sec.classList.add('hidden');
+        return;
+    }
+    sec.classList.remove('hidden');
+    list.innerHTML = hot.map(function(b){return bidCardHtml(b,true);}).join('');
+}
+
+function filterBids(f,el,alsoStats){
     currentFilter=f;
     document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-    if(el)el.classList.add('active');
+    document.querySelectorAll('.stat').forEach(function(s){s.classList.remove('active');});
+    if(alsoStats && el){ el.classList.add('active'); }
+    else if(el){ el.classList.add('active'); }
+    else {
+        var tab = document.querySelector('.tab[onclick*="\''+f+'\'"]');
+        if(tab) tab.classList.add('active');
+    }
     renderBids();
 }
-
-function sortBids(s){
-    currentSort=s;
-    renderBids();
-}
+function sortBids(s){currentSort=s;renderBids();}
 
 function renderBids(){
-    var filtered=currentFilter==='all'?allBids:allBids.filter(function(b){return b.status===currentFilter;});
+    var search=(document.getElementById('searchBox').value||'').trim().toLowerCase();
+    var filtered;
+    if(currentFilter==='all') filtered=allBids;
+    else if(currentFilter==='__attention') filtered=allBids.filter(needsAttention);
+    else filtered=allBids.filter(function(b){return b.status===currentFilter;});
+    if(search){
+        filtered=filtered.filter(function(b){
+            return (b.project_name||'').toLowerCase().includes(search)
+                || (b.general_contractor||'').toLowerCase().includes(search)
+                || (b.city||'').toLowerCase().includes(search)
+                || (b.location||'').toLowerCase().includes(search);
+        });
+    }
     filtered=filtered.slice().sort(function(a,b){
         if(currentSort==='bid_deadline'){
             var da=a.bid_deadline?new Date(a.bid_deadline).getTime():Infinity;
             var db=b.bid_deadline?new Date(b.bid_deadline).getTime():Infinity;
             return da-db;
         }
-        if(currentSort==='total_bid'){
-            return (b.total_bid||0)-(a.total_bid||0);
-        }
-        if(currentSort==='project_name'){
-            return (a.project_name||'').localeCompare(b.project_name||'');
-        }
-        // default: created_at desc
+        if(currentSort==='total_bid') return (b.total_bid||0)-(a.total_bid||0);
+        if(currentSort==='project_name') return (a.project_name||'').localeCompare(b.project_name||'');
         return new Date(b.created_at)-new Date(a.created_at);
     });
     if(filtered.length===0){
-        document.getElementById('bidList').innerHTML='<div style="text-align:center;padding:3rem;color:#64748B;">No bids found</div>';
+        document.getElementById('bidList').innerHTML='<div style="text-align:center;padding:3rem;color:#64748B;">No bids match this filter.</div>';
         return;
     }
-    var html='';
-    filtered.forEach(function(b){
-        var dl=deadlineInfo(b.bid_deadline);
-        var cats=(b.scope_categories||[]).map(function(c){
-            var cls='blue';
-            if(c.indexOf('Fire')!==-1)cls='red';
-            else if(c.indexOf('Security')!==-1||c.indexOf('Access')!==-1)cls='purple';
-            else if(c.indexOf('Audio')!==-1||c.indexOf('Paging')!==-1)cls='amber';
-            return '<span class="tag tag-'+cls+'">'+c+'</span>';
-        }).join('');
-
-        html+='<div class="bid-card'+(b.status==='analyzing'?' bid-card-analyzing':'')+'" onclick="openBid(\''+b.id+'\')">';
-        var estBadge='';
-        if(b.status==='analyzing'){estBadge='<span class="estimate-badge" style="background:rgba(192,132,252,0.15);color:#C084FC;border:1px solid rgba(192,132,252,0.3);">Analyzing...</span>';}
-        else if(b.status==='pending_review'){estBadge='<span class="estimate-badge" style="background:rgba(245,158,11,0.15);color:#FBBF24;border:1px solid rgba(245,158,11,0.3);">Needs Review</span>';}
-        else if(b.estimate_method==='blueprint_claude'||b.estimate_method==='blueprint_scan'){var aDate=b.updated_at?new Date(b.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';estBadge='<span class="estimate-badge estimate-blueprint">Analyzed with Claude'+(aDate?' - '+aDate:'')+'</span>';}
-        else if(b.estimate_method==='blueprint_gemini'){var aDate=b.updated_at?new Date(b.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';estBadge='<span class="estimate-badge estimate-blueprint">Analyzed with Gemini'+(aDate?' - '+aDate:'')+'</span>';}
-        else if(b.estimate_method==='blueprint_gpt'){estBadge='<span class="estimate-badge estimate-blueprint">Analyzed with GPT</span>';}
-        else{estBadge='<span class="estimate-badge estimate-gpt">GPT Estimate</span>';}
-        // Tier badge
-        var tierBadge='';
-        if(b.project_tier){
-            var tBg=b.project_tier==='qsr'?'rgba(34,197,94,0.15)':b.project_tier==='commercial'?'rgba(59,130,246,0.15)':'rgba(168,85,247,0.15)';
-            var tFg=b.project_tier==='qsr'?'#86EFAC':b.project_tier==='commercial'?'#93C5FD':'#D8B4FE';
-            tierBadge='<span class="estimate-badge" style="background:'+tBg+';color:'+tFg+';margin-left:0.4rem;">Tier: '+b.project_tier.toUpperCase()+'</span>';
-        }
-        // Spec source badge
-        var specBadge='';
-        if(b.spec_data && b.spec_data.device_specs && Object.keys(b.spec_data.device_specs).length>0){
-            specBadge='<span class="estimate-badge" style="background:rgba(245,158,11,0.15);color:#FBBF24;margin-left:0.4rem;" title="Specs extracted: '+(b.spec_data.summary||'').replace(/"/g,"&quot;")+'">SPEC ('+Object.keys(b.spec_data.device_specs).length+')</span>';
-        }
-        html+='<div class="bid-top"><div><div class="bid-name">'+b.project_name+estBadge+tierBadge+specBadge+'</div></div><div style="text-align:right;">'+statusTag(b.status)+'<div class="bid-total" style="margin-top:0.5rem;">'+fmtMoney(b.total_bid)+'</div></div></div>';
-        html+='<div class="bid-meta">';
-        if(b.general_contractor)html+='<span>GC: '+b.general_contractor+'</span>';
-        if(b.location)html+='<span>'+b.location+'</span>';
-        if(b.building_type)html+='<span>'+b.building_type+(b.square_footage?' | '+b.square_footage.toLocaleString()+' sqft':'')+'</span>';
-        html+='<span class="deadline '+dl.cls+'">'+dl.text+'</span>';
-        html+='</div>';
-        if(b.scope_summary)html+='<div class="bid-scope">'+b.scope_summary.substring(0,200)+'</div>';
-        if(cats)html+='<div class="bid-tags">'+cats+'</div>';
-        if(b.pipeline_phases)html+=renderPhases(b.pipeline_phases,false);
-
-        // Quick-action row on the card itself (stopPropagation so buttons don't open the modal)
-        var cardGv=(b.pipeline_phases && b.pipeline_phases.gemini_verify && b.pipeline_phases.gemini_verify.status)||'not_started';
-        var cardSpec=(b.pipeline_phases && b.pipeline_phases.spec_extract && b.pipeline_phases.spec_extract.status)||'not_started';
-        var cardHasSpec=b.spec_data && b.spec_data.device_specs && Object.keys(b.spec_data.device_specs).length>0;
-        var cardAudit=(b.pipeline_phases && b.pipeline_phases.drawing_audit && b.pipeline_phases.drawing_audit.status)||'not_started';
-        if(b.status==='quote_ready'||b.status==='pending_review'||b.status==='awaiting_blueprints'){
-            html+='<div class="bid-actions" onclick="event.stopPropagation()">';
-            if(cardAudit==='not_started'||cardAudit==='failed'){
-                html+='<button class="btn-card btn-card-purple" onclick="event.stopPropagation();auditDrawings(\''+b.id+'\')">Audit Drawings</button>';
-            } else if(cardAudit==='complete'){
-                html+='<button class="btn-card btn-card-outline" onclick="event.stopPropagation();auditDrawings(\''+b.id+'\')">Re-audit</button>';
-            }
-            if(!cardHasSpec){
-                html+='<button class="btn-card btn-card-outline" onclick="event.stopPropagation();uploadSpec(\''+b.id+'\')">Upload Spec PDF</button>';
-            } else {
-                html+='<button class="btn-card btn-card-outline" onclick="event.stopPropagation();uploadSpec(\''+b.id+'\')">Re-upload Spec</button>';
-            }
-            if(cardGv==='not_started'||cardGv==='failed'){
-                html+='<button class="btn-card btn-card-amber" onclick="event.stopPropagation();verifyWithGemini(\''+b.id+'\')">Verify with Gemini</button>';
-            } else if(cardGv==='complete'){
-                var gvVerdict=(b.pipeline_phases.gemini_verify.verdict)||'';
-                var gvSugs=(b.pipeline_phases.gemini_verify.suggestions)||{};
-                var gvSugCount=Object.keys(gvSugs).length;
-                var vTone = gvVerdict==='clearly_wrong'?'btn-card-red':gvVerdict==='suspicious'?'btn-card-amber':'btn-card-outline';
-                var vLabel = gvVerdict.split('_').join(' ');
-                html+='<button class="btn-card '+vTone+'" onclick="event.stopPropagation();verifyWithGemini(\''+b.id+'\')">Re-verify ('+vLabel+')</button>';
-                if((gvVerdict==='clearly_wrong'||gvVerdict==='suspicious') && gvSugCount>0){
-                    html+='<button class="btn-card btn-card-blue" id="rebidBtn_'+b.id+'" onclick="event.stopPropagation();rebidWithGemini(\''+b.id+'\')">Rebid with '+gvSugCount+' Gemini fix'+(gvSugCount===1?'':'es')+'</button>';
-                }
-            }
-            if(b.status==='quote_ready'){
-                html+='<button class="btn-card btn-card-green" onclick="event.stopPropagation();sendQuote(\''+b.id+'\')">Send to Antonio</button>';
-            }
-            html+='</div>';
-        }
-        html+='</div>';
-    });
-    document.getElementById('bidList').innerHTML=html;
+    document.getElementById('bidList').innerHTML=filtered.map(function(b){return bidCardHtml(b,false);}).join('');
 }
 
+function bidCardHtml(b,isHot){
+    var dl=deadlineInfo(b.bid_deadline);
+    var hotClass = isHot ? ' hot' : '';
+    var sentClass = (b.status==='quote_sent'||b.status==='submitted') ? ' sent' : '';
+    var analyzingClass = (b.status==='analyzing') ? ' bid-card-analyzing' : '';
+    var cats=(b.scope_categories||[]).slice(0,4).map(function(c){
+        var cls='blue';
+        if(c.indexOf('Fire')!==-1)cls='red';
+        else if(c.indexOf('Security')!==-1||c.indexOf('Access')!==-1)cls='purple';
+        else if(c.indexOf('Audio')!==-1||c.indexOf('Paging')!==-1)cls='amber';
+        return '<span class="tag tag-'+cls+'">'+esc(c)+'</span>';
+    }).join('');
+
+    var estBadge='';
+    if(b.status==='analyzing'){
+        estBadge='<span class="estimate-badge" style="background:rgba(192,132,252,0.15);color:#C084FC;">Analyzing...</span>';
+    } else if(b.status==='pending_review'){
+        estBadge='<span class="estimate-badge" style="background:rgba(245,158,11,0.15);color:#FBBF24;">Needs Review</span>';
+    } else if(b.estimate_method && b.estimate_method.indexOf('blueprint')===0){
+        estBadge='<span class="estimate-badge estimate-blueprint">Blueprint Analyzed</span>';
+    }
+
+    var tierBadge='';
+    if(b.project_tier){
+        var tBg=b.project_tier==='qsr'?'rgba(34,197,94,0.15)':b.project_tier==='commercial'?'rgba(59,130,246,0.15)':'rgba(168,85,247,0.15)';
+        var tFg=b.project_tier==='qsr'?'#86EFAC':b.project_tier==='commercial'?'#93C5FD':'#D8B4FE';
+        tierBadge='<span class="estimate-badge" style="background:'+tBg+';color:'+tFg+';margin-left:0.3rem;">'+b.project_tier.toUpperCase()+'</span>';
+    }
+
+    var specBadge='';
+    if(b.spec_data && b.spec_data.device_specs && Object.keys(b.spec_data.device_specs).length>0){
+        specBadge='<span class="estimate-badge" style="background:rgba(245,158,11,0.15);color:#FBBF24;margin-left:0.3rem;">SPEC</span>';
+    }
+
+    var recAdds = ((b.spec_data||{}).recommended_additions)||[];
+    var recBadge='';
+    if(recAdds.length>0){
+        recBadge='<span class="estimate-badge" style="background:rgba(167,139,250,0.15);color:#C4B5FD;margin-left:0.3rem;">'+recAdds.length+' rec\'d adds</span>';
+    }
+
+    var html='<div class="bid-card'+hotClass+sentClass+analyzingClass+'" onclick="openBid(\''+b.id+'\')">';
+    html+='<div class="bid-top">';
+    html+='<div style="flex:1;min-width:0;"><div class="bid-name">'+esc(b.project_name||'Untitled')+' '+estBadge+tierBadge+specBadge+recBadge+'</div></div>';
+    html+='<div style="text-align:right;white-space:nowrap;">'+statusTag(b.status)+'<div class="bid-total" style="margin-top:0.4rem;">'+fmtMoney(b.total_bid)+'</div></div>';
+    html+='</div>';
+    html+='<div class="bid-meta">';
+    if(b.general_contractor) html+='<span>GC: '+esc(b.general_contractor)+'</span>';
+    if(b.city) html+='<span>'+esc(b.city)+(b.state?', '+esc(b.state):'')+'</span>';
+    else if(b.location) html+='<span>'+esc(b.location)+'</span>';
+    if(b.building_type) html+='<span>'+esc(b.building_type)+(b.square_footage?' • '+Number(b.square_footage).toLocaleString()+' sqft':'')+'</span>';
+    html+='<span class="deadline '+dl.cls+'">'+dl.text+'</span>';
+    html+='</div>';
+    if(b.scope_summary) html+='<div class="bid-scope">'+esc(b.scope_summary.substring(0,180))+(b.scope_summary.length>180?'…':'')+'</div>';
+    if(cats) html+='<div class="bid-tags">'+cats+'</div>';
+    if(b.pipeline_phases) html+=renderPhases(b.pipeline_phases,false);
+
+    // Quick actions on card — unified by next-step logic
+    var ns = decideNextStep(b);
+    if(ns.actions.length>0){
+        html+='<div class="bid-actions" onclick="event.stopPropagation()">';
+        ns.actions.slice(0,3).forEach(function(a){
+            var btnClass = 'btn-card '+(a.btnClass||'btn-card-outline').replace('btn-','btn-card-');
+            // map mainline class -> card class
+            if(a.btnClass==='btn-amber') btnClass='btn-card btn-card-amber';
+            else if(a.btnClass==='btn-green') btnClass='btn-card btn-card-green';
+            else if(a.btnClass==='btn-red') btnClass='btn-card btn-card-red';
+            else if(a.btnClass==='btn-blue') btnClass='btn-card btn-card-blue';
+            else if(a.btnClass==='btn-purple') btnClass='btn-card btn-card-purple';
+            else btnClass='btn-card btn-card-outline';
+            html+='<button class="'+btnClass+'" onclick="event.stopPropagation();'+a.fn+'">'+esc(a.label)+'</button>';
+        });
+        html+='</div>';
+    }
+    html+='</div>';
+    return html;
+}
+
+// ============================================================
+// MODAL: OPEN BID
+// ============================================================
 async function openBid(id){
     var bid=allBids.find(function(b){return b.id===id;});
-    if(!bid)return;
+    if(!bid) return;
 
-    // Fetch line items
-    var itemsResp=await fetch(SB+'/rest/v1/tbe_bid_items?bid_id=eq.'+id+'&select=*&order=sort_order.asc',{headers:H});
-    var items=await itemsResp.json();
+    // Fetch line items + activity log in parallel
+    var [itemsResp, actResp] = await Promise.all([
+        fetch(SB+'/rest/v1/tbe_bid_items?bid_id=eq.'+id+'&select=*&order=sort_order.asc',{headers:H}),
+        fetch(SB+'/rest/v1/tbe_bid_activity?bid_id=eq.'+id+'&select=*&order=created_at.desc&limit=30',{headers:H})
+    ]);
+    var items = await itemsResp.json();
+    var activity = await actResp.json();
 
     var dl=deadlineInfo(bid.bid_deadline);
     var html='';
 
-    // Info grid
-    html+='<div class="modal-grid" style="margin-bottom:1.5rem;">';
-    html+='<div><div class="modal-field"><label>Status</label><select id="editStatus" onchange="updateBidStatus(\''+id+'\',this.value)">';
-    ['new','awaiting_blueprints','analyzing','reviewing','estimating','pending_review','quote_ready','quote_sent','submitted','won','lost','no_bid','expired'].forEach(function(s){
-        html+='<option value="'+s+'"'+(bid.status===s?' selected':'')+'>'+s.replace('_',' ').toUpperCase()+'</option>';
-    });
-    html+='</select></div>';
-    html+='<div class="modal-field"><label>GC</label><div style="color:#fff;">'+( bid.general_contractor||'-')+'</div></div>';
-    html+='<div class="modal-field"><label>GC Email</label><div style="color:#fff;">'+(bid.gc_email||'-')+'</div></div>';
-    html+='<div class="modal-field"><label>Deadline</label><div class="deadline '+dl.cls+'" style="font-size:1rem;">'+fmtDate(bid.bid_deadline)+' ('+dl.text+')</div></div></div>';
-    html+='<div><div class="modal-field"><label>Materials</label><div style="color:#fff;font-size:1.1rem;font-weight:700;">'+fmtMoney(bid.material_cost)+'</div></div>';
-    html+='<div class="modal-field"><label>Labor</label><div style="color:#fff;font-size:1.1rem;font-weight:700;">'+fmtMoney(bid.labor_cost)+'</div></div>';
-    html+='<div class="modal-field"><label>Overhead + Profit</label><div style="color:#fff;font-size:1.1rem;font-weight:700;">'+fmtMoney((bid.overhead_cost||0)+(bid.profit_amount||0))+'</div></div>';
-    html+='<div class="modal-field"><label>Total Bid</label><div style="color:#10B981;font-size:1.5rem;font-weight:800;">'+fmtMoney(bid.total_bid)+'</div></div></div>';
+    // ===== NEXT STEP BANNER =====
+    var ns = decideNextStep(bid);
+    html+='<div class="next-step '+ns.kind+'">';
+    html+='<div class="next-step-icon">'+ns.icon+'</div>';
+    html+='<div class="next-step-body">';
+    html+='<div class="next-step-title">'+esc(ns.title)+'</div>';
+    html+='<div class="next-step-desc">'+esc(ns.desc)+'</div>';
+    html+='</div>';
+    if(ns.actions.length>0){
+        html+='<div class="next-step-actions">';
+        ns.actions.forEach(function(a){
+            html+='<button class="btn '+(a.btnClass||'btn-outline')+'" onclick="'+a.fn+'">'+esc(a.label)+'</button>';
+        });
+        html+='</div>';
+    }
     html+='</div>';
 
-    // Phased pipeline stepper (detailed) + verify block
+    // ===== INFO GRID =====
+    html+='<div class="modal-grid" style="margin-bottom:1.25rem;">';
+    html+='<div>';
+    html+='<div class="modal-field"><label>Status</label><select id="editStatus" onchange="updateBidStatus(\''+id+'\',this.value)">';
+    ['new','awaiting_blueprints','analyzing','pending_review','quote_ready','quote_sent','submitted','won','lost','no_bid','expired'].forEach(function(s){
+        html+='<option value="'+s+'"'+(bid.status===s?' selected':'')+'>'+statusLabel(s)+'</option>';
+    });
+    html+='</select></div>';
+    html+='<div class="modal-field"><label>GC</label><div style="color:#fff;">'+esc(bid.general_contractor||'-')+'</div></div>';
+    html+='<div class="modal-field"><label>GC Email</label><div style="color:#fff;">'+esc(bid.gc_email||'-')+'</div></div>';
+    html+='<div class="modal-field"><label>Deadline</label><div class="deadline '+dl.cls+'" style="font-size:1rem;font-weight:600;">'+fmtDate(bid.bid_deadline)+' ('+dl.text+')</div></div>';
+    html+='</div>';
+    html+='<div>';
+    html+='<div class="modal-field"><label>Materials</label><div style="color:#fff;font-size:1.05rem;font-weight:700;">'+fmtMoney(bid.material_cost)+'</div></div>';
+    html+='<div class="modal-field"><label>Labor</label><div style="color:#fff;font-size:1.05rem;font-weight:700;">'+fmtMoney(bid.labor_cost)+'</div></div>';
+    html+='<div class="modal-field"><label>Overhead + Profit</label><div style="color:#fff;font-size:1.05rem;font-weight:700;">'+fmtMoney((bid.overhead_cost||0)+(bid.profit_amount||0))+'</div></div>';
+    html+='<div class="modal-field"><label>Total Bid</label><div style="color:#10B981;font-size:1.5rem;font-weight:800;">'+fmtMoney(bid.total_bid)+'</div></div>';
+    html+='</div></div>';
+
+    // ===== PIPELINE PHASES =====
     if(bid.pipeline_phases){
         html+='<div class="modal-section"><h3>Pipeline Progress</h3>';
         html+=renderPhases(bid.pipeline_phases,true);
@@ -602,336 +878,300 @@ async function openBid(id){
         html+='</div>';
     }
 
-    // Drawing audit block (estimator-grade analysis)
+    // ===== SCOPE INVENTORY =====
+    if(bid.scope_inventory){
+        var si=bid.scope_inventory;
+        var siChips=[];
+        if(si.has_telecom_sheets) siChips.push('<span class="tag tag-blue">Telecom</span>');
+        if(si.has_security_sheets) siChips.push('<span class="tag tag-purple">Security</span>');
+        if(si.has_av_sheets) siChips.push('<span class="tag tag-amber">AV</span>');
+        if(si.has_access_control_sheets) siChips.push('<span class="tag tag-purple">Access Control</span>');
+        if(si.has_fire_alarm_sheets) siChips.push('<span class="tag tag-red">Fire Alarm</span>');
+        if(siChips.length===0) siChips.push('<span style="color:#64748B;font-size:0.8rem;">No LV categories detected in drawings</span>');
+        html+='<div class="modal-section"><h3>Scope Inventory</h3>';
+        html+='<div style="background:#0F172A;border:1px solid #1E293B;border-radius:8px;padding:0.75rem 1rem;">';
+        html+='<div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;">'+siChips.join('')+'</div>';
+        html+='<div style="font-size:0.75rem;color:#64748B;">LV sheets: '+(si.lv_sheet_count||0)+(si.lv_sheet_ids&&si.lv_sheet_ids.length?(' ('+si.lv_sheet_ids.join(', ')+')'):'')+' • Source: '+esc(si.source||si.pipeline_version||'unknown')+'</div>';
+        if(si.cover_sheet_flags && Object.keys(si.cover_sheet_flags).length){
+            html+='<div style="font-size:0.75rem;color:#94A3B8;margin-top:0.35rem;">Cover-sheet flags: ';
+            Object.keys(si.cover_sheet_flags).forEach(function(k){html+=esc(k)+'='+esc(si.cover_sheet_flags[k])+' ';});
+            html+='</div>';
+        }
+        html+='</div></div>';
+    }
+
+    // ===== RECOMMENDED ADDITIONS =====
+    var recAdds = ((bid.spec_data||{}).recommended_additions)||[];
+    if(recAdds.length>0){
+        html+='<div class="modal-section"><h3>💡 Recommended Additions</h3>';
+        html+='<div class="rec-adds">';
+        html+='<h4>Typical for '+esc(bid.building_type||'this project type')+' but not drawn</h4>';
+        recAdds.forEach(function(r){
+            html+='<div class="rec-add-item">';
+            html+='<div class="rec-add-info"><span class="rec-add-qty">'+(r.qty||'?')+'</span> <strong>'+esc(r.category||'')+'</strong>'+(r.reason?('<span class="rec-add-reason">'+esc(r.reason)+'</span>'):'')+'</div>';
+            html+='</div>';
+        });
+        html+='<div style="margin-top:0.75rem;display:flex;gap:0.5rem;">';
+        html+='<button class="btn btn-purple" onclick="acceptRecommendedAdditions(\''+id+'\')">Accept All & Regenerate Quote</button>';
+        html+='<span style="align-self:center;font-size:0.75rem;color:#94A3B8;">These are surfaced because drawings don\'t show them but they\'re standard for this project type. Review before accepting.</span>';
+        html+='</div>';
+        html+='</div></div>';
+    }
+
+    // ===== KEYED NOTES INVENTORY (show your work) =====
+    var kni = ((bid.spec_data||{}).keyed_notes_inventory)||[];
+    if(kni.length>0){
+        html+='<div class="modal-section"><h3>Show Your Work — Keyed Notes</h3>';
+        html+='<p style="font-size:0.8rem;color:#94A3B8;margin-bottom:0.5rem;">Every device count above traces back to a keyed note on the drawings:</p>';
+        html+='<table class="keyed-notes-table"><thead><tr><th>Sheet</th><th>Note #</th><th>Exact Text</th><th>Extracted</th></tr></thead><tbody>';
+        kni.forEach(function(n){
+            var ex = n.devices_extracted||{};
+            var exStr = Object.keys(ex).map(function(k){return k+':'+ex[k];}).join(', ') || '<span style="color:#64748B;">—</span>';
+            html+='<tr>';
+            html+='<td><code>'+esc(n.sheet||'?')+'</code></td>';
+            html+='<td>'+esc(n.note_number||'?')+'</td>';
+            html+='<td class="note-text">'+esc(n.exact_text||'')+'</td>';
+            html+='<td class="extracted">'+exStr+'</td>';
+            html+='</tr>';
+        });
+        html+='</tbody></table></div>';
+    }
+
+    // ===== DRAWING AUDIT METADATA =====
     var audit=bid.pipeline_phases && bid.pipeline_phases.drawing_audit;
     if(audit && audit.status==='complete'){
         var sd=bid.spec_data||{};
         var validations=sd.validations||[];
         var validationFails=validations.filter(function(v){return v.status==='warn'||v.status==='fail';});
         var auditConfColor=audit.confidence==='high'?'#10B981':audit.confidence==='medium'?'#F59E0B':'#EF4444';
-        html+='<div class="modal-section"><h3>Drawing Audit <span style="color:'+auditConfColor+';font-size:0.8rem;font-weight:600;">'+(audit.confidence||'?')+' confidence</span></h3>';
-        html+='<div style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.3);border-radius:8px;padding:1rem;">';
-        html+='<div style="color:#94A3B8;font-size:0.85rem;margin-bottom:0.5rem;">Data sheet: <strong style="color:#D8B4FE;">'+(sd.data_sheet||audit.data_sheet||'?')+'</strong> • Method: '+(audit.method||'drawing_audit_v1')+' • Cost: $'+(audit.cost_usd||0).toFixed(2)+'</div>';
-        if(sd.summary){html+='<div style="color:#E2E8F0;font-size:0.9rem;line-height:1.5;margin-bottom:0.75rem;">'+sd.summary+'</div>';}
+        html+='<div class="modal-section"><h3>Drawing Audit <span style="color:'+auditConfColor+';font-size:0.8rem;font-weight:600;margin-left:0.5rem;">'+esc(audit.confidence||'?')+' confidence</span></h3>';
+        html+='<div style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.3);border-radius:8px;padding:0.9rem 1rem;">';
+        html+='<div style="color:#94A3B8;font-size:0.82rem;margin-bottom:0.4rem;">Data sheet: <strong style="color:#D8B4FE;">'+esc(sd.data_sheet||audit.data_sheet||'none found')+'</strong> • Cost: $'+(audit.cost_usd||0).toFixed(2)+'</div>';
+        if(sd.summary) html+='<div style="color:#E2E8F0;font-size:0.88rem;line-height:1.5;margin-bottom:0.6rem;">'+esc(sd.summary)+'</div>';
         if(validationFails.length){
-            html+='<div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:0.6rem 0.75rem;margin-bottom:0.75rem;font-size:0.85rem;color:#FBBF24;"><strong>Cross-validation flags ('+validationFails.length+'):</strong><ul style="margin:4px 0 0 18px;">';
-            validationFails.forEach(function(v){html+='<li>'+v.check+': counted '+v.counted+' vs expected max '+v.expected_max+(v.detail?(' — '+v.detail):'')+'</li>';});
+            html+='<div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:0.5rem 0.7rem;font-size:0.82rem;color:#FBBF24;"><strong>Validation flags ('+validationFails.length+'):</strong><ul style="margin:4px 0 0 18px;">';
+            validationFails.forEach(function(v){html+='<li>'+esc(v.check)+': '+esc(String(v.counted))+' vs max '+esc(String(v.expected_max))+(v.detail?(' — '+esc(v.detail)):'')+'</li>';});
             html+='</ul></div>';
         }
-        // Equipment list
         if(sd.equipment_list && sd.equipment_list.length){
-            html+='<details style="margin-top:0.5rem;"><summary style="cursor:pointer;color:#D8B4FE;font-size:0.85rem;">Equipment spec extracted from drawings ('+sd.equipment_list.length+' parts)</summary>';
-            html+='<table class="items-table" style="margin-top:0.5rem;font-size:0.8rem;"><thead><tr><th>Manufacturer</th><th>Model</th><th>Role</th><th>Qty</th></tr></thead><tbody>';
+            html+='<details style="margin-top:0.5rem;"><summary style="cursor:pointer;color:#D8B4FE;font-size:0.85rem;">Equipment spec extracted ('+sd.equipment_list.length+' parts)</summary>';
+            html+='<table class="items-table" style="margin-top:0.5rem;font-size:0.78rem;"><thead><tr><th>Manufacturer</th><th>Model</th><th>Role</th><th>Qty</th></tr></thead><tbody>';
             sd.equipment_list.forEach(function(e){
-                html+='<tr><td>'+(e.manufacturer||'?')+'</td><td>'+(e.model||'?')+'</td><td style="color:#94A3B8;">'+(e.role||'')+'</td><td>'+(e.qty||1)+'</td></tr>';
+                html+='<tr><td>'+esc(e.manufacturer||'?')+'</td><td>'+esc(e.model||'?')+'</td><td style="color:#94A3B8;">'+esc(e.role||'')+'</td><td>'+esc(e.qty||1)+'</td></tr>';
             });
             html+='</tbody></table></details>';
-        }
-        // Symbol legend
-        if(sd.symbol_legend && sd.symbol_legend.length){
-            html+='<details style="margin-top:0.5rem;"><summary style="cursor:pointer;color:#D8B4FE;font-size:0.85rem;">Symbol legend used ('+sd.symbol_legend.length+' symbols)</summary>';
-            html+='<table class="items-table" style="margin-top:0.5rem;font-size:0.8rem;"><thead><tr><th>Symbol</th><th>Meaning</th><th>Counting Rule</th></tr></thead><tbody>';
-            sd.symbol_legend.forEach(function(s){
-                html+='<tr><td><strong>'+(s.symbol_text||'?')+'</strong></td><td>'+(s.meaning||'?')+'</td><td style="color:#94A3B8;">'+(s.counting_rule||'')+'</td></tr>';
-            });
-            html+='</tbody></table></details>';
-        }
-        // Limitations
-        if(sd.limitations && sd.limitations.length){
-            html+='<div style="margin-top:0.75rem;font-size:0.8rem;color:#94A3B8;"><strong>Limitations noted:</strong> '+sd.limitations.join('; ')+'</div>';
         }
         html+='</div></div>';
     }
 
-    // Spec data block (what the spec book actually said)
-    if(bid.spec_data && bid.spec_data.device_specs){
+    // ===== SPEC BOOK EXTRACT =====
+    if(bid.spec_data && bid.spec_data.device_specs && Object.keys(bid.spec_data.device_specs).length>0){
         html+='<div class="modal-section"><h3>Specifications Extracted</h3>';
-        html+='<div style="background:#0F172A;border:1px solid #1E293B;border-radius:8px;padding:1rem;">';
-        html+='<div style="color:#94A3B8;font-size:0.85rem;margin-bottom:0.75rem;">From: '+(bid.spec_data.spec_pdf||'unknown')+' • Sections: '+((bid.spec_data.sections_found||[]).join(', ')||'none')+'</div>';
-        if(bid.spec_data.summary){html+='<div style="color:#CBD5E1;margin-bottom:0.75rem;font-size:0.9rem;">'+bid.spec_data.summary+'</div>';}
+        html+='<div style="background:#0F172A;border:1px solid #1E293B;border-radius:8px;padding:0.9rem;">';
+        html+='<div style="color:#94A3B8;font-size:0.82rem;margin-bottom:0.5rem;">From: '+esc(bid.spec_data.spec_pdf||'unknown')+' • Sections: '+esc((bid.spec_data.sections_found||[]).join(', ')||'none')+'</div>';
         var ds=bid.spec_data.device_specs||{};
-        if(Object.keys(ds).length){
-            html+='<table class="items-table" style="font-size:0.85rem;"><thead><tr><th>Device</th><th>Manufacturer</th><th>Model</th><th>Section</th><th>Notes</th></tr></thead><tbody>';
-            Object.keys(ds).forEach(function(k){
-                var s=ds[k]||{};
-                var altText=(s.alternates && s.alternates.length)?(' / '+s.alternates.slice(0,2).join(', ')):'';
-                html+='<tr>';
-                html+='<td>'+k+'</td>';
-                html+='<td>'+(s.manufacturer||'-')+altText+'</td>';
-                html+='<td>'+(s.model||'-')+'</td>';
-                html+='<td>'+(s.spec_section||'-')+'</td>';
-                html+='<td style="font-size:0.75rem;color:#94A3B8;">'+(s.qty_rule||'')+(s.color?(' • '+s.color):'')+(s.notes?(' • '+s.notes):'')+'</td>';
-                html+='</tr>';
-            });
-            html+='</tbody></table>';
-        }
-        var gr=bid.spec_data.general_requirements||{};
-        if(Object.keys(gr).length){
-            html+='<div style="margin-top:0.75rem;font-size:0.8rem;color:#94A3B8;"><strong>Requirements:</strong> '+Object.keys(gr).map(function(k){return k+': '+gr[k];}).join(' • ')+'</div>';
-        }
+        html+='<table class="items-table" style="font-size:0.82rem;"><thead><tr><th>Device</th><th>Mfr</th><th>Model</th><th>Section</th></tr></thead><tbody>';
+        Object.keys(ds).forEach(function(k){
+            var s=ds[k]||{};
+            html+='<tr><td>'+esc(k)+'</td><td>'+esc(s.manufacturer||'-')+'</td><td>'+esc(s.model||'-')+'</td><td>'+esc(s.spec_section||'-')+'</td></tr>';
+        });
+        html+='</tbody></table>';
         html+='</div></div>';
     }
 
-    // Scope
-    if(bid.scope_summary){
-        html+='<div class="modal-section"><h3>Scope</h3><p style="color:#CBD5E1;line-height:1.7;">'+bid.scope_summary+'</p></div>';
-    }
-
-    // Device count review section (for pending_review bids)
-    if(bid.device_analysis || bid.status==='pending_review'){
+    // ===== DEVICE COUNTS (editable when pending_review) =====
+    if(bid.device_analysis && Object.keys(bid.device_analysis).length>0){
         var da=bid.device_analysis||{};
         var pc=bid.page_classification||{};
-        html+='<div class="modal-section"><h3>Device Count Review</h3>';
-        // Page classification summary
+        html+='<div class="modal-section"><h3>Device Counts</h3>';
         if(pc.total_pages){
             html+='<div class="classification-summary">';
             html+='<strong>'+pc.total_pages+'</strong> pages scanned';
-            if(pc.schedules_found)html+=' | <strong>'+pc.schedules_found+'</strong> schedules found';
-            if(pc.floor_plans_analyzed)html+=' | <strong>'+pc.floor_plans_analyzed+'</strong> floor plans analyzed';
-            var skipped=[];
-            if(pc.details_skipped)skipped.push(pc.details_skipped+' details');
-            if(pc.risers_skipped)skipped.push(pc.risers_skipped+' risers');
-            if(pc.legends_skipped)skipped.push(pc.legends_skipped+' legends');
-            if(pc.demo_skipped)skipped.push(pc.demo_skipped+' demo plans');
-            if(skipped.length)html+='<br>Skipped: '+skipped.join(', ');
-            if(pc.overlaps_deduped)html+=' | <strong>'+pc.overlaps_deduped+'</strong> overlapping scope drawings deduped';
+            if(pc.schedules_found) html+=' • <strong>'+pc.schedules_found+'</strong> schedules';
+            if(pc.floor_plans_analyzed) html+=' • <strong>'+pc.floor_plans_analyzed+'</strong> floor plans';
             html+='</div>';
         }
-        // Device counts table
-        var deviceNames={cat6a_drops:'Cat6A Data Drops',wifi_aps:'WiFi Access Points',fixed_cameras:'Fixed Cameras',ptz_cameras:'PTZ Cameras',access_control_doors:'Access Control Doors',motion_detectors:'Motion Detectors',keypads:'Keypads',glass_break_sensors:'Glass Break Sensors',door_contacts:'Door Contacts',speakers:'Speakers',displays:'Displays',intercom_stations:'Intercom Stations',nurse_call_stations:'Nurse Call Stations',rack_mdf_rooms:'MDF/IDF Rooms',fiber_runs:'Fiber Runs'};
-        var deviceCategories={cat6a_drops:'Structured Cabling',wifi_aps:'Structured Cabling',fixed_cameras:'Security',ptz_cameras:'Security',access_control_doors:'Security',motion_detectors:'Security',keypads:'Security',glass_break_sensors:'Security',door_contacts:'Security',speakers:'Audio Visual',displays:'Audio Visual',intercom_stations:'Intercom',nurse_call_stations:'Intercom',rack_mdf_rooms:'Infrastructure',fiber_runs:'Infrastructure'};
-        var systemsMap={cat6a_drops:'structured_cabling',wifi_aps:'structured_cabling',fixed_cameras:'security',ptz_cameras:'security',access_control_doors:'security',motion_detectors:'security',keypads:'security',glass_break_sensors:'security',door_contacts:'security',speakers:'audio_visual',displays:'audio_visual',intercom_stations:'intercom_nurse_call',nurse_call_stations:'intercom_nurse_call',rack_mdf_rooms:'infrastructure',fiber_runs:'infrastructure'};
-        html+='<table class="review-table"><thead><tr><th>Device Type</th><th>Count</th><th>Source</th><th>Confidence</th><th>Notes</th></tr></thead><tbody>';
-        var deviceKeys=Object.keys(deviceNames);
-        var hasAnyDevice=false;
-        var lastCatR='';
-        deviceKeys.forEach(function(dk){
+        var deviceNames={cat6a_drops:'Cat6A Data Drops',wifi_aps:'WiFi APs',fixed_cameras:'Fixed Cameras',ptz_cameras:'PTZ Cameras',access_control_doors:'Access Control Doors',motion_detectors:'Motion Detectors',keypads:'Keypads',glass_break_sensors:'Glass Break',door_contacts:'Door Contacts',speakers:'Speakers',displays:'Displays',intercom_stations:'Intercom Stations',nurse_call_stations:'Nurse Call',rack_mdf_rooms:'MDF/IDF Rooms',fiber_runs:'Fiber Runs'};
+        var deviceCats={cat6a_drops:'Structured Cabling',wifi_aps:'Structured Cabling',fixed_cameras:'Security',ptz_cameras:'Security',access_control_doors:'Security',motion_detectors:'Security',keypads:'Security',glass_break_sensors:'Security',door_contacts:'Security',speakers:'Audio Visual',displays:'Audio Visual',intercom_stations:'Intercom',nurse_call_stations:'Intercom',rack_mdf_rooms:'Infrastructure',fiber_runs:'Infrastructure'};
+        var editable = (bid.status==='pending_review' || bid.status==='quote_ready');
+        html+='<table class="review-table"><thead><tr><th>Device</th><th>Count</th><th>Source</th><th>Confidence</th><th>Notes</th></tr></thead><tbody>';
+        var lastCat='';
+        Object.keys(deviceNames).forEach(function(dk){
             var info=da[dk]||{};
             var count=info.count||0;
-            // If no device_analysis, try to extract from bid items or scope
-            if(!bid.device_analysis && bid.status!=='pending_review')return;
-            if(count<=0 && !bid.device_analysis)return;
-            var catR=deviceCategories[dk]||'';
-            if(catR!==lastCatR){lastCatR=catR;html+='<tr><td colspan="5" style="padding:6px 8px;color:#F59E0B;font-weight:700;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;">'+catR+'</td></tr>';}
+            if(count<=0 && !editable) return;
+            var cat=deviceCats[dk]||'';
+            if(cat!==lastCat){lastCat=cat;html+='<tr><td colspan="5" style="padding:6px 8px;color:#F59E0B;font-weight:700;font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;">'+cat+'</td></tr>';}
             var src=info.source||'estimate';
             var conf=info.confidence||'low';
-            var srcBadge='<span class="source-badge source-'+(src==='schedule'?'schedule':src==='floor_plan_sum'?'floor':'estimate')+'">'+src.replace('_',' ')+'</span>';
-            var confColor=conf==='high'?'#10B981':conf==='medium'?'#F59E0B':'#EF4444';
+            var srcClass='source-'+src.replace(/[^a-z_]/g,'_');
+            var confColor=conf==='high'?'#10B981':conf==='medium'?'#F59E0B':conf==='reviewed'?'#60A5FA':'#EF4444';
             html+='<tr>';
-            html+='<td>'+deviceNames[dk]+'</td>';
-            html+='<td><input type="number" min="0" value="'+count+'" id="rc_'+dk+'"></td>';
-            html+='<td>'+srcBadge+'</td>';
-            html+='<td style="color:'+confColor+';font-weight:600;text-transform:uppercase;font-size:0.75rem;">'+conf+'</td>';
-            html+='<td style="font-size:0.75rem;color:#94A3B8;">'+(info.notes||'-')+'</td>';
+            html+='<td>'+esc(deviceNames[dk])+'</td>';
+            if(editable){
+                html+='<td><input type="number" min="0" value="'+count+'" id="rc_'+dk+'"></td>';
+            } else {
+                html+='<td style="font-weight:700;">'+count+'</td>';
+            }
+            html+='<td><span class="source-badge '+srcClass+'">'+esc(src.replace(/_/g,' '))+'</span></td>';
+            html+='<td style="color:'+confColor+';font-weight:600;text-transform:uppercase;font-size:0.72rem;">'+esc(conf)+'</td>';
+            html+='<td style="font-size:0.72rem;color:#94A3B8;">'+esc(info.notes||'-')+'</td>';
             html+='</tr>';
-            hasAnyDevice=true;
         });
         html+='</tbody></table>';
-        if(bid.status==='pending_review'){
-            html+='<div style="display:flex;gap:0.75rem;align-items:center;">';
-            html+='<button class="btn btn-amber" onclick="generateQuoteFromReview(\''+bid.id+'\')">Generate Quote with These Counts</button>';
-            html+='<span style="font-size:0.75rem;color:#64748B;">Review and adjust counts above, then generate the quote</span>';
+        if(editable){
+            html+='<div style="display:flex;gap:0.5rem;align-items:center;margin-top:0.5rem;">';
+            html+='<button class="btn btn-amber" onclick="generateQuoteFromReview(\''+id+'\')">Regenerate Quote with Edited Counts</button>';
+            html+='<span style="font-size:0.75rem;color:#64748B;">Edit counts above then click to rebuild the quote</span>';
             html+='</div>';
         }
         html+='</div>';
     }
 
-    // Line items table
-    html+='<div class="modal-section"><h3>Line Items ('+items.length+')</h3>';
-    html+='<table class="items-table"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th><th>Source</th></tr></thead><tbody>';
-    var lastCat='';
-    items.forEach(function(item){
-        if(item.category!==lastCat){
-            lastCat=item.category;
-            html+='<tr class="cat-row"><td colspan="6" style="padding:10px 8px;">'+item.category+'</td></tr>';
-        }
-        var srcLabel=item.source||'';
-        var srcStyle='font-size:0.7rem;color:#64748B;';
-        if(srcLabel.indexOf('spec:')===0){srcStyle='font-size:0.7rem;color:#FBBF24;font-weight:600;';}
-        else if(srcLabel.indexOf('tier:qsr')===0){srcStyle='font-size:0.7rem;color:#86EFAC;';}
-        else if(srcLabel.indexOf('tier:commercial')===0){srcStyle='font-size:0.7rem;color:#93C5FD;';}
-        else if(srcLabel.indexOf('tier:enterprise')===0){srcStyle='font-size:0.7rem;color:#D8B4FE;';}
-        html+='<tr><td>'+item.item_name+'</td><td>'+item.quantity+'</td><td>'+item.unit+'</td><td style="text-align:right">'+fmtMoney(item.unit_price)+'</td><td style="text-align:right;font-weight:600;">'+fmtMoney(item.total_price)+'</td><td style="'+srcStyle+'">'+srcLabel+'</td></tr>';
-    });
-    html+='</tbody></table></div>';
-
-    // Quote preview
-    if(bid.quote_html){
-        html+='<div class="modal-section"><h3>Quote Document</h3><div class="quote-preview">'+bid.quote_html+'</div></div>';
-    }
-
-    // Notes
-    html+='<div class="modal-section"><h3>Notes</h3><textarea id="bidNotes" style="width:100%;min-height:60px;padding:0.5rem;border:1px solid #475569;border-radius:6px;background:#0F172A;color:#E2E8F0;font-family:inherit;">'+(bid.notes||'')+'</textarea><button class="btn btn-outline" style="margin-top:0.5rem;" onclick="saveBidNotes(\''+id+'\')">Save Notes</button></div>';
-
-    // Actions
-    html+='<div class="actions-bar">';
-    if(bid.status==='analyzing'){
-        html+='<div style="padding:1rem;background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.3);border-radius:8px;text-align:center;color:#C084FC;font-weight:700;margin-bottom:1rem;">Analysis in Progress... Blueprint is being scanned by Claude. Refresh in a few minutes.</div>';
-    }
-    // Verify with Gemini: available on any quote_ready/pending_review bid (WF6 handles both
-    // device-count critique and fallback quote-plausibility critique for pre-v10 bids).
-    var gvStatus=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify && bid.pipeline_phases.gemini_verify.status)||'not_started';
-    var hasDeviceAnalysis=bid.device_analysis && Object.keys(bid.device_analysis).length>0;
-    var modalHasSpec=bid.spec_data && bid.spec_data.device_specs && Object.keys(bid.spec_data.device_specs).length>0;
-    var modalAudit=(bid.pipeline_phases && bid.pipeline_phases.drawing_audit && bid.pipeline_phases.drawing_audit.status)||'not_started';
-    if(bid.status==='quote_ready'||bid.status==='pending_review'||bid.status==='awaiting_blueprints'){
-        var auditLabel = (modalAudit==='complete') ? 'Re-audit Drawings' : 'Audit Drawings (deep)';
-        html+='<button class="btn btn-purple" onclick="auditDrawings(\''+id+'\')" style="margin-right:0.5rem;">'+auditLabel+'</button>';
-        html+='<button class="btn btn-outline" onclick="uploadSpec(\''+id+'\')" style="margin-right:0.5rem;">'+(modalHasSpec?'Re-upload':'Upload')+' Spec PDF</button>';
-    }
-    if(bid.status==='quote_ready'||bid.status==='pending_review'){
-        var verifyLabel = hasDeviceAnalysis ? 'Verify with Gemini' : 'Verify with Gemini (quote plausibility)';
-        if(gvStatus==='not_started'||gvStatus==='failed'){
-            html+='<button class="btn btn-amber" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')">'+verifyLabel+'</button>';
-        } else if(gvStatus==='complete'){
-            html+='<button class="btn btn-outline" id="verifyBtn_'+id+'" onclick="verifyWithGemini(\''+id+'\')" style="margin-right:0.5rem;">Re-verify</button>';
-            var modalGv=bid.pipeline_phases.gemini_verify||{};
-            var modalVerdict=modalGv.verdict||'';
-            var modalSugs=modalGv.suggestions||{};
-            if((modalVerdict==='clearly_wrong'||modalVerdict==='suspicious') && Object.keys(modalSugs).length>0){
-                html+='<button class="btn btn-blue" onclick="rebidWithGemini(\''+id+'\')" style="margin-right:0.5rem;">Rebid with Gemini fixes</button>';
+    // ===== LINE ITEMS =====
+    if(items.length>0){
+        html+='<div class="modal-section"><h3>Line Items ('+items.length+')</h3>';
+        html+='<table class="items-table"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th><th>Source</th></tr></thead><tbody>';
+        var lastCat='';
+        items.forEach(function(item){
+            if(item.category!==lastCat){
+                lastCat=item.category;
+                html+='<tr class="cat-row"><td colspan="6" style="padding:10px 8px;">'+esc(item.category)+'</td></tr>';
             }
+            var srcLabel=item.source||'';
+            var srcStyle='font-size:0.7rem;color:#64748B;';
+            if(srcLabel.indexOf('spec:')===0) srcStyle='font-size:0.7rem;color:#FBBF24;font-weight:600;';
+            else if(srcLabel.indexOf('tier:qsr')===0) srcStyle='font-size:0.7rem;color:#86EFAC;';
+            else if(srcLabel.indexOf('tier:commercial')===0) srcStyle='font-size:0.7rem;color:#93C5FD;';
+            html+='<tr><td>'+esc(item.item_name||item.description||'')+'</td><td>'+esc(item.quantity)+'</td><td>'+esc(item.unit||'')+'</td><td style="text-align:right">'+fmtMoney(item.unit_price)+'</td><td style="text-align:right;font-weight:600;">'+fmtMoney(item.total_price)+'</td><td style="'+srcStyle+'">'+esc(srcLabel)+'</td></tr>';
+        });
+        html+='</tbody></table></div>';
+    }
+
+    // ===== ACTIVITY LOG =====
+    if(activity.length>0){
+        html+='<div class="modal-section"><h3>Activity Log</h3>';
+        html+='<div class="activity-list">';
+        activity.forEach(function(a){
+            var dotClass='';
+            if(a.new_status==='won'||a.action.toLowerCase().indexOf('won')!==-1) dotClass='won';
+            else if(a.new_status==='quote_sent'||a.action.toLowerCase().indexOf('sent')!==-1) dotClass='sent';
+            else if(a.new_status==='lost') dotClass='lost';
+            html+='<div class="activity-item">';
+            html+='<div class="activity-dot '+dotClass+'"></div>';
+            html+='<div class="activity-content">';
+            html+='<div class="activity-action">'+esc(a.action||'')+'</div>';
+            if(a.details||a.notes) html+='<div class="activity-meta">'+esc(a.details||a.notes||'')+'</div>';
+            html+='<div class="activity-meta">'+fmtDateTime(a.created_at)+'</div>';
+            html+='</div></div>';
+        });
+        html+='</div></div>';
+    }
+
+    // ===== NOTES =====
+    html+='<div class="modal-section"><h3>Notes</h3>';
+    html+='<textarea id="bidNotes" style="width:100%;min-height:60px;padding:0.5rem;border:1px solid #475569;border-radius:6px;background:#0F172A;color:#E2E8F0;font-family:inherit;">'+esc(bid.notes||'')+'</textarea>';
+    html+='<button class="btn btn-outline" style="margin-top:0.5rem;" onclick="saveBidNotes(\''+id+'\')">Save Notes</button>';
+    html+='</div>';
+
+    // ===== BOTTOM ACTION BAR =====
+    html+='<div class="actions-bar">';
+    html+='<button class="btn btn-purple" onclick="auditDrawings(\''+id+'\')">📄 Upload &amp; Audit Drawings</button>';
+    html+='<button class="btn btn-outline" onclick="uploadSpec(\''+id+'\')">📋 Upload Spec PDF</button>';
+    if(bid.source==='planhub' || (bid.source_url||'').indexOf('planhub')!==-1){
+        html+='<button class="btn btn-outline" onclick="rescanBlueprints(\''+id+'\')">🔄 Re-scan PlanHub</button>';
+    }
+    if(bid.status==='pending_review' || bid.status==='quote_ready'){
+        html+='<button class="btn btn-amber" onclick="verifyWithGemini(\''+id+'\')">🧠 Verify with Gemini</button>';
+        var gv = (bid.pipeline_phases||{}).gemini_verify||{};
+        if(gv.verdict && (gv.verdict==='suspicious'||gv.verdict==='clearly_wrong') && Object.keys(gv.suggestions||{}).length>0){
+            html+='<button class="btn btn-blue" onclick="rebidWithGemini(\''+id+'\')">⚖️ Rebid with Gemini Fixes</button>';
         }
     }
-    if(bid.status==='quote_ready'){
-        html+='<button class="btn btn-green" onclick="sendQuote(\''+id+'\')" style="margin-left:0.5rem;">Send to Antonio</button>';
+    if(bid.status==='quote_ready' || bid.status==='pending_review'){
+        html+='<button class="btn btn-green" onclick="sendQuote(\''+id+'\')">📧 Send to Antonio</button>';
     }
-    if(bid.status==='pending_review'||bid.status==='quote_ready'){
-        html+='<button class="btn btn-outline" onclick="rescanBlueprints(\''+id+'\')" style="margin-left:0.5rem;">Re-scan Blueprints</button>';
-    }
-    if(bid.status==='quote_sent'||bid.status==='submitted'){
+    if(bid.status==='quote_sent' || bid.status==='submitted'){
         html+='<button class="btn btn-green" onclick="updateBidStatus(\''+id+'\',\'won\')">Mark Won</button>';
         html+='<button class="btn btn-red" onclick="updateBidStatus(\''+id+'\',\'lost\')">Mark Lost</button>';
     }
-    if(bid.status==='won'){
-        var wonAmt=bid.won_amount||bid.total_bid||0;
-        var commission=wonAmt*0.05;
-        html+='<div style="margin-top:1rem;padding:1rem;background:#064E3B;border-radius:8px;">';
-        html+='<div style="color:#6EE7B7;font-size:0.85rem;">WON</div>';
-        html+='<div style="color:white;font-size:1.3rem;font-weight:700;">'+fmtMoney(wonAmt)+'</div>';
-        html+='<div style="color:#F59E0B;font-size:1.1rem;font-weight:600;margin-top:0.5rem;">Stromation 5%: '+fmtMoney(commission)+'</div>';
-        html+='</div>';
-    }
     html+='</div>';
 
-    var mDate=bid.updated_at?new Date(bid.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
-    var mEstBadge=(bid.estimate_method==='blueprint_claude'||bid.estimate_method==='blueprint_scan')?' [Analyzed with Claude'+(mDate?' - '+mDate:'')+']':bid.estimate_method==='blueprint_gemini'?' [Analyzed with Gemini'+(mDate?' - '+mDate:'')+']':bid.estimate_method==='blueprint_gpt'?' [Analyzed with GPT]':' [GPT Estimate]';
-    document.getElementById('modalTitle').textContent=bid.project_name+mEstBadge;
-    document.getElementById('modalContent').innerHTML=html;
-    document.getElementById('bidModal').style.display='block';
+    document.getElementById('modalTitle').textContent = bid.project_name || 'Untitled';
+    document.getElementById('modalSubtitle').innerHTML = (bid.city?esc(bid.city)+', ':'')+(bid.state||'TX')+' • Created '+fmtDate(bid.created_at)+(bid.updated_at?' • Updated '+fmtDate(bid.updated_at):'');
+    document.getElementById('modalContent').innerHTML = html;
+    document.getElementById('bidModal').classList.add('show');
 }
 
 function closeModal(){
-    document.getElementById('bidModal').style.display='none';
+    document.getElementById('bidModal').classList.remove('show');
 }
 
+// ============================================================
+// STATUS + NOTES
+// ============================================================
 async function updateBidStatus(id,status){
-    var body={status:status,updated_at:new Date().toISOString()};
-    if(status==='won')body.won_at=new Date().toISOString();
-    if(status==='lost')body.lost_at=new Date().toISOString();
-
-    await fetch(SB+'/rest/v1/tbe_bids?id=eq.'+id,{method:'PATCH',headers:H,body:JSON.stringify(body)});
-    await fetch(SB+'/rest/v1/tbe_bid_activity',{method:'POST',headers:H,body:JSON.stringify({bid_id:id,action:'Status changed to '+status,new_status:status})});
-    loadBids();
-    closeModal();
+    try{
+        var body={status:status,updated_at:new Date().toISOString()};
+        if(status==='won') body.won_at=new Date().toISOString();
+        if(status==='lost') body.lost_at=new Date().toISOString();
+        await fetch(SB+'/rest/v1/tbe_bids?id=eq.'+id,{method:'PATCH',headers:H,body:JSON.stringify(body)});
+        await fetch(SB+'/rest/v1/tbe_bid_activity',{method:'POST',headers:H,body:JSON.stringify({bid_id:id,action:'Status changed to '+statusLabel(status),new_status:status})});
+        toast('Status updated to '+statusLabel(status),'success');
+        await loadBids();
+        closeModal();
+    }catch(e){toast('Status update failed: '+e.message,'error');}
 }
 
 async function saveBidNotes(id){
-    var notes=document.getElementById('bidNotes').value;
-    await fetch(SB+'/rest/v1/tbe_bids?id=eq.'+id,{method:'PATCH',headers:H,body:JSON.stringify({notes:notes})});
-    alert('Notes saved');
-}
-
-async function sendQuote(id){
-    if(!confirm('Send this quote to Antonio for review?'))return;
-    var bid=allBids.find(function(b){return b.id===id;});
-    // Call the quote sender webhook
     try{
-        await fetch('https://n8n.myaibuffet.com/webhook/tbe-send-quote',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({bid_id:id,gc_email:bid.gc_email||'dariusstroman@gmail.com',gc_name:bid.general_contractor,project_name:bid.project_name,quote_html:bid.quote_html})
-        });
-        await updateBidStatus(id,'quote_sent');
-        alert('Quote sent successfully');
-    }catch(e){
-        alert('Failed to send quote');
-    }
+        var notes=document.getElementById('bidNotes').value;
+        await fetch(SB+'/rest/v1/tbe_bids?id=eq.'+id,{method:'PATCH',headers:H,body:JSON.stringify({notes:notes,updated_at:new Date().toISOString()})});
+        toast('Notes saved','success');
+    }catch(e){toast('Failed to save notes: '+e.message,'error');}
 }
 
-// Gemini device-key mapping (flat key -> which nested system)
-var DEVICE_SYSTEM_MAP = {cat6a_drops:'structured_cabling',wifi_aps:'structured_cabling',fixed_cameras:'security',ptz_cameras:'security',access_control_doors:'security',motion_detectors:'security',keypads:'security',glass_break_sensors:'security',door_contacts:'security',speakers:'audio_visual',displays:'audio_visual',intercom_stations:'intercom_nurse_call',nurse_call_stations:'intercom_nurse_call',rack_mdf_rooms:'infrastructure',fiber_runs:'infrastructure'};
-
-// Flatten Gemini suggestions (dot-path OR flat key) into nested systems, merged with current device_analysis
-function buildSystemsFromGemini(bid){
-    var systems={structured_cabling:{},security:{},audio_visual:{},intercom_nurse_call:{},infrastructure:{}};
-    var da=bid.device_analysis||{};
-    // Seed with current counts
-    Object.keys(da).forEach(function(k){
-        var cat=DEVICE_SYSTEM_MAP[k]; if(!cat) return;
-        var v=da[k]; var count=(v && typeof v==='object' && typeof v.count==='number')?v.count:(typeof v==='number'?v:0);
-        systems[cat][k]=count;
-    });
-    // Apply Gemini overrides
-    var sugs=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify && bid.pipeline_phases.gemini_verify.suggestions)||{};
-    Object.keys(sugs).forEach(function(path){
-        var count=Number(sugs[path])||0;
-        var cat,key;
-        if(path.indexOf('.')!==-1){ var parts=path.split('.'); cat=parts[0]; key=parts[1]; }
-        else { key=path; cat=DEVICE_SYSTEM_MAP[key]; }
-        if(cat && key && systems[cat]){ systems[cat][key]=count; }
-    });
-    return systems;
+// ============================================================
+// WEBHOOK ACTIONS
+// ============================================================
+async function sendQuote(id){
+    if(!confirm('Send this quote to Antonio?\n\nWF5 will generate a PDF and email it (test mode — still goes to Darius\'s Gmail).'))return;
+    var bid=allBids.find(function(b){return b.id===id;});
+    toast('Sending quote...','info');
+    try{
+        var r=await fetch(WEBHOOKS.send,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bid_id:id,test_mode:true})});
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        await updateBidStatus(id,'quote_sent');
+        toast('Quote sent successfully','success');
+    }catch(e){toast('Send failed: '+e.message,'error');}
 }
 
 async function auditDrawings(id){
     var bid=allBids.find(function(b){return b.id===id;});
-    if(!bid)return;
+    if(!bid) return;
     var inp=document.createElement('input');
     inp.type='file';
     inp.accept='application/pdf';
     inp.onchange=async function(){
         var file=inp.files && inp.files[0];
-        if(!file)return;
-        if(file.size>22*1024*1024){alert('PDF must be under 22MB. Split larger drawing sets.');return;}
-        if(!confirm('Run deep drawing audit on "'+file.name+'" ('+(file.size/1024/1024).toFixed(1)+'MB)?\n\nClaude Sonnet will:\n  • Identify the data plan sheet (E1xx/T1xx)\n  • Read the symbol legend\n  • Extract embedded equipment specs\n  • Count devices targeted by symbol type\n  • Cross-validate against equipment capacity\n\nThe audit OVERWRITES current device counts and rebuilds the quote.\nCost: ~$0.30-1.00 depending on PDF size. Takes 60-180s.'))return;
+        if(!file) return;
+        if(file.size>22*1024*1024){toast('PDF must be under 22MB. Split larger drawing sets.','error');return;}
+        if(!confirm('Run drawing audit on "'+file.name+'" ('+(file.size/1024/1024).toFixed(1)+'MB)?\n\nClaude Sonnet will read drawings, extract scope, build scope_inventory, and auto-regenerate the quote.\nCost: $0.30-1.00 | Time: 60-180s'))return;
 
-        var oldTitle=document.title;
-        document.title='Auditing drawings...';
-
-        var b64=await new Promise(function(resolve,reject){
-            var reader=new FileReader();
-            reader.onload=function(){resolve(reader.result.split(',')[1]);};
-            reader.onerror=reject;
-            reader.readAsDataURL(file);
-        });
-
+        toast('Uploading and auditing drawings...','info');
         try{
-            var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-audit-drawings',{
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({bid_id:id,pdf_filename:file.name,pdf_base64:b64,auto_apply:true})
+            var b64=await new Promise(function(resolve,reject){
+                var r=new FileReader();r.onload=function(){resolve(r.result.split(',')[1]);};r.onerror=reject;r.readAsDataURL(file);
             });
+            var resp=await fetch(WEBHOOKS.audit,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bid_id:id,pdf_filename:file.name,pdf_base64:b64,auto_apply:true})});
             var data=await resp.json();
             if(data.success){
-                var msg='Audit complete!\n\n';
-                msg+='Data sheet: '+(data.data_sheet_found||'?')+'\n';
-                msg+='Devices counted: '+data.total_devices+' across '+data.device_categories+' categories\n';
-                msg+='Equipment specs found: '+data.equipment_spec_count+'\n';
-                msg+='Validations flagged: '+data.validations_flagged+'\n';
-                msg+='Project tier: '+data.project_tier+'\n';
-                msg+='Confidence: '+data.confidence+'\n';
-                if(data.new_total){msg+='\nNew quote total: $'+Number(data.new_total).toLocaleString()+'\n';}
-                msg+='\nCost: $'+(data.cost_usd||0).toFixed(2)+'\n\n';
-                msg+=data.summary;
-                alert(msg);
+                toast('Audit complete — '+data.total_devices+' devices counted, quote: '+fmtMoney(data.new_total||0),'success');
             } else {
-                alert('Audit failed: '+(data.error||'unknown'));
+                toast('Audit failed: '+(data.error||'unknown'),'error');
             }
-        } catch(e){
-            alert('Audit error: '+e.message);
-        } finally {
-            document.title=oldTitle;
+        }catch(e){toast('Audit error: '+e.message,'error');}
+        finally{
             await loadBids();
             setTimeout(function(){openBid(id);},300);
         }
@@ -941,50 +1181,30 @@ async function auditDrawings(id){
 
 async function uploadSpec(id){
     var bid=allBids.find(function(b){return b.id===id;});
-    if(!bid)return;
-    // Hidden file input
+    if(!bid) return;
     var inp=document.createElement('input');
     inp.type='file';
     inp.accept='application/pdf';
     inp.onchange=async function(){
         var file=inp.files && inp.files[0];
-        if(!file)return;
-        if(file.size>22*1024*1024){alert('PDF must be under 22MB. Split larger spec books.');return;}
-        if(!confirm('Extract Division 27/28 specs from "'+file.name+'" ('+(file.size/1024/1024).toFixed(1)+'MB)?\n\nClaude Sonnet will read the PDF and extract manufacturer/model per device category.\nCost: ~$0.50-3 depending on size.'))return;
+        if(!file) return;
+        if(file.size>22*1024*1024){toast('PDF must be under 22MB','error');return;}
+        if(!confirm('Extract Division 27/28 specs from "'+file.name+'"?\nCost: $0.50-3 | Time: 30-90s'))return;
 
-        // Show progress in browser
-        var oldTitle=document.title;
-        document.title='Extracting specs...';
-
-        // Read file as base64
-        var b64=await new Promise(function(resolve,reject){
-            var reader=new FileReader();
-            reader.onload=function(){resolve(reader.result.split(',')[1]);};
-            reader.onerror=reject;
-            reader.readAsDataURL(file);
-        });
-
+        toast('Extracting spec...','info');
         try{
-            var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-extract-specs',{
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({bid_id:id,pdf_filename:file.name,pdf_base64:b64})
+            var b64=await new Promise(function(resolve,reject){
+                var r=new FileReader();r.onload=function(){resolve(r.result.split(',')[1]);};r.onerror=reject;r.readAsDataURL(file);
             });
+            var resp=await fetch(WEBHOOKS.spec,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bid_id:id,pdf_filename:file.name,pdf_base64:b64})});
             var data=await resp.json();
             if(data.success){
-                var msg='Spec extracted!\n\n';
-                msg+='Sections found: '+(data.sections_found||[]).join(', ')+'\n';
-                msg+='Device categories specified: '+(data.device_categories||[]).join(', ')+'\n';
-                msg+='Cost: $'+(data.cost_usd||0).toFixed(3)+'\n\n';
-                msg+=(data.summary||'');
-                alert(msg);
+                toast('Spec extracted. Sections: '+((data.sections_found||[]).join(', ')||'none'),'success');
             } else {
-                alert('Spec extraction failed: '+(data.error||'unknown'));
+                toast('Spec extraction failed: '+(data.error||'unknown'),'error');
             }
-        } catch(e){
-            alert('Spec extraction error: '+e.message);
-        } finally {
-            document.title=oldTitle;
+        }catch(e){toast('Spec error: '+e.message,'error');}
+        finally{
             await loadBids();
             setTimeout(function(){openBid(id);},300);
         }
@@ -992,74 +1212,48 @@ async function uploadSpec(id){
     inp.click();
 }
 
-async function rebidWithGemini(id){
-    var bid=allBids.find(function(b){return b.id===id;});
-    if(!bid)return;
-    var gv=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify)||{};
-    var sugs=gv.suggestions||{};
-    var sugCount=Object.keys(sugs).length;
-    if(!sugCount){ alert('No Gemini suggestions stored on this bid. Run Verify first.'); return; }
-
-    var lines=[];
-    Object.keys(sugs).forEach(function(path){
-        lines.push('  '+path+' -> '+sugs[path]);
-    });
-    if(!confirm('Rebid with Claude arbitrating Gemini\'s corrections?\n\nGemini suggested:\n'+lines.join('\n')+'\n\nClaude (Haiku) reviews each disagreement and picks the final number based on what it actually saw in the blueprint vs Gemini\'s industry-norm critique. Cost: ~$0.01-0.05.'))return;
-
-    var btn=document.getElementById('rebidBtn_'+id);
-    if(btn){btn.disabled=true;btn.textContent='Arbitrating...';}
-
+async function verifyWithGemini(id){
+    toast('Verifying with Gemini...','info');
     try{
-        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-arbitrate',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({bid_id:id})
-        });
-        var data=await resp.json();
+        var r=await fetch(WEBHOOKS.verify,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bid_id:id})});
+        var data=await r.json();
         if(data.success){
-            var sum=data.summary||{};
-            var msg='Rebid complete.\n\nClaude arbitration:\n'+
-                '  Agreed with Gemini: '+(sum.agreed_with_gemini||0)+'\n'+
-                '  Kept Claude original: '+(sum.kept_original||0)+'\n'+
-                '  Compromised: '+(sum.compromised||0)+'\n\n'+
-                'Method: '+(data.method||'?')+'\n\n'+
-                'Status reset. Click Verify again to re-check the new numbers.';
-            alert(msg);
+            var verdict=(data.verdict||'?').replace(/_/g,' ');
+            var tone=data.verdict==='looks_right'?'success':data.verdict==='suspicious'?'warn':'error';
+            toast('Gemini: '+verdict+' ('+(data.confidence||0)+'%)'+(data.issues&&data.issues.length?' — '+data.issues.slice(0,2).join('; '):''),tone);
         } else {
-            alert('Rebid failed: '+(data.error||data.arbitrate_error||data.rebid_error||'unknown error'));
+            toast('Verify failed: '+(data.error||'unknown'),'error');
         }
-    }catch(e){
-        alert('Rebid error: '+e.message);
-    } finally {
+    }catch(e){toast('Verify error: '+e.message,'error');}
+    finally{
         await loadBids();
         setTimeout(function(){openBid(id);},300);
     }
 }
 
-async function verifyWithGemini(id){
-    var btn=document.getElementById('verifyBtn_'+id);
-    if(btn){btn.disabled=true;btn.textContent='Verifying... (10-20s)';}
+async function rebidWithGemini(id){
+    var bid=allBids.find(function(b){return b.id===id;});
+    if(!bid) return;
+    var sugs=(bid.pipeline_phases && bid.pipeline_phases.gemini_verify && bid.pipeline_phases.gemini_verify.suggestions)||{};
+    var sugCount=Object.keys(sugs).length;
+    if(!sugCount){toast('No Gemini suggestions on this bid. Run Verify first.','warn');return;}
+
+    var lines=[];
+    Object.keys(sugs).forEach(function(p){lines.push('  '+p+' → '+sugs[p]);});
+    if(!confirm('Claude Haiku will arbitrate these '+sugCount+' Gemini suggestions:\n\n'+lines.join('\n')+'\n\nClaude picks the final number for each. Cost: ~$0.01-0.05'))return;
+
+    toast('Arbitrating...','info');
     try{
-        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-verify',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({bid_id:id})
-        });
-        var data=await resp.json();
+        var r=await fetch(WEBHOOKS.arbitrate,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bid_id:id})});
+        var data=await r.json();
         if(data.success){
-            var verdict=data.verdict||'looks_right';
-            var conf=data.confidence||0;
-            var msg='Gemini verdict: '+verdict.replace(/_/g,' ').toUpperCase()+' ('+conf+'% confidence)';
-            if(data.issues && data.issues.length){
-                msg+='\n\nIssues:\n - '+data.issues.join('\n - ');
-            }
-            alert(msg);
+            var sum=data.summary||{};
+            toast('Arbitration complete: '+(sum.agreed_with_gemini||0)+' agreed with Gemini, '+(sum.kept_original||0)+' kept, '+(sum.compromised||0)+' compromised','success');
         } else {
-            alert('Verify failed: '+(data.error||'unknown error'));
+            toast('Rebid failed: '+(data.error||data.arbitrate_error||data.rebid_error||'unknown'),'error');
         }
-    } catch(e){
-        alert('Verify error: '+e.message);
-    } finally {
+    }catch(e){toast('Rebid error: '+e.message,'error');}
+    finally{
         await loadBids();
         setTimeout(function(){openBid(id);},300);
     }
@@ -1067,170 +1261,123 @@ async function verifyWithGemini(id){
 
 async function rescanBlueprints(id){
     var bid=allBids.find(function(b){return b.id===id;});
-    if(!bid)return;
-
-    // Try to extract PlanHub project ID from source_url, else prompt
+    if(!bid) return;
     var projectId='';
     var url=bid.source_url||'';
     var m=url.match(/planhub\.com\/(?:projects|project)\/(\d+)/i);
-    if(m)projectId=m[1];
+    if(m) projectId=m[1];
 
-    var input=prompt('Re-scan PlanHub blueprints for "'+bid.project_name+'".\n\nPaste the PlanHub project URL or ID:',projectId||url);
-    if(!input)return;
-
-    // Accept full URL or raw numeric ID
+    var input=prompt('Re-scan PlanHub for "'+bid.project_name+'".\nPaste PlanHub URL or project ID:',projectId||url);
+    if(!input) return;
     var idMatch=input.match(/(?:projects?\/)?(\d{5,})/);
-    if(!idMatch){alert('Could not find a PlanHub project ID in that input.');return;}
+    if(!idMatch){toast('Could not find PlanHub project ID','error');return;}
     projectId=idMatch[1];
 
-    if(!confirm('This will re-download plans and re-run Claude analysis (~$1-3 in API cost). Continue?'))return;
+    if(!confirm('This re-downloads plans and re-runs Claude analysis (~$1-3, 5-15 min). Continue?'))return;
 
     try{
-        // Flip status to analyzing locally so dashboard shows the glow immediately
         await fetch(SB+'/rest/v1/tbe_bids?id=eq.'+id,{method:'PATCH',headers:H,body:JSON.stringify({status:'analyzing',updated_at:new Date().toISOString()})});
-        await fetch(SB+'/rest/v1/tbe_bid_activity',{method:'POST',headers:H,body:JSON.stringify({bid_id:id,action:'Re-scan triggered (force_rescan=true)',new_status:'analyzing',details:'PlanHub project '+projectId})});
-
-        // Fire the File Downloader webhook
-        fetch('https://n8n.myaibuffet.com/webhook/tbe-download-plans',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({project_id:projectId,bid_id:id,force_rescan:true})
-        });
-
-        alert('Re-scan started. Pipeline will run in the background (5-15 min). The bid will show a pulsing purple border until complete.');
+        await fetch(SB+'/rest/v1/tbe_bid_activity',{method:'POST',headers:H,body:JSON.stringify({bid_id:id,action:'Re-scan triggered',new_status:'analyzing',details:'PlanHub project '+projectId})});
+        fetch(WEBHOOKS.download,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({project_id:projectId,bid_id:id,force_rescan:true})});
+        toast('Re-scan started. Pipeline runs in background (5-15 min). Purple glow on card = analyzing.','success');
         closeModal();
         loadBids();
-    }catch(e){
-        alert('Failed to trigger re-scan: '+e.message);
-    }
+    }catch(e){toast('Re-scan failed: '+e.message,'error');}
 }
 
 async function generateQuoteFromReview(bidId){
     var bid=allBids.find(function(b){return b.id===bidId;});
-    if(!bid)return;
-    if(!confirm('Generate quote from the reviewed device counts?'))return;
+    if(!bid) return;
+    if(!confirm('Regenerate quote from the edited counts?'))return;
 
+    var getN = function(k){var el=document.getElementById('rc_'+k);return el?parseInt(el.value)||0:0;};
     var counts={
-        structured_cabling:{
-            cat6a_drops:parseInt(document.getElementById('rc_cat6a_drops')?.value)||0,
-            wifi_aps:parseInt(document.getElementById('rc_wifi_aps')?.value)||0
-        },
-        security:{
-            fixed_cameras:parseInt(document.getElementById('rc_fixed_cameras')?.value)||0,
-            ptz_cameras:parseInt(document.getElementById('rc_ptz_cameras')?.value)||0,
-            access_control_doors:parseInt(document.getElementById('rc_access_control_doors')?.value)||0,
-            motion_detectors:parseInt(document.getElementById('rc_motion_detectors')?.value)||0,
-            keypads:parseInt(document.getElementById('rc_keypads')?.value)||0,
-            glass_break_sensors:parseInt(document.getElementById('rc_glass_break_sensors')?.value)||0,
-            door_contacts:parseInt(document.getElementById('rc_door_contacts')?.value)||0
-        },
-        audio_visual:{
-            speakers:parseInt(document.getElementById('rc_speakers')?.value)||0,
-            displays:parseInt(document.getElementById('rc_displays')?.value)||0
-        },
-        intercom_nurse_call:{
-            intercom_stations:parseInt(document.getElementById('rc_intercom_stations')?.value)||0,
-            nurse_call_stations:parseInt(document.getElementById('rc_nurse_call_stations')?.value)||0
-        },
-        infrastructure:{
-            rack_mdf_rooms:parseInt(document.getElementById('rc_rack_mdf_rooms')?.value)||0,
-            fiber_runs:parseInt(document.getElementById('rc_fiber_runs')?.value)||0
-        }
+        structured_cabling:{cat6a_drops:getN('cat6a_drops'),wifi_aps:getN('wifi_aps')},
+        security:{fixed_cameras:getN('fixed_cameras'),ptz_cameras:getN('ptz_cameras'),access_control_doors:getN('access_control_doors'),motion_detectors:getN('motion_detectors'),keypads:getN('keypads'),glass_break_sensors:getN('glass_break_sensors'),door_contacts:getN('door_contacts')},
+        audio_visual:{speakers:getN('speakers'),displays:getN('displays')},
+        intercom_nurse_call:{intercom_stations:getN('intercom_stations'),nurse_call_stations:getN('nurse_call_stations')},
+        infrastructure:{rack_mdf_rooms:getN('rack_mdf_rooms'),fiber_runs:getN('fiber_runs')}
     };
 
+    toast('Regenerating quote...','info');
     try{
-        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-bid',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                bid_id:bidId,
-                reviewed_counts:counts,
-                review_mode:false,
-                estimate_method:'blueprint_claude_v2_reviewed',
-                project_name:bid.project_name,
-                general_contractor:bid.general_contractor||'',
-                gc_email:bid.gc_email||'',
-                location:bid.location||'',
-                city:bid.city||'',
-                building_type:bid.building_type||'',
-                square_footage:bid.square_footage||null,
-                num_floors:bid.num_floors||1,
-                bid_deadline:bid.bid_deadline||null,
-                source:bid.source||'planhub'
-            })
-        });
-        var data=await resp.json();
+        var r=await fetch(WEBHOOKS.bid,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+            bid_id:bidId,reviewed_counts:counts,review_mode:false,estimate_method:'blueprint_claude',
+            project_name:bid.project_name,general_contractor:bid.general_contractor||'',gc_email:bid.gc_email||'',
+            location:bid.location||'',city:bid.city||'',building_type:bid.building_type||'',
+            square_footage:bid.square_footage||null,num_floors:bid.num_floors||1,
+            bid_deadline:bid.bid_deadline||null,source:bid.source||'manual'
+        })});
+        var data=await r.json();
         if(data.success){
-            closeModal();
-            loadBids();
-            alert('Quote generated: '+fmtMoney(data.total_bid)+' ('+data.line_items+' line items)');
-            setTimeout(function(){openBid(bidId);},500);
-        }else{
-            alert('Error: '+(data.error||'Unknown'));
+            toast('Quote regenerated: '+fmtMoney(data.total_bid),'success');
+        } else {
+            toast('Regenerate failed: '+(data.error||'unknown'),'error');
         }
-    }catch(e){
-        alert('Failed: '+e.message);
+    }catch(e){toast('Regenerate error: '+e.message,'error');}
+    finally{
+        await loadBids();
+        setTimeout(function(){openBid(bidId);},300);
     }
 }
 
-function openNewBid(){
-    document.getElementById('newBidModal').style.display='block';
-}
+// Accept recommended additions: adds the quantities to current device_analysis and regens quote
+async function acceptRecommendedAdditions(id){
+    var bid=allBids.find(function(b){return b.id===id;});
+    if(!bid) return;
+    var rec=((bid.spec_data||{}).recommended_additions)||[];
+    if(!rec.length){toast('No recommended additions','warn');return;}
+    if(!confirm('Add '+rec.length+' recommended items to the scope and regenerate quote?\n\n'+rec.map(function(r){return '  '+r.qty+'x '+r.category;}).join('\n')))return;
 
-async function submitNewBid(e){
-    e.preventDefault();
-    var btn=document.getElementById('nbSubmitBtn');
-    btn.textContent='Generating quote...';
-    btn.disabled=true;
+    // Merge with current device_analysis
+    var CAT_MAP = {cat6a_drops:'structured_cabling',wifi_aps:'structured_cabling',fixed_cameras:'security',ptz_cameras:'security',access_control_doors:'security',motion_detectors:'security',keypads:'security',glass_break_sensors:'security',door_contacts:'security',speakers:'audio_visual',displays:'audio_visual',intercom_stations:'intercom_nurse_call',nurse_call_stations:'intercom_nurse_call',rack_mdf_rooms:'infrastructure',fiber_runs:'infrastructure'};
+    var nested = {structured_cabling:{},security:{},audio_visual:{},intercom_nurse_call:{},infrastructure:{}};
+    var da = bid.device_analysis || {};
+    Object.keys(da).forEach(function(k){
+        var cat = CAT_MAP[k]; if(!cat) return;
+        var v = da[k]; var c = (v&&typeof v==='object'&&typeof v.count==='number')?v.count:(typeof v==='number'?v:0);
+        nested[cat][k] = c;
+    });
+    rec.forEach(function(r){
+        var cat = CAT_MAP[r.category]; if(!cat) return;
+        nested[cat][r.category] = (nested[cat][r.category]||0) + (Number(r.qty)||0);
+    });
 
+    toast('Regenerating with recommended additions...','info');
     try{
-        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-bid',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                project_name:document.getElementById('nb_name').value,
-                description:document.getElementById('nb_desc').value,
-                building_type:document.getElementById('nb_type').value,
-                square_footage:document.getElementById('nb_sqft').value,
-                num_floors:document.getElementById('nb_floors').value,
-                location:document.getElementById('nb_location').value,
-                city:document.getElementById('nb_city').value,
-                general_contractor:document.getElementById('nb_gc').value,
-                gc_email:document.getElementById('nb_gc_email').value,
-                gc_phone:document.getElementById('nb_gc_phone').value,
-                architect:document.getElementById('nb_architect').value,
-                bid_deadline:document.getElementById('nb_deadline').value?new Date(document.getElementById('nb_deadline').value).toISOString():null,
-                source:document.getElementById('nb_source').value
-            })
-        });
-        var data=await resp.json();
+        var r=await fetch(WEBHOOKS.bid,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+            bid_id:id,reviewed_counts:nested,review_mode:false,estimate_method:'blueprint_claude',
+            project_name:bid.project_name,general_contractor:bid.general_contractor||'',gc_email:bid.gc_email||'',
+            location:bid.location||'',city:bid.city||'',building_type:bid.building_type||'',
+            square_footage:bid.square_footage||null,source:bid.source||'manual'
+        })});
+        var data=await r.json();
         if(data.success){
-            document.getElementById('newBidModal').style.display='none';
-            loadBids();
-            alert('Quote generated: '+fmtMoney(data.total_bid)+' ('+data.line_items+' line items)');
-            // Open the new bid
-            setTimeout(function(){openBid(data.bid_id);},500);
-        }else{
-            alert('Error: '+(data.error||'Unknown'));
+            toast('Added recommendations. New total: '+fmtMoney(data.total_bid),'success');
+        } else {
+            toast('Regenerate failed: '+(data.error||'unknown'),'error');
         }
-    }catch(e){
-        alert('Failed: '+e.message);
+    }catch(e){toast('Error: '+e.message,'error');}
+    finally{
+        await loadBids();
+        setTimeout(function(){openBid(id);},300);
     }
-    btn.textContent='Generate Auto-Quote';
-    btn.disabled=false;
 }
 
-// Blueprint Upload Functions
+// ============================================================
+// MANUAL BID / BLUEPRINT UPLOAD MODALS
+// ============================================================
+function openNewBid(){document.getElementById('newBidModal').classList.add('show');}
 function openBlueprintUpload(){
-    document.getElementById('blueprintModal').style.display='block';
-    document.getElementById('blueprintStatus').style.display='none';
-    document.getElementById('blueprintResults').style.display='none';
+    document.getElementById('blueprintModal').classList.add('show');
+    document.getElementById('blueprintStatus').classList.add('hidden');
+    document.getElementById('blueprintResults').classList.add('hidden');
     document.getElementById('bpSubmitBtn').disabled=false;
     document.getElementById('bpSubmitBtn').textContent='Analyze & Generate Quote';
 }
 
 function handleFileSelect(input){
-    if(input.files&&input.files[0]){
+    if(input.files && input.files[0]){
         var file=input.files[0];
         var label=document.getElementById('dropLabel');
         label.textContent=file.name+' ('+Math.round(file.size/1024)+'KB)';
@@ -1238,21 +1385,52 @@ function handleFileSelect(input){
     }
 }
 
-// Drag and drop
 (function(){
     var dz=document.getElementById('dropZone');
-    if(!dz)return;
+    if(!dz) return;
     dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag-over');});
     dz.addEventListener('dragleave',function(){dz.classList.remove('drag-over');});
     dz.addEventListener('drop',function(e){
-        e.preventDefault();
-        dz.classList.remove('drag-over');
-        if(e.dataTransfer.files&&e.dataTransfer.files[0]){
+        e.preventDefault();dz.classList.remove('drag-over');
+        if(e.dataTransfer.files && e.dataTransfer.files[0]){
             document.getElementById('bp_file').files=e.dataTransfer.files;
             handleFileSelect(document.getElementById('bp_file'));
         }
     });
 })();
+
+async function submitNewBid(e){
+    e.preventDefault();
+    var btn=document.getElementById('nbSubmitBtn');
+    btn.disabled=true;btn.textContent='Creating...';
+    try{
+        // Create bid row directly in Supabase — status 'awaiting_blueprints'
+        var body={
+            project_name:document.getElementById('nb_name').value,
+            building_type:document.getElementById('nb_type').value||null,
+            square_footage:parseInt(document.getElementById('nb_sqft').value)||null,
+            city:document.getElementById('nb_city').value||null,
+            state:'TX',
+            general_contractor:document.getElementById('nb_gc').value||null,
+            gc_email:document.getElementById('nb_gc_email').value||null,
+            bid_deadline:document.getElementById('nb_deadline').value?new Date(document.getElementById('nb_deadline').value).toISOString():null,
+            source:document.getElementById('nb_source').value,
+            scope_summary:document.getElementById('nb_desc').value||null,
+            status:'awaiting_blueprints'
+        };
+        var r=await fetch(SB+'/rest/v1/tbe_bids',{method:'POST',headers:Object.assign({},H,{'Prefer':'return=representation'}),body:JSON.stringify(body)});
+        var data=await r.json();
+        if(Array.isArray(data) && data[0] && data[0].id){
+            toast('Bid created. Upload drawings next.','success');
+            document.getElementById('newBidModal').classList.remove('show');
+            loadBids();
+            setTimeout(function(){openBid(data[0].id);},400);
+        } else {
+            toast('Create failed: '+(data.message||JSON.stringify(data)),'error');
+        }
+    }catch(e){toast('Failed: '+e.message,'error');}
+    btn.textContent='Create Bid';btn.disabled=false;
+}
 
 async function submitBlueprint(e){
     e.preventDefault();
@@ -1260,18 +1438,12 @@ async function submitBlueprint(e){
     var statusDiv=document.getElementById('blueprintStatus');
     var statusText=document.getElementById('blueprintStatusText');
     var resultsDiv=document.getElementById('blueprintResults');
-
     var fileInput=document.getElementById('bp_file');
-    if(!fileInput.files||!fileInput.files[0]){
-        alert('Please select a blueprint PDF file');
-        return;
-    }
+    if(!fileInput.files || !fileInput.files[0]){toast('Select a PDF first','error');return;}
 
-    btn.disabled=true;
-    btn.textContent='Uploading...';
-    statusDiv.style.display='block';
-    resultsDiv.style.display='none';
-    statusText.textContent='Uploading blueprint PDF...';
+    btn.disabled=true;btn.textContent='Uploading...';
+    statusDiv.classList.remove('hidden');resultsDiv.classList.add('hidden');
+    statusText.textContent='Uploading PDF...';
 
     var formData=new FormData();
     formData.append('file',fileInput.files[0]);
@@ -1281,101 +1453,44 @@ async function submitBlueprint(e){
     formData.append('location',document.getElementById('bp_location').value);
     formData.append('source',document.getElementById('bp_source').value);
     var deadline=document.getElementById('bp_deadline').value;
-    if(deadline)formData.append('bid_deadline',new Date(deadline).toISOString());
+    if(deadline) formData.append('bid_deadline',new Date(deadline).toISOString());
 
-    statusText.textContent='Analyzing blueprint with AI... (this may take 30-60 seconds)';
+    statusText.textContent='Analyzing blueprint with Claude... (30-60s)';
 
     try{
-        var resp=await fetch('https://n8n.myaibuffet.com/webhook/tbe-blueprint',{
-            method:'POST',
-            body:formData
-        });
-
+        var resp=await fetch(WEBHOOKS.blueprint,{method:'POST',body:formData});
         var data=await resp.json();
-
         if(data.success){
-            statusDiv.style.display='none';
-            resultsDiv.style.display='block';
-
-            var a=data.analysis||{};
-            var sys=a.systems||{};
+            statusDiv.classList.add('hidden');resultsDiv.classList.remove('hidden');
             var bid=data.bid||{};
-
-            var html='<div style="background:#064E3B;border:1px solid #10B981;border-radius:8px;padding:1rem;margin-bottom:1rem;">';
-            html+='<div style="color:#10B981;font-weight:700;font-size:1.1rem;">Blueprint analyzed successfully</div>';
-            if(a.confidence)html+='<div style="color:#6EE7B7;font-size:0.85rem;margin-top:0.25rem;">Confidence: '+a.confidence+(a.sheets_analyzed?' | Sheets: '+a.sheets_analyzed.join(', '):'')+'</div>';
-            if(bid.total_bid)html+='<div style="color:#fff;font-size:1.5rem;font-weight:800;margin-top:0.5rem;">Total Bid: '+fmtMoney(bid.total_bid)+'</div>';
-            if(bid.line_items)html+='<div style="color:#6EE7B7;font-size:0.85rem;">'+bid.line_items+' line items generated</div>';
-            html+='</div>';
-
-            // Device counts grid
-            html+='<div class="bp-result-grid">';
-
-            if(sys.structured_cabling){
-                html+='<div class="bp-result-card"><h4>Structured Cabling</h4>';
-                html+='<div class="bp-device-row"><span>Cat6A Drops</span><span class="count">'+sys.structured_cabling.cat6a_drops+'</span></div>';
-                html+='<div class="bp-device-row"><span>WiFi APs</span><span class="count">'+sys.structured_cabling.wifi_aps+'</span></div>';
-                html+='</div>';
-            }
-            if(sys.security){
-                html+='<div class="bp-result-card"><h4>Security</h4>';
-                html+='<div class="bp-device-row"><span>Fixed Cameras</span><span class="count">'+sys.security.fixed_cameras+'</span></div>';
-                html+='<div class="bp-device-row"><span>PTZ Cameras</span><span class="count">'+sys.security.ptz_cameras+'</span></div>';
-                html+='<div class="bp-device-row"><span>Access Doors</span><span class="count">'+sys.security.access_control_doors+'</span></div>';
-                html+='<div class="bp-device-row"><span>Motion Detectors</span><span class="count">'+sys.security.motion_detectors+'</span></div>';
-                html+='<div class="bp-device-row"><span>Keypads</span><span class="count">'+sys.security.keypads+'</span></div>';
-                html+='</div>';
-            }
-            if(sys.fire_alarm){
-                html+='<div class="bp-result-card"><h4>Fire Alarm</h4>';
-                html+='<div class="bp-device-row"><span>Smoke Detectors</span><span class="count">'+sys.fire_alarm.smoke_detectors+'</span></div>';
-                html+='<div class="bp-device-row"><span>Horn/Strobes</span><span class="count">'+sys.fire_alarm.horn_strobes+'</span></div>';
-                html+='<div class="bp-device-row"><span>Pull Stations</span><span class="count">'+sys.fire_alarm.pull_stations+'</span></div>';
-                html+='</div>';
-            }
-            if(sys.audio_visual){
-                html+='<div class="bp-result-card"><h4>Audio Visual</h4>';
-                html+='<div class="bp-device-row"><span>Speakers</span><span class="count">'+sys.audio_visual.speakers+'</span></div>';
-                html+='<div class="bp-device-row"><span>Displays</span><span class="count">'+sys.audio_visual.displays+'</span></div>';
-                html+='</div>';
-            }
-            if(sys.infrastructure){
-                html+='<div class="bp-result-card"><h4>Infrastructure</h4>';
-                html+='<div class="bp-device-row"><span>MDF/IDF Rooms</span><span class="count">'+sys.infrastructure.rack_mdf_rooms+'</span></div>';
-                html+='</div>';
-            }
-
-            html+='</div>';
-
-            if(a.notes){
-                html+='<div style="margin-top:0.75rem;padding:0.75rem;background:#0F172A;border-radius:6px;font-size:0.85rem;color:#94A3B8;">'+a.notes+'</div>';
-            }
-
-            resultsDiv.innerHTML=html;
-
-            // Refresh bid list
+            resultsDiv.innerHTML='<div style="background:#064E3B;border:1px solid #10B981;border-radius:8px;padding:1rem;"><div style="color:#10B981;font-weight:700;font-size:1.05rem;">Blueprint analyzed</div>'+(bid.total_bid?'<div style="color:#fff;font-size:1.5rem;font-weight:800;margin-top:0.5rem;">'+fmtMoney(bid.total_bid)+'</div>':'')+'<div style="color:#6EE7B7;font-size:0.85rem;margin-top:0.3rem;">'+(bid.line_items||0)+' line items. Opening bid...</div></div>';
             loadBids();
-
-            // Open the bid detail after a short delay
-            if(bid.bid_id){
-                setTimeout(function(){openBid(bid.bid_id);},1000);
-            }
-
-            btn.textContent='Done - Submit Another?';
-            btn.disabled=false;
-        }else{
-            statusDiv.style.display='none';
-            alert('Error: '+(data.error||'Unknown error analyzing blueprint'));
-            btn.textContent='Analyze & Generate Quote';
-            btn.disabled=false;
+            if(bid.bid_id) setTimeout(function(){document.getElementById('blueprintModal').classList.remove('show');openBid(bid.bid_id);},1200);
+            btn.textContent='Done';btn.disabled=false;
+        } else {
+            statusDiv.classList.add('hidden');
+            toast('Blueprint analysis failed: '+(data.error||'unknown'),'error');
+            btn.textContent='Analyze & Generate Quote';btn.disabled=false;
         }
     }catch(err){
-        statusDiv.style.display='none';
-        alert('Failed to analyze blueprint: '+err.message);
-        btn.textContent='Analyze & Generate Quote';
-        btn.disabled=false;
+        statusDiv.classList.add('hidden');
+        toast('Upload failed: '+err.message,'error');
+        btn.textContent='Analyze & Generate Quote';btn.disabled=false;
     }
 }
+
+// Close modal on overlay click
+document.addEventListener('click',function(e){
+    if(e.target.classList && e.target.classList.contains('modal-overlay')){
+        e.target.classList.remove('show');
+    }
+});
+// Close on ESC
+document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+        document.querySelectorAll('.modal-overlay.show').forEach(function(m){m.classList.remove('show');});
+    }
+});
 </script>
 </body>
 </html>
