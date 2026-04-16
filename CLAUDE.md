@@ -719,6 +719,148 @@ All password protected with `Kyomi123` (sessionStorage, once per session):
     - **Real root cause #2**: schedule-vs-drawing precedence used `max(schedule, drawing)`. When drawings were over-counted (the bug above), max picked the inflated drawing total, overriding the authoritative schedule. **Fix**: schedule-WINS aggregation. If schedule has count for category X, ALWAYS use it. Drawing only fills in categories the schedule didn't cover. Logged when schedule gets ignored to understand drift.
     - **Real root cause #3**: no project-type validation. Texas Roadhouse showing 0 cameras was accepted as quote_ready. School with 6 cameras same. **Fix**: `projectTypeExpectations(building_type, sqft)` table in WF4. For restaurants: ≥4 cams + ≥2 WAPs. QSR: ≥2 cams + ≥1 WAP. Medical: ≥2 cams + ≥2 WAPs. Schools: ≥1 cam per 2000 sqft + ≥1 WAP per 3000 sqft. Retail: ≥4 cams. When actual < min, force `pending_review` with banner "Project-type ratio gap: fixed_cameras=0 (expected ≥4 — restaurant: typical 4-8 cameras…)". Live tested on Texas Roadhouse: correctly fired pending_review.
     - **What's still NOT addressed (next session)**: PDF rendering resolution (WF3 sends raw PDF to Claude, Claude downscales internally — tile + zoom rebuild needed for sparse drawings like ballfield concessions). Auto-trigger focused re-scan when project-type gap fires (currently flags only — manual click required to re-scan).
+  - [x] Pipeline v16-arch A/B validation (2026-04-15, afternoon) — LIVE HEAD-TO-HEAD ON REAL PLANHUB PDFs:
+    - Chose 6 bids from today's production batch, captured A-side baseline (pre-v16-arch) totals + device counts to `/tmp/ab_baseline.pkl`, downloaded source PDFs to `/tmp/audit6/`, then fired WF2 with `force_rescan=true` on all 6 to re-process through v16-arch.
+    - **3 bids completed full v16-arch pipeline**:
+      - MyDrNow #TX004: $26,576 → **$24,514** (−7.8%). Drops 29 → 23 (cross-page dedup tightened).
+      - Talkin' Taco: $25,929 → **$39,634** (+52.9%). Picked up +2 displays, +2 cams, +1 access door A-side missed. Project-type check correctly forced QSR min ≥2 cams/≥2 WAPs — B-side now 4 cams.
+      - 7Brew-Waco: $63,320 → **$54,495** (−13.9%). Drops 10 → 4, cams 8 → 6, displays 6 → 4, racks 2 → 1. Textbook cross-page dedup case (T/ES series floor-plan + detail views were double-counted on A-side).
+    - **3 bids correctly skipped by v16-arch** (this is expected behavior, not a failure):
+      - Texas Roadhouse, Dunkin' Plano, JP Starks all had `device_analysis.source = "reviewed_counts"` from prior human review. v16 refuses to overwrite reviewed counts on re-scan. Totals unchanged. This is a regression-safety feature — without it, any force_rescan would wipe Antonio's edits.
+    - **What the test validated**:
+      1. Cross-page dedup works — 7Brew-Waco is the smoking-gun case (drops/racks both cut ~50-60%).
+      2. Schedule-wins + project-type expectations work — Talkin' Taco went UP because v16 catches schedule devices A-side missed, not because it padded.
+      3. Reviewed-counts respected — 3-of-6 skip was correct architectural behavior.
+    - **Status race bug still present**: Texas Roadhouse / Dunkin' / JP Starks stuck at `status=analyzing` in DB despite activity log showing `new_status=pending_review`. WF2 `try/finally` status-reset not firing on webhook-timeout paths. Low-severity (cosmetic: dashboard shows "Analyzing..." badge when bid is actually quote-ready with reviewed counts). Fix next session: WF2 finally block should also run when webhook returns early due to skip-reviewed-counts path.
+    - **Honest limitation**: A/B compared old-system vs new-system. Did NOT independently audit PDFs to establish ground truth. Direction of changes (cross-page dedup down, missed-device detection up) aligns with root-cause fixes — but absolute accuracy vs drawings unverified. Ground-truth audit on the 3 small PDFs (MyDrNow 31pg, Talkin', 7Brew 37pg) is a logical next step. JP Starks 1149pg is not practical for line-by-line audit.
+    - Files: `/tmp/ab_baseline.pkl` (A-side snapshot), `/tmp/audit6/` (source PDFs), `/tmp/planhub_pipeline_current.py` (v16-arch pipeline), `/tmp/wf4_engine.js` (Auto Bidder), `/tmp/wf5_prepare.js` (Quote Sender), `/tmp/wf1_parse.js` (Bid Alert Parser).
+  - [x] Pipeline v17 GROUNDED (2026-04-16) — eliminates W1A/B1/C1/F1 hallucination class:
+    - **Root cause discovered**: Claude was pattern-matching alphanumeric construction codes (W1A wall types, B1 door codes, C1 corner guards, F1 floor finishes, E1-E26 keyed notes) onto Division 27 device names. Tile + zoom prototypes (tested 2x with /tmp/audit6/mydrnow/all.pdf p8) made it WORSE — without legend context, Claude hallucinated 18 WAPs and 6 cameras from wall/finish codes.
+    - **Fix shipped: scope_brief grounding.** Pipeline auto-extracts the symbol legend ONCE per bid via WF3 new `extract_legend` mode, builds a ~500 token scope_brief with (a) explicit Division 27 symbol→device mapping from the legend, (b) explicit list of non-Div27 codes to REJECT, (c) schedule totals (engineer's authoritative table), (d) project-type expectations (QSR/medical/school/etc). scope_brief gets injected into EVERY count_devices call as project-specific anchor.
+    - **WF3 v5 changes**: new `extract_legend` mode + `scope_brief` body param + image/PDF mediatype branching (image -> image block, PDF -> document block, was sending images as document = 400 error). Response now includes `evidence` (per-device room-by-room counts + rejected_symbols + keyed_notes_referenced). Pushed via API + activate cycle.
+    - **Pipeline v17 changes** (planhub_pipeline_current.py, 2496 lines): VERSION bumped to "v17". New functions: `find_legend_pages()` (keyword scan with E0/T0 prefix boost), `extract_legend_from_wf3()` (calls WF3 extract_legend mode, merges across multiple legend pages, dedups symbols), `build_scope_brief()` (formats legend + schedule + project-type into ~500 tokens, uses `_safe_sqft()` for PlanHub "2,399.00" string parsing), modified `send_to_claude()` (reads context.scope_brief, includes hash in cache key so legend changes invalidate), modified `extract_counts_from_result()` (captures evidence dict). Pre-pass wrapped in try/except so v17 grounding never kills the pipeline — falls back to ungrounded count_devices on any failure. Schedule pages processed first → scope_brief rebuilt with schedule_totals → drawing pages then anchored on schedule. `page_evidence` list captured per-page and forwarded to WF4 in submit_to_autobidder payload.
+    - **Pipeline delivery fix**: gzip + base64 pipeline (101KB raw → 27KB gz → 36KB b64) so Ensure Script command stays under Linux ARG_MAX (was hitting E2BIG with raw base64 at 135KB).
+    - **End-to-end production test on MyDrNow #TX004 (project 545053, bid 75c974a5)**:
+      - WF2 force_rescan fired 08:08 CDT, completed 08:13 CDT (5 min including PlanHub download)
+      - Pipeline log: "v17 legend extraction: found 1 legend page(s)" + "Legend extraction: 4 Div27 symbols, 33 non-Div27 codes from 1 pages" + "v17 scope_brief built: 1426 chars, 4 symbols anchored"
+      - 11 of 31 pages analyzed, 8 pages produced evidence
+      - Final counts: 21 cat6a_drops, 1 wifi_aps, 1 displays, 1 rack_mdf_rooms
+      - Quote built: $23,194.81, 23 line items, status=pending_review
+      - **Cost: ~$0.55 actual** (vs v16 ~$0.30-0.50 — +$0.05-0.25, well within budget)
+      - Compare to v16-arch B-side baseline ($24,514, 23/1/2/1) — within 5% on total, within 2 devices on every category. v17 is more precise (display 1 vs 2 — manual audit needed to confirm which is right) and now has audit trail.
+    - **Standalone WF3 v5 grounded test on isolated p7 (A-1.1 LV Plan)**:
+      - 22 cat6a_drops, 1 rack_mdf_rooms
+      - Evidence: "RECEPTION (3 drops), TRIAGE (1), OFFICE (2), EXAM 1 (1), EXAM 2 (1), EXAM 3 (1), ..., EMPLOYEE LOUNGE (1)" — full room-by-room
+      - Rejected: "GFD x3 (GFCI receptacles, Div 26)", "AFF height callouts (mounting heights, not devices)", "Room number circles (room IDs)", "W1A/W1B/W2 (wall types)", "B1/B2 (door schedule codes)"
+      - Keyed notes referenced: "Key Note 2: Combox/Rack location at TMB" — confirms 1 MDF/rack
+      - Confidence: medium
+    - **Dead ends from this session (worth NOT repeating)**:
+      - Tile-only on dense small drawings: HALLUCINATES (W1B → 18 WAPs, F1 → cameras)
+      - Tile + legend image: STILL HALLUCINATES because the project's electrical legend is mostly lighting/power, not Div 27-specific
+      - Lesson: vision pixel density isn't the bottleneck on QSR/medical/retail PDFs. Symbol grounding is. Tile+zoom may still help on ARCH E (36"x48") school/warehouse drawings where symbols genuinely get lost in 1568px downscale, but unverified — defer until needed.
+    - **Files modified locally (need to land in repo)**:
+      - /tmp/wf3_analyze.js (215 lines, +50 lines for v5)
+      - /tmp/planhub_pipeline_current.py (2496 lines, +200 lines for v17)
+      - WF3 (n8n ID MCioEt93wGOlbd7d) deployed via API + activate cycle
+      - WF2 (n8n ID CJlS0xgvY4oHtQsy) Ensure Script command updated with gzip+b64 v17 pipeline, deployed via API + activate cycle
+    - **Security flag (open task)**: WF3 has hardcoded Anthropic API key in jsCode. Should be moved to n8n credentials. Tracked as task #43.
+  - [x] Pipeline v17 GAP HARDENING (2026-04-16) — kills Seagoville-class slip-throughs:
+    - **Bug found in production**: Org 208 - Seagoville Elementary School - Addition and Renovation was sitting in `quote_ready` status at $2,040 total with `device_analysis: {wifi_aps: 2, rack_mdf_rooms: 5}` and `pending_review.status: in_progress` (UI contradiction — said "Ready to Send" while phase showed pulsing review). Manually flipped to pending_review with explicit banner.
+    - **Root cause analysis** — 4 distinct gaps in WF4 v16 let it through:
+      1. **Telecom gap not flagged**: `applyTierMinimums` checked security/AV/AC categories but NOT telecom/drops. `has_telecom_sheets=true` with `cat6a_drops=0` was silently allowed.
+      2. **Silent-fail threshold too loose**: used `totalDeviceCount < 3` which counted ALL device categories including over-counted racks. Seagoville had 7 total (2 WAPs + 5 racks) so threshold passed despite 0 primary scope.
+      3. **Tier gating skipped non-qsr/commercial**: `applyTierMinimums` only ran when `tierEarly === 'qsr' || tierEarly === 'commercial'`. Schools/enterprise/medical bypassed gap detection entirely.
+      4. **Rack cap required drops > 0**: when `dropsForRackCap === 0`, the rack cap (max(1, ceil(drops/80))) didn't fire, leaving Seagoville's ghost 5 racks intact.
+    - **WF4 v17 hardening** (5 surgical edits, deployed via API + activate cycle, 109,513 → 111,877 chars):
+      - **Edit 1** (line 1183): added telecom gap check inside `applyTierMinimums` — `if (inv.has_telecom_sheets === true && dropsCheck === 0)` push flag "telecom sheets exist but no drops counted"
+      - **Edit 2** (line 1196): always run `applyTierMinimums` regardless of tier (was qsr|commercial only). The function's PADDING logic still only fires for qsr/commercial; only gap detection now runs for all bids.
+      - **Edit 3** (line 1357): silent-fail now uses `primaryDeviceCount` (drops + cams + ptz + acDoors + speakers + displays + intercom_stations) instead of `totalDeviceCount`. Racks and WAPs alone don't justify a quote.
+      - **Edit 4** (line 1336): if `dropsForRackCap === 0 && rack_mdf_rooms > 1` → zero out racks (ghost over-count from rack appearing on multiple non-drop sheets).
+      - **Edit 5** (line 1878): building-type-specific floors in autopilot heuristic — schools/elementary/ISD < $20K, addition/renovation < $30K, medical/clinic/healthcare < $10K all force `pending_review`.
+    - **Daily reconcile cron deployed** (n8n ID: `DUk2xWWZNeLoirfU`, name "TBE Gap Reconcile — hourly v17 audit", active, runs at :15 every hour). Backstop in case WF4 misses a case. Scans all `quote_ready`/`quote_sent` bids, runs 10 gap rules, flips contradictions to `pending_review` with banner. Logs every reconcile to `tbe_bid_activity`.
+    - **Reconcile rules** (`/tmp/gap_reconcile.js`):
+      1. PHASE_CONTRADICTION (status=quote_ready/sent + pending_review.status=in_progress)
+      2. PRIMARY_LOW (primaryDeviceCount < 3 with lv_sheet_count >= 1)
+      3. TELECOM_NO_DROPS (has_telecom_sheets=true + drops=0)
+      4. SECURITY_NO_DEVICES, AC_NO_DOORS, AV_NO_DEVICES (category exists in scope_inventory but counted 0)
+      5. RACK_OVERCOUNT (drops=0 + racks>1 = ghost racks)
+      6. SCHOOL_LOW_TOTAL (<$20K), ADDITION_LOW_TOTAL (<$30K), MEDICAL_LOW_TOTAL (<$10K)
+    - **Already-sent bids handled gracefully**: cron only logs activity entry on quote_sent (does NOT auto-flip — Antonio already saw it). For quote_ready, full flip + banner.
+    - **Audit results post-fix** (4 quote_ready/sent bids remaining):
+      - Faith Refuge $53,694 — legacy bid with device_analysis=null (created pre-v15), totals look reasonable, NOT auto-flipping
+      - Jimmy John's $54,318 quote_sent (clean, post-v17 grounded run from earlier today)
+      - Hill Elementary $63,529 — legacy bid, totals reasonable for school renovation, NOT auto-flipping
+      - Aritzia $182,725 quote_sent (clean retail tenant build-out)
+    - **Outstanding (worth flagging)**: Faith Refuge + Hill Elementary have `device_analysis: null` (no audit trail). They predate v15 telemetry. Cron rules don't catch them because lv_sheet_count=0 means scope_inventory is empty (legacy). Recommend: manual force_rescan on each to populate fresh device counts before sending.
+  - [x] Pipeline v17.1-v17.4 + dashboard polish + cleanup infra (2026-04-16, late afternoon):
+    - **WF4 gap-rule hardening (5 surgical edits, +2,364 chars)**:
+      1. Telecom-gap flag added to applyTierMinimums (was silently allowing has_telecom_sheets=true + drops=0)
+      2. applyTierMinimums runs for ALL tiers now (was qsr/commercial only — schools were skipping gap detection)
+      3. silent-fail uses `primaryDeviceCount` (drops + cams + ptz + acDoors + speakers + displays + intercom_stations) NOT total — racks/WAPs alone don't justify a quote
+      4. Ghost-rack zeroing: if drops=0 and racks>1, racks→0 (over-count from rack appearing on multiple non-drop sheets)
+      5. Building-type sanity floors: school <$20K, addition/renovation <$30K, medical <$10K → forced pending_review
+      6. **Hard guard**: WF4 refuses to write `quote_ready` when device_analysis is empty/zero (catches legacy bids and edge cases)
+      7. **90% Gemini gate**: autopilot promotion now requires verdict=looks_right AND confidence ≥ 90 (was looks_right alone)
+    - **WF6 Gemini Verifier v17** (+1,758 chars): size-aware rules of thumb instead of generic "commercial" assumptions. Explicit rules for QSR/coffee <3k sqft (6-25 drops), medical clinic <5k (15-30), retail <8k (8-30), c-store <5k (10-25), schools 30k+ (100-400). Confidence-calibration block at end: "if counts match size+type rule, return looks_right with confidence 85-95". Result: MyDrNow / Talkin' Taco / 7Brew-Waco all flipped from `suspicious 75%` → `looks_right 90%` after re-prompt. Reduces false-positive review-park rate dramatically.
+    - **Hourly gap-reconcile cron** (n8n ID `DUk2xWWZNeLoirfU`, runs at :15 every hour, active). Originally a backstop for WF4, now does much more:
+      - Rule 0: NO_DEVICE_DATA — catches quote_ready bids with null/empty device_analysis
+      - Rule 1: PHASE_CONTRADICTION — status=quote_ready/sent + pending_review.phase=in_progress
+      - Rules 2-6: telecom/security/AC/AV scope-gap detection (mirrors WF4 v17 logic)
+      - Rule 7: RACK_OVERCOUNT (drops=0 + racks>1)
+      - Rules 8-10: school/addition/medical low-total floors
+      - **v17 zombie auto-junk**: pending_review with $0 + null da + empty scope_inv + Gemini already said clearly_wrong → delete + add to skiplist
+      - **v17 due-soon auto-junk**: pending_review with $0 (or `effectivelyZero` total<$3K with LV sheets) + due ≤24h → delete (can't recover in time)
+      - **v17 no-recovery-path auto-junk**: pending_review with effectively-$0 + no source_url + no deadline (sits forever) → delete (Seagoville Elementary class)
+      - **v17 auto-rescan**: pending_review with $0 + LV sheets + has PlanHub URL + >48h deadline + last rescan >2h ago → flips to analyzing + fires WF2 force_rescan automatically. No human click needed. Self-heals silent-fail bids.
+    - **Auto-Promote node** (chained after Reconcile in same cron): for clean pending_review bids (no scope-gap/silent-fail/kiosk/multiple-gaps banner, total ≥$5K, primary devices ≥3), calls `/tbe-verify` Gemini webhook. If verdict=looks_right AND confidence ≥ CONFIDENCE_THRESHOLD (90) → flips to quote_ready with banner. Otherwise updates the pending_review banner with Gemini's specific concerns. Bids parked with prior `clearly_wrong` verdict are skipped.
+    - **Skiplist infrastructure** (NEW Supabase table `tbe_bid_skiplist`, schema in user-applied SQL):
+      - Columns: planhub_project_id, normalized_name, source_url, reason, original_bid_id, created_at, skip_until, notes
+      - Reasons used so far: `silent_fail`, `no_scope`, `past_deadline`, `past_deadline_with_silent_fail`, `silent_fail_no_recovery_path`, `duplicate`, `manual_skip`
+      - **WF1 dedup extended**: in addition to existing tbe_bids checks, also queries skiplist by planhub_project_id, normalized_name, OR source_url (OR-grouped). If skip_until is null = forever; otherwise compared to now. Match → skip silently with `SKIP (junked):` log line.
+      - **Dashboard "Move to Junk" button**: in modal for new/awaiting/analyzing/pending_review/expired/no_bid bids. Prompts for reason, inserts skiplist row, deletes bid + line items, logs activity. UI flow: prompt → confirm → insert + delete + log → reload.
+    - **WF1 v17 SendGrid handling**: PlanHub now sends `itb.planhub.com/ls/click?upn=...` tracking links instead of raw `app.planhub.com/projectDetails/N` URLs. These return HTTP 400 server-side (single-use, consumed by email-client safety scans), so the redirect-follow logic silently fails. Fix: WF1 now extracts project_id from 4 additional text patterns (`Project ID: N`, `Lead ID: N`, `opportunity ID: N`, `Ref: #N`) AND if all extraction fails, sets bid status to `awaiting_blueprints` (not `new`) so dashboard shows "Need blueprints" + Re-scan button instead of being a dead row WF2 never picks up.
+    - **Pipeline v17.1**: COST REDUCTION — moved batch_classify_pages from Claude Sonnet text-only ($0.01/batch) to Gemini 2.5-flash-lite (FREE). Moved extract_legend_from_wf3 from Claude vision ($0.05/page) to Gemini vision (FREE), with Claude/WF3 as automatic fallback if Gemini errors. Saves $0.05-1.00/bid depending on size; biggest win on 4014-page school bids ($1.05/bid saved).
+    - **Pipeline v17.1**: ACCURACY — `gemini_crosscheck_page()` runs free Gemini second-opinion on every Claude-counted DRAWING page. Returns `{my_counts, verdict in [agree|too_high|too_low|wildly_off], confidence, notes}`. Reconciliation rules: `agree` keep Claude's, `too_high` take MIN per device (Claude over-counted), `too_low`/`wildly_off` keep Claude's but flag for review (don't add devices Claude didn't see — could be Gemini hallucination). All decisions written to `evidence.gemini_crosscheck`. Schedules skipped (authoritative). Empty-result pages skipped (Gemini can't help if Claude saw nothing).
+    - **Pipeline v17.2**: LIVE TELEMETRY — `patch_bid_phase(extras={...})` accepts arbitrary fields merged into the phase dict. Pass 2 loop now updates pipeline_phases.claude_counts every page with: `started_at`, `pages_total`, `pages_done`, `cost_so_far`, `cost_budget`, `running_devices` (cumulative), `crosscheck_stats` ({agree, claude_too_high_capped, too_low, wildly_off, skipped}), `recent_actions` (last 6 lines like `✓ A-1.1.pdf: 21 drops`, `⚠ Capped over-count on E2.0.pdf`, `○ A-3.0.pdf: no Div 27 devices`). Dashboard widget reads all of this and renders a live progress card with: 3-up stat tiles (pages, cost, elapsed), green→amber→red cost meter bar, device chips (`21 drops`, `4 cams`...), "Gemini cross-check: 4 agreed • 1 over-counts capped" line, scrolling activity ticker (terminal-style monospace, color-coded ⚠/○/✓).
+    - **Pipeline v17.3**: BUG FIX — finally-block reset was `if status==analyzing → quote_ready` (no device check). When pipeline crashed/timed out before WF4 ran, status flipped to quote_ready with $0/null devices, bypassing WF4's hard-guard. Fixed: re-fetches device_analysis + total_bid before deciding. Has devices AND total>0 → quote_ready (real run). Otherwise → pending_review with banner "Pipeline crashed or timed out before producing device counts". This was caught live when FKC North Denton showed up as quote_ready $0 — exact scenario the bug produced.
+    - **Pipeline v17.4**: BULLETPROOF CLEANUP — `main()` wraps `run_pipeline(work_dir)` in try/finally. Cleanup of /tmp/planhub_NNNN/{split,extracted}/ + downloaded ZIPs/PDFs now ALWAYS runs, even when pipeline crashes. Was inside main try, so crashes leaked work dirs (Kleberg's 4014-page split = 1-2GB per crash).
+    - **Disk Cleanup nightly cron** (n8n ID `JHAP2Qj7zrPyAiUK`, runs 3:30 AM CT, active):
+      - Purges `/tmp/planhub_cache/*` >7 days
+      - Purges `/tmp/planhub_analysis_cache/*` >30 days
+      - Removes leaked work dirs (`/tmp/planhub_NNNN/`) >24h (catches crashed-run leftovers)
+      - Removes leaked extract dirs (`/tmp/extracted_*/`) >24h
+      - Purges n8n execution history >30 days via API (each execution can be 50KB+ of pipeline stdout)
+      - Reports before/after `df -h` for `/tmp` and `/mnt/clipper-storage` in execution result for audit trail
+    - **Pipeline phase telemetry — strategic patch points added**:
+      - Start: `download: in_progress, "Connecting to PlanHub"`
+      - After download: `download: complete, "{N} PDFs downloaded + extracted"` + `classify: in_progress`
+      - After classify: `classify: complete, "{X} scope + {Y} vision pages found"` + `claude_counts: in_progress`
+      - During Pass 2: every page → `claude_counts: in_progress, "Counting devices on page {N} of {M}"` + extras dict
+      - After Pass 2: `claude_counts: complete, "{N} pages, {M} devices counted"` + `quote_built: in_progress`
+      - WF4 finishes: existing autopilot writes gemini_verify + pending_review/sent
+    - **Dashboard polish** (admin-bids.html):
+      - Removed `🔥 Hot — Needs Your Attention` banner section + render fn + CSS class + isHot param (user disliked it)
+      - Context-aware total display: `$0` no longer shown for unfinished bids — `new`/`awaiting_blueprints` show blue "AWAITING BLUEPRINTS", `analyzing` shows purple "ANALYZING…", `pending_review` with no quote shows amber "NO QUOTE — RE-SCAN"
+      - Surface next-step banner ON the bid card (was modal-only) with color-coded left border + icon + title + first 220 chars of detail
+      - Live `analyzing-progress` widget with animated gradient bar, pulsing dot, sub-step segments, 3-up stat tiles, cost meter, device chips, Gemini crosscheck line, activity ticker
+      - "Move to Junk" button in modal with reason prompt + confirmation
+    - **A/B audit results from this session (37 bids → cleanly categorized)**:
+      - Auto-junked 13 bids: 3 no_scope (already marked no_bid), 7 past_deadline (Hertz $115K, PT Solutions $16K, AISD JR concessions, Bowie HS, Pilates, Rawhide), 2 dupes (Org 208 Seagoville new, Arlington CSP), 1 due-soon-with-silent-fail (Murphy Oil Princeton, PCHD Hangar, Murphy USA), 1 no-recovery-path (Seagoville Elementary $2,040 = effectively $0 for school), 1 stalled-zombie (7 Brew Coffee with Gemini clearly_wrong 100%)
+      - Auto-promoted 3 bids to quote_ready: MyDrNow ($23,194), 7Brew-Waco ($54,495), Talkin' Taco ($39,634) — all hit verdict=looks_right 90% with new size-aware Gemini prompt
+      - Auto-rescan triggered: FKC North Denton + Argyle ISD Ballfield (both had time on deadline + LV sheets but $0/null devices → re-process via v17 grounded pipeline)
+      - Pending Review now shows 14 bids, all with clear amber banner explaining WHY (silent-fail, scope-gap, kiosk, low-total, Gemini-suspicious, etc.)
+    - **Cost projection per bid type with v17.4 stack**:
+      - Small commercial (10-15 pages): $0.50 ($0.40 vision + $0.10 misc)
+      - Medium school renovation (50 pages): $2.40 (down from $2.50)
+      - Mega-school 4014-page bundle: $1.95 (down from $3.00 capped — Gemini batch classify saves $1.05 on large bids)
+      - Per-bid Gemini cross-check overhead: $0 (free tier, ~5-15 free calls per bid)
+    - **Files**: `/tmp/wf3_analyze.js` (215 lines, WF3 v5 grounded), `/tmp/wf4_engine.js` (~2050 lines, WF4 v17 hardened), `/tmp/wf6_verify.js` (~280 lines, WF6 size-aware), `/tmp/wf1_parse.js` (~530 lines, WF1 v17 SendGrid + skiplist dedup), `/tmp/planhub_pipeline_current.py` (2730 lines, v17.4), `/tmp/gap_reconcile.js` (~250 lines, hourly cron with all v17 rules), `/tmp/auto_promote.js` (~150 lines, Gemini auto-promote), `/tmp/disk_cleanup.js` (~100 lines, nightly disk purge)
+    - **n8n IDs**: WF1=`6OXGUtj6mQlWSsEQ`, WF2=`CJlS0xgvY4oHtQsy`, WF3=`MCioEt93wGOlbd7d`, WF4=`uTiy5gtBbhoL2wjo`, WF5=`3IjbS6wWZIxQSj9a`, WF6=`ZcSsnPOZGN4IxXiM`, Gap-reconcile cron=`DUk2xWWZNeLoirfU`, Disk-cleanup cron=`JHAP2Qj7zrPyAiUK`, Auto-expire cron=`P8pO5V6vewkRAPFa`
+  - [ ] Add `page_evidence` JSONB column to tbe_bids + WF4 PATCH to save it (currently sent by pipeline but WF4 ignores)
+  - [ ] Surface evidence + rejected_symbols + keyed_notes in admin-bids.html dashboard modal (per-device "show your work" rows + rejected codes panel)
+  - [ ] Move WF3 hardcoded Anthropic key to n8n credentials (security)
+  - [ ] Ground-truth audit: open MyDrNow + Talkin' + 7Brew PDFs, independently count devices, grade v16/v17 against drawings
+  - [ ] Fix WF2 finally block to reset status on skip-reviewed-counts path (Texas Roadhouse / Dunkin' / JP Starks stuck at analyzing)
   - [ ] Anthropic Batch API for non-urgent bids (50% discount)
   - [ ] Re-run Kleberg with v10 once credits refill to verify dedup accuracy
   - [ ] Multi-tenant auth for BidEngine SaaS (Supabase auth, per-customer dashboards)

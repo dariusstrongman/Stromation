@@ -64,9 +64,44 @@
         /* Bid cards */
         .bid-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:1.15rem 1.25rem;margin-bottom:0.85rem;cursor:pointer;transition:all 0.15s;}
         .bid-card:hover{border-color:#475569;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.2);}
-        .bid-card.hot{border-left:4px solid #F59E0B;}
         .bid-card.sent{opacity:0.75;}
         .bid-card-analyzing{border:1px solid rgba(192,132,252,0.5);box-shadow:0 0 12px rgba(192,132,252,0.2);}
+
+        /* v17: rich analyzing progress bar */
+        .analyzing-progress{margin-top:0.8rem;padding:0.9rem 1rem;background:linear-gradient(90deg,rgba(139,92,246,0.08),rgba(59,130,246,0.08));border:1px solid rgba(139,92,246,0.3);border-radius:8px;}
+        .analyzing-progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;}
+        .analyzing-progress-title{font-size:0.8rem;font-weight:700;color:#C4B5FD;text-transform:uppercase;letter-spacing:0.6px;display:flex;align-items:center;gap:0.4rem;}
+        .analyzing-progress-title::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:#A78BFA;animation:pulse-dot 1.4s ease-in-out infinite;}
+        @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(1.4);}}
+        .analyzing-progress-pct{font-size:0.95rem;font-weight:800;color:#DDD6FE;}
+        .analyzing-progress-bar{height:8px;background:#1E1B4B;border-radius:4px;overflow:hidden;position:relative;}
+        .analyzing-progress-fill{height:100%;background:linear-gradient(90deg,#8B5CF6,#3B82F6,#06B6D4);background-size:200% 100%;animation:slide-bg 2s linear infinite;border-radius:4px;transition:width 0.5s ease-out;}
+        @keyframes slide-bg{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+        .analyzing-progress-step{margin-top:0.7rem;font-size:0.88rem;color:#E5E7EB;font-weight:600;}
+        .analyzing-progress-detail{margin-top:0.25rem;font-size:0.78rem;color:#9CA3AF;line-height:1.4;}
+        .analyzing-progress-substeps{margin-top:0.5rem;display:flex;gap:4px;}
+        .analyzing-progress-substep{flex:1;height:3px;border-radius:2px;background:#1E293B;transition:background 0.3s;}
+        .analyzing-progress-substep.done{background:#8B5CF6;}
+        .analyzing-progress-substep.active{background:linear-gradient(90deg,#8B5CF6 50%,#1E293B 50%);background-size:200% 100%;animation:slide-bg 1.5s linear infinite;}
+        /* v17.2: live telemetry */
+        .analyzing-stats{margin-top:0.7rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;}
+        .analyzing-stat{background:#0F172A;border:1px solid #1E293B;border-radius:6px;padding:0.45rem 0.6rem;text-align:center;}
+        .analyzing-stat-label{font-size:0.65rem;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;}
+        .analyzing-stat-value{font-size:0.95rem;font-weight:700;color:#E5E7EB;margin-top:0.15rem;}
+        .analyzing-cost-bar{margin-top:0.55rem;}
+        .analyzing-cost-track{height:5px;background:#1E293B;border-radius:3px;overflow:hidden;margin-top:0.2rem;}
+        .analyzing-cost-fill{height:100%;border-radius:3px;transition:width 0.4s ease-out;}
+        .analyzing-cost-fill.green{background:#10B981;}
+        .analyzing-cost-fill.amber{background:#F59E0B;}
+        .analyzing-cost-fill.red{background:#EF4444;}
+        .analyzing-devices{margin-top:0.7rem;display:flex;flex-wrap:wrap;gap:5px;}
+        .analyzing-device-chip{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.4);border-radius:12px;padding:2px 9px;font-size:0.72rem;color:#DDD6FE;font-weight:600;}
+        .analyzing-ticker{margin-top:0.65rem;background:#0B1120;border:1px solid #1E293B;border-radius:6px;padding:0.5rem 0.65rem;font-family:'Menlo','Consolas',monospace;font-size:0.7rem;color:#94A3B8;line-height:1.5;max-height:5.5rem;overflow:hidden;}
+        .analyzing-ticker-line{padding:1px 0;}
+        .analyzing-ticker-line.warn{color:#FBBF24;}
+        .analyzing-ticker-line.miss{color:#94A3B8;font-style:italic;}
+        .analyzing-cross-stat{font-size:0.7rem;color:#94A3B8;margin-top:0.4rem;}
+        .analyzing-cross-stat strong{color:#34D399;}
         .bid-top{display:flex;justify-content:space-between;align-items:start;gap:1rem;margin-bottom:0.5rem;}
         .bid-name{font-size:1.05rem;font-weight:700;color:#fff;line-height:1.3;}
         .bid-total{font-size:1.15rem;font-weight:800;color:#10B981;white-space:nowrap;}
@@ -313,12 +348,6 @@
                 <div class="stat-label">Pipeline Value</div>
                 <div class="stat-val green" id="sRevenue">-</div>
             </div>
-        </div>
-
-        <!-- Hot Bids -->
-        <div id="hotSection" class="hidden" style="margin-bottom:1.25rem;">
-            <h3 style="font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;color:#F59E0B;margin-bottom:0.5rem;">🔥 Hot — Needs Your Attention</h3>
-            <div id="hotList"></div>
         </div>
 
         <!-- Toolbar -->
@@ -613,6 +642,118 @@ var PHASE_LABELS=[
     ['pending_review','Review'],
     ['sent','Sent']
 ];
+// v17: rich analyzing progress widget — shown when status=analyzing
+function renderAnalyzingProgress(phases){
+    if(!phases) phases = {};
+    // Define the ordered pipeline steps with friendly labels + descriptions for the "current" line
+    var STEPS = [
+        {key:'download', label:'Downloading PDFs from PlanHub', short:'Download'},
+        {key:'classify', label:'Classifying drawing pages', short:'Classify'},
+        {key:'drawing_audit', label:'Auditing drawings', short:'Audit'},
+        {key:'spec_extract', label:'Reading spec documents', short:'Specs'},
+        {key:'claude_counts', label:'Counting devices with Claude vision', short:'Claude'},
+        {key:'gemini_verify', label:'Verifying counts with Gemini', short:'Verify'},
+        {key:'quote_built', label:'Building the quote', short:'Quote'}
+    ];
+    // Filter to steps that exist in this bid's phases (drawing_audit/spec_extract may not)
+    var present = STEPS.filter(function(s){return phases.hasOwnProperty(s.key) || ['download','classify','claude_counts','gemini_verify','quote_built'].indexOf(s.key)!==-1;});
+    var doneCount = 0;
+    var currentIdx = -1;
+    var currentDetail = '';
+    for(var i=0; i<present.length; i++){
+        var ph = phases[present[i].key] || {status:'not_started'};
+        if(ph.status === 'complete') doneCount++;
+        else if(ph.status === 'in_progress' && currentIdx === -1){
+            currentIdx = i;
+            currentDetail = ph.detail || '';
+        }
+    }
+    if(currentIdx === -1) currentIdx = doneCount;  // first not-started step
+    var pct = Math.round((doneCount / present.length) * 100);
+    var currentStep = present[currentIdx] || present[present.length-1];
+
+    var html = '<div class="analyzing-progress">';
+    html += '<div class="analyzing-progress-header">';
+    html += '<div class="analyzing-progress-title">Analyzing</div>';
+    html += '<div class="analyzing-progress-pct">'+pct+'% • Step '+(Math.min(currentIdx+1,present.length))+' of '+present.length+'</div>';
+    html += '</div>';
+    html += '<div class="analyzing-progress-bar"><div class="analyzing-progress-fill" style="width:'+Math.max(pct,5)+'%;"></div></div>';
+    html += '<div class="analyzing-progress-step">→ '+esc(currentStep.label)+'</div>';
+    if(currentDetail) html += '<div class="analyzing-progress-detail">'+esc(currentDetail)+'</div>';
+    // Sub-step bars: one per phase
+    html += '<div class="analyzing-progress-substeps">';
+    for(var j=0; j<present.length; j++){
+        var ph2 = phases[present[j].key] || {status:'not_started'};
+        var cls = ph2.status === 'complete' ? 'done' : (j === currentIdx ? 'active' : '');
+        html += '<div class="analyzing-progress-substep '+cls+'" title="'+esc(present[j].short)+(ph2.detail?': '+esc(ph2.detail):'')+'"></div>';
+    }
+    html += '</div>';
+
+    // v17.2: live telemetry from claude_counts phase extras
+    var cc = phases.claude_counts || {};
+    var hasLive = cc.pages_total || cc.cost_so_far !== undefined || (cc.running_devices && Object.keys(cc.running_devices).length > 0);
+    if (hasLive) {
+        var pagesDone = cc.pages_done || 0;
+        var pagesTotal = cc.pages_total || '?';
+        var cost = (cc.cost_so_far !== undefined) ? cc.cost_so_far : 0;
+        var budget = cc.cost_budget || 3.0;
+        var elapsed = '—';
+        if (cc.started_at) {
+            var startedMs = new Date(cc.started_at).getTime();
+            var endedMs = cc.ended_at ? new Date(cc.ended_at).getTime() : Date.now();
+            var secs = Math.max(0, Math.floor((endedMs - startedMs) / 1000));
+            elapsed = secs >= 60 ? Math.floor(secs/60)+'m '+(secs%60)+'s' : secs+'s';
+        }
+        // 3-up stats
+        html += '<div class="analyzing-stats">';
+        html += '<div class="analyzing-stat"><div class="analyzing-stat-label">Pages</div><div class="analyzing-stat-value">'+pagesDone+'/'+pagesTotal+'</div></div>';
+        html += '<div class="analyzing-stat"><div class="analyzing-stat-label">Cost</div><div class="analyzing-stat-value">$'+Number(cost).toFixed(2)+'</div></div>';
+        html += '<div class="analyzing-stat"><div class="analyzing-stat-label">Elapsed</div><div class="analyzing-stat-value">'+elapsed+'</div></div>';
+        html += '</div>';
+        // Cost meter
+        var costPct = Math.min(100, (cost / budget) * 100);
+        var costColor = costPct < 50 ? 'green' : (costPct < 80 ? 'amber' : 'red');
+        html += '<div class="analyzing-cost-bar">';
+        html += '<div style="display:flex;justify-content:space-between;font-size:0.65rem;color:#94A3B8;"><span>Budget $'+budget.toFixed(2)+'</span><span>'+costPct.toFixed(0)+'% used</span></div>';
+        html += '<div class="analyzing-cost-track"><div class="analyzing-cost-fill '+costColor+'" style="width:'+costPct+'%;"></div></div>';
+        html += '</div>';
+        // Devices found chips
+        var devs = cc.running_devices || {};
+        var devKeys = Object.keys(devs).filter(function(k){return devs[k] > 0;});
+        if (devKeys.length > 0) {
+            html += '<div class="analyzing-devices">';
+            devKeys.forEach(function(k){
+                var label = k.replace(/_/g,' ').replace(/cat6a drops/i,'drops').replace(/wifi aps/i,'WAPs').replace(/fixed cameras/i,'cams').replace(/access control doors/i,'doors').replace(/rack mdf rooms/i,'racks');
+                html += '<span class="analyzing-device-chip">'+devs[k]+' '+esc(label)+'</span>';
+            });
+            html += '</div>';
+        }
+        // Crosscheck stats
+        var cs = cc.crosscheck_stats || {};
+        var totalChecks = (cs.agree||0) + (cs.claude_too_high_capped||0) + (cs.too_low||0) + (cs.wildly_off||0);
+        if (totalChecks > 0) {
+            html += '<div class="analyzing-cross-stat">Gemini cross-check: <strong>'+(cs.agree||0)+' agreed</strong>';
+            if (cs.claude_too_high_capped) html += ' • <span style="color:#FBBF24;">'+cs.claude_too_high_capped+' over-counts capped</span>';
+            if (cs.too_low) html += ' • <span style="color:#FBBF24;">'+cs.too_low+' flagged low</span>';
+            if (cs.wildly_off) html += ' • <span style="color:#EF4444;">'+cs.wildly_off+' way off</span>';
+            html += '</div>';
+        }
+        // Activity ticker
+        var actions = cc.recent_actions || [];
+        if (actions.length > 0) {
+            html += '<div class="analyzing-ticker">';
+            actions.slice(-5).forEach(function(line){
+                var cls = line.indexOf('⚠') === 0 ? 'warn' : (line.indexOf('○') === 0 ? 'miss' : '');
+                html += '<div class="analyzing-ticker-line '+cls+'">'+esc(line)+'</div>';
+            });
+            html += '</div>';
+        }
+    }
+
+    html += '</div>';
+    return html;
+}
+
 function renderPhases(phases,detailed){
     if(!phases||typeof phases!=='object')return '';
     var cls=detailed?'stepper stepper-modal':'stepper';
@@ -665,7 +806,6 @@ async function loadBids(){
         allBids=await r.json();
         updateStats();
         updateTabCounts();
-        renderHot();
         renderBids();
         document.getElementById('bidCount').textContent=allBids.length+' bids';
         var hasActive=allBids.some(function(b){return b.status==='analyzing';});
@@ -695,18 +835,6 @@ function updateTabCounts(){
         var el = document.getElementById('tc_'+s);
         if(el) el.textContent = '('+allBids.filter(function(b){return b.status===s;}).length+')';
     });
-}
-
-function renderHot(){
-    var hot = allBids.filter(needsAttention).slice(0,3);
-    var sec = document.getElementById('hotSection');
-    var list = document.getElementById('hotList');
-    if(hot.length===0){
-        sec.classList.add('hidden');
-        return;
-    }
-    sec.classList.remove('hidden');
-    list.innerHTML = hot.map(function(b){return bidCardHtml(b,true);}).join('');
 }
 
 function filterBids(f,el,alsoStats){
@@ -754,9 +882,8 @@ function renderBids(){
     document.getElementById('bidList').innerHTML=filtered.map(function(b){return bidCardHtml(b,false);}).join('');
 }
 
-function bidCardHtml(b,isHot){
+function bidCardHtml(b){
     var dl=deadlineInfo(b.bid_deadline);
-    var hotClass = isHot ? ' hot' : '';
     var sentClass = (b.status==='quote_sent'||b.status==='submitted') ? ' sent' : '';
     var analyzingClass = (b.status==='analyzing') ? ' bid-card-analyzing' : '';
     var cats=(b.scope_categories||[]).slice(0,4).map(function(c){
@@ -794,10 +921,24 @@ function bidCardHtml(b,isHot){
         recBadge='<span class="estimate-badge" style="background:rgba(167,139,250,0.15);color:#C4B5FD;margin-left:0.3rem;" title="Gemini pattern-matched — NOT verified in drawings">'+recAdds.length+' to verify</span>';
     }
 
-    var html='<div class="bid-card'+hotClass+sentClass+analyzingClass+'" onclick="openBid(\''+b.id+'\')">';
+    var html='<div class="bid-card'+sentClass+analyzingClass+'" onclick="openBid(\''+b.id+'\')">';
     html+='<div class="bid-top">';
     html+='<div style="flex:1;min-width:0;"><div class="bid-name">'+esc(b.project_name||'Untitled')+' '+estBadge+tierBadge+specBadge+recBadge+'</div></div>';
-    html+='<div style="text-align:right;white-space:nowrap;">'+statusTag(b.status)+'<div class="bid-total" style="margin-top:0.4rem;">'+fmtMoney(b.total_bid)+'</div></div>';
+    // v17: context-aware total display — never show "$0" when there's no quote yet
+    var totalDisplay;
+    var hasQuote = b.total_bid && b.total_bid > 0;
+    if (hasQuote) {
+        totalDisplay = '<div class="bid-total" style="margin-top:0.4rem;">'+fmtMoney(b.total_bid)+'</div>';
+    } else if (b.status==='new' || b.status==='awaiting_blueprints') {
+        totalDisplay = '<div class="bid-total" style="margin-top:0.4rem;font-size:0.75rem;color:#60A5FA;text-transform:uppercase;letter-spacing:0.5px;">Awaiting blueprints</div>';
+    } else if (b.status==='analyzing') {
+        totalDisplay = '<div class="bid-total" style="margin-top:0.4rem;font-size:0.75rem;color:#A78BFA;text-transform:uppercase;letter-spacing:0.5px;">Analyzing…</div>';
+    } else if (b.status==='pending_review') {
+        totalDisplay = '<div class="bid-total" style="margin-top:0.4rem;font-size:0.75rem;color:#F59E0B;text-transform:uppercase;letter-spacing:0.5px;">No quote — re-scan</div>';
+    } else {
+        totalDisplay = '<div class="bid-total" style="margin-top:0.4rem;">'+fmtMoney(b.total_bid)+'</div>';
+    }
+    html+='<div style="text-align:right;white-space:nowrap;">'+statusTag(b.status)+totalDisplay+'</div>';
     html+='</div>';
     html+='<div class="bid-meta">';
     if(b.general_contractor) html+='<span>GC: '+esc(b.general_contractor)+'</span>';
@@ -808,10 +949,25 @@ function bidCardHtml(b,isHot){
     html+='</div>';
     if(b.scope_summary) html+='<div class="bid-scope">'+esc(b.scope_summary.substring(0,180))+(b.scope_summary.length>180?'…':'')+'</div>';
     if(cats) html+='<div class="bid-tags">'+cats+'</div>';
-    if(b.pipeline_phases) html+=renderPhases(b.pipeline_phases,false);
+    // v17: rich progress widget for analyzing bids; compact stepper for everything else
+    if(b.status === 'analyzing'){
+        html+=renderAnalyzingProgress(b.pipeline_phases||{});
+    } else if(b.pipeline_phases){
+        html+=renderPhases(b.pipeline_phases,false);
+    }
+
+    // v17: surface the next-step banner ON the card so user sees WHY without clicking in
+    var ns = decideNextStep(b);
+    if(ns.kind === 'action-required' && ns.desc && ns.desc.length > 0){
+        var bannerColor = b.status==='pending_review' ? '#F59E0B' : (b.status==='quote_ready' ? '#34D399' : '#60A5FA');
+        var bannerBg = b.status==='pending_review' ? 'rgba(245,158,11,0.08)' : (b.status==='quote_ready' ? 'rgba(52,211,153,0.08)' : 'rgba(96,165,250,0.08)');
+        html+='<div style="margin-top:0.6rem;padding:0.55rem 0.75rem;background:'+bannerBg+';border-left:3px solid '+bannerColor+';border-radius:4px;font-size:0.82rem;color:#E5E7EB;line-height:1.4;">';
+        html+='<span style="font-weight:600;color:'+bannerColor+';">'+(ns.icon||'')+' '+esc(ns.title||'')+'</span>';
+        html+='<div style="margin-top:0.2rem;color:#9CA3AF;">'+esc(ns.desc.substring(0,220))+(ns.desc.length>220?'…':'')+'</div>';
+        html+='</div>';
+    }
 
     // Quick actions on card — unified by next-step logic
-    var ns = decideNextStep(b);
     if(ns.actions.length>0){
         html+='<div class="bid-actions" onclick="event.stopPropagation()">';
         ns.actions.slice(0,3).forEach(function(a){
@@ -1113,6 +1269,10 @@ async function openBid(id){
         html+='<button class="btn btn-green" onclick="updateBidStatus(\''+id+'\',\'won\')">Mark Won</button>';
         html+='<button class="btn btn-red" onclick="updateBidStatus(\''+id+'\',\'lost\')">Mark Lost</button>';
     }
+    // v17: Move to Junk — adds to skiplist so WF1 won't recreate, then deletes the bid
+    if(['new','awaiting_blueprints','analyzing','pending_review','quote_ready','expired','no_bid'].indexOf(bid.status) !== -1){
+        html+='<button class="btn btn-outline" onclick="moveToJunk(\''+id+'\')" style="border-color:#6B7280;color:#9CA3AF;">🗑 Move to Junk</button>';
+    }
     html+='</div>';
 
     document.getElementById('modalTitle').textContent = bid.project_name || 'Untitled';
@@ -1147,6 +1307,58 @@ async function saveBidNotes(id){
         await fetch(SB+'/rest/v1/tbe_bids?id=eq.'+id,{method:'PATCH',headers:H,body:JSON.stringify({notes:notes,updated_at:new Date().toISOString()})});
         toast('Notes saved','success');
     }catch(e){toast('Failed to save notes: '+e.message,'error');}
+}
+
+// v17: move bid to skiplist (so WF1 won't recreate it on PlanHub reminders) then delete
+async function moveToJunk(id){
+    var bid = allBids.find(function(b){return b.id===id;});
+    if(!bid) return;
+    var reasonOptions = ['silent_fail','no_scope','too_complex','sent_no_response','manual_skip','duplicate','other'];
+    var reason = prompt('Move "'+bid.project_name+'" to junk.\n\nReason (one of: '+reasonOptions.join(', ')+'):','silent_fail');
+    if(!reason) return;
+    if(reasonOptions.indexOf(reason) === -1){
+        if(!confirm('"'+reason+'" is not a standard reason. Continue anyway?')) return;
+    }
+    if(!confirm('Move "'+bid.project_name+'" to skiplist permanently?\n\nThis bid will be DELETED from tbe_bids and added to tbe_bid_skiplist.\nWF1 will no longer recreate it from PlanHub emails.\n\nProceed?')) return;
+    try{
+        // Extract PlanHub project ID from source_url
+        var planhubId = null;
+        if(bid.source_url){
+            var m = bid.source_url.match(/projectDetails\/(\d+)|\/projects\/(\d+)|project_id=(\d+)|\/p\/(\d+)/);
+            if(m) planhubId = m[1] || m[2] || m[3] || m[4];
+        }
+        var normName = (bid.project_name||'').toLowerCase()
+            .replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+        // 1) Insert into skiplist
+        var skipBody = {
+            planhub_project_id: planhubId,
+            normalized_name: normName,
+            source_url: bid.source_url || null,
+            reason: reason,
+            original_bid_id: id,
+            notes: 'Moved from tbe_bids on '+new Date().toISOString().slice(0,10)+'. Original total: $'+(bid.total_bid||0)
+        };
+        var skipResp = await fetch(SB+'/rest/v1/tbe_bid_skiplist',{method:'POST',headers:H,body:JSON.stringify(skipBody)});
+        if(!skipResp.ok){
+            var err = await skipResp.text();
+            toast('Skiplist insert failed: '+err.substring(0,120),'error');
+            return;
+        }
+        // 2) Activity log entry on the bid before deletion
+        await fetch(SB+'/rest/v1/tbe_bid_activity',{method:'POST',headers:H,body:JSON.stringify({bid_id:id,action:'Moved to junk skiplist (reason='+reason+')',old_status:bid.status,new_status:'deleted'})});
+        // 3) Delete the bid (line items cascade if FK is set up; else manually)
+        await fetch(SB+'/rest/v1/tbe_bid_items?bid_id=eq.'+id,{method:'DELETE',headers:H});
+        var delResp = await fetch(SB+'/rest/v1/tbe_bids?id=eq.'+id,{method:'DELETE',headers:H});
+        if(!delResp.ok){
+            toast('Skiplist added but bid delete failed','error');
+            return;
+        }
+        toast('Moved to junk. WF1 will skip future PlanHub mentions of this project.','success');
+        await loadBids();
+        closeModal();
+    }catch(e){
+        toast('Move to junk failed: '+e.message,'error');
+    }
 }
 
 // ============================================================
