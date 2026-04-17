@@ -1056,7 +1056,7 @@ async function openBid(id){
         if(si.has_telecom_sheets) siChips.push('<span class="tag tag-blue">Telecom</span>');
         if(si.has_security_sheets) siChips.push('<span class="tag tag-purple">Security</span>');
         if(si.has_av_sheets) siChips.push('<span class="tag tag-amber">AV</span>');
-        if(si.has_access_control_sheets) siChips.push('<span class="tag tag-purple">Access Control</span>');
+        // access control removed — not Antonio's scope
         if(si.has_fire_alarm_sheets) siChips.push('<span class="tag tag-red">Fire Alarm</span>');
         if(siChips.length===0) siChips.push('<span style="color:#64748B;font-size:0.8rem;">No LV categories detected in drawings</span>');
         html+='<div class="modal-section"><h3>Scope Inventory</h3>';
@@ -1165,8 +1165,9 @@ async function openBid(id){
             if(pc.floor_plans_analyzed) html+=' • <strong>'+pc.floor_plans_analyzed+'</strong> floor plans';
             html+='</div>';
         }
-        var deviceNames={cat6a_drops:'Cat6A Data Drops',wifi_aps:'WiFi APs',fixed_cameras:'Fixed Cameras',ptz_cameras:'PTZ Cameras',access_control_doors:'Access Control Doors',motion_detectors:'Motion Detectors',keypads:'Keypads',glass_break_sensors:'Glass Break',door_contacts:'Door Contacts',speakers:'Speakers',displays:'Displays',intercom_stations:'Intercom Stations',nurse_call_stations:'Nurse Call',rack_mdf_rooms:'MDF/IDF Rooms',fiber_runs:'Fiber Runs'};
-        var deviceCats={cat6a_drops:'Structured Cabling',wifi_aps:'Structured Cabling',fixed_cameras:'Security',ptz_cameras:'Security',access_control_doors:'Security',motion_detectors:'Security',keypads:'Security',glass_break_sensors:'Security',door_contacts:'Security',speakers:'Audio Visual',displays:'Audio Visual',intercom_stations:'Intercom',nurse_call_stations:'Intercom',rack_mdf_rooms:'Infrastructure',fiber_runs:'Infrastructure'};
+        // v17: strictly Div 27 — no access control, no intrusion devices
+        var deviceNames={cat6a_drops:'Cat6A Data Drops',wifi_aps:'WiFi APs',fixed_cameras:'Cameras (install only)',ptz_cameras:'PTZ Cameras',speakers:'Speakers',displays:'Displays',intercom_stations:'Intercom Stations',nurse_call_stations:'Nurse Call',rack_mdf_rooms:'MDF/IDF Rooms',fiber_runs:'Fiber Runs'};
+        var deviceCats={cat6a_drops:'Structured Cabling',wifi_aps:'Structured Cabling',fixed_cameras:'Camera Install',ptz_cameras:'Camera Install',speakers:'Audio Visual',displays:'Audio Visual',intercom_stations:'Intercom',nurse_call_stations:'Intercom',rack_mdf_rooms:'Infrastructure',fiber_runs:'Infrastructure'};
         var editable = (bid.status==='pending_review' || bid.status==='quote_ready');
         html+='<table class="review-table"><thead><tr><th>Device</th><th>Count</th><th>Source</th><th>Confidence</th><th>Notes</th></tr></thead><tbody>';
         var lastCat='';
@@ -1523,7 +1524,7 @@ async function generateQuoteFromReview(bidId){
     var getN = function(k){var el=document.getElementById('rc_'+k);return el?parseInt(el.value)||0:0;};
     var counts={
         structured_cabling:{cat6a_drops:getN('cat6a_drops'),wifi_aps:getN('wifi_aps')},
-        security:{fixed_cameras:getN('fixed_cameras'),ptz_cameras:getN('ptz_cameras'),access_control_doors:getN('access_control_doors'),motion_detectors:getN('motion_detectors'),keypads:getN('keypads'),glass_break_sensors:getN('glass_break_sensors'),door_contacts:getN('door_contacts')},
+        security:{fixed_cameras:getN('fixed_cameras'),ptz_cameras:getN('ptz_cameras')},
         audio_visual:{speakers:getN('speakers'),displays:getN('displays')},
         intercom_nurse_call:{intercom_stations:getN('intercom_stations'),nurse_call_stations:getN('nurse_call_stations')},
         infrastructure:{rack_mdf_rooms:getN('rack_mdf_rooms'),fiber_runs:getN('fiber_runs')}
