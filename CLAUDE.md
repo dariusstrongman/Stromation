@@ -270,7 +270,20 @@ Auto-generated weekly by WF25 (Sunday 6AM CT). All posts have reading time badge
 - Don't mention Make or Zapier on the site -- Stromation only uses n8n
 - Nav says "Industries" not "Workflows"
 
+## Bot Protection (added 2026-04-20)
+- All 4 forms (contact, audit, checklist, ROI) have honeypot field + 3-second time gate
+- WF22 server-side honeypot check returns empty array (kills email for bots)
+- Chat widget: 6 msgs/min rate limit + 30 msgs/session cap
+- Phone/SMS: Twilio transport layer handles abuse
+
+## Blog
+- 39 posts (auto-generated weekly by WF25, Sunday 6AM CT)
+- Blog page paginated: 9 posts per page with prev/next
+- Reading times calculated from actual word count (not hardcoded)
+- WF25 calculates reading time for new posts automatically
+
 ## Known Issues
 - Reddit karma still at -1 (WF13 off until 50+)
 - Google Ads + Facebook Pixel not set up yet
 - LinkedIn/Twitter content not yet posted (docs ready in docs/)
+- Industry landing pages (dental, home-services, etc.) have no inline forms, only link to audit.html
