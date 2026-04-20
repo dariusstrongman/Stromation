@@ -98,7 +98,7 @@
                 <div class="blog-featured-body">
                     <span class="blog-tag tag-strategy">Strategy</span>
                     <h2>5 Signs Your Business Needs Workflow Automation</h2>
-                    <p>Spending hours on copy-paste, losing leads, and drowning in manual work? Here are the five clearest signals that it's time to build systems — and what to do about each one.</p>
+                    <p>Spending hours on copy-paste, losing leads, and drowning in manual work? Here are the five clearest signals that it's time to build systems, and what to do about each one.</p>
                     <div class="blog-featured-meta">
                         <span>8 min read</span>
                         <span class="blog-card-arrow">&rarr;</span>
@@ -487,6 +487,7 @@
                     </div>
                 </a>
             </div>
+            <div class="blog-pagination" id="blog-pagination"></div>
         </div>
     </section>
 
@@ -584,6 +585,44 @@
 
     <script src="script.js"></script>
     <script src="chat.js" defer></script>
+    <script>
+    (function() {
+        var grid = document.getElementById('blog-grid');
+        var pag = document.getElementById('blog-pagination');
+        if (!grid || !pag) return;
+        var cards = Array.from(grid.querySelectorAll('.blog-card'));
+        var perPage = 9;
+        var totalPages = Math.ceil(cards.length / perPage);
+        var current = 1;
+
+        function render() {
+            var start = (current - 1) * perPage;
+            var end = start + perPage;
+            cards.forEach(function(c, i) {
+                c.style.display = (i >= start && i < end) ? '' : 'none';
+            });
+            pag.innerHTML = '';
+            var prev = document.createElement('button');
+            prev.textContent = 'Previous';
+            prev.disabled = current === 1;
+            prev.onclick = function() { current--; render(); window.scrollTo({top: grid.offsetTop - 100, behavior: 'smooth'}); };
+            pag.appendChild(prev);
+            for (var p = 1; p <= totalPages; p++) {
+                var btn = document.createElement('button');
+                btn.textContent = p;
+                btn.className = p === current ? 'active' : '';
+                btn.onclick = (function(page) { return function() { current = page; render(); window.scrollTo({top: grid.offsetTop - 100, behavior: 'smooth'}); }; })(p);
+                pag.appendChild(btn);
+            }
+            var next = document.createElement('button');
+            next.textContent = 'Next';
+            next.disabled = current === totalPages;
+            next.onclick = function() { current++; render(); window.scrollTo({top: grid.offsetTop - 100, behavior: 'smooth'}); };
+            pag.appendChild(next);
+        }
+        render();
+    })();
+    </script>
 </body>
 </html>
                                

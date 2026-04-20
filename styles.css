@@ -3568,3 +3568,41 @@ circle.svg-node:nth-of-type(5) { animation-delay: 1.1s; }
         padding: 1.5rem;
     }
 }
+
+.blog-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.blog-pagination button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #E2E8F0;
+    background: #fff;
+    color: #1E293B;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.blog-pagination button:hover:not(:disabled) {
+    background: #F1F5F9;
+    border-color: #2563EB;
+    color: #2563EB;
+}
+
+.blog-pagination button.active {
+    background: #2563EB;
+    color: #fff;
+    border-color: #2563EB;
+}
+
+.blog-pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
