@@ -248,7 +248,7 @@ async function loadLeads() {
         var html = '';
 
         if (!leads || leads.length === 0) {
-            html = '<div class="empty-state">No leads with phone numbers right now. WF18 finds new ones daily at 7AM.</div>';
+            html = '<div class="empty-state">No leads with phone numbers right now. Add leads manually or wait for website form submissions.</div>';
         } else {
             leads.forEach(function(lead) {
                 var id = lead.id;

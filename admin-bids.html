@@ -557,7 +557,7 @@ function needsAttention(b){
 function decideNextStep(b){
     // Returns { kind, title, desc, actions: [{label, fn, btnClass}] }
     if(b.status==='won'){
-        return {kind:'ready', icon:'🏆', title:'WON — $'+(b.won_amount||b.total_bid||0).toLocaleString(), desc:'Stromation commission: '+fmtMoney((b.won_amount||b.total_bid||0)*0.05)+'. Nothing more to do here.', actions:[]};
+        return {kind:'ready', icon:'🏆', title:'WON, $'+(b.won_amount||b.total_bid||0).toLocaleString(), desc:'Stromation commission: '+fmtMoney((b.won_amount||b.total_bid||0)*0.05)+'. Nothing more to do here.', actions:[]};
     }
     if(b.status==='lost' || b.status==='no_bid' || b.status==='expired'){
         return {kind:'info', icon:'📁', title:statusLabel(b.status), desc:'Archived. No action needed.', actions:[]};
@@ -918,7 +918,7 @@ function bidCardHtml(b){
     var recAdds = ((b.spec_data||{}).recommended_additions)||[];
     var recBadge='';
     if(recAdds.length>0){
-        recBadge='<span class="estimate-badge" style="background:rgba(167,139,250,0.15);color:#C4B5FD;margin-left:0.3rem;" title="Gemini pattern-matched — NOT verified in drawings">'+recAdds.length+' to verify</span>';
+        recBadge='<span class="estimate-badge" style="background:rgba(167,139,250,0.15);color:#C4B5FD;margin-left:0.3rem;" title="Gemini pattern-matched, NOT verified in drawings">'+recAdds.length+' to verify</span>';
     }
 
     var html='<div class="bid-card'+sentClass+analyzingClass+'" onclick="openBid(\''+b.id+'\')">';
@@ -934,7 +934,7 @@ function bidCardHtml(b){
     } else if (b.status==='analyzing') {
         totalDisplay = '<div class="bid-total" style="margin-top:0.4rem;font-size:0.75rem;color:#A78BFA;text-transform:uppercase;letter-spacing:0.5px;">Analyzing…</div>';
     } else if (b.status==='pending_review') {
-        totalDisplay = '<div class="bid-total" style="margin-top:0.4rem;font-size:0.75rem;color:#F59E0B;text-transform:uppercase;letter-spacing:0.5px;">No quote — re-scan</div>';
+        totalDisplay = '<div class="bid-total" style="margin-top:0.4rem;font-size:0.75rem;color:#F59E0B;text-transform:uppercase;letter-spacing:0.5px;">No quote, re-scan</div>';
     } else {
         totalDisplay = '<div class="bid-total" style="margin-top:0.4rem;">'+fmtMoney(b.total_bid)+'</div>';
     }
@@ -1076,9 +1076,9 @@ async function openBid(id){
     if(recAdds.length>0){
         html+='<div class="modal-section"><h3>🔍 Flagged for Verification</h3>';
         html+='<div class="rec-adds">';
-        html+='<h4>Typical for '+esc(bid.building_type||'this project type')+' — BUT NOT VERIFIED AGAINST DRAWINGS</h4>';
+        html+='<h4>Typical for '+esc(bid.building_type||'this project type')+', NOT VERIFIED AGAINST DRAWINGS</h4>';
         html+='<div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:0.6rem 0.75rem;margin-bottom:0.75rem;font-size:0.8rem;color:#FBBF24;">';
-        html+='⚠️ Gemini + scope heuristics flagged these as "probably in scope" based on building type. <strong>Gemini did not look at the drawings</strong> — it only saw the counts. Before adding any of these to the quote, re-scan the PDF to confirm they\'re actually drawn (or confirmed absent).';
+        html+='⚠️ Gemini + scope heuristics flagged these as "probably in scope" based on building type. <strong>Gemini did not look at the drawings</strong>. It only saw the counts. Before adding any of these to the quote, re-scan the PDF to confirm they\'re actually drawn (or confirmed absent).';
         html+='</div>';
         recAdds.forEach(function(r){
             html+='<div class="rec-add-item">';
@@ -1095,7 +1095,7 @@ async function openBid(id){
     // ===== KEYED NOTES INVENTORY (show your work) =====
     var kni = ((bid.spec_data||{}).keyed_notes_inventory)||[];
     if(kni.length>0){
-        html+='<div class="modal-section"><h3>Show Your Work — Keyed Notes</h3>';
+        html+='<div class="modal-section"><h3>Show Your Work, Keyed Notes</h3>';
         html+='<p style="font-size:0.8rem;color:#94A3B8;margin-bottom:0.5rem;">Every device count above traces back to a keyed note on the drawings:</p>';
         html+='<table class="keyed-notes-table"><thead><tr><th>Sheet</th><th>Note #</th><th>Exact Text</th><th>Extracted</th></tr></thead><tbody>';
         kni.forEach(function(n){
@@ -1124,7 +1124,7 @@ async function openBid(id){
         if(sd.summary) html+='<div style="color:#E2E8F0;font-size:0.88rem;line-height:1.5;margin-bottom:0.6rem;">'+esc(sd.summary)+'</div>';
         if(validationFails.length){
             html+='<div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:0.5rem 0.7rem;font-size:0.82rem;color:#FBBF24;"><strong>Validation flags ('+validationFails.length+'):</strong><ul style="margin:4px 0 0 18px;">';
-            validationFails.forEach(function(v){html+='<li>'+esc(v.check)+': '+esc(String(v.counted))+' vs max '+esc(String(v.expected_max))+(v.detail?(' — '+esc(v.detail)):'')+'</li>';});
+            validationFails.forEach(function(v){html+='<li>'+esc(v.check)+': '+esc(String(v.counted))+' vs max '+esc(String(v.expected_max))+(v.detail?(', '+esc(v.detail)):'')+'</li>';});
             html+='</ul></div>';
         }
         if(sd.equipment_list && sd.equipment_list.length){
@@ -1366,7 +1366,7 @@ async function moveToJunk(id){
 // WEBHOOK ACTIONS
 // ============================================================
 async function sendQuote(id){
-    if(!confirm('Send this quote to Antonio?\n\nWF5 will generate a PDF and email it (test mode — still goes to Darius\'s Gmail).'))return;
+    if(!confirm('Send this quote to Antonio?\n\nWF5 will generate a PDF and email it (test mode, still goes to Darius\'s Gmail).'))return;
     var bid=allBids.find(function(b){return b.id===id;});
     toast('Sending quote...','info');
     try{
@@ -1397,7 +1397,7 @@ async function auditDrawings(id){
             var resp=await fetch(WEBHOOKS.audit,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bid_id:id,pdf_filename:file.name,pdf_base64:b64,auto_apply:true})});
             var data=await resp.json();
             if(data.success){
-                toast('Audit complete — '+data.total_devices+' devices counted, quote: '+fmtMoney(data.new_total||0),'success');
+                toast('Audit complete, '+data.total_devices+' devices counted, quote: '+fmtMoney(data.new_total||0),'success');
             } else {
                 toast('Audit failed: '+(data.error||'unknown'),'error');
             }
@@ -1451,7 +1451,7 @@ async function verifyWithGemini(id){
         if(data.success){
             var verdict=(data.verdict||'?').replace(/_/g,' ');
             var tone=data.verdict==='looks_right'?'success':data.verdict==='suspicious'?'warn':'error';
-            toast('Gemini: '+verdict+' ('+(data.confidence||0)+'%)'+(data.issues&&data.issues.length?' — '+data.issues.slice(0,2).join('; '):''),tone);
+            toast('Gemini: '+verdict+' ('+(data.confidence||0)+'%)'+(data.issues&&data.issues.length?', '+data.issues.slice(0,2).join('; '):''),tone);
         } else {
             toast('Verify failed: '+(data.error||'unknown'),'error');
         }
@@ -1582,7 +1582,7 @@ async function focusedRescan(id){
             })});
             var data=await resp.json();
             if(data.success){
-                toast('Focused re-scan complete — '+data.total_devices+' devices counted. New total: '+fmtMoney(data.new_total||0),'success');
+                toast('Focused re-scan complete, '+data.total_devices+' devices counted. New total: '+fmtMoney(data.new_total||0),'success');
             } else {
                 toast('Re-scan failed: '+(data.error||'unknown'),'error');
             }

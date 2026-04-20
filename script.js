@@ -7,7 +7,7 @@
 // FORM ENDPOINT CONFIGURATION
 // ==========================================
 const FORM_ENDPOINT = 'https://n8n.myaibuffet.com/webhook/stromation-form';
-const N8N_WEBHOOK_URL = 'https://n8n.myaibuffet.com/webhook/lead-capture';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
@@ -314,65 +314,6 @@ function initActiveNavHighlight() {
             link.classList.remove('active');
         }
     });
-}
-
-// ==========================================
-// N8N WEBHOOK - FIRE AND FORGET
-// ==========================================
-function sendToN8N(formData) {
-    try {
-        // Determine source from the current page
-        const page = window.location.pathname.split('/').pop() || '';
-        let source = 'website_contact';
-        if (page === 'audit.html' || page.startsWith('audit')) {
-            source = 'website_audit';
-        }
-
-        // Split full name into first_name / last_name
-        const fullName = (formData.get('name') || '').trim();
-        const nameParts = fullName.split(/\s+/);
-        const firstName = nameParts[0] || '';
-        const lastName = nameParts.slice(1).join(' ') || '';
-
-        // Build notes from workflow description + extra fields
-        const noteParts = [];
-        const workflow = (formData.get('workflow') || '').trim();
-        if (workflow) noteParts.push(workflow);
-        const company = (formData.get('company') || '').trim();
-        if (company) noteParts.push('Company/Role: ' + company);
-        const tools = (formData.get('tools') || '').trim();
-        if (tools) noteParts.push('Tools: ' + tools);
-        const volume = (formData.get('volume') || '').trim();
-        if (volume) noteParts.push('Volume: ' + volume);
-        const outcome = (formData.get('outcome') || '').trim();
-        if (outcome) noteParts.push('Outcome: ' + outcome);
-        const budget = (formData.get('budget') || '').trim();
-        if (budget) noteParts.push('Budget: ' + budget);
-        const timeline = (formData.get('timeline') || '').trim();
-        if (timeline) noteParts.push('Timeline: ' + timeline);
-
-        const payload = {
-            first_name: firstName,
-            last_name: lastName,
-            email: (formData.get('email') || '').trim(),
-            phone: (formData.get('phone') || '').trim(),
-            source: source,
-            notes: noteParts.join(' | '),
-            landing_page_url: window.location.href,
-            sms_opt_in: formData.get('sms_consent') === 'yes'
-        };
-
-        // Fire-and-forget: don't await, don't block UI
-        fetch(N8N_WEBHOOK_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        }).catch(function() {
-            // Silently ignore — n8n webhook handles it
-        });
-    } catch (e) {
-        // Never break the user experience
-    }
 }
 
 // ==========================================
