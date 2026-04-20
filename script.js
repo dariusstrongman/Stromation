@@ -382,6 +382,8 @@ function initContactForm() {
     const contactForm = document.getElementById('contactForm');
     if (!contactForm) return;
 
+    var formLoadedAt = Date.now();
+
     // Create message container if not exists
     let messageContainer = contactForm.querySelector('.form-message');
     if (!messageContainer) {
@@ -393,6 +395,10 @@ function initContactForm() {
 
     contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        var hp = (new FormData(this)).get('_hp_website');
+        if (hp) return;
+        if (Date.now() - formLoadedAt < 3000) return;
 
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;

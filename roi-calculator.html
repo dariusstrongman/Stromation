@@ -395,6 +395,7 @@
             </div>
             <div class="lead-form-wrapper">
                 <form class="contact-form" id="roiForm" method="POST" action="javascript:void(0)">
+                    <div style="position:absolute;left:-9999px;"><label>Website<input type="text" name="_hp_website" tabindex="-1" autocomplete="off"></label></div>
                     <input type="hidden" name="subject" value="ROI Calculator Lead">
                     <input type="hidden" name="source" value="website_roi_calculator">
                     <input type="hidden" name="calc_hours_per_week" id="hiddenHours" value="10">
@@ -421,8 +422,12 @@
                 </form>
             </div>
             <script>
+            var _roiLoadedAt = Date.now();
             document.getElementById('roiForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
+                var fd = new FormData(this);
+                if ((fd.get('_hp_website') || '').trim()) return;
+                if (Date.now() - _roiLoadedAt < 3000) return;
                 var btn = document.getElementById('roiSubmitBtn');
                 var msg = document.getElementById('roiMessage');
                 btn.disabled = true;

@@ -257,6 +257,7 @@
             </div>
             <div class="lead-form-wrapper">
                 <form class="contact-form" id="checklistForm" method="POST" action="javascript:void(0)">
+                    <div style="position:absolute;left:-9999px;"><label>Website<input type="text" name="_hp_website" tabindex="-1" autocomplete="off"></label></div>
                     <input type="hidden" name="subject" value="Automation Readiness Checklist Submission">
                     <div class="form-row">
                         <div class="form-group">
@@ -292,8 +293,12 @@
                 </form>
             </div>
             <script>
+            var _clLoadedAt = Date.now();
             document.getElementById('checklistForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
+                var fd = new FormData(this);
+                if ((fd.get('_hp_website') || '').trim()) return;
+                if (Date.now() - _clLoadedAt < 3000) return;
                 var btn = document.getElementById('checklistSubmitBtn');
                 var msg = document.getElementById('checklistMessage');
                 btn.disabled = true;

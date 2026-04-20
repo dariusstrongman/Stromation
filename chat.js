@@ -4,6 +4,10 @@
   var isOpen = false;
   var isLoading = false;
   var chatStarted = false;
+  var msgTimestamps = [];
+  var MAX_MSGS_PER_MIN = 6;
+  var sessionMsgCount = 0;
+  var MAX_SESSION_MSGS = 30;
 
   // Build the widget HTML
   var widget = document.createElement('div');
@@ -88,6 +92,19 @@
     e.preventDefault();
     var msg = input.value.trim();
     if (!msg || isLoading) return;
+
+    var now = Date.now();
+    msgTimestamps = msgTimestamps.filter(function(t) { return now - t < 60000; });
+    if (msgTimestamps.length >= MAX_MSGS_PER_MIN) {
+      addBotMessage('Slow down a bit. Try again in a minute.');
+      return;
+    }
+    sessionMsgCount++;
+    if (sessionMsgCount > MAX_SESSION_MSGS) {
+      addBotMessage('Weve been chatting a while. Email me at contact@stromation.com to keep going.');
+      return;
+    }
+    msgTimestamps.push(now);
 
     addUserMessage(msg);
     if (!chatStarted) { chatStarted = true; gtag('event', 'chat_start', { event_category: 'engagement' }); }
