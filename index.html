@@ -1,521 +1,610 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-B6Z6XV02RT"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-B6Z6XV02RT');</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stromation — Workflow Automation Studio</title>
-<meta name="description" content="We build custom workflow automations that replace manual work. Lead capture, invoicing, onboarding, reporting. From $500 to full pipeline builds.">
-<meta property="og:title" content="Stromation — Systems that run themselves">
-<meta property="og:description" content="Custom workflow automations for small businesses. 30+ workflows deployed, $2M+ in bids processed.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.stromation.com">
-<meta name="theme-color" content="#FAFBFC">
-<link rel="icon" type="image/svg+xml" href="logo-icon.svg">
-<link rel="canonical" href="https://www.stromation.com/">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"ProfessionalService","name":"Stromation","url":"https://www.stromation.com","description":"Custom workflow automation agency for small businesses","telephone":"+18559320493","email":"contact@stromation.com","address":{"@type":"PostalAddress","addressLocality":"Dallas","addressRegion":"TX","addressCountry":"US"},"priceRange":"$500 - $15,000+"}
-</script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
---bg:#FAFBFC;--card:#FFFFFF;--border:#E5E7EB;--border-h:#D1D5DB;
---text:#111827;--text-2:#6B7280;--text-3:#9CA3AF;
---green:#00B4D8;--green-dim:rgba(0,180,216,.06);--green-glow:rgba(0,180,216,.2);
---blue:#2563EB;--blue-dim:rgba(37,99,235,.06);
---amber:#D97706;--amber-dim:rgba(217,119,6,.06);
---shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
---shadow-h:0 4px 16px rgba(0,0,0,.08);
---radius:6px;
---mono:'Space Mono',monospace;
---body:'Outfit',sans-serif;
---code:'Fira Code','Space Mono',monospace;
-}
-html{scroll-behavior:smooth}
-body{font-family:var(--body);color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-::selection{background:var(--green);color:#fff}
-
-.w{max-width:1080px;margin:0 auto;padding:0 2rem;position:relative;z-index:1}
-section{position:relative;z-index:1}
-
-/* dot grid background */
-.dot-grid{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;background-image:radial-gradient(circle,rgba(0,0,0,.04) 1px,transparent 1px);background-size:40px 40px}
-.hero-glow{position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(0,180,216,.08) 0%,transparent 70%);pointer-events:none;z-index:0}
-
-/* scanline effect on section borders */
-.scan{height:1px;background:linear-gradient(90deg,transparent,var(--border) 20%,var(--green-dim) 50%,var(--border) 80%,transparent);margin:0;position:relative;overflow:hidden}
-.scan::after{content:'';position:absolute;top:0;left:-10%;width:20%;height:100%;background:linear-gradient(90deg,transparent,var(--green),transparent);animation:scanSweep 4s ease-in-out infinite}
-@keyframes scanSweep{0%{left:-10%}100%{left:110%}}
-
-/* ═══ NAV ═══ */
-.nav{padding:.75rem 0;border-bottom:1px solid var(--border);background:rgba(255,255,255,.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
-.nav-in{max-width:1080px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
-.nav-brand{display:flex;align-items:center;gap:.5rem;text-decoration:none;font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--text);letter-spacing:-.02em}
-.nav-dot{display:none}
-.nav-links{display:flex;align-items:center;gap:2rem}
-.nav-links a{color:var(--text-2);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .15s}
-.nav-links a:hover{color:var(--green)}
-.nav-cta{font-family:var(--mono) !important;background:var(--green) !important;color:#fff !important;padding:.45rem 1rem;border-radius:var(--radius);font-weight:700 !important;font-size:.8rem !important;letter-spacing:.02em;transition:all .15s}
-.nav-cta:hover{box-shadow:0 0 20px var(--green-glow);transform:translateY(-1px)}
-.mob-tog{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:4px;padding:4px}
-.mob-tog span{display:block;width:18px;height:2px;background:var(--text-2);border-radius:1px}
-
-/* status bar */
-.status{padding:.4rem 0;border-bottom:1px solid var(--border);background:#F3F4F6;font-family:var(--code);font-size:.65rem;color:var(--text-3);letter-spacing:.03em;overflow:hidden}
-.status-in{max-width:1080px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:1.5rem}
-.status-dot{width:5px;height:5px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:blink 2s ease-in-out infinite;flex-shrink:0}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.status-item{white-space:nowrap}
-.status-sep{color:var(--border);font-size:.5rem}
-
-/* ═══ BUTTONS ═══ */
-.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.5rem;border-radius:var(--radius);font-family:var(--mono);font-size:.85rem;font-weight:700;text-decoration:none;cursor:pointer;border:none;transition:all .2s;letter-spacing:.01em}
-.btn-g{background:var(--green);color:#fff}
-.btn-g:hover{box-shadow:0 0 30px var(--green-glow);transform:translateY(-2px)}
-.btn-o{background:transparent;color:var(--text-2);border:1px solid var(--border)}
-.btn-o:hover{border-color:var(--green);color:var(--green);background:var(--green-dim)}
-
-/* ═══ HERO ═══ */
-.hero{padding:5rem 0 3rem;position:relative;overflow:visible}
-.hero .w{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:2rem}
-.hero-left{}
-.hero-comment{font-family:var(--code);font-size:.75rem;color:var(--text-3);margin-bottom:1.5rem}
-.hero h1{font-family:var(--mono);font-size:3.6rem;font-weight:700;line-height:1.15;letter-spacing:-.03em;margin-bottom:.5rem;text-shadow:0 0 60px rgba(0,229,255,.15)}
-.hero h1 .typed{color:var(--green);display:inline}
-.hero h1 .cursor{display:inline-block;width:3px;height:3.2rem;background:var(--green);margin-left:2px;animation:cursorBlink .8s step-end infinite;vertical-align:text-bottom}
-@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
-.hero-sub{font-size:1.1rem;color:var(--text-2);max-width:520px;margin:1.25rem 0 2rem;line-height:1.7}
-.hero-btns{display:flex;gap:.75rem;flex-wrap:wrap}
-
-/* Hero SVG visualization */
-.hero-viz{display:flex;align-items:center;justify-content:center}
-.hero-viz svg{width:100%;max-width:400px;height:auto}
-.wf-node{fill:var(--card);stroke:var(--green);stroke-width:1.5}
-.wf-node-glow{animation:nodeGlow 2.5s ease-in-out infinite}
-@keyframes nodeGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(0,229,255,.2))}50%{filter:drop-shadow(0 0 12px rgba(0,229,255,.5))}}
-.wf-path{fill:none;stroke:var(--green);stroke-width:1.5;stroke-dasharray:8 4;animation:flowDash 1.5s linear infinite}
-@keyframes flowDash{to{stroke-dashoffset:-24}}
-.wf-label{fill:var(--text-3);font-family:var(--code);font-size:9px}
-.wf-icon{fill:var(--green);font-family:var(--code);font-size:11px}
-
-/* ═══ STATS (dashboard readout) ═══ */
-.dash{padding:2.5rem 0}
-.dash-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.dash-cell{background:var(--card);padding:1.5rem;text-align:center}
-.dash-val{font-family:var(--code);font-size:1.8rem;font-weight:600;color:var(--green)}
-.dash-label{font-family:var(--code);font-size:.65rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-top:.3rem}
-
-/* ═══ SERVICES (terminal windows) ═══ */
-.svcs{padding:3rem 0}
-.sec-label{font-family:var(--code);font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.75rem}
-.sec-label::after{content:'';display:inline-block;width:6px;height:14px;background:var(--text-3);margin-left:4px;vertical-align:text-bottom;animation:cursorBlink .8s step-end infinite}
-.sec-h{font-family:var(--mono);font-size:2rem;font-weight:700;margin-bottom:.4rem;letter-spacing:-.02em}
-.sec-p{font-size:1rem;color:var(--text-2);max-width:480px;margin-bottom:2.5rem}
-.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.term{border:1px solid var(--border);border-radius:var(--radius);background:var(--card);overflow:hidden;transition:all .2s;box-shadow:var(--shadow)}
-.term:hover{border-color:var(--green);box-shadow:var(--shadow-h);transform:translateY(-2px)}
-.term-bar{display:flex;align-items:center;gap:6px;padding:.5rem .75rem;border-bottom:1px solid var(--border);background:#F9FAFB}
-.term-dot{width:8px;height:8px;border-radius:50%}
-.term-dot.r{background:#FF5F56}.term-dot.y{background:#FFBD2E}.term-dot.g{background:#00E5FF}
-.term-title{margin-left:.5rem;font-family:var(--code);font-size:.6rem;color:var(--text-3)}
-.term-body{padding:1.25rem 1.5rem}
-.term-body h3{font-family:var(--mono);font-size:.95rem;font-weight:700;margin-bottom:.4rem}
-.term-body p{font-size:.85rem;color:var(--text-2);line-height:1.55}
-.term-prompt{font-family:var(--code);font-size:.6rem;color:var(--text-3);margin-top:.75rem}
-
-/* ═══ PROCESS (CI/CD pipeline) ═══ */
-.proc{padding:3rem 0}
-.pipeline{display:flex;align-items:stretch}
-.pipe-step{flex:1;position:relative;text-align:center;padding:2rem 1rem}
-.pipe-step::after{content:'';position:absolute;top:1.75rem;right:-1px;width:2rem;height:1px;background:var(--border);z-index:2}
-.pipe-step:last-child::after{display:none}
-.pipe-icon{width:36px;height:36px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-family:var(--code);font-size:.7rem;color:var(--green)}
-.pipe-step h3{font-family:var(--mono);font-size:.85rem;font-weight:700;margin-bottom:.3rem}
-.pipe-step p{font-size:.82rem;color:var(--text-2);line-height:1.5;max-width:220px;margin:0 auto}
-.pipe-tag{font-family:var(--code);font-size:.55rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}
-
-/* ═══ CASES ═══ */
-.cases{padding:3rem 0}
-.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
-.case{display:block;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);padding:2rem;text-decoration:none;color:var(--text);transition:all .2s}
-.case:hover{border-color:var(--green);box-shadow:var(--shadow-h);transform:translateY(-2px)}
-.case-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
-.case-tag{font-family:var(--code);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3)}
-.live{display:flex;align-items:center;gap:.35rem;font-family:var(--code);font-size:.6rem;color:var(--green);text-transform:uppercase;letter-spacing:.08em}
-.live-dot{width:5px;height:5px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:blink 2s ease-in-out infinite;position:relative}
-.live-dot::after{content:'';position:absolute;top:50%;left:50%;width:5px;height:5px;border-radius:50%;border:1px solid var(--green);transform:translate(-50%,-50%);animation:radarPing 2s ease-out infinite}
-@keyframes radarPing{0%{width:5px;height:5px;opacity:.8}100%{width:20px;height:20px;opacity:0}}
-.case h3{font-family:var(--mono);font-size:1.15rem;font-weight:700;margin-bottom:.5rem}
-.case p{font-size:.88rem;color:var(--text-2);line-height:1.6;margin-bottom:.75rem}
-.case-url{font-family:var(--code);font-size:.75rem;color:var(--blue)}
-
-/* ═══ PRICING ═══ */
-.pricing{padding:3rem 0}
-.ptable{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.ptable th{text-align:left;padding:.85rem 1.25rem;font-family:var(--code);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);background:#F9FAFB;border-bottom:1px solid var(--border)}
-.ptable td{padding:.85rem 1.25rem;font-size:.88rem;border-bottom:1px solid var(--border);color:var(--text-2)}
-.ptable tr:last-child td{border-bottom:none}
-.ptable td:first-child{font-family:var(--mono);font-weight:700;color:var(--text);font-size:.85rem}
-.ptable .pval{font-family:var(--code);font-weight:600;color:var(--green)}
-.ptable tbody tr:nth-child(odd){background:rgba(0,0,0,.15)}
-.ptable tbody tr:nth-child(even){background:rgba(15,17,23,.4)}
-.ptable .pop{background:var(--green-dim);border-left:3px solid var(--green)}
-.ptable .pop td{color:var(--text)}
-.ret-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:1.5rem}
-.ret{background:var(--card);padding:1.25rem;text-align:center;transition:transform .2s,border-color .2s;border:1px solid transparent}
-.ret:hover{transform:translateY(-3px);border-color:var(--green)}
-.ret h4{font-family:var(--mono);font-size:.85rem;font-weight:700;margin-bottom:.15rem}
-.ret-p{font-family:var(--code);font-size:1.1rem;color:var(--amber);font-weight:600;margin-bottom:.15rem}
-.ret span{font-size:.72rem;color:var(--text-3)}
-
-/* ═══ FAQ ═══ */
-.faq{padding:3rem 0}
-.faq-list{max-width:660px}
-.faq-i{border-bottom:1px solid var(--border)}
-.faq-q{width:100%;background:none;border:none;padding:1.1rem 0;text-align:left;font-size:.92rem;font-weight:600;font-family:var(--body);color:var(--text);cursor:pointer;display:flex;align-items:center;gap:.75rem}
-.faq-q .prompt{font-family:var(--code);font-size:.75rem;color:var(--green);flex-shrink:0}
-.faq-q .arr{margin-left:auto;font-family:var(--code);font-size:.8rem;color:var(--text-3);transition:transform .2s}
-.faq-i.open .faq-q .arr{transform:rotate(90deg);color:var(--green)}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .3s;font-size:.88rem;color:var(--text-2);line-height:1.7;padding-left:1.75rem}
-.faq-i.open .faq-a{max-height:300px;padding-bottom:1.1rem}
-
-/* ═══ CTA ═══ */
-.cta{padding:5rem 0;text-align:center;position:relative;overflow:hidden;background:linear-gradient(180deg,#EFF6FF,var(--bg))}
-.cta-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;opacity:.03;pointer-events:none}
-.cta h2{font-family:var(--mono);font-size:2rem;font-weight:700;margin-bottom:.75rem;letter-spacing:-.02em}
-.cta p{color:var(--text-2);margin-bottom:2rem;font-size:1rem}
-.cta-alt{font-family:var(--code);font-size:.75rem;color:var(--text-3);margin-top:1.25rem}
-.cta-alt a{color:var(--blue);text-decoration:none}
-
-/* ═══ FOOTER ═══ */
-.footer{padding:2rem 0;border-top:1px solid var(--border);background:#F9FAFB}
-.foot-in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
-.foot-brand{display:flex;align-items:center;gap:.4rem;font-family:var(--mono);font-weight:700;font-size:.82rem;color:var(--text-3)}
-.foot-links{display:flex;gap:1.25rem;flex-wrap:wrap}
-.foot-links a{font-size:.75rem;color:var(--text-3);text-decoration:none;font-family:var(--code)}
-.foot-links a:hover{color:var(--green)}
-.foot-meta{font-family:var(--code);font-size:.65rem;color:var(--text-3)}
-.foot-meta a{color:var(--green);text-decoration:none}
-
-/* ═══ SCROLL REVEALS ═══ */
-.reveal-section{opacity:0;transform:translateY(20px);transition:opacity .6s ease-out,transform .6s ease-out}
-.reveal-section.revealed{opacity:1;transform:translateY(0)}
-.reveal-section .term,.reveal-section .case,.reveal-section .pipe-step,.reveal-section .dash-cell,.reveal-section .ret,.reveal-section .faq-i{opacity:0;transform:translateY(16px);transition:opacity .5s ease-out,transform .5s ease-out}
-.reveal-section.revealed .term,.reveal-section.revealed .case,.reveal-section.revealed .pipe-step,.reveal-section.revealed .dash-cell,.reveal-section.revealed .ret,.reveal-section.revealed .faq-i{opacity:1;transform:translateY(0)}
-.reveal-section.revealed .term:nth-child(1),.reveal-section.revealed .case:nth-child(1),.reveal-section.revealed .pipe-step:nth-child(1),.reveal-section.revealed .dash-cell:nth-child(1),.reveal-section.revealed .ret:nth-child(1),.reveal-section.revealed .faq-i:nth-child(1){transition-delay:.05s}
-.reveal-section.revealed .term:nth-child(2),.reveal-section.revealed .case:nth-child(2),.reveal-section.revealed .pipe-step:nth-child(2),.reveal-section.revealed .dash-cell:nth-child(2),.reveal-section.revealed .ret:nth-child(2),.reveal-section.revealed .faq-i:nth-child(2){transition-delay:.15s}
-.reveal-section.revealed .term:nth-child(3),.reveal-section.revealed .case:nth-child(3),.reveal-section.revealed .pipe-step:nth-child(3),.reveal-section.revealed .dash-cell:nth-child(3),.reveal-section.revealed .ret:nth-child(3),.reveal-section.revealed .faq-i:nth-child(3){transition-delay:.25s}
-.reveal-section.revealed .term:nth-child(4),.reveal-section.revealed .faq-i:nth-child(4){transition-delay:.35s}
-.reveal-section.revealed .term:nth-child(5),.reveal-section.revealed .faq-i:nth-child(5){transition-delay:.45s}
-.reveal-section.revealed .term:nth-child(6){transition-delay:.55s}
-
-/* ═══ ANIMATIONS ═══ */
-@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.hero-comment,.hero h1,.hero-sub,.hero-btns{animation:fadeIn .5s ease-out both}
-.hero-comment{animation-delay:.1s}
-.hero h1{animation-delay:.2s}
-.hero-sub{animation-delay:.35s}
-.hero-btns{animation-delay:.5s}
-
-/* ═══ MOBILE ═══ */
-@media(max-width:820px){
-.hero .w{grid-template-columns:1fr}
-.hero-viz{display:none}
-.hero h1{font-size:2rem}
-.svc-grid{grid-template-columns:1fr}
-.pipeline{flex-direction:column;gap:1rem}
-.pipe-step::after{display:none}
-.case-grid{grid-template-columns:1fr}
-.dash-row{grid-template-columns:1fr}
-.ret-grid{grid-template-columns:1fr}
-.ptable{font-size:.78rem}
-.ptable th,.ptable td{padding:.65rem .85rem}
-.nav-links{display:none}
-.mob-tog{display:flex}
-.nav-links.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid var(--border);padding:1rem 2rem;gap:.75rem;box-shadow:var(--shadow-h)}
-.status-in{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.foot-in{flex-direction:column;text-align:center}
-}
-</style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B6Z6XV02RT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-B6Z6XV02RT');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stromation designs and deploys custom workflow automations that replace repetitive manual work. Your business runs faster, cleaner, and with fewer mistakes.">
+    <title>Stromation - Workflow Replacement Studio | Custom Automation</title>
+    <link rel="canonical" href="https://www.stromation.com/">
+    <meta property="og:title" content="Stromation - Workflow Replacement Studio | Custom Automation">
+    <meta property="og:description" content="Stromation designs and deploys custom workflow automations that replace repetitive manual work. Your business runs faster, cleaner, and with fewer mistakes.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.stromation.com/">
+    <meta property="og:site_name" content="Stromation">
+    <meta property="og:image" content="https://www.stromation.com/banner-1500x500.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@stromationhq">
+    <meta name="twitter:title" content="Stromation - Workflow Replacement Studio | Custom Automation">
+    <meta name="twitter:description" content="Stromation designs and deploys custom workflow automations that replace repetitive manual work. Your business runs faster, cleaner, and with fewer mistakes.">
+    <meta name="twitter:image" content="https://www.stromation.com/banner-1500x500.png">
+    <link rel="icon" type="image/svg+xml" href="logos/logo-transparent.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="alternate" type="application/rss+xml" title="Stromation Blog" href="https://www.stromation.com/feed.xml">
+    <link rel="stylesheet" href="styles.css">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Stromation",
+        "description": "Stromation designs and deploys custom workflow automations that replace repetitive manual work. Your business runs faster, cleaner, and with fewer mistakes.",
+        "url": "https://www.stromation.com",
+        "logo": "https://www.stromation.com/banner-1500x500.png",
+        "email": "contact@stromation.com",
+        "founder": {
+            "@type": "Person",
+            "name": "Darius Stroman"
+        },
+        "areaServed": "Worldwide",
+        "serviceType": ["Workflow Automation", "Business Process Automation", "AI Integration"],
+        "priceRange": "$0-$15,000+",
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Automation Services",
+            "itemListElement": [
+                {"@type": "Offer", "name": "Starter Automation", "priceCurrency": "USD", "price": "500"},
+                {"@type": "Offer", "name": "Simple Automation", "priceCurrency": "USD", "price": "1000"},
+                {"@type": "Offer", "name": "AI-Assisted Automation", "priceCurrency": "USD", "price": "2500"},
+                {"@type": "Offer", "name": "End-to-End Replacement", "priceCurrency": "USD", "price": "6000"}
+            ]
+        },
+        "sameAs": ["https://x.com/stromationhq"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Stromation",
+        "url": "https://www.stromation.com"
+    }
+    </script>
 </head>
 <body>
-<div class="dot-grid"></div>
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.svg" alt="Stromation" class="logo-img"><span class="logo-text">Stromation</span>
+            </a>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle" role="button" aria-label="Toggle navigation menu" aria-expanded="false" tabindex="0">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="services.html#pricing" class="nav-link">Pricing</a>
+                <a href="industries.html" class="nav-link">Industries</a>
+                <a href="case-studies.html" class="nav-link">Examples</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="audit.html" class="nav-link cta-nav">Get a Free Audit</a>
+            </div>
+        </nav>
+    </header>
 
-<!-- NAV -->
-<header class="nav">
-<div class="nav-in">
-<a href="/" class="nav-brand"><img src="logos/stromation-icon.svg" alt="Stromation" style="height:24px;width:auto;">stromation</a>
-<nav class="nav-links" id="navLinks">
-<a href="services.html">Services</a>
-<a href="case-studies.html">Examples</a>
-<a href="blog.html">Blog</a>
-<a href="contact.html">Contact</a>
-<a href="audit.html" class="nav-cta">Free Audit</a>
-</nav>
-<button class="mob-tog" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
-</div>
-</header>
+    <!-- Hero Section -->
+    <section class="hero" id="main-content">
+        <div class="container">
+            <div class="hero-content">
+                    <h1 class="hero-title hero-anim" style="--anim-delay:0s">
+                        Replace Busywork <span class="highlight">With Systems</span>
+                    </h1>
+                    <p class="hero-subtitle hero-anim" style="--anim-delay:0.15s">
+                        Stromation designs and deploys custom workflow automations that replace repetitive manual work. Your business runs faster, cleaner, and with fewer mistakes.
+                    </p>
+                    <div class="hero-cta hero-anim" style="--anim-delay:0.3s">
+                        <a href="audit.html" class="btn btn-primary btn-large">Get a Free Automation Audit</a>
+                        <a href="#how-it-works" class="btn btn-secondary btn-large">See How It Works</a>
+                    </div>
+            </div>
+        </div>
+    </section>
 
-<!-- STATUS BAR -->
-<div class="status">
-<div class="status-in">
-<span class="status-dot"></span>
-<span class="status-item">30 workflows active</span>
-<span class="status-sep">|</span>
-<span class="status-item">99.9% uptime</span>
-<span class="status-sep">|</span>
-<span class="status-item">last deploy: <span id="deployTime">2h ago</span></span>
-<span class="status-sep">|</span>
-<span class="status-item" style="color:var(--green);">all systems operational</span>
-</div>
-</div>
+    <!-- Video Showcase -->
+    <section style="padding: 5rem 0; background: linear-gradient(180deg, var(--bg-subtle, #F1F5F9) 0%, var(--bg-white, #fff) 100%);">
+        <div class="container" style="max-width: 960px; text-align: center;">
+            <h2 class="section-title fade-in">See What We Can Do</h2>
+            <p class="section-subtitle fade-in" style="margin-bottom: 2.5rem;">48 seconds. Watch how we turn manual busywork into automated systems.</p>
+            <div class="fade-in" style="border-radius: 16px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,.15); border: 1px solid var(--border, #E2E8F0); position: relative;">
+                <video
+                    width="100%"
+                    controls
+                    preload="none"
+                    loading="lazy"
+                    poster="video-thumbnail.png"
+                    style="display: block; aspect-ratio: 16/9; object-fit: cover; background: #0A0F1C;"
+                >
+                    <source src="stromation-showcase.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </section>
 
-<!-- HERO -->
-<section class="hero">
-<div class="hero-glow"></div>
-<div class="w">
-<div class="hero-left">
-<div class="hero-comment">// we build the systems so you dont have to</div>
-<h1>We automate your<br><span class="typed" id="typed">lead capture</span><span class="cursor"></span></h1>
-<p class="hero-sub">Custom workflow automations for small businesses. From lead capture to invoicing, we build systems that run 24/7 without you touching them.</p>
-<div class="hero-btns">
-<a href="audit.html" class="btn btn-g">get a free audit</a>
-<a href="#examples" class="btn btn-o">see examples</a>
-</div>
-</div>
-<div class="hero-viz">
-<svg viewBox="0 0 360 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-<!-- S-curve paths (data flowing) -->
-<path class="wf-path" d="M90,60 C140,60 130,120 180,120"/>
-<path class="wf-path" d="M180,120 C230,120 220,180 270,180" style="animation-delay:.5s"/>
-<!-- Arrow heads -->
-<polygon points="176,117 176,123 183,120" fill="var(--green)" opacity=".7"/>
-<polygon points="266,177 266,183 273,180" fill="var(--green)" opacity=".7"/>
-<!-- Node 1: Trigger -->
-<g class="wf-node-glow">
-<rect class="wf-node" x="50" y="40" width="80" height="40" rx="6"/>
-<text class="wf-icon" x="90" y="64" text-anchor="middle">&gt;_</text>
-<text class="wf-label" x="90" y="94" text-anchor="middle">trigger</text>
-</g>
-<!-- Node 2: Process -->
-<g class="wf-node-glow" style="animation-delay:.8s">
-<rect class="wf-node" x="140" y="100" width="80" height="40" rx="6"/>
-<text class="wf-icon" x="180" y="124" text-anchor="middle">{}</text>
-<text class="wf-label" x="180" y="154" text-anchor="middle">process</text>
-</g>
-<!-- Node 3: Output -->
-<g class="wf-node-glow" style="animation-delay:1.6s">
-<rect class="wf-node" x="230" y="160" width="80" height="40" rx="6"/>
-<text class="wf-icon" x="270" y="184" text-anchor="middle">&#9655;</text>
-<text class="wf-label" x="270" y="214" text-anchor="middle">deploy</text>
-</g>
-<!-- Subtle grid dots in background -->
-<circle cx="30" cy="30" r="1" fill="rgba(255,255,255,.05)"/>
-<circle cx="30" cy="90" r="1" fill="rgba(255,255,255,.05)"/>
-<circle cx="30" cy="150" r="1" fill="rgba(255,255,255,.05)"/>
-<circle cx="30" cy="210" r="1" fill="rgba(255,255,255,.05)"/>
-<circle cx="330" cy="30" r="1" fill="rgba(255,255,255,.05)"/>
-<circle cx="330" cy="90" r="1" fill="rgba(255,255,255,.05)"/>
-<circle cx="330" cy="150" r="1" fill="rgba(255,255,255,.05)"/>
-<circle cx="330" cy="210" r="1" fill="rgba(255,255,255,.05)"/>
-</svg>
-</div>
-</div>
-</section>
+    <!-- What We Replace Section -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What We Replace</h2>
+                <p class="section-subtitle">Manual steps that slow you down become reliable systems that run on their own.</p>
+            </div>
+            <div class="replace-grid">
+                <div class="replace-card slide-left" style="--slide-delay:0s">
+                    <p class="before">Leads slip through, slow follow-ups</p>
+                    <p class="arrow">↓</p>
+                    <p class="after">Instant lead capture + auto follow-up sequences</p>
+                </div>
+                <div class="replace-card slide-right" style="--slide-delay:0.1s">
+                    <p class="before">Copy/paste between tools, manual entry</p>
+                    <p class="arrow">↓</p>
+                    <p class="after">Clean handoffs between systems, zero errors</p>
+                </div>
+                <div class="replace-card slide-left" style="--slide-delay:0.2s">
+                    <p class="before">Inbox overload, repetitive customer questions</p>
+                    <p class="arrow">↓</p>
+                    <p class="after">AI triage + auto-responses for common questions</p>
+                </div>
+                <div class="replace-card slide-right" style="--slide-delay:0.3s">
+                    <p class="before">Reports take hours, manual data gathering</p>
+                    <p class="arrow">↓</p>
+                    <p class="after">Auto-generated reports delivered on schedule</p>
+                </div>
+                <div class="replace-card slide-left" style="--slide-delay:0.4s">
+                    <p class="before">Too many tools, nothing connected</p>
+                    <p class="arrow">↓</p>
+                    <p class="after">Unified workflow with clear visibility</p>
+                </div>
+                <div class="replace-card slide-right" style="--slide-delay:0.5s">
+                    <p class="before">Errors from manual entry, missed steps</p>
+                    <p class="arrow">↓</p>
+                    <p class="after">Reliable system with logging and monitoring</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<div class="scan"></div>
+    <!-- Real Before/After Examples -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Real Examples</h2>
+                <p class="section-subtitle">What this looks like for actual businesses.</p>
+            </div>
+            <div style="display: grid; gap: 1.5rem; max-width: 900px; margin: 0 auto;">
+                <div class="fade-in" style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1.5rem; border: 1px solid var(--border); border-radius: 12px; background: white;">
+                    <div>
+                        <p style="font-weight: 600; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Before</p>
+                        <p style="font-size: 0.95rem; color: var(--text-secondary);">Pest control company misses 10 calls a week. Customers call the next company on Google. No follow-up.</p>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--primary);">→</div>
+                    <div>
+                        <p style="font-weight: 600; color: var(--success); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">After</p>
+                        <p style="font-size: 0.95rem;">Missed call triggers an instant text to the caller. AI collects what they need. Owner gets a lead alert. 3 out of 10 missed calls become booked jobs.</p>
+                    </div>
+                </div>
+                <div class="fade-in" style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1.5rem; border: 1px solid var(--border); border-radius: 12px; background: white;">
+                    <div>
+                        <p style="font-weight: 600; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Before</p>
+                        <p style="font-size: 0.95rem; color: var(--text-secondary);">Agency owner spends 2 hours every Monday manually pulling data from 4 tools to build a client report.</p>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--primary);">→</div>
+                    <div>
+                        <p style="font-weight: 600; color: var(--success); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">After</p>
+                        <p style="font-size: 0.95rem;">Report auto-generates every Monday morning and lands in the clients inbox. Zero manual work. Owner sleeps in.</p>
+                    </div>
+                </div>
+                <div class="fade-in" style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1.5rem; border: 1px solid var(--border); border-radius: 12px; background: white;">
+                    <div>
+                        <p style="font-weight: 600; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Before</p>
+                        <p style="font-size: 0.95rem; color: var(--text-secondary);">Salon sends appointment reminders manually by text. 15% no-show rate. Rebooking takes phone calls back and forth.</p>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--primary);">→</div>
+                    <div>
+                        <p style="font-weight: 600; color: var(--success); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">After</p>
+                        <p style="font-size: 0.95rem;">Automated reminders 24h and 1h before. No-shows drop to 5%. Cancellations auto-trigger a rebooking text with open slots.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- DASHBOARD STATS -->
-<section class="dash reveal-section">
-<div class="w">
-<div class="dash-row">
-<div class="dash-cell"><div class="dash-val">30+</div><div class="dash-label">workflows deployed</div></div>
-<div class="dash-cell"><div class="dash-val">5</div><div class="dash-label">products shipped</div></div>
-<div class="dash-cell"><div class="dash-val">15K+</div><div class="dash-label">hours saved</div></div>
-</div>
-</div>
-</section>
+    <!-- How It Works Section -->
+    <section id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">A clear process from discovery to deployment.</p>
+            </div>
+            <div class="process-grid-wrapper">
+                <div class="steps-progress-track"><div class="steps-progress-fill"></div></div>
+                <div class="process-grid">
+                    <div class="process-card fade-in" data-step="1">
+                        <div class="step-icon"><img src="img/step-audit.svg" alt="Audit" width="64" height="64"></div>
+                        <div class="step-num">1</div>
+                        <h4>Audit</h4>
+                        <p>We map your current workflow and identify automation opportunities.</p>
+                    </div>
+                    <div class="process-card fade-in" data-step="2">
+                        <div class="step-icon"><img src="img/step-build.svg" alt="Build" width="64" height="64"></div>
+                        <div class="step-num">2</div>
+                        <h4>Build</h4>
+                        <p>We design and develop your custom automation system.</p>
+                    </div>
+                    <div class="process-card fade-in" data-step="3">
+                        <div class="step-icon"><img src="img/step-deploy.svg" alt="Deploy" width="64" height="64"></div>
+                        <div class="step-num">3</div>
+                        <h4>Deploy</h4>
+                        <p>We launch, test, and hand off with documentation and training.</p>
+                    </div>
+                    <div class="process-card fade-in" data-step="4">
+                        <div class="step-icon"><img src="img/step-support.svg" alt="Support" width="64" height="64"></div>
+                        <div class="step-num">4</div>
+                        <h4>Support</h4>
+                        <p>Optional monitoring and maintenance to keep things running.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<div class="scan"></div>
+    <!-- Proven Results Section -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What We Built Internally</h2>
+                <p class="section-subtitle">Our own lead generation system, built in 3 days and running autonomously. <a href="case-studies.html" style="color: var(--primary-color);">See the full case study</a>.</p>
+            </div>
+            <div class="trust-metrics">
+                <div class="trust-metric fade-in">
+                    <span class="metric-value" data-count="12">0</span>
+                    <span class="metric-label">Active Workflows</span>
+                </div>
+                <div class="trust-metric fade-in">
+                    <span class="metric-value" data-count="85">0</span>
+                    <span class="metric-label">Pages Deployed</span>
+                </div>
+                <div class="trust-metric fade-in">
+                    <span class="metric-value" data-count="3">0</span>
+                    <span class="metric-label">Days to Launch</span>
+                </div>
+                <div class="trust-metric fade-in">
+                    <span class="metric-value" data-count="24/7">24/7</span>
+                    <span class="metric-label">Autonomous Operation</span>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="roi-calculator.html" class="btn btn-secondary">Calculate What Manual Work Costs You</a>
+            </div>
+        </div>
+    </section>
 
-<!-- SERVICES -->
-<section class="svcs reveal-section" id="services">
-<div class="w">
-<div class="sec-label">// services</div>
-<h2 class="sec-h">what we automate</h2>
-<p class="sec-p">Every business has manual workflows eating hours. We turn them into systems that run without you.</p>
-<div class="svc-grid">
-<div class="term"><div class="term-bar"><span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span><span class="term-title">lead-capture.workflow</span></div><div class="term-body"><h3>Lead Capture + Follow-up</h3><p>Forms, texts, and emails that grab leads and follow up automatically so nobody falls through the cracks.</p><div class="term-prompt">&gt; automated_</div></div></div>
-<div class="term"><div class="term-bar"><span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span><span class="term-title">onboarding.workflow</span></div><div class="term-body"><h3>Client Onboarding</h3><p>Welcome emails, intake forms, project setup, and status updates. All triggered the moment a deal closes.</p><div class="term-prompt">&gt; automated_</div></div></div>
-<div class="term"><div class="term-bar"><span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span><span class="term-title">invoicing.workflow</span></div><div class="term-body"><h3>Invoicing + Payments</h3><p>Generate invoices, send payment links, track whos paid, follow up on whats overdue. No spreadsheets.</p><div class="term-prompt">&gt; automated_</div></div></div>
-<div class="term"><div class="term-bar"><span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span><span class="term-title">reporting.workflow</span></div><div class="term-body"><h3>Reporting + Dashboards</h3><p>Weekly digests, pipeline stats, and real-time dashboards that show you whats happening without asking.</p><div class="term-prompt">&gt; automated_</div></div></div>
-<div class="term"><div class="term-bar"><span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span><span class="term-title">docs.workflow</span></div><div class="term-body"><h3>Document Generation</h3><p>Proposals, quotes, contracts, and SOWs generated from templates and delivered as professional PDFs.</p><div class="term-prompt">&gt; automated_</div></div></div>
-<div class="term"><div class="term-bar"><span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span><span class="term-title">integrations.workflow</span></div><div class="term-body"><h3>Custom Integrations</h3><p>Connect your CRM, email, accounting, and any tool with an API. We make them talk to each other.</p><div class="term-prompt">&gt; automated_</div></div></div>
-</div>
-</div>
-</section>
+    <!-- Early Adopter CTA Section -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Be an Early Client</h2>
+                <p class="section-subtitle">Stromation is selectively onboarding its first clients. Early adopters get hands-on attention, priority support, and the best rates we will ever offer.</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto;">
+                <div class="service-card fade-in" style="text-align: center;">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <h3 class="service-title">Free Automation Audit</h3>
+                    <p class="service-desc">We map your workflow, find the bottlenecks, and give you a build plan. No cost, no obligation.</p>
+                </div>
+                <div class="service-card fade-in" style="text-align: center;">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </div>
+                    <h3 class="service-title">Fast Turnaround</h3>
+                    <p class="service-desc">Most builds ship in days, not months. We built a 12-workflow lead gen system in under 3 days.</p>
+                </div>
+                <div class="service-card fade-in" style="text-align: center;">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <h3 class="service-title">Founding Rates</h3>
+                    <p class="service-desc">Early clients lock in the lowest pricing we will ever offer. Rates go up as the client list grows.</p>
+                </div>
+            </div>
+            <div style="max-width: 600px; margin: 2rem auto 0; text-align: center; padding: 1.25rem 1.5rem; border: 1px solid var(--success); border-radius: 10px; background: rgba(16,185,129,0.04);">
+                <p style="font-weight: 600; color: var(--success); margin-bottom: 0.25rem;">Our Guarantee</p>
+                <p style="font-size: 0.95rem; color: var(--text-secondary); margin: 0;">If the automation we build doesnt save you at least 5 hours per month, we will rebuild it or refund your retainer. No questions.</p>
+            </div>
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <a href="audit.html" class="btn btn-primary btn-large">Get Your Free Audit</a>
+            </div>
+        </div>
+    </section>
 
-<div class="scan"></div>
+    <!-- Client Testimonial + Logo -->
+    <section>
+        <div class="container" style="max-width: 700px; text-align: center;">
+            <p style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 500;">Trusted By</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto;">
+                <div style="text-align: center;">
+                    <img src="img/client-thebrasseffect.png" alt="The Brass Effect" style="height: 35px; width: auto; opacity: 0.7; filter: grayscale(100%); margin-bottom: 1rem; transition: all 0.3s;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.7';this.style.filter='grayscale(100%)'">
+                    <div class="testimonial-card fade-in" style="background: var(--bg-light, #1a1a2e); border: 1px solid var(--border, #2a2a3e); border-radius: 12px; padding: 2rem;">
+                        <span class="testimonial-quote-mark">&ldquo;</span>
+                        <p class="testimonial-text" style="font-size: 1.1rem; line-height: 1.7;">This saved me 4 hours of manual work.</p>
+                        <div class="testimonial-author" style="justify-content: center; margin-top: 1rem;">
+                            <div class="testimonial-info">
+                                <span class="testimonial-name">Antonio Brass</span>
+                                <span class="testimonial-role">Owner, The Brass Effect</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <img src="img/client-readymadevideo.png" alt="ReadyMade Video" style="height: 40px; width: auto; opacity: 0.7; filter: grayscale(100%); margin-bottom: 1rem; transition: all 0.3s;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.7';this.style.filter='grayscale(100%)'">
+                    <div class="testimonial-card fade-in" style="background: var(--bg-light, #1a1a2e); border: 1px solid var(--border, #2a2a3e); border-radius: 12px; padding: 2rem;">
+                        <span class="testimonial-quote-mark">&ldquo;</span>
+                        <p class="testimonial-text" style="font-size: 1.1rem; line-height: 1.7;">Stromation streamlined our entire booking and follow-up process. What used to take us hours every week now runs on its own.</p>
+                        <div class="testimonial-author" style="justify-content: center; margin-top: 1rem;">
+                            <div class="testimonial-info">
+                                <span class="testimonial-name">ReadyMade Video Team</span>
+                                <span class="testimonial-role">ReadyMade Video</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- PROCESS -->
-<section class="proc reveal-section" id="how-it-works">
-<div class="w">
-<div class="sec-label">// deployment pipeline</div>
-<h2 class="sec-h">how it works</h2>
-<p class="sec-p">No long discovery phases. No decks. We audit, build, and ship.</p>
-<div class="pipeline">
-<div class="pipe-step"><div class="pipe-icon">&gt;_</div><div class="pipe-tag">step 01</div><h3>audit</h3><p>We map your workflows, find the bottlenecks, and scope the build. Free, no commitment.</p><div class="pipe-step__after"></div></div>
-<div class="pipe-step"><div class="pipe-icon">{}</div><div class="pipe-tag">step 02</div><h3>build</h3><p>Custom n8n workflows, tested end-to-end, deployed to your stack. You see it working before you pay.</p></div>
-<div class="pipe-step"><div class="pipe-icon">&#9655;</div><div class="pipe-tag">step 03</div><h3>deploy</h3><p>Your systems go live. 24/7 uptime. We monitor, maintain, and optimize on a retainer.</p></div>
-</div>
-</div>
-</section>
+    <!-- Why Stromation vs Alternatives -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Not Just Do It Yourself?</h2>
+                <p class="section-subtitle">You could. But heres how the options actually compare.</p>
+            </div>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem; min-width: 600px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border);">
+                            <th style="text-align: left; padding: 1rem; color: var(--text-secondary); font-weight: 600; width: 25%;"></th>
+                            <th style="text-align: center; padding: 1rem; color: var(--text-secondary); font-weight: 600;">DIY<br><span style="font-weight: 400; font-size: 0.8rem;">(drag-and-drop tools)</span></th>
+                            <th style="text-align: center; padding: 1rem; color: var(--text-secondary); font-weight: 600;">Hire a Dev<br><span style="font-weight: 400; font-size: 0.8rem;">(freelancer or agency)</span></th>
+                            <th style="text-align: center; padding: 1rem; background: rgba(37,99,235,0.05); border-radius: 12px 12px 0 0; color: var(--primary); font-weight: 700;">Stromation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 0.85rem 1rem; font-weight: 500;">Timeline</td>
+                            <td style="text-align: center; padding: 0.85rem;">Weeks of trial and error</td>
+                            <td style="text-align: center; padding: 0.85rem;">4-12 weeks</td>
+                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); font-weight: 600;">Days</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 0.85rem 1rem; font-weight: 500;">Cost</td>
+                            <td style="text-align: center; padding: 0.85rem;">$20-100/mo in tools<br><span style="color: var(--text-muted); font-size: 0.85rem;">+ your time</span></td>
+                            <td style="text-align: center; padding: 0.85rem;">$5,000-50,000+</td>
+                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); font-weight: 600;">$500-15,000</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 0.85rem 1rem; font-weight: 500;">Maintenance</td>
+                            <td style="text-align: center; padding: 0.85rem;">You fix it when it breaks</td>
+                            <td style="text-align: center; padding: 0.85rem;">Pay hourly for changes</td>
+                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); font-weight: 600;">$99-499/mo retainer</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 0.85rem 1rem; font-weight: 500;">AI Integration</td>
+                            <td style="text-align: center; padding: 0.85rem; color: var(--text-muted);">Limited</td>
+                            <td style="text-align: center; padding: 0.85rem;">If they know AI</td>
+                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); font-weight: 600;">Built in from day one</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.85rem 1rem; font-weight: 500;">Documentation</td>
+                            <td style="text-align: center; padding: 0.85rem; color: var(--text-muted);">Whatever you remember</td>
+                            <td style="text-align: center; padding: 0.85rem; color: var(--text-muted);">Maybe</td>
+                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); border-radius: 0 0 12px 12px; font-weight: 600;">Full docs + training</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 
-<div class="scan"></div>
+    <!-- Best Fit / Not a Fit Section -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Is This Right for You?</h2>
+                <p class="section-subtitle">We work best with businesses that have a real workflow to automate.</p>
+            </div>
+            <div class="fit-grid">
+                <div class="fit-card best slide-left">
+                    <h3><span class="fit-badge best-fit">Best Fit</span></h3>
+                    <ul>
+                        <li>Small business owners with repeated manual admin work (intake, scheduling, follow-ups, reporting)</li>
+                        <li>Agencies and consultants that need internal ops automation or client-facing automations</li>
+                        <li>Solo operators who need systems to scale without hiring</li>
+                        <li>You have a specific process that takes too much time or breaks too often</li>
+                    </ul>
+                </div>
+                <div class="fit-card not slide-right">
+                    <h3><span class="fit-badge not-fit">Not a Fit</span></h3>
+                    <ul>
+                        <li>Just curious about AI with no process to automate yet</li>
+                        <li>Looking for a full SaaS product build on a small budget</li>
+                        <li>Enterprise procurement with long compliance cycles</li>
+                        <li>Need ongoing content creation rather than workflow automation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- CASE STUDIES -->
-<section class="cases reveal-section" id="examples">
-<div class="w">
-<div class="sec-label">// production systems</div>
-<h2 class="sec-h">live right now</h2>
-<p class="sec-p">Not mockups. These are real systems handling real money and real users.</p>
-<div class="case-grid">
-<a href="https://bidengine.stromation.com" target="_blank" class="case">
-<div class="case-top"><span class="case-tag">construction / ai</span><span class="live"><span class="live-dot"></span>LIVE</span></div>
-<h3>BidEngine</h3>
-<p>AI auto-bidder for Division 27 contractors. Reads construction blueprints with Claude vision, counts devices, generates quotes with real vendor pricing. Processes $2M+ in bids.</p>
-<span class="case-url">bidengine.stromation.com &rarr;</span>
-</a>
-<a href="https://resume.stromation.com" target="_blank" class="case">
-<div class="case-top"><span class="case-tag">saas / ai</span><span class="live"><span class="live-dot"></span>LIVE</span></div>
-<h3>ResumeGo</h3>
-<p>$1 resume tailoring SaaS. Upload a resume + job posting, get a tailored PDF in 60 seconds. GPT-4o + python-docx + LibreOffice + Stripe. Zero external API costs.</p>
-<span class="case-url">resume.stromation.com &rarr;</span>
-</a>
-</div>
-</div>
-</section>
+    <!-- Trust Statements Section -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Built for Reliability</h2>
+                <p class="section-subtitle">Not fragile hacks. Real systems that work.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Tool-Agnostic</h3>
+                    <p class="service-desc">We use the right stack for your workflow: n8n, custom APIs, and AI tools. No vendor lock-in.</p>
+                </div>
 
-<div class="scan"></div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Built for Reliability</h3>
+                    <p class="service-desc">Logging, monitoring, and clean handoffs. Not fragile hacks that break when tools update.</p>
+                </div>
 
-<!-- PRICING -->
-<section class="pricing reveal-section" id="pricing">
-<div class="w">
-<div class="sec-label">// pricing</div>
-<h2 class="sec-h">clear pricing. no surprises.</h2>
-<p class="sec-p">Every project is scoped after your free audit.</p>
-<table class="ptable">
-<thead><tr><th>tier</th><th>price</th><th>scope</th><th></th></tr></thead>
-<tbody>
-<tr><td>Starter</td><td class="pval">$500 — $1K</td><td>Single workflow, up to 3 integrations, 30-day support</td><td><a href="audit.html" style="color:var(--blue);font-family:var(--code);font-size:.75rem;text-decoration:none;">start &rarr;</a></td></tr>
-<tr class="pop"><td>Growth</td><td class="pval">$2.5K — $6K</td><td>3-5 connected workflows, CRM/email/SMS, dashboard, 60-day support</td><td><a href="audit.html" style="color:var(--green);font-family:var(--code);font-size:.75rem;text-decoration:none;">audit &rarr;</a></td></tr>
-<tr><td>Enterprise</td><td class="pval">$6K — $15K+</td><td>Full pipeline, AI workflows, custom integrations, 90-day support + training</td><td><a href="audit.html" style="color:var(--blue);font-family:var(--code);font-size:.75rem;text-decoration:none;">start &rarr;</a></td></tr>
-</tbody>
-</table>
-<div class="ret-grid">
-<div class="ret"><h4>Monitor</h4><div class="ret-p">$99/mo</div><span>we watch. you sleep.</span></div>
-<div class="ret"><h4>Maintain</h4><div class="ret-p">$149/mo</div><span>fixes, updates, tweaks.</span></div>
-<div class="ret"><h4>Optimize</h4><div class="ret-p">$499/mo</div><span>new workflows monthly.</span></div>
-</div>
-</div>
-</section>
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <h3 class="service-title">Clear Documentation</h3>
+                    <p class="service-desc">Remote-friendly delivery with training and documentation. You'll know how it works.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<div class="scan"></div>
+    <!-- Pricing at a Glance -->
+    <section class="section-light" id="pricing-preview">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Pricing at a Glance</h2>
+                <p class="section-subtitle">Free Automation Audit included with every inquiry</p>
+            </div>
 
-<!-- FAQ -->
-<section class="faq reveal-section" id="faq">
-<div class="w">
-<div class="sec-label">// faq</div>
-<h2 class="sec-h">questions</h2>
-<div class="faq-list">
-<div class="faq-i"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="prompt">&gt;</span>What tools do you use?<span class="arr">&#9656;</span></button><div class="faq-a">n8n (self-hosted), Python, custom APIs, and whatever your business already runs on. We dont use Zapier or Make. Everything is custom-built and runs on infrastructure we control.</div></div>
-<div class="faq-i"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="prompt">&gt;</span>How long does a project take?<span class="arr">&#9656;</span></button><div class="faq-a">1-4 weeks for most projects. A single workflow can be live in a few days. A full pipeline build takes 2-4 weeks. We scope it during the free audit.</div></div>
-<div class="faq-i"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="prompt">&gt;</span>Do I need technical knowledge?<span class="arr">&#9656;</span></button><div class="faq-a">No. You describe what you want to happen and we build it. You dont need to know how n8n works or write any code.</div></div>
-<div class="faq-i"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="prompt">&gt;</span>What if something breaks?<span class="arr">&#9656;</span></button><div class="faq-a">Our retainer plans include monitoring and fixes. If youre on Monitor or Maintain, we catch issues before you notice them.</div></div>
-<div class="faq-i"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span class="prompt">&gt;</span>Can I see examples?<span class="arr">&#9656;</span></button><div class="faq-a">Yes. BidEngine and ResumeGo are both live in production. Real users, real money, real systems you can visit right now.</div></div>
-</div>
-</div>
-</section>
+            <div class="pricing-preview-grid">
+                <div class="pricing-preview-card">
+                    <h4>Starter Automation</h4>
+                    <div class="preview-price">$500–$1,000</div>
+                </div>
+                <div class="pricing-preview-card">
+                    <h4>Simple Automation</h4>
+                    <div class="preview-price">$1,000–$2,500</div>
+                </div>
+                <div class="pricing-preview-card">
+                    <h4>AI-Assisted</h4>
+                    <div class="preview-price">$2,500–$6,000</div>
+                </div>
+                <div class="pricing-preview-card">
+                    <h4>End-to-End Replacement</h4>
+                    <div class="preview-price">$6,000–$15,000+</div>
+                </div>
+            </div>
 
-<div class="scan"></div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="services.html#pricing" class="btn btn-secondary">See Pricing Details</a>
+            </div>
+        </div>
+    </section>
 
-<!-- CTA -->
-<section class="cta">
-<svg class="cta-watermark" viewBox="0 0 360 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M90,60 C140,60 130,120 180,120" stroke="var(--green)" stroke-width="2" fill="none"/>
-<path d="M180,120 C230,120 220,180 270,180" stroke="var(--green)" stroke-width="2" fill="none"/>
-<rect x="50" y="40" width="80" height="40" rx="6" stroke="var(--green)" stroke-width="2" fill="none"/>
-<rect x="140" y="100" width="80" height="40" rx="6" stroke="var(--green)" stroke-width="2" fill="none"/>
-<rect x="230" y="160" width="80" height="40" rx="6" stroke="var(--green)" stroke-width="2" fill="none"/>
-</svg>
-<div class="w">
-<h2>stop doing manually what<br>a system could do for you.</h2>
-<p>Start with a free audit. We map your workflows and show you exactly what to automate.</p>
-<a href="audit.html" class="btn btn-g">get a free audit</a>
-<p class="cta-alt">or email <a href="mailto:contact@stromation.com">contact@stromation.com</a> / text <a href="tel:+18559320493">(855) 932-0493</a></p>
-</div>
-</section>
+    <!-- CTA Banner Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Start with a Free Automation Audit</h2>
+            <p>Get a workflow map, prioritized opportunities, and a build plan. No cost, no strings attached.</p>
+            <a href="audit.html" class="btn btn-primary btn-large">Request Your Audit</a>
+            <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.85;">Not sure yet? <a href="checklist.html" style="color: #00E5FF; text-decoration: underline;">Take our free Automation Readiness Checklist</a> or <a href="roi-calculator.html" style="color: #00E5FF; text-decoration: underline;">Calculate Your ROI</a></p>
+        </div>
+    </section>
 
-<!-- FOOTER -->
-<footer class="footer">
-<div class="w">
-<div class="foot-in">
-<div class="foot-brand"><img src="logos/stromation-icon.svg" alt="" style="height:16px;width:auto;opacity:.5">stromation</div>
-<div class="foot-links">
-<a href="services.html">Services</a>
-<a href="case-studies.html">Examples</a>
-<a href="blog.html">Blog</a>
-<a href="contact.html">Contact</a>
-<a href="privacy.html">Privacy</a>
-<a href="terms.html">Terms</a>
-</div>
-<div class="foot-meta">dallas, tx &middot; <a href="https://x.com/stromationhq">@stromationhq</a></div>
-</div>
-</div>
-</footer>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo"><img src="logos/stromation-icon.svg" alt="Stromation" style="height: 28px; width: auto; vertical-align: middle; margin-right: 0.5rem;">Stromation</div>
+                    <p>Custom workflow automations that replace repetitive manual work. Your business runs faster, cleaner, and with fewer mistakes.</p>
+                    <div class="social-icons">
+                        <a href="mailto:contact@stromation.com" class="social-icon" aria-label="Email">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </a>
+                        <a href="https://x.com/stromationhq" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="X (Twitter)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/dariusstroman" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <div class="footer-links">
+                        <a href="index.html">Home</a>
+                        <a href="services.html">Services</a>
+                        <a href="industries.html">Industries</a>
+                        <a href="case-studies.html">Examples</a>
+                        <a href="about.html">About</a>
+                        <a href="blog.html">Blog</a>
+                        <a href="contact.html">Contact</a>
+                        <a href="faq.html">FAQ</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Services</h4>
+                    <div class="footer-links">
+                        <a href="services.html#intake">Intake & Lead Handling</a>
+                        <a href="services.html#ops">Ops & Admin Workflows</a>
+                        <a href="services.html#support">Customer Support</a>
+                        <a href="services.html#reporting">Reporting & Visibility</a>
+                        <a href="services.html#custom">Custom Workflows</a>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4 class="footer-heading">Contact</h4>
+                    <p><a href="mailto:contact@stromation.com">contact@stromation.com</a></p>
+                    <p><a href="tel:+18559320493">(855) 932-0493</a></p>
+                    <p>Remote / Worldwide</p>
+                    <div class="footer-legal">
+                        <a href="privacy.html">Privacy</a>
+                        <a href="terms.html">Terms</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Stromation. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
-<script>
-// Typing animation
-var words = ['lead capture', 'invoicing', 'onboarding', 'reporting', 'bid generation', 'follow-ups', 'document gen'];
-var el = document.getElementById('typed');
-var wi = 0, ci = 0, deleting = false;
-function type() {
-    var word = words[wi];
-    if (!deleting) {
-        el.textContent = word.substring(0, ci + 1);
-        ci++;
-        if (ci === word.length) { deleting = true; setTimeout(type, 2000); return; }
-        setTimeout(type, 80);
-    } else {
-        el.textContent = word.substring(0, ci - 1);
-        ci--;
-        if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; setTimeout(type, 400); return; }
-        setTimeout(type, 40);
-    }
-}
-setTimeout(type, 1000);
-
-// Deploy time
-var hrs = [1,2,3,4,5];
-document.getElementById('deployTime').textContent = hrs[Math.floor(Math.random()*hrs.length)] + 'h ago';
-</script>
-<script>
-// Scroll reveal observer
-var revealSections = document.querySelectorAll('.reveal-section');
-var revealObs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            revealObs.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.15 });
-revealSections.forEach(function(s) { revealObs.observe(s); });
-</script>
-<script src="chat.js" defer></script>
+    <script src="script.js"></script>
+    <script src="chat.js" defer></script>
 </body>
 </html>
