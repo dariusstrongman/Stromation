@@ -5,8 +5,15 @@
   <link>https://www.stromation.com/blog.html</link>
   <description>Automation guides and insights for business owners</description>
   <language>en-us</language>
-  <lastBuildDate>Tue, 21 Apr 2026 11:00:18 GMT</lastBuildDate>
+  <lastBuildDate>Wed, 22 Apr 2026 11:00:26 GMT</lastBuildDate>
   <atom:link href="https://www.stromation.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>How to Automate Your Small Business Purchase Order Process for Efficiency</title>
+    <link>https://www.stromation.com/blog/automate-small-business-purchase-order-process.html</link>
+    <description>Learn how to automate the purchase order process in your small business to increase efficiency and reduce errors.</description>
+    <pubDate>Wed, 22 Apr 2026 11:00:26 GMT</pubDate>
+    <guid>https://www.stromation.com/blog/automate-small-business-purchase-order-process.html</guid>
+  </item>
   <item>
     <title>How to Automate Small Business Customer Birthday Campaigns</title>
     <link>https://www.stromation.com/blog/how-to-automate-small-business-customer-birthday-campaigns.html</link>
@@ -303,4 +310,4 @@
   </item>
 </channel>
 </rss>
-                   
+                    
