@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume</title>
+</head>
+<body style="margin:0; padding:0; background:#fff; color:#000; font-family:Georgia,'Times New Roman',Times,serif; font-size:10.5px; line-height:1.45; -webkit-font-smoothing:antialiased;">
+
+<div style="max-width:7.5in; margin:0 auto; padding:0.55in;">
+
+  <!-- ============ NAME ============ -->
+  <div style="text-align:center; padding-bottom:4px;">
+    <h1 style="margin:0; padding:0; font-size:18px; font-weight:700; text-transform:uppercase; letter-spacing:2px; line-height:1.2;">
+      {{FULL_NAME}}
+    </h1>
+  </div>
+
+  <!-- ============ CONTACT ============ -->
+  <div style="text-align:center; font-size:10px; line-height:1.4; padding-bottom:10px; color:#000;">
+    {{CITY_STATE}} &#160;|&#160; {{PHONE}} &#160;|&#160; {{EMAIL}} &#160;|&#160; {{LINKEDIN_URL}}
+  </div>
+
+  <!-- ============ SUMMARY ============ -->
+  <!-- Omit this entire block for entry-level candidates with <2 years experience -->
+  <div style="border-top:1px solid #000; padding-top:8px; margin-top:2px;">
+    <h2 style="margin:0 0 4px 0; padding:0; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; line-height:1.2;">
+      Professional Summary
+    </h2>
+    <p style="margin:0; padding:0;">
+      {{SUMMARY_TEXT}}
+    </p>
+  </div>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <div style="border-top:1px solid #000; padding-top:8px; margin-top:10px;">
+    <h2 style="margin:0 0 6px 0; padding:0; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; line-height:1.2;">
+      Professional Experience
+    </h2>
+
+    <!-- --- Job 1 (most recent) --- -->
+    <div style="margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap;">
+        <span style="font-weight:700; font-size:10.5px;">{{JOB_TITLE_1}}</span>
+        <span style="font-size:10px;">{{START_DATE_1}} &ndash; {{END_DATE_1}}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap;">
+        <span style="font-style:italic; font-size:10.5px;">{{COMPANY_1}}</span>
+        <span style="font-size:10px; font-style:italic;">{{LOCATION_1}}</span>
+      </div>
+      <ul style="margin:3px 0 0 0; padding-left:18px;">
+        <li style="margin-bottom:2px;">{{BULLET_1A}}</li>
+        <li style="margin-bottom:2px;">{{BULLET_1B}}</li>
+        <li style="margin-bottom:2px;">{{BULLET_1C}}</li>
+        <!-- Add up to 5 bullets. 3-4 is ideal for most roles. -->
+      </ul>
+    </div>
+
+    <!-- --- Job 2 --- -->
+    <div style="margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap;">
+        <span style="font-weight:700; font-size:10.5px;">{{JOB_TITLE_2}}</span>
+        <span style="font-size:10px;">{{START_DATE_2}} &ndash; {{END_DATE_2}}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap;">
+        <span style="font-style:italic; font-size:10.5px;">{{COMPANY_2}}</span>
+        <span style="font-size:10px; font-style:italic;">{{LOCATION_2}}</span>
+      </div>
+      <ul style="margin:3px 0 0 0; padding-left:18px;">
+        <li style="margin-bottom:2px;">{{BULLET_2A}}</li>
+        <li style="margin-bottom:2px;">{{BULLET_2B}}</li>
+        <li style="margin-bottom:2px;">{{BULLET_2C}}</li>
+      </ul>
+    </div>
+
+    <!-- --- Job 3 --- -->
+    <div style="margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap;">
+        <span style="font-weight:700; font-size:10.5px;">{{JOB_TITLE_3}}</span>
+        <span style="font-size:10px;">{{START_DATE_3}} &ndash; {{END_DATE_3}}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap;">
+        <span style="font-style:italic; font-size:10.5px;">{{COMPANY_3}}</span>
+        <span style="font-size:10px; font-style:italic;">{{LOCATION_3}}</span>
+      </div>
+      <ul style="margin:3px 0 0 0; padding-left:18px;">
+        <li style="margin-bottom:2px;">{{BULLET_3A}}</li>
+        <li style="margin-bottom:2px;">{{BULLET_3B}}</li>
+        <li style="margin-bottom:2px;">{{BULLET_3C}}</li>
+      </ul>
+    </div>
+
+    <!-- --- Earlier Experience (for senior candidates with 10+ years) --- -->
+    <!--
+    <div style="margin-bottom:2px;">
+      <p style="margin:0; padding:0; font-size:10px;">
+        <span style="font-weight:700;">Earlier:</span> {{EARLIER_TITLE}} at {{EARLIER_COMPANY}} ({{EARLIER_YEARS}})
+      </p>
+    </div>
+    -->
+
+  </div>
+
+  <!-- ============ EDUCATION ============ -->
+  <!-- Move this ABOVE Experience for recent graduates (within 2 years) -->
+  <div style="border-top:1px solid #000; padding-top:8px; margin-top:10px;">
+    <h2 style="margin:0 0 4px 0; padding:0; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; line-height:1.2;">
+      Education
+    </h2>
+
+    <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap;">
+      <span style="font-weight:700; font-size:10.5px;">{{DEGREE}} in {{MAJOR}}</span>
+      <span style="font-size:10px;">{{GRAD_DATE}}</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap;">
+      <span style="font-style:italic; font-size:10.5px;">{{UNIVERSITY}}</span>
+      <span style="font-size:10px; font-style:italic;">{{SCHOOL_LOCATION}}</span>
+    </div>
+    <!-- Optional: GPA (only if 3.5+), honors, relevant coursework -->
+    <!--
+    <p style="margin:2px 0 0 0; padding:0; font-size:10px;">
+      GPA: {{GPA}} | {{HONORS}} | Relevant Coursework: {{COURSEWORK}}
+    </p>
+    -->
+  </div>
+
+  <!-- ============ SKILLS ============ -->
+  <div style="border-top:1px solid #000; padding-top:8px; margin-top:10px;">
+    <h2 style="margin:0 0 4px 0; padding:0; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; line-height:1.2;">
+      Skills
+    </h2>
+    <p style="margin:0; padding:0;">
+      {{SKILLS_COMMA_SEPARATED}}
+    </p>
+  </div>
+
+  <!-- ============ CERTIFICATIONS ============ -->
+  <!-- Omit entirely if candidate has no certifications or licenses -->
+  <div style="border-top:1px solid #000; padding-top:8px; margin-top:10px;">
+    <h2 style="margin:0 0 4px 0; padding:0; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; line-height:1.2;">
+      Certifications &amp; Licenses
+    </h2>
+    <p style="margin:0; padding:0;">
+      {{CERT_1}} ({{CERT_1_DATE}}) &#160;|&#160; {{CERT_2}} ({{CERT_2_DATE}})
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
