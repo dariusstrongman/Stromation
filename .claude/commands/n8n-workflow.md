@@ -2,7 +2,7 @@ Help design or troubleshoot an n8n workflow.
 
 Details: $ARGUMENTS
 
-The Stromation n8n instance is at: https://n8n.myaibuffet.com/home/workflows
+The Stromation n8n instance is at: https://n8n.stromation.com/home/workflows
 
 Steps:
 1. Understand what the user wants the workflow to do

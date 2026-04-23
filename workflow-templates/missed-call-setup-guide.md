@@ -26,7 +26,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Dial timeout="20"
-        action="https://n8n.myaibuffet.com/webhook/missed-call-CLIENTSLUG"
+        action="https://n8n.stromation.com/webhook/missed-call-CLIENTSLUG"
         method="POST">
     <Number>+1XXXXXXXXXX</Number>
   </Dial>
@@ -45,7 +45,7 @@ How it works:
 ### Step 3: Configure the Twilio Number
 1. Phone Numbers -> Active Numbers -> click the ported/new number
 2. Voice: "A call comes in" -> TwiML Bin -> select yours
-3. Messaging: "A message comes in" -> Webhook -> `https://n8n.myaibuffet.com/webhook/missed-call-reply-CLIENTSLUG` (POST)
+3. Messaging: "A message comes in" -> Webhook -> `https://n8n.stromation.com/webhook/missed-call-reply-CLIENTSLUG` (POST)
 4. Save
 
 ### Step 4: Deploy n8n Workflow

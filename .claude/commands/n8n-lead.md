@@ -2,7 +2,7 @@ Design an n8n lead handling/follow-up automation workflow.
 
 Details: $ARGUMENTS
 
-The Stromation n8n instance is at: https://n8n.myaibuffet.com/home/workflows
+The Stromation n8n instance is at: https://n8n.stromation.com/home/workflows
 
 Steps:
 1. Understand the lead source (website form, ad platform, referral, etc.)

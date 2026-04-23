@@ -2,7 +2,7 @@ Create or update an n8n workflow to handle a website form submission.
 
 Form details: $ARGUMENTS
 
-The Stromation n8n instance is at: https://n8n.myaibuffet.com/home/workflows
+The Stromation n8n instance is at: https://n8n.stromation.com/home/workflows
 
 Steps:
 1. Identify which form on the Stromation site this is for (contact, audit request, etc.)

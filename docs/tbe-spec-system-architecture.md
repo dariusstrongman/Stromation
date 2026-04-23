@@ -140,4 +140,4 @@ New: `cableBoxes = max(1, ceil(drops / 16) + buffer)` → 56 drops → 4 boxes. 
 - `docs/tbe-parts-catalog-seed.sql` — 89 parts + tier alternates (run second)
 - `admin-bids.html` — main bid tracker (tier badges, spec phase, upload, source attribution)
 - `admin-parts.html` — Antonio's catalog editor
-- WF4/WF8 — published via n8n API, code lives on n8n.myaibuffet.com
+- WF4/WF8 — published via n8n API, code lives on n8n.stromation.com
