@@ -6,7 +6,7 @@
 // ==========================================
 // FORM ENDPOINT CONFIGURATION
 // ==========================================
-const FORM_ENDPOINT = 'https://n8n.myaibuffet.com/webhook/stromation-form';
+const FORM_ENDPOINT = 'https://n8n.stromation.com/webhook/stromation-form';
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -451,7 +451,7 @@ function initNewsletterForm() {
         btn.disabled = true;
         btn.textContent = 'Subscribing...';
         try {
-            await fetch('https://n8n.myaibuffet.com/webhook/lead-capture', {
+            await fetch('https://n8n.stromation.com/webhook/lead-capture', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: email, source: 'newsletter_signup', first_name: '', last_name: '', landing_page_url: window.location.href })

@@ -409,7 +409,7 @@ function logCall(id, outcome) {
         var leadPhone = card ? card.querySelector('.lead-phone').textContent : '';
         var leadType = card ? card.querySelector('.lead-type').textContent : '';
 
-        fetch('https://n8n.myaibuffet.com/webhook/stromation-form', {
+        fetch('https://n8n.stromation.com/webhook/stromation-form', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

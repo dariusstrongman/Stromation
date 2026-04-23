@@ -1,5 +1,5 @@
 (function() {
-  var CHAT_ENDPOINT = 'https://n8n.myaibuffet.com/webhook/stromation-chat';
+  var CHAT_ENDPOINT = 'https://n8n.stromation.com/webhook/stromation-chat';
   var history = [];
   var isOpen = false;
   var isLoading = false;

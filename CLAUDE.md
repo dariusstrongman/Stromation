@@ -99,7 +99,7 @@ Auto-generated weekly by WF25 (Sunday 6AM CT). All posts have reading time badge
 | missed-call-setup-guide.md | Deployment guide |
 | README.md | Template index |
 
-## n8n Workflows (n8n.myaibuffet.com)
+## n8n Workflows (n8n.stromation.com)
 
 ### TBE (The Brass Effect) Workflows -- Active
 | n8n ID | Name | Trigger | Description |
