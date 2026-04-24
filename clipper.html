@@ -502,6 +502,7 @@ function clipCardHtml(c) {
     var hookScore = c.hook_score != null ? c.hook_score : null;
     var ctxScore = c.context_score != null ? c.context_score : null;
     var paceScore = c.pacing_score != null ? c.pacing_score : null;
+    var retScore = c.retention_score != null ? c.retention_score : null;
     var autoUpload = c.auto_upload === true;
     var category = c.category ? escHtml(c.category) : '';
     var reason = c.score_reason ? escHtml(c.score_reason) : '';
@@ -552,6 +553,7 @@ function clipCardHtml(c) {
     if (hookScore != null) subScores += '<span class="clip-chip" title="Hook (first 2s grab)">Hook ' + hookScore + '</span>';
     if (ctxScore != null) subScores += '<span class="clip-chip" title="Context-independence (10 = no setup needed)">Ctx ' + ctxScore + '</span>';
     if (paceScore != null) subScores += '<span class="clip-chip" title="Pacing (no dead air, tight cuts)">Pace ' + paceScore + '</span>';
+    if (retScore != null) subScores += '<span class="clip-chip" title="Retention (stays engaging the whole length, ends clean)">Ret ' + retScore + '</span>';
 
     var backupBlock = '';
     if (backupTitles.length) {
