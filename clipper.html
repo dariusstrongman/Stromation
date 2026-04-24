@@ -369,6 +369,8 @@ server {
 // Leave empty ('') to disable video playback and show file paths instead.
 var CLIPS_BASE_URL = 'https://clips.stromation.com/';
 var CLIPS_ROOT_PATH = '/mnt/clipper-storage/clipper/';  // matches service/config.py DATA_DIR
+// Mirror of STREAMERS env var on EC2. Update whenever you change the .env list.
+var MONITORED_STREAMERS = ['ddg', 'marlon', 'jasontheween', 'lacy', 'jaycinco', 'deshaefrost'];
 
 var SUPABASE_URL = 'https://iadzcnzgbtuigyodeqas.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_8qa-nssfdtEkCz-42wOSWQ_2P7S4Zj7';
@@ -436,24 +438,41 @@ async function patchClip(id, patch) {
 }
 
 function renderLive(streams) {
-    var now = Date.now();
     var latestByStreamer = {};
     streams.forEach(function(s) {
-        var k = s.streamer;
+        var k = s.streamer.toLowerCase();
         if (!latestByStreamer[k] || new Date(s.started_at) > new Date(latestByStreamer[k].started_at)) {
             latestByStreamer[k] = s;
         }
     });
 
-    var cards = Object.values(latestByStreamer).sort(function(a, b) {
-        var aLive = !a.ended_at, bLive = !b.ended_at;
+    // Build card list for EVERY monitored streamer, pulling latest stream row if any
+    var cards = MONITORED_STREAMERS.map(function(login) {
+        var s = latestByStreamer[login.toLowerCase()];
+        if (s) return s;
+        return { streamer: login, _never: true };
+    }).sort(function(a, b) {
+        var aLive = !a._never && !a.ended_at;
+        var bLive = !b._never && !b.ended_at;
         if (aLive !== bLive) return aLive ? -1 : 1;
+        if (a._never && !b._never) return 1;
+        if (!a._never && b._never) return -1;
+        if (a._never && b._never) return 0;
         return new Date(b.started_at) - new Date(a.started_at);
     });
 
     var liveCount = 0;
     var html = '';
     cards.forEach(function(s) {
+        if (s._never) {
+            html += '<div class="live-card is-offline">' +
+                '<span class="live-dot">WAIT</span>' +
+                '<div class="streamer-name">' + escHtml(s.streamer) + '</div>' +
+                '<div class="stream-meta">no streams captured yet</div>' +
+                '<div class="stream-title" style="color:#64748B;">Monitoring — first stream will show here.</div>' +
+                '</div>';
+            return;
+        }
         var isLive = !s.ended_at;
         if (isLive) liveCount++;
         var title = s.title || '(no title)';
@@ -469,10 +488,10 @@ function renderLive(streams) {
             '</div>';
     });
 
-    if (!html) html = '<div class="empty-state">No streamers tracked yet. Service may still be starting.</div>';
     document.getElementById('liveBody').innerHTML = '<div class="live-grid">' + html + '</div>';
     document.getElementById('statLive').textContent = liveCount;
-    document.getElementById('streamerCount').textContent = cards.length + ' tracked · ' + liveCount + ' live';
+    document.getElementById('streamerCount').textContent =
+        MONITORED_STREAMERS.length + ' monitored · ' + liveCount + ' live';
 }
 
 function clipCardHtml(c) {
