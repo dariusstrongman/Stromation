@@ -100,7 +100,7 @@
                     We build custom automations that respond to leads instantly, sync your CRM, schedule showings, and run follow-up sequences &mdash; so you close more deals without the manual grind.
                 </p>
                 <div class="hero-cta">
-                    <a href="audit.html" class="btn btn-primary btn-large">Get Your Free Real Estate Automation Audit</a>
+                    <a href="#audit-request" class="btn btn-primary btn-large">Get Your Free Real Estate Automation Audit</a>
                 </div>
             </div>
         </div>
@@ -172,12 +172,33 @@
         </div>
     </section>
 
-    <!-- CTA -->
-    <section>
-        <div class="container" style="text-align: center; padding: 4rem 1rem;">
-            <h2 class="section-title">Ready to Automate Your Real Estate Business?</h2>
-            <p class="section-subtitle" style="margin-bottom: 2rem;">Get a free audit tailored to real estate workflows. We map your process, find the gaps, and show you exactly what to automate.</p>
-            <a href="audit.html" class="btn btn-primary btn-large">Get Your Free Real Estate Automation Audit</a>
+    <!-- CTA with Inline Audit Form -->
+    <section id="audit-request">
+        <div class="container" style="max-width: 640px; padding: 4rem 1rem;">
+            <div class="section-header">
+                <h2 class="section-title">Ready to Automate Your Real Estate Business?</h2>
+                <p class="section-subtitle">Free audit, tailored to real estate workflows. Fill this out and we reply within 1 business day.</p>
+            </div>
+            <form class="contact-form" id="contactForm" method="POST" action="https://n8n.stromation.com/webhook/stromation-form" data-hp="true" style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 2rem;">
+                <div style="position:absolute;left:-9999px;"><label>Website<input type="text" name="_hp_website" tabindex="-1" autocomplete="off"></label></div>
+                <input type="hidden" name="subject" value="Stromation Real Estate Audit Request">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" name="name" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required placeholder="your@email.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="workflow">What eats up your time? *</label>
+                    <textarea id="workflow" name="workflow" required placeholder="e.g., lead follow-up, listing syndication, showing coordination, closing reminders"></textarea>
+                </div>
+                <button type="submit" class="contact-submit">Get My Free Real Estate Audit</button>
+                <p style="text-align: center; font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem; margin-bottom: 0;">No sales calls unless you want one. Prefer to schedule a call instead? <a href="audit.html" style="color: var(--primary);">Book here.</a></p>
+            </form>
         </div>
     </section>
 

@@ -363,8 +363,20 @@ function initContactForm() {
             // Determine source from page
             var source = 'website_contact';
             var page = window.location.pathname.split('/').pop() || '';
-            if (page.indexOf('audit') !== -1) source = 'website_audit';
-            if (page.indexOf('checklist') !== -1) source = 'website_checklist';
+            var pageStem = page.replace(/\.html$/i, '').toLowerCase();
+            var industryMap = {
+                'dental': 'website_dental',
+                'home-services': 'website_home_services',
+                'agencies': 'website_agencies',
+                'real-estate': 'website_real_estate',
+                'accounting': 'website_accounting',
+                'legal': 'website_legal',
+                'fitness': 'website_fitness',
+                'restaurants': 'website_restaurants'
+            };
+            if (industryMap[pageStem]) source = industryMap[pageStem];
+            else if (page.indexOf('audit') !== -1) source = 'website_audit';
+            else if (page.indexOf('checklist') !== -1) source = 'website_checklist';
 
             // Build JSON payload
             var fullName = (formData.get('name') || '').trim();
