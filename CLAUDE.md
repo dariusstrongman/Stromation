@@ -66,7 +66,7 @@
 | terms.html | Terms of service |
 | 404.html | Custom 404 error page |
 
-### Blog Posts (blog/) -- 39 posts
+### Blog Posts (blog/) -- 46 posts
 Auto-generated weekly by WF25 (Sunday 6AM CT). All posts have reading time badges, breadcrumbs, internal cross-links, and 3 related posts.
 
 ### Other Key Files
@@ -75,8 +75,8 @@ Auto-generated weekly by WF25 (Sunday 6AM CT). All posts have reading time badge
 | styles.css | Single global stylesheet |
 | script.js | Main JS -- mobile menu, scroll animations, parallax, forms, FAQ accordion |
 | chat.js | Chat widget connecting to n8n webhook (deferred on all pages) |
-| feed.xml | RSS feed (37 items -- needs sync to 39) |
-| sitemap.xml | XML sitemap (39 blog entries) |
+| feed.xml | RSS feed (46 items) |
+| sitemap.xml | XML sitemap (46 blog entries) |
 | robots.txt | Robots directives |
 | voicemail.xml | TwiML -- redirects callers to text (Google Neural2-J voice) |
 | CNAME | GitHub Pages custom domain |
@@ -277,7 +277,7 @@ Auto-generated weekly by WF25 (Sunday 6AM CT). All posts have reading time badge
 - Phone/SMS: Twilio transport layer handles abuse
 
 ## Blog
-- 39 posts (auto-generated weekly by WF25, Sunday 6AM CT)
+- 46 posts (auto-generated weekly by WF25, Sunday 6AM CT)
 - Blog page paginated: 9 posts per page with prev/next
 - Reading times calculated from actual word count (not hardcoded)
 - WF25 calculates reading time for new posts automatically
