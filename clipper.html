@@ -499,8 +499,14 @@ function clipCardHtml(c) {
     var streamer = escHtml(c.streamer);
     var title = escHtml(c.title || '(AI title pending)');
     var score = c.score != null ? c.score : '?';
+    var hookScore = c.hook_score != null ? c.hook_score : null;
+    var ctxScore = c.context_score != null ? c.context_score : null;
+    var paceScore = c.pacing_score != null ? c.pacing_score : null;
+    var autoUpload = c.auto_upload === true;
     var category = c.category ? escHtml(c.category) : '';
     var reason = c.score_reason ? escHtml(c.score_reason) : '';
+    var description = c.description ? escHtml(c.description) : '';
+    var backupTitles = Array.isArray(c.backup_titles) ? c.backup_titles : [];
     var transcript = escHtml(c.transcript || '');
     var hashtags = escHtml(c.hashtags || '');
     var dur = c.duration_sec != null ? Number(c.duration_sec).toFixed(0) + 's' : '';
@@ -515,6 +521,9 @@ function clipCardHtml(c) {
     }
 
     var statusBadge = '<span class="clip-status-badge ' + escHtml(c.status) + '">' + escHtml(c.status) + '</span>';
+    var autoBadge = autoUpload
+        ? '<span class="clip-status-badge" style="left:auto;right:0.6rem;color:#c5ff4a;background:rgba(0,0,0,0.7);">AUTO</span>'
+        : '';
 
     var actions = '';
     if (c.status === 'ready') {
@@ -539,18 +548,40 @@ function clipCardHtml(c) {
           '<button class="clip-transcript-toggle" data-action="toggle-transcript" data-id="' + c.id + '">Show more</button>'
         : '';
 
+    var subScores = '';
+    if (hookScore != null) subScores += '<span class="clip-chip" title="Hook (first 2s grab)">Hook ' + hookScore + '</span>';
+    if (ctxScore != null) subScores += '<span class="clip-chip" title="Context-independence (10 = no setup needed)">Ctx ' + ctxScore + '</span>';
+    if (paceScore != null) subScores += '<span class="clip-chip" title="Pacing (no dead air, tight cuts)">Pace ' + paceScore + '</span>';
+
+    var backupBlock = '';
+    if (backupTitles.length) {
+        backupBlock = '<details class="clip-backups" style="margin-top:0.3rem;">' +
+            '<summary style="cursor:pointer;font-size:0.72rem;color:#60A5FA;font-weight:600;">Backup titles (' + backupTitles.length + ')</summary>' +
+            '<div style="margin-top:0.4rem;display:flex;flex-direction:column;gap:0.3rem;">' +
+            backupTitles.map(function(t, i) {
+                return '<div style="font-size:0.78rem;color:#CBD5E1;padding:0.4rem 0.55rem;background:#1F2937;border-radius:6px;line-height:1.35;">' + escHtml(t) + '</div>';
+            }).join('') +
+            '</div></details>';
+    }
+    var descBlock = description
+        ? '<div style="font-size:0.78rem;color:#94A3B8;line-height:1.5;border-left:2px solid #1F2937;padding-left:0.7rem;">' + description + '</div>'
+        : '';
+
     return '<div class="clip-card ' + escHtml(c.status) + '">' +
-        '<div class="clip-video-wrap">' + statusBadge + videoBlock + '</div>' +
+        '<div class="clip-video-wrap">' + statusBadge + autoBadge + videoBlock + '</div>' +
         '<div class="clip-body">' +
             '<div class="clip-title">' + title + '</div>' +
             '<div class="clip-meta-row">' +
                 '<span class="clip-chip streamer">' + streamer + '</span>' +
-                '<span class="clip-chip score">Score ' + score + '/10</span>' +
+                '<span class="clip-chip score">Viral ' + score + '/10</span>' +
+                subScores +
                 (category ? '<span class="clip-chip category">' + category + '</span>' : '') +
                 (dur ? '<span class="clip-chip">' + dur + '</span>' : '') +
                 '<span class="clip-chip">' + fmtRelative(c.created_at) + '</span>' +
             '</div>' +
             (reason ? '<div class="clip-reason">' + reason + '</div>' : '') +
+            descBlock +
+            backupBlock +
             transcriptBlock +
             (hashtags ? '<div class="clip-hashtags">' + hashtags + '</div>' : '') +
             '<div class="clip-actions">' + actions + '</div>' +
