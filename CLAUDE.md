@@ -104,50 +104,80 @@ Auto-generated weekly by WF25 (Sunday 6AM CT). All posts have reading time badge
 ### TBE (The Brass Effect) Workflows -- Active
 | n8n ID | Name | Trigger | Description |
 |--------|------|---------|-------------|
-| 6OXGUtj6mQlWSsEQ | WF1 - Bid Alert Parser | **OFF** | Checks bids@ for PlanHub emails, extracts project data, triggers pipeline |
-| CJlS0xgvY4oHtQsy | WF2 - File Downloader | Webhook | PlanHub API download + pipeline v17.4 (scope_brief grounding, Gemini batch classify, Claude vision) |
-| MCioEt93wGOlbd7d | WF3 - Blueprint Analyzer | Webhook | Claude Sonnet 4.6 vision -- extract_legend, extract_schedule, count_devices modes |
-| uTiy5gtBbhoL2wjo | WF4 - Auto Bidder Engine | Webhook | Pricing engine with Wavenet/Panduit vendor profiles, autopilot chain (heuristic → Gemini → send) |
-| 3IjbS6wWZIxQSj9a | WF5 - Quote Sender | Webhook | PDF via html2pdf.app, emails to Darius (test mode). CC darius@stromation.com |
-| ZcSsnPOZGN4IxXiM | WF6 - Gemini Verifier | Webhook | Gemini 2.5-flash-lite critic, size-aware rules, returns verdict/confidence/issues |
-| 09NUezjKeX1RFjDK | WF7 - Claude Arbitrator | Webhook | Auto-rejects Gemini suggestions for out-of-scope categories |
-| RfasyaaxB9IHDzVo | WF8 - Spec Extractor | Webhook | Reads spec pages for vendor requirements |
-| 0W9zvozyYwNhuwwS | WF9 - Drawing Audit | Webhook | Manual PDF upload path with keyed_notes_inventory |
-| Xi7gyvl3tzMqaknK | SAM.gov Bid Finder | Daily 6AM CT | Division 27 opportunities from SAM.gov |
-| VYQEc5i1Ae2usxN3 | Deadline Reminders | Daily 8AM CT | Upcoming deadline summary email |
-| P8pO5V6vewkRAPFa | Auto-Expire | Daily 1AM CT | Marks past-deadline bids as expired |
-| DUk2xWWZNeLoirfU | Gap Reconcile | Hourly :15 | 11 gap rules + auto-junk zombies + auto-rescan + auto-promote via Gemini |
-| JHAP2Qj7zrPyAiUK | Disk Cleanup | Daily 3:30AM CT | Purges /tmp caches, leaked work dirs, old n8n executions |
-| H788XzpQwRzXHy96 | BidEngine Chatbot | Webhook | Chat widget on bidengine.stromation.com |
+| 6OXGUtj6mQlWSsEQ | TBE WF1 - Bid Alert Parser | **OFF** | Checks bids@ for PlanHub emails, extracts project data, triggers pipeline |
+| CJlS0xgvY4oHtQsy | TBE WF2 - File Downloader | Webhook | PlanHub API download + pipeline v17.4 (scope_brief grounding, Gemini batch classify, Claude vision) |
+| MCioEt93wGOlbd7d | TBE WF3 - Blueprint Analyzer | Webhook | Claude Sonnet 4.6 vision -- extract_legend, extract_schedule, count_devices modes |
+| uTiy5gtBbhoL2wjo | TBE WF4 - Auto Bidder Engine | Webhook | Pricing engine with Wavenet/Panduit vendor profiles, autopilot chain (heuristic → Gemini → send) |
+| 3IjbS6wWZIxQSj9a | TBE WF5 - Quote Sender | Webhook | PDF via html2pdf.app, emails to Darius (test mode). CC darius@stromation.com |
+| ZcSsnPOZGN4IxXiM | TBE WF6 - Gemini Verifier | Webhook | Gemini 2.5-flash-lite critic, size-aware rules, returns verdict/confidence/issues |
+| Xi7gyvl3tzMqaknK | TBE WF6 - SAM.gov Bid Finder | Daily 6AM CT | Division 27 opportunities from SAM.gov |
+| 09NUezjKeX1RFjDK | TBE WF7 - Claude Arbitrator | Webhook | Auto-rejects Gemini suggestions for out-of-scope categories |
+| VYQEc5i1Ae2usxN3 | TBE WF7 - Deadline Reminders | Daily 8AM CT | Upcoming deadline summary email |
+| RfasyaaxB9IHDzVo | TBE WF8 - Spec Extractor | Webhook | Reads spec pages for vendor requirements |
+| 0W9zvozyYwNhuwwS | TBE WF9 - Drawing Audit | Webhook | Manual PDF upload path with keyed_notes_inventory |
+| P8pO5V6vewkRAPFa | TBE Auto-Expire | Daily 1AM CT | Marks past-deadline bids as expired |
+| DUk2xWWZNeLoirfU | TBE Gap Reconcile | **OFF** (manual only) | 11 gap rules + auto-junk zombies + auto-rescan + auto-promote via Gemini |
+| JHAP2Qj7zrPyAiUK | TBE Disk Cleanup | Daily 3:30AM CT | Purges /tmp caches, leaked work dirs, old n8n executions |
+| H788XzpQwRzXHy96 | BidEngine - Chatbot | Webhook | Chat widget on bidengine.stromation.com |
 
 ### Stromation Workflows -- Active
 | n8n ID | Name | Trigger | Description |
 |--------|------|---------|-------------|
-| SFbGasyyu7kfcaYn | 11 - SMS Handler | Webhook | AI text replies + emails leads to Gmail |
-| hAGWEpTGAA8kktw2 | 12 - Website Chatbot | Webhook | GPT as Darius, fixVoice post-processing |
-| KO405axX2qcNthyz | 14 - Reddit Comment Bot | 2x daily | Comments on relevant automation posts |
-| sG4yXO59P9LWnhI6 | 21 - Reddit Lead Digest | Daily 6PM CT | Scans Reddit for high-intent posts |
-| moCdSoa37fI4ufR8 | 22 - Website Form Handler | Webhook | Forms → Supabase businesses table + email to Gmail |
-| IOcuiuEuSkK8nljj | 25 - Auto Blog Publisher | Sunday 6AM CT | GPT → blog post → GitHub commit → updates blog.html + sitemap + RSS |
-| IoqOSKMxtFHDVY3i | 26 - Review Request | Webhook | Review request email |
-| h9EG9Q3KRc1gpvqK | 27 - Invoice Generator | Webhook | Invoice + Stripe Pay Now link |
-| eqV9tBqHVKRF1eED | 28 - Client Onboarding | Webhook | Welcome email + intake link |
-| pFhjuOD8LxbbxLpw | 30 - Proposal Generator | Webhook | Branded proposal email |
-| qkG5JXc3N12zFol1 | 31 - Client Weekly Update | Friday 4PM CT | Active project status emails |
-| LqK02yBF41kLbqBg | 32 - Post-Delivery Sequence | Daily 11AM CT | Day 1 review, Day 7 referral, Day 30 case study |
-| yOx8M0wQtnSoAOaM | 33 - Retainer Billing | Webhook | Stripe subscription checkout |
+| NtixICRZgbvMQsv0 | 09 - Twitter Auto-Poster | 2x daily (10AM+4PM CT) | Auto-posts to @stromationhq |
+| 1WHURyVvnLwmyuR9 | 10 - Voicemail Handler | Webhook | TwiML voicemail redirect |
+| SFbGasyyu7kfcaYn | 11 - SMS Handler (Stromation) | Webhook | AI text replies + emails leads to Gmail |
+| hAGWEpTGAA8kktw2 | 12 - Website Chatbot (Stromation) | Webhook | GPT as Darius, fixVoice post-processing |
+| KO405axX2qcNthyz | 14 - Reddit Comment Bot (Stromation) | 2x daily | Comments on relevant automation posts |
+| sG4yXO59P9LWnhI6 | 21 - Reddit Lead Digest (Stromation) | Daily 6PM CT | Scans Reddit for high-intent posts |
+| moCdSoa37fI4ufR8 | 22 - Website Form Handler (Stromation) | Webhook | Forms → Supabase businesses table + email to Gmail |
+| IOcuiuEuSkK8nljj | 25 - Auto Blog Publisher (Stromation) | Sunday 6AM CT | GPT → blog post → GitHub commit → updates blog.html + sitemap + RSS |
+| IoqOSKMxtFHDVY3i | 26 - Review Request (Stromation) | Webhook | Review request email |
+| h9EG9Q3KRc1gpvqK | 27 - Invoice Generator (Stromation) | Webhook | Invoice + Stripe Pay Now link |
+| eqV9tBqHVKRF1eED | 28 - Client Onboarding (Stromation) | Webhook | Welcome email + intake link |
+| pFhjuOD8LxbbxLpw | 30 - Proposal Generator (Stromation) | Webhook | Branded proposal email |
+| qkG5JXc3N12zFol1 | 31 - Client Weekly Update (Stromation) | Friday 4PM CT | Active project status emails |
+| LqK02yBF41kLbqBg | 32 - Post-Delivery Sequence (Stromation) | Daily 11AM CT | Day 1 review, Day 7 referral, Day 30 case study |
+| yOx8M0wQtnSoAOaM | 33 - Retainer Billing Setup (Stromation) | Webhook | Stripe subscription checkout |
+
+### ResumeGo Workflows -- Active
+| n8n ID | Name | Trigger | Description |
+|--------|------|---------|-------------|
+| llar5ONJX9FWpUxZ | ResumeGo - Create and tailor | Webhook | Main resume generation -- GPT-4o + python-docx + LibreOffice PDF |
+| 5FNXUIt4sJ93VL8j | ResumeGo - Reviewer | Webhook | Grading, fulfillment after Stripe payment, email delivery |
+| 2u8rswE9HcDhZjiZ | ResumeGo - Privacy Cleanup | Daily 7AM CT | Purges old session data |
+| oqFWzU5GzndDILzz | ResumeGo - Auto Blog Publisher | Sunday 6AM CT | Weekly auto blog posts for resume.stromation.com |
+
+### Convert API Workflows -- Active
+| n8n ID | Name | Trigger | Description |
+|--------|------|---------|-------------|
+| eBwQZkdKeTIVYNsU | File Conversion API | Webhook | Main conversion endpoint -- LibreOffice + ffmpeg |
+| ZFhZ2BGd18AZp3Fo | PDF API - Signup | Webhook | Creates API keys, emails to user |
+| fhUdbL6qTqQwMYcr | Convert API - Checkout | Webhook | Creates Stripe subscription checkout sessions |
+| mHLWGQsjspn1odGh | Convert API - Stripe Webhook | Webhook | Handles subscription events |
+| sUgYnuXtUtZZXr4p | Convert API - Monthly Reset | Daily midnight | Resets usage counters by period_reset_at |
+| l5EqdBjABkTnIxt6 | Convert API - Regen Key | Webhook | Generates new API keys |
+
+### Homes (homes.stromation.com) Workflows -- Active
+| n8n ID | Name | Trigger | Description |
+|--------|------|---------|-------------|
+| 3ML5QCJrBW3pSiQK | 01 - Lead Capture & Validation | Webhook | Inbound lead intake |
+| Bz8G0rKdGZG3d7wm | 02 - AI Lead Qualifier | Webhook | GPT scores and qualifies leads |
+| yCSxhLblufb4p6Kn | 04 - Agent Routing | Webhook | Routes leads to agents |
+| OctCnXGNxJLvwOsY | 05 - Agent Referral Email | Webhook | Sends referral emails |
+| mTtPMoX1Gm7G0SnL | 09 - Blog Auto-Publisher | Monday 8AM UTC | Auto blog posts for homes site |
+| yex635QlzdK8wpS1 | 11 - SMS Handler | Webhook | SMS handling for homes leads |
 
 ### Stromation Workflows -- OFF
 | n8n ID | Name | Reason |
 |--------|------|--------|
-| 6ifZIIHeEfDyIixL | 13 - Reddit Community Bot | Disabled until karma 50+ |
-| UGRobtNd5Hx5ogmB | 15 - Reddit Reply Handler | OFF |
-| poONkDtBrIXeafIX | 17 - Reddit Karma Builder | OFF |
-| U2lfXN8F2szI6v67 | 18 - Local Business Finder | KILLED -- cold outreach abandoned |
-| m8TJKxwBj6h1OPUp | 19 - Cold Email Outreach | KILLED -- 0 replies from 245 emails |
-| LQI7ojFU2GOaqMHo | 20 - Outreach Reply Handler | KILLED -- no outreach to handle |
-| L22SHb3s7blq3fXR | 23 - Lead Nurture Drip | KILLED -- part of outreach system |
-| QkUSrPM055wfnsKL | 24 - Weekly Pipeline Digest | OFF |
+| 6ifZIIHeEfDyIixL | 13 - Reddit Community Bot (Stromation) | Disabled until karma 50+ |
+| UGRobtNd5Hx5ogmB | 15 - Reddit Reply Handler (Stromation) | OFF |
+| poONkDtBrIXeafIX | 17 - Reddit Karma Builder (Stromation) | OFF |
+| U2lfXN8F2szI6v67 | 18 - Local Business Finder (Stromation) | KILLED -- cold outreach abandoned |
+| m8TJKxwBj6h1OPUp | 19 - Cold Email Outreach (Stromation) | KILLED -- 0 replies from 245 emails |
+| LQI7ojFU2GOaqMHo | 20 - Outreach Reply Handler (Stromation) | KILLED -- no outreach to handle |
+| L22SHb3s7blq3fXR | 23 - Lead Nurture Drip (Stromation) | KILLED -- part of outreach system |
+| QkUSrPM055wfnsKL | 24 - Weekly Pipeline Digest (Stromation) | OFF |
 
 ### SMTP Credentials
 | Credential | Email | Used By |
