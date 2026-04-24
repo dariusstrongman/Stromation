@@ -28,7 +28,8 @@
         .dash-header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.3px; }
         .dash-header .brand { color: #c5ff4a; }
         .admin-badge { display: inline-block; background: rgba(197,255,74,0.12); color: #c5ff4a; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(197,255,74,0.25); }
-        .dash-header-right { font-size: 0.8rem; color: #94A3B8; }
+        .dash-header-right { font-size: 0.8rem; color: #94A3B8; cursor: pointer; user-select: none; }
+        .dash-header-right:hover { color: #c5ff4a; }
         .refresh-indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10B981; margin-right: 6px; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
@@ -515,7 +516,9 @@ function clipCardHtml(c) {
 
     var videoBlock;
     if (vidUrl) {
-        videoBlock = '<video controls preload="metadata" src="' + vidUrl + '"></video>';
+        // preload="none" + playsinline: avoids firing N auth'd metadata fetches on page load,
+        // which was causing browser throttling + lag when scrolling through lots of cards.
+        videoBlock = '<video controls preload="none" playsinline src="' + vidUrl + '"></video>';
     } else {
         videoBlock = '<div class="no-video">No public URL configured.<br><br>' +
             '<code style="font-size:0.7rem;word-break:break-all;">' + escHtml(srcPath) + '</code></div>';
@@ -695,9 +698,22 @@ document.addEventListener('click', function(e) {
     }
 });
 
-async function loadAll() {
+function anyVideoPlaying() {
+    var vids = document.querySelectorAll('.clip-video-wrap video');
+    for (var i = 0; i < vids.length; i++) {
+        if (!vids[i].paused && !vids[i].ended) return true;
+    }
+    return false;
+}
+
+async function loadAll(force) {
+    // Skip auto-refresh if user is watching something - re-rendering the grid
+    // destroys <video> elements mid-playback and causes the pause-every-30s issue.
+    if (!force && anyVideoPlaying()) {
+        document.getElementById('lastUpdated').textContent = 'Paused (playback)';
+        return;
+    }
     try {
-        var since24h = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
         var [streams, readyClips, approvedClips, rejectedClips, spikes] = await Promise.all([
             fetchData('clipper_streams', 'select=*&order=started_at.desc&limit=30'),
             fetchData('clipper_clips', 'select=*&status=eq.ready&order=created_at.desc&limit=50'),
@@ -719,6 +735,13 @@ async function loadAll() {
         document.getElementById('lastUpdated').textContent = 'Load failed';
     }
 }
+
+// Manual refresh button wired into the header-right area.
+// Useful when playback has paused the auto-refresh.
+document.addEventListener('click', function(e) {
+    var r = e.target.closest('.dash-header-right');
+    if (r) { e.preventDefault(); loadAll(true); }
+});
 
 if (CLIPS_BASE_URL) {
     document.getElementById('configBanner').classList.add('hidden');
