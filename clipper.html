@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Clipper - Stromation Admin</title>
+    <link rel="icon" type="image/svg+xml" href="logos/logo-transparent.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0B0F17; color: #E2E8F0; min-height: 100vh; }
+
+        .dash-header {
+            background: #07080a;
+            color: #fff;
+            padding: 1.1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1E293B;
+        }
+        .dash-header-left { display: flex; align-items: center; gap: 1rem; }
+        .dash-header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.3px; }
+        .dash-header .brand { color: #c5ff4a; }
+        .admin-badge { display: inline-block; background: rgba(197,255,74,0.12); color: #c5ff4a; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(197,255,74,0.25); }
+        .dash-header-right { font-size: 0.8rem; color: #94A3B8; }
+        .refresh-indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10B981; margin-right: 6px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .dash-container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.8rem; margin-bottom: 1.5rem; }
+        .stat-card {
+            background: #111827;
+            border: 1px solid #1F2937;
+            border-radius: 12px;
+            padding: 1.1rem 1.3rem;
+        }
+        .stat-card .stat-label { font-size: 0.72rem; color: #94A3B8; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.35rem; }
+        .stat-card .stat-value { font-size: 1.9rem; font-weight: 800; color: #F8FAFC; }
+        .stat-card .stat-value.lime { color: #c5ff4a; }
+        .stat-card .stat-value.amber { color: #F59E0B; }
+        .stat-card .stat-value.emerald { color: #10B981; }
+        .stat-card .stat-value.red { color: #F87171; }
+
+        .dash-section {
+            background: #111827;
+            border: 1px solid #1F2937;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .dash-section-header {
+            padding: 1rem 1.3rem;
+            border-bottom: 1px solid #1F2937;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .dash-section-header h2 { font-size: 1rem; font-weight: 700; color: #F8FAFC; }
+        .dash-section-header .count { font-size: 0.8rem; color: #94A3B8; font-weight: 500; }
+        .dash-section-header .collapse-btn {
+            background: none;
+            border: none;
+            color: #94A3B8;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .dash-section-header .collapse-btn:hover { background: #1F2937; color: #F8FAFC; }
+        .dash-section-body { padding: 0; }
+        .dash-section-body.hidden { display: none; }
+
+        /* Live streamers panel */
+        .live-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; padding: 1.3rem; }
+        .live-card {
+            background: #0B0F17;
+            border: 1px solid #1F2937;
+            border-radius: 10px;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .live-card.is-live { border-color: rgba(239,68,68,0.4); }
+        .live-card .live-dot {
+            position: absolute; top: 0.8rem; right: 0.8rem;
+            font-size: 0.6rem; font-weight: 800; color: #fff;
+            background: #EF4444; padding: 3px 8px; border-radius: 4px;
+            letter-spacing: 1px;
+        }
+        .live-card.is-offline .live-dot { background: #374151; }
+        .live-card .streamer-name { font-size: 1.1rem; font-weight: 700; color: #F8FAFC; margin-bottom: 0.3rem; }
+        .live-card .stream-meta { font-size: 0.75rem; color: #94A3B8; margin-bottom: 0.5rem; }
+        .live-card .stream-title { font-size: 0.85rem; color: #CBD5E1; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+        /* Clips grid */
+        .clips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.1rem; padding: 1.3rem; }
+        .clip-card {
+            background: #0B0F17;
+            border: 1px solid #1F2937;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .clip-card.approved { border-color: rgba(16,185,129,0.45); }
+        .clip-card.uploaded { border-color: rgba(197,255,74,0.45); }
+        .clip-video-wrap {
+            position: relative;
+            background: #000;
+            aspect-ratio: 9 / 16;
+            max-height: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .clip-video-wrap video { width: 100%; height: 100%; object-fit: contain; }
+        .clip-video-wrap .no-video {
+            color: #64748B; font-size: 0.85rem; text-align: center; padding: 1rem;
+        }
+        .clip-body { padding: 0.9rem 1rem 1rem; flex: 1; display: flex; flex-direction: column; gap: 0.55rem; }
+        .clip-title { font-size: 0.95rem; font-weight: 700; color: #F8FAFC; line-height: 1.35; }
+        .clip-meta-row { display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.7rem; }
+        .clip-chip { background: #1F2937; color: #CBD5E1; padding: 3px 9px; border-radius: 6px; font-weight: 600; }
+        .clip-chip.score { background: rgba(197,255,74,0.15); color: #c5ff4a; }
+        .clip-chip.category { background: rgba(96,165,250,0.15); color: #60A5FA; }
+        .clip-chip.streamer { background: rgba(244,114,182,0.15); color: #F472B6; }
+        .clip-reason { font-size: 0.78rem; color: #94A3B8; line-height: 1.45; font-style: italic; }
+        .clip-transcript { font-size: 0.75rem; color: #64748B; line-height: 1.5; max-height: 5.5em; overflow: hidden; position: relative; }
+        .clip-transcript.expanded { max-height: none; }
+        .clip-transcript-toggle { font-size: 0.7rem; color: #60A5FA; cursor: pointer; background: none; border: none; padding: 0; margin-top: 0.2rem; font-weight: 600; }
+        .clip-hashtags { font-size: 0.72rem; color: #60A5FA; font-weight: 500; word-break: break-word; }
+        .clip-actions { display: flex; gap: 0.4rem; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid #1F2937; }
+        .clip-btn {
+            flex: 1;
+            padding: 0.5rem 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 1px solid #1F2937;
+            border-radius: 6px;
+            background: #0B0F17;
+            color: #CBD5E1;
+            cursor: pointer;
+            transition: all 0.15s;
+            letter-spacing: 0.3px;
+        }
+        .clip-btn:hover { background: #1F2937; color: #F8FAFC; }
+        .clip-btn.approve { color: #10B981; border-color: rgba(16,185,129,0.3); }
+        .clip-btn.approve:hover { background: rgba(16,185,129,0.12); }
+        .clip-btn.reject { color: #F87171; border-color: rgba(248,113,113,0.3); }
+        .clip-btn.reject:hover { background: rgba(248,113,113,0.12); }
+        .clip-btn.uploaded { color: #c5ff4a; border-color: rgba(197,255,74,0.3); }
+        .clip-btn.uploaded:hover { background: rgba(197,255,74,0.1); }
+        .clip-btn.copy { color: #60A5FA; border-color: rgba(96,165,250,0.3); }
+        .clip-btn.copy:hover { background: rgba(96,165,250,0.12); }
+        .clip-status-badge {
+            position: absolute; top: 0.6rem; left: 0.6rem;
+            font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 4px;
+            text-transform: uppercase; letter-spacing: 0.7px;
+            background: rgba(0,0,0,0.7); color: #F8FAFC; backdrop-filter: blur(6px);
+        }
+        .clip-status-badge.ready { color: #fbbf24; }
+        .clip-status-badge.approved { color: #10B981; }
+        .clip-status-badge.uploaded { color: #c5ff4a; }
+
+        /* Table (spikes) */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        thead { background: #0B0F17; }
+        th { padding: 0.65rem 1rem; text-align: left; font-weight: 600; color: #94A3B8; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; border-bottom: 1px solid #1F2937; }
+        td { padding: 0.6rem 1rem; border-bottom: 1px solid #1F2937; color: #CBD5E1; }
+        tbody tr:hover { background: #0B0F17; }
+        td code { font-family: 'SFMono-Regular', Menlo, monospace; font-size: 0.78rem; color: #c5ff4a; }
+        td.sample { max-width: 440px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.78rem; color: #94A3B8; }
+
+        /* Loading + empty */
+        .loading-overlay { display: flex; align-items: center; justify-content: center; padding: 3rem; color: #64748B; gap: 0.75rem; }
+        .spinner { width: 20px; height: 20px; border: 3px solid #1F2937; border-top-color: #c5ff4a; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state { padding: 3rem 1rem; text-align: center; color: #64748B; font-size: 0.9rem; }
+
+        /* Config banner */
+        .config-banner {
+            background: rgba(245,158,11,0.08);
+            border: 1px solid rgba(245,158,11,0.3);
+            color: #fbbf24;
+            padding: 0.9rem 1.3rem;
+            border-radius: 10px;
+            margin-bottom: 1.2rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .config-banner.hidden { display: none; }
+        .config-banner code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-family: 'SFMono-Regular', monospace; color: #fde68a; }
+        .config-banner details { margin-top: 0.6rem; }
+        .config-banner summary { cursor: pointer; font-weight: 600; color: #fbbf24; }
+        .config-banner pre { background: rgba(0,0,0,0.4); padding: 0.7rem 0.9rem; border-radius: 6px; margin-top: 0.6rem; overflow-x: auto; font-size: 0.75rem; color: #e5e7eb; }
+
+        .toast {
+            position: fixed; bottom: 1.5rem; right: 1.5rem;
+            background: #111827; color: #F8FAFC;
+            padding: 0.8rem 1.2rem; border-radius: 8px;
+            border: 1px solid #1F2937;
+            font-size: 0.85rem; font-weight: 600;
+            opacity: 0; transform: translateY(10px);
+            transition: all 0.25s;
+            z-index: 100; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.ok { border-color: rgba(16,185,129,0.5); color: #10B981; }
+        .toast.err { border-color: rgba(248,113,113,0.5); color: #F87171; }
+
+        @media (max-width: 900px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .dash-header { flex-direction: column; gap: 0.5rem; text-align: center; }
+            .dash-container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<script>
+(function() {
+    var k = sessionStorage.getItem('stromation_admin');
+    if (k !== 'Kyomi123') {
+        var p = prompt('Admin access required. Enter password:');
+        if (p !== 'Kyomi123') {
+            document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Inter,sans-serif;color:#94A3B8;background:#0B0F17;"><p>Access denied.</p></div>';
+            return;
+        }
+        sessionStorage.setItem('stromation_admin', 'Kyomi123');
+    }
+})();
+</script>
+
+<header class="dash-header">
+    <div class="dash-header-left">
+        <h1><span class="brand">CLIPPER</span> Control Room</h1>
+        <span class="admin-badge">Admin Only</span>
+    </div>
+    <div class="dash-header-right">
+        <span class="refresh-indicator"></span>
+        <span id="lastUpdated">Loading...</span>
+    </div>
+</header>
+
+<div class="dash-container">
+
+    <div class="config-banner" id="configBanner">
+        <strong>Video playback not configured.</strong> Set <code>CLIPS_BASE_URL</code> inside <code>clipper.html</code> (line 1) to a public HTTPS URL that serves <code>/mnt/clipper-storage/clipper/clips/</code> on the EC2 box. Until then you'll see paths instead of embedded videos.
+        <details>
+            <summary>Quick nginx setup (1-time)</summary>
+<pre>sudo apt install nginx apache2-utils -y
+
+# basic auth
+sudo htpasswd -c /etc/nginx/.htpasswd_clips darius
+
+# /etc/nginx/sites-available/clipper-files
+server {
+  listen 443 ssl;
+  server_name clips.stromation.com;
+  # ssl_certificate ... (use certbot)
+  auth_basic "Clips";
+  auth_basic_user_file /etc/nginx/.htpasswd_clips;
+  root /mnt/clipper-storage/clipper;
+  autoindex off;
+  location / { try_files $uri =404; }
+}
+
+# point DNS A record clips.stromation.com to the EC2 IP
+# then: sudo certbot --nginx -d clips.stromation.com
+# then set CLIPS_BASE_URL = 'https://clips.stromation.com/' in this file</pre>
+        </details>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-label">Live Now</div>
+            <div class="stat-value red" id="statLive">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Spikes Today</div>
+            <div class="stat-value amber" id="statSpikes">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Ready to Review</div>
+            <div class="stat-value lime" id="statReady">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Approved</div>
+            <div class="stat-value emerald" id="statApproved">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Uploaded</div>
+            <div class="stat-value lime" id="statUploaded">—</div>
+        </div>
+    </div>
+
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2>Streamers</h2>
+            <span class="count" id="streamerCount"></span>
+        </div>
+        <div class="dash-section-body">
+            <div id="liveBody"><div class="loading-overlay"><div class="spinner"></div> Loading streamers...</div></div>
+        </div>
+    </div>
+
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2>Ready to Review</h2>
+            <span class="count" id="readyCount"></span>
+        </div>
+        <div class="dash-section-body">
+            <div id="readyBody"><div class="loading-overlay"><div class="spinner"></div> Loading clips...</div></div>
+        </div>
+    </div>
+
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2>Approved / Uploaded</h2>
+            <span class="count" id="approvedCount"></span>
+            <button class="collapse-btn" data-target="approvedBody">Toggle</button>
+        </div>
+        <div class="dash-section-body hidden" id="approvedBody">
+            <div id="approvedBodyInner"></div>
+        </div>
+    </div>
+
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2>Recent Spikes</h2>
+            <span class="count" id="spikesCount"></span>
+            <button class="collapse-btn" data-target="spikesBody">Toggle</button>
+        </div>
+        <div class="dash-section-body hidden" id="spikesBody">
+            <div id="spikesBodyInner"></div>
+        </div>
+    </div>
+
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2>Rejected (AI filtered)</h2>
+            <span class="count" id="rejectedCount"></span>
+            <button class="collapse-btn" data-target="rejectedBody">Toggle</button>
+        </div>
+        <div class="dash-section-body hidden" id="rejectedBody">
+            <div id="rejectedBodyInner"></div>
+        </div>
+    </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==== CONFIG ====
+// Set this to the public HTTPS base URL that serves /mnt/clipper-storage/clipper/ on EC2.
+// Example: 'https://clips.stromation.com/'  (trailing slash required)
+// Leave empty ('') to disable video playback and show file paths instead.
+var CLIPS_BASE_URL = '';
+var CLIPS_ROOT_PATH = '/mnt/clipper-storage/clipper/';  // matches service/config.py DATA_DIR
+
+var SUPABASE_URL = 'https://iadzcnzgbtuigyodeqas.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_8qa-nssfdtEkCz-42wOSWQ_2P7S4Zj7';
+var HEADERS = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
+};
+
+var LIVE_STALENESS_SEC = 120;  // if last_updated newer than 2 min and ended_at null -> live
+
+function escHtml(s) {
+    if (s == null) return '';
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function toVideoUrl(p) {
+    if (!p || !CLIPS_BASE_URL) return null;
+    if (p.indexOf(CLIPS_ROOT_PATH) !== 0) return null;
+    return CLIPS_BASE_URL + p.slice(CLIPS_ROOT_PATH.length);
+}
+
+function fmtRelative(iso) {
+    if (!iso) return '—';
+    var now = Date.now();
+    var then = new Date(iso).getTime();
+    var diff = Math.max(0, (now - then) / 1000);
+    if (diff < 60) return Math.floor(diff) + 's ago';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+    return Math.floor(diff / 86400) + 'd ago';
+}
+
+function fmtTime(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', month: 'short', day: 'numeric' });
+}
+
+function toast(msg, kind) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (kind || '');
+    setTimeout(function() { t.className = 'toast ' + (kind || ''); }, 2400);
+}
+
+async function fetchData(table, params) {
+    var url = SUPABASE_URL + '/rest/v1/' + table + '?' + params;
+    var resp = await fetch(url, { headers: HEADERS });
+    if (!resp.ok) throw new Error('Supabase ' + table + ' error: ' + resp.status);
+    return resp.json();
+}
+
+async function patchClip(id, patch) {
+    var url = SUPABASE_URL + '/rest/v1/clipper_clips?id=eq.' + encodeURIComponent(id);
+    var resp = await fetch(url, {
+        method: 'PATCH',
+        headers: HEADERS,
+        body: JSON.stringify(patch)
+    });
+    if (!resp.ok) throw new Error('patch failed: ' + resp.status);
+    return resp.json();
+}
+
+function renderLive(streams) {
+    var now = Date.now();
+    var latestByStreamer = {};
+    streams.forEach(function(s) {
+        var k = s.streamer;
+        if (!latestByStreamer[k] || new Date(s.started_at) > new Date(latestByStreamer[k].started_at)) {
+            latestByStreamer[k] = s;
+        }
+    });
+
+    var cards = Object.values(latestByStreamer).sort(function(a, b) {
+        var aLive = !a.ended_at, bLive = !b.ended_at;
+        if (aLive !== bLive) return aLive ? -1 : 1;
+        return new Date(b.started_at) - new Date(a.started_at);
+    });
+
+    var liveCount = 0;
+    var html = '';
+    cards.forEach(function(s) {
+        var isLive = !s.ended_at;
+        if (isLive) liveCount++;
+        var title = s.title || '(no title)';
+        var game = s.game || '—';
+        var peak = s.peak_viewers != null ? s.peak_viewers.toLocaleString() : '—';
+        html += '<div class="live-card ' + (isLive ? 'is-live' : 'is-offline') + '">' +
+            '<span class="live-dot">' + (isLive ? 'LIVE' : 'OFF') + '</span>' +
+            '<div class="streamer-name">' + escHtml(s.streamer) + '</div>' +
+            '<div class="stream-meta">' + escHtml(game) + ' · peak ' + peak + ' · ' +
+            (isLive ? 'started ' + fmtRelative(s.started_at) : 'ended ' + fmtRelative(s.ended_at)) +
+            '</div>' +
+            '<div class="stream-title">' + escHtml(title) + '</div>' +
+            '</div>';
+    });
+
+    if (!html) html = '<div class="empty-state">No streamers tracked yet. Service may still be starting.</div>';
+    document.getElementById('liveBody').innerHTML = '<div class="live-grid">' + html + '</div>';
+    document.getElementById('statLive').textContent = liveCount;
+    document.getElementById('streamerCount').textContent = cards.length + ' tracked · ' + liveCount + ' live';
+}
+
+function clipCardHtml(c) {
+    var vidUrl = toVideoUrl(c.processed_path || c.source_path);
+    var streamer = escHtml(c.streamer);
+    var title = escHtml(c.title || '(AI title pending)');
+    var score = c.score != null ? c.score : '?';
+    var category = c.category ? escHtml(c.category) : '';
+    var reason = c.score_reason ? escHtml(c.score_reason) : '';
+    var transcript = escHtml(c.transcript || '');
+    var hashtags = escHtml(c.hashtags || '');
+    var dur = c.duration_sec != null ? Number(c.duration_sec).toFixed(0) + 's' : '';
+    var srcPath = c.processed_path || c.source_path || '';
+
+    var videoBlock;
+    if (vidUrl) {
+        videoBlock = '<video controls preload="metadata" src="' + vidUrl + '"></video>';
+    } else {
+        videoBlock = '<div class="no-video">No public URL configured.<br><br>' +
+            '<code style="font-size:0.7rem;word-break:break-all;">' + escHtml(srcPath) + '</code></div>';
+    }
+
+    var statusBadge = '<span class="clip-status-badge ' + escHtml(c.status) + '">' + escHtml(c.status) + '</span>';
+
+    var actions = '';
+    if (c.status === 'ready') {
+        actions =
+            '<button class="clip-btn approve" data-action="approve" data-id="' + c.id + '">Approve</button>' +
+            '<button class="clip-btn uploaded" data-action="uploaded" data-id="' + c.id + '">Uploaded</button>' +
+            '<button class="clip-btn reject" data-action="reject" data-id="' + c.id + '">Reject</button>';
+    } else if (c.status === 'approved') {
+        actions =
+            '<button class="clip-btn uploaded" data-action="uploaded" data-id="' + c.id + '">Mark Uploaded</button>' +
+            '<button class="clip-btn reject" data-action="reject" data-id="' + c.id + '">Reject</button>';
+    } else if (c.status === 'uploaded') {
+        actions = '<button class="clip-btn copy" data-action="copy-path" data-path="' + escHtml(srcPath) + '">Copy path</button>';
+    } else {
+        actions =
+            '<button class="clip-btn approve" data-action="approve" data-id="' + c.id + '">Restore</button>' +
+            '<button class="clip-btn copy" data-action="copy-path" data-path="' + escHtml(srcPath) + '">Copy path</button>';
+    }
+
+    var transcriptBlock = transcript
+        ? '<div class="clip-transcript" id="tr-' + c.id + '">' + transcript + '</div>' +
+          '<button class="clip-transcript-toggle" data-action="toggle-transcript" data-id="' + c.id + '">Show more</button>'
+        : '';
+
+    return '<div class="clip-card ' + escHtml(c.status) + '">' +
+        '<div class="clip-video-wrap">' + statusBadge + videoBlock + '</div>' +
+        '<div class="clip-body">' +
+            '<div class="clip-title">' + title + '</div>' +
+            '<div class="clip-meta-row">' +
+                '<span class="clip-chip streamer">' + streamer + '</span>' +
+                '<span class="clip-chip score">Score ' + score + '/10</span>' +
+                (category ? '<span class="clip-chip category">' + category + '</span>' : '') +
+                (dur ? '<span class="clip-chip">' + dur + '</span>' : '') +
+                '<span class="clip-chip">' + fmtRelative(c.created_at) + '</span>' +
+            '</div>' +
+            (reason ? '<div class="clip-reason">' + reason + '</div>' : '') +
+            transcriptBlock +
+            (hashtags ? '<div class="clip-hashtags">' + hashtags + '</div>' : '') +
+            '<div class="clip-actions">' + actions + '</div>' +
+        '</div>' +
+    '</div>';
+}
+
+function renderReady(clips) {
+    var html = clips.map(clipCardHtml).join('');
+    if (!html) html = '<div class="empty-state">No clips waiting. Either none detected yet or AI rejected everything so far.</div>';
+    document.getElementById('readyBody').innerHTML = '<div class="clips-grid">' + html + '</div>';
+    document.getElementById('readyCount').textContent = clips.length + ' ready';
+    document.getElementById('statReady').textContent = clips.length;
+}
+
+function renderApproved(clips) {
+    var html = clips.map(clipCardHtml).join('');
+    if (!html) html = '<div class="empty-state">No approved or uploaded clips yet.</div>';
+    document.getElementById('approvedBodyInner').innerHTML = '<div class="clips-grid">' + html + '</div>';
+    var approved = clips.filter(function(c) { return c.status === 'approved'; }).length;
+    var uploaded = clips.filter(function(c) { return c.status === 'uploaded'; }).length;
+    document.getElementById('approvedCount').textContent = approved + ' approved · ' + uploaded + ' uploaded';
+    document.getElementById('statApproved').textContent = approved;
+    document.getElementById('statUploaded').textContent = uploaded;
+}
+
+function renderRejected(clips) {
+    var html = clips.map(clipCardHtml).join('');
+    if (!html) html = '<div class="empty-state">No rejected clips yet.</div>';
+    document.getElementById('rejectedBodyInner').innerHTML = '<div class="clips-grid">' + html + '</div>';
+    document.getElementById('rejectedCount').textContent = clips.length + ' rejected';
+}
+
+function renderSpikes(spikes) {
+    var rows = spikes.map(function(sp) {
+        var sample = '';
+        if (sp.sample_messages) {
+            try {
+                var parsed = JSON.parse(sp.sample_messages);
+                if (Array.isArray(parsed)) sample = parsed.map(function(m) { return m.msg || m.message || m; }).join(' · ');
+                else sample = String(sp.sample_messages);
+            } catch (e) { sample = String(sp.sample_messages); }
+        }
+        return '<tr>' +
+            '<td><strong>' + escHtml(sp.streamer) + '</strong></td>' +
+            '<td><code>' + sp.messages_in_window + '/' + sp.window_seconds + 's</code></td>' +
+            '<td>' + fmtRelative(sp.detected_at) + '</td>' +
+            '<td>' + fmtTime(sp.detected_at) + '</td>' +
+            '<td class="sample" title="' + escHtml(sample) + '">' + escHtml(sample) + '</td>' +
+            '</tr>';
+    }).join('');
+
+    if (!rows) rows = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#64748B;">No spikes yet.</td></tr>';
+    document.getElementById('spikesBodyInner').innerHTML =
+        '<div class="table-wrap"><table><thead><tr>' +
+            '<th>Streamer</th><th>Velocity</th><th>When</th><th>Time</th><th>Sample Chat</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+    document.getElementById('spikesCount').textContent = spikes.length + ' recent';
+    var todayCount = spikes.filter(function(sp) {
+        return (Date.now() - new Date(sp.detected_at).getTime()) < 86400000;
+    }).length;
+    document.getElementById('statSpikes').textContent = todayCount;
+}
+
+async function handleAction(action, id, extra) {
+    try {
+        if (action === 'approve') {
+            await patchClip(id, { status: 'approved', approved_at: new Date().toISOString() });
+            toast('Approved', 'ok');
+        } else if (action === 'reject') {
+            await patchClip(id, { status: 'rejected' });
+            toast('Rejected', 'ok');
+        } else if (action === 'uploaded') {
+            await patchClip(id, { status: 'uploaded', uploaded_at: new Date().toISOString(), tiktok_uploaded: true });
+            toast('Marked uploaded', 'ok');
+        } else if (action === 'copy-path') {
+            await navigator.clipboard.writeText(extra);
+            toast('Path copied', 'ok');
+            return;
+        } else if (action === 'toggle-transcript') {
+            var el = document.getElementById('tr-' + id);
+            if (el) {
+                el.classList.toggle('expanded');
+                var btn = document.querySelector('[data-action="toggle-transcript"][data-id="' + id + '"]');
+                if (btn) btn.textContent = el.classList.contains('expanded') ? 'Show less' : 'Show more';
+            }
+            return;
+        }
+        await loadAll();
+    } catch (e) {
+        console.error(e);
+        toast('Failed: ' + e.message, 'err');
+    }
+}
+
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-action]');
+    if (btn) {
+        var action = btn.getAttribute('data-action');
+        var id = btn.getAttribute('data-id');
+        var path = btn.getAttribute('data-path');
+        handleAction(action, id, path);
+        return;
+    }
+    var collapse = e.target.closest('.collapse-btn');
+    if (collapse) {
+        var target = document.getElementById(collapse.getAttribute('data-target'));
+        if (target) target.classList.toggle('hidden');
+    }
+});
+
+async function loadAll() {
+    try {
+        var since24h = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+        var [streams, readyClips, approvedClips, rejectedClips, spikes] = await Promise.all([
+            fetchData('clipper_streams', 'select=*&order=started_at.desc&limit=30'),
+            fetchData('clipper_clips', 'select=*&status=eq.ready&order=created_at.desc&limit=50'),
+            fetchData('clipper_clips', 'select=*&or=(status.eq.approved,status.eq.uploaded)&order=created_at.desc&limit=50'),
+            fetchData('clipper_clips', 'select=*&status=eq.rejected&order=created_at.desc&limit=20'),
+            fetchData('clipper_spikes', 'select=*&order=detected_at.desc&limit=40')
+        ]);
+
+        renderLive(streams);
+        renderReady(readyClips);
+        renderApproved(approvedClips);
+        renderRejected(rejectedClips);
+        renderSpikes(spikes);
+
+        document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    } catch (e) {
+        console.error(e);
+        toast('Load failed: ' + e.message, 'err');
+        document.getElementById('lastUpdated').textContent = 'Load failed';
+    }
+}
+
+if (CLIPS_BASE_URL) {
+    document.getElementById('configBanner').classList.add('hidden');
+}
+
+loadAll();
+setInterval(loadAll, 30000);
+</script>
+</body>
+</html>
