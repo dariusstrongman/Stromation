@@ -218,13 +218,87 @@
         .toast.ok { border-color: rgba(16,185,129,0.5); color: #10B981; }
         .toast.err { border-color: rgba(248,113,113,0.5); color: #F87171; }
 
+        /* Daily summary strip below the main stats row */
+        .summary-strip {
+            display: flex; flex-wrap: wrap; gap: 1rem;
+            background: #111827; border: 1px solid #1F2937; border-radius: 10px;
+            padding: 0.7rem 1.1rem; margin-bottom: 1.2rem;
+            font-size: 0.78rem; color: #94A3B8; align-items: center;
+        }
+        .summary-strip .summary-label { color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.68rem; font-weight: 600; }
+        .summary-strip .summary-value { color: #F8FAFC; font-weight: 700; }
+        .summary-strip .summary-value.lime { color: #c5ff4a; }
+        .summary-strip .summary-value.green { color: #10B981; }
+        .summary-strip .summary-value.amber { color: #fbbf24; }
+        .summary-strip .summary-value.red { color: #F87171; }
+        .summary-strip .summary-divider { width: 1px; height: 22px; background: #1F2937; }
+
+        /* Filter bar (streamer + category) */
+        .filter-bar {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;
+            padding: 0.8rem 1.3rem; background: #0B0F17;
+            border-bottom: 1px solid #1F2937;
+        }
+        .filter-bar .filter-label {
+            font-size: 0.7rem; color: #64748B; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-right: 0.4rem;
+        }
+        .filter-chip {
+            background: #111827; border: 1px solid #1F2937; color: #94A3B8;
+            padding: 0.32rem 0.75rem; border-radius: 999px;
+            font-size: 0.74rem; font-weight: 600; cursor: pointer;
+            transition: all 0.15s;
+        }
+        .filter-chip:hover { background: #1F2937; color: #F8FAFC; }
+        .filter-chip.active {
+            background: rgba(197,255,74,0.12); color: #c5ff4a;
+            border-color: rgba(197,255,74,0.4);
+        }
+        .filter-chip .chip-count { color: #64748B; font-weight: 500; margin-left: 0.25rem; }
+        .filter-chip.active .chip-count { color: rgba(197,255,74,0.7); }
+
+        /* Title char counter */
+        .clip-title-row { display: flex; align-items: flex-start; gap: 0.5rem; justify-content: space-between; }
+        .clip-charcount {
+            font-size: 0.65rem; font-weight: 700;
+            padding: 2px 7px; border-radius: 4px;
+            background: rgba(148,163,184,0.1); color: #94A3B8;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .clip-charcount.green { background: rgba(16,185,129,0.12); color: #10B981; }
+        .clip-charcount.amber { background: rgba(251,191,36,0.12); color: #fbbf24; }
+        .clip-charcount.red { background: rgba(248,113,113,0.12); color: #F87171; }
+
+        /* Per-card action rows */
+        .clip-action-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .clip-action-row + .clip-action-row { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px dashed #1F2937; }
+        .clip-btn.download { color: #c5ff4a; border-color: rgba(197,255,74,0.3); }
+        .clip-btn.download:hover { background: rgba(197,255,74,0.1); }
+
+        /* Click-to-promote backup titles */
+        .backup-pick {
+            font-size: 0.78rem; color: #CBD5E1;
+            padding: 0.45rem 0.6rem;
+            background: #1F2937; border-radius: 6px;
+            line-height: 1.35; cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .backup-pick:hover { background: #1F2937; border-color: rgba(197,255,74,0.4); color: #F8FAFC; }
+        .backup-pick .backup-arrow { color: #c5ff4a; font-weight: 700; opacity: 0; transition: opacity 0.15s; }
+        .backup-pick:hover .backup-arrow { opacity: 1; }
+
         @media (max-width: 900px) {
             .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .summary-strip { font-size: 0.72rem; gap: 0.7rem; padding: 0.6rem 0.9rem; }
         }
         @media (max-width: 480px) {
             .stats-row { grid-template-columns: 1fr; }
             .dash-header { flex-direction: column; gap: 0.5rem; text-align: center; }
             .dash-container { padding: 1rem; }
+            .summary-strip .summary-divider { display: none; }
         }
     </style>
 </head>
@@ -306,6 +380,20 @@ server {
         </div>
     </div>
 
+    <!-- Daily contextual summary -->
+    <div class="summary-strip" id="summaryStrip">
+        <span class="summary-label">Today</span>
+        <span><span class="summary-value" id="sumClips">—</span> clips</span>
+        <div class="summary-divider"></div>
+        <span><span class="summary-label">Pass rate</span> <span class="summary-value lime" id="sumPass">—</span></span>
+        <div class="summary-divider"></div>
+        <span><span class="summary-label">Top viral</span> <span class="summary-value amber" id="sumTop">—</span></span>
+        <div class="summary-divider"></div>
+        <span><span class="summary-label">Avg score (passed)</span> <span class="summary-value" id="sumAvg">—</span></span>
+        <div class="summary-divider"></div>
+        <span><span class="summary-label">Auto today</span> <span class="summary-value green" id="sumAuto">—</span></span>
+    </div>
+
     <div class="dash-section">
         <div class="dash-section-header">
             <h2>Streamers</h2>
@@ -313,6 +401,16 @@ server {
         </div>
         <div class="dash-section-body">
             <div id="liveBody"><div class="loading-overlay"><div class="spinner"></div> Loading streamers...</div></div>
+        </div>
+    </div>
+
+    <!-- Global filter bar (applies to Ready / Approved / Rejected sections) -->
+    <div class="dash-section" id="filterSection" style="display:none;">
+        <div class="filter-bar" id="filterStreamerBar">
+            <span class="filter-label">Streamer</span>
+        </div>
+        <div class="filter-bar" id="filterCategoryBar" style="border-bottom:none;">
+            <span class="filter-label">Category</span>
         </div>
     </div>
 
@@ -384,6 +482,13 @@ var HEADERS = {
 
 var LIVE_STALENESS_SEC = 120;  // if last_updated newer than 2 min and ended_at null -> live
 
+// Filter state - applies globally to ready/approved/rejected card grids
+var activeStreamerFilter = '';   // empty = all
+var activeCategoryFilter = '';   // empty = all
+
+// Cache last-loaded clips so filter clicks can re-render without re-querying
+var lastLoaded = { ready: [], approved: [], rejected: [] };
+
 function escHtml(s) {
     if (s == null) return '';
     var d = document.createElement('div');
@@ -418,6 +523,134 @@ function toast(msg, kind) {
     t.textContent = msg;
     t.className = 'toast show ' + (kind || '');
     setTimeout(function() { t.className = 'toast ' + (kind || ''); }, 2400);
+}
+
+async function copyToClipboard(text, label) {
+    if (!text) {
+        toast('Nothing to copy', 'err');
+        return;
+    }
+    try {
+        await navigator.clipboard.writeText(text);
+        toast((label || 'Copied') + ' (' + text.length + ' chars)', 'ok');
+    } catch (e) {
+        // Fallback for older browsers / insecure contexts
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); toast(label || 'Copied', 'ok'); }
+        catch (e2) { toast('Copy failed', 'err'); }
+        document.body.removeChild(ta);
+    }
+}
+
+function applyFilters(clips) {
+    return clips.filter(function(c) {
+        if (activeStreamerFilter && (c.streamer || '').toLowerCase() !== activeStreamerFilter) return false;
+        if (activeCategoryFilter && (c.category || '').toLowerCase() !== activeCategoryFilter) return false;
+        return true;
+    });
+}
+
+function buildFilterBar(barId, label, key, options) {
+    var bar = document.getElementById(barId);
+    if (!bar) return;
+    // Wipe old chips except the static label
+    while (bar.children.length > 1) bar.removeChild(bar.lastChild);
+
+    var activeValue = (key === 'streamer') ? activeStreamerFilter : activeCategoryFilter;
+    var allChip = document.createElement('button');
+    allChip.className = 'filter-chip' + (!activeValue ? ' active' : '');
+    allChip.dataset.filterKey = key;
+    allChip.dataset.filterValue = '';
+    allChip.textContent = 'All';
+    bar.appendChild(allChip);
+
+    options.forEach(function(opt) {
+        var chip = document.createElement('button');
+        chip.className = 'filter-chip' + (activeValue === opt.value.toLowerCase() ? ' active' : '');
+        chip.dataset.filterKey = key;
+        chip.dataset.filterValue = opt.value.toLowerCase();
+        chip.innerHTML = escHtml(opt.value) + (opt.count != null ? ' <span class="chip-count">(' + opt.count + ')</span>' : '');
+        bar.appendChild(chip);
+    });
+}
+
+function renderFilterBars(allClips) {
+    if (!allClips.length && !MONITORED_STREAMERS.length) {
+        document.getElementById('filterSection').style.display = 'none';
+        return;
+    }
+    document.getElementById('filterSection').style.display = '';
+
+    // Streamer chips: all monitored + counts from current clips
+    var streamerCounts = {};
+    allClips.forEach(function(c) {
+        var s = (c.streamer || '').toLowerCase();
+        streamerCounts[s] = (streamerCounts[s] || 0) + 1;
+    });
+    var streamerOptions = MONITORED_STREAMERS.map(function(s) {
+        return { value: s, count: streamerCounts[s.toLowerCase()] || 0 };
+    });
+    buildFilterBar('filterStreamerBar', 'Streamer', 'streamer', streamerOptions);
+
+    // Category chips: derived from data
+    var categoryCounts = {};
+    allClips.forEach(function(c) {
+        var cat = (c.category || '').toLowerCase();
+        if (!cat || cat === 'unknown') return;
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+    var categoryOptions = Object.keys(categoryCounts)
+        .sort(function(a, b) { return categoryCounts[b] - categoryCounts[a]; })
+        .map(function(cat) { return { value: cat, count: categoryCounts[cat] }; });
+    buildFilterBar('filterCategoryBar', 'Category', 'category', categoryOptions);
+}
+
+function isToday(iso) {
+    if (!iso) return false;
+    var d = new Date(iso);
+    var now = new Date();
+    return d.getFullYear() === now.getFullYear() &&
+           d.getMonth() === now.getMonth() &&
+           d.getDate() === now.getDate();
+}
+
+function renderSummaryStrip(allClips) {
+    var todays = allClips.filter(function(c) { return isToday(c.created_at); });
+    var total = todays.length;
+    var passed = todays.filter(function(c) { return c.status !== 'rejected' && c.status !== 'failed'; });
+    var auto = todays.filter(function(c) { return c.auto_upload === true; });
+    var passRate = total ? Math.round(passed.length / total * 100) : 0;
+
+    var topClip = passed.reduce(function(best, c) {
+        var sc = parseFloat(c.score) || 0;
+        return (best == null || sc > (parseFloat(best.score) || 0)) ? c : best;
+    }, null);
+
+    var avg = passed.length
+        ? (passed.reduce(function(sum, c) { return sum + (parseFloat(c.score) || 0); }, 0) / passed.length)
+        : 0;
+
+    document.getElementById('sumClips').textContent = total;
+    var passEl = document.getElementById('sumPass');
+    passEl.textContent = total ? passRate + '%' : '—';
+    passEl.className = 'summary-value ' + (passRate >= 30 ? 'lime' : passRate >= 15 ? 'amber' : 'red');
+    document.getElementById('sumTop').textContent = topClip
+        ? (parseFloat(topClip.score).toFixed(1) + ' (' + topClip.streamer + ')')
+        : '—';
+    document.getElementById('sumAvg').textContent = passed.length ? avg.toFixed(1) : '—';
+    document.getElementById('sumAuto').textContent = auto.length;
+}
+
+function charCountClass(len) {
+    if (len > 100) return 'red';
+    if (len > 85) return 'amber';
+    if (len <= 70 && len >= 35) return 'green';
+    return '';
 }
 
 async function fetchData(table, params) {
@@ -498,7 +731,10 @@ function renderLive(streams) {
 function clipCardHtml(c) {
     var vidUrl = toVideoUrl(c.processed_path || c.source_path);
     var streamer = escHtml(c.streamer);
-    var title = escHtml(c.title || '(AI title pending)');
+    var titleRaw = c.title || '';
+    var title = escHtml(titleRaw || '(AI title pending)');
+    var titleLen = titleRaw.length;
+    var charClass = charCountClass(titleLen);
     var score = c.score != null ? c.score : '?';
     var hookScore = c.hook_score != null ? c.hook_score : null;
     var ctxScore = c.context_score != null ? c.context_score : null;
@@ -507,12 +743,18 @@ function clipCardHtml(c) {
     var autoUpload = c.auto_upload === true;
     var category = c.category ? escHtml(c.category) : '';
     var reason = c.score_reason ? escHtml(c.score_reason) : '';
-    var description = c.description ? escHtml(c.description) : '';
+    var descriptionRaw = c.description || '';
+    var description = escHtml(descriptionRaw);
     var backupTitles = Array.isArray(c.backup_titles) ? c.backup_titles : [];
     var transcript = escHtml(c.transcript || '');
-    var hashtags = escHtml(c.hashtags || '');
+    var hashtagsRaw = c.hashtags || '';
+    var hashtags = escHtml(hashtagsRaw);
     var dur = c.duration_sec != null ? Number(c.duration_sec).toFixed(0) + 's' : '';
     var srcPath = c.processed_path || c.source_path || '';
+    // Filename for download attribute - last path segment
+    var filename = srcPath ? srcPath.split('/').pop() : 'clip.mp4';
+    // Combined description block for "Copy Description" (description + hashtags)
+    var fullDesc = descriptionRaw + (hashtagsRaw ? '\n\n' + hashtagsRaw : '');
 
     var videoBlock;
     if (vidUrl) {
@@ -529,22 +771,33 @@ function clipCardHtml(c) {
         ? '<span class="clip-status-badge" style="left:auto;right:0.6rem;color:#c5ff4a;background:rgba(0,0,0,0.7);">AUTO</span>'
         : '';
 
-    var actions = '';
+    // Status-driven primary actions (approve / reject / mark uploaded)
+    var primary = '';
     if (c.status === 'ready') {
-        actions =
+        primary =
             '<button class="clip-btn approve" data-action="approve" data-id="' + c.id + '">Approve</button>' +
             '<button class="clip-btn uploaded" data-action="uploaded" data-id="' + c.id + '">Uploaded</button>' +
             '<button class="clip-btn reject" data-action="reject" data-id="' + c.id + '">Reject</button>';
     } else if (c.status === 'approved') {
-        actions =
+        primary =
             '<button class="clip-btn uploaded" data-action="uploaded" data-id="' + c.id + '">Mark Uploaded</button>' +
             '<button class="clip-btn reject" data-action="reject" data-id="' + c.id + '">Reject</button>';
     } else if (c.status === 'uploaded') {
-        actions = '<button class="clip-btn copy" data-action="copy-path" data-path="' + escHtml(srcPath) + '">Copy path</button>';
+        primary = '<span style="font-size:0.74rem;color:#94A3B8;">Posted. Files purge in 30d.</span>';
     } else {
-        actions =
-            '<button class="clip-btn approve" data-action="approve" data-id="' + c.id + '">Restore</button>' +
-            '<button class="clip-btn copy" data-action="copy-path" data-path="' + escHtml(srcPath) + '">Copy path</button>';
+        primary = '<button class="clip-btn approve" data-action="approve" data-id="' + c.id + '">Restore</button>';
+    }
+
+    // Secondary action row: download mp4 + copy title + copy description
+    var secondary = '';
+    if (vidUrl) {
+        secondary += '<a class="clip-btn download" download="' + escHtml(filename) + '" href="' + vidUrl + '">⬇ Download</a>';
+    }
+    if (titleRaw) {
+        secondary += '<button class="clip-btn copy" data-action="copy" data-payload="title" data-id="' + c.id + '">📋 Title</button>';
+    }
+    if (descriptionRaw || hashtagsRaw) {
+        secondary += '<button class="clip-btn copy" data-action="copy" data-payload="description" data-id="' + c.id + '">📋 Description</button>';
     }
 
     var transcriptBlock = transcript
@@ -561,10 +814,13 @@ function clipCardHtml(c) {
     var backupBlock = '';
     if (backupTitles.length) {
         backupBlock = '<details class="clip-backups" style="margin-top:0.3rem;">' +
-            '<summary style="cursor:pointer;font-size:0.72rem;color:#60A5FA;font-weight:600;">Backup titles (' + backupTitles.length + ')</summary>' +
+            '<summary style="cursor:pointer;font-size:0.72rem;color:#60A5FA;font-weight:600;">Backup titles (' + backupTitles.length + ')  ·  click to use</summary>' +
             '<div style="margin-top:0.4rem;display:flex;flex-direction:column;gap:0.3rem;">' +
             backupTitles.map(function(t, i) {
-                return '<div style="font-size:0.78rem;color:#CBD5E1;padding:0.4rem 0.55rem;background:#1F2937;border-radius:6px;line-height:1.35;">' + escHtml(t) + '</div>';
+                return '<div class="backup-pick" data-action="swap-title" data-id="' + c.id + '" data-idx="' + i + '" title="Click to make this the main title">' +
+                    '<span style="flex:1;">' + escHtml(t) + '</span>' +
+                    '<span class="backup-arrow">↑ promote</span>' +
+                    '</div>';
             }).join('') +
             '</div></details>';
     }
@@ -572,10 +828,21 @@ function clipCardHtml(c) {
         ? '<div style="font-size:0.78rem;color:#94A3B8;line-height:1.5;border-left:2px solid #1F2937;padding-left:0.7rem;">' + description + '</div>'
         : '';
 
+    var titleBlock =
+        '<div class="clip-title-row">' +
+            '<div class="clip-title">' + title + '</div>' +
+            (titleRaw ? '<span class="clip-charcount ' + charClass + '" title="YouTube Shorts cuts at 100 chars">' + titleLen + '/100</span>' : '') +
+        '</div>';
+
+    var actionsHtml = '<div class="clip-actions" style="flex-direction:column;align-items:stretch;">' +
+        '<div class="clip-action-row">' + primary + '</div>' +
+        (secondary ? '<div class="clip-action-row">' + secondary + '</div>' : '') +
+    '</div>';
+
     return '<div class="clip-card ' + escHtml(c.status) + '">' +
         '<div class="clip-video-wrap">' + statusBadge + autoBadge + videoBlock + '</div>' +
         '<div class="clip-body">' +
-            '<div class="clip-title">' + title + '</div>' +
+            titleBlock +
             '<div class="clip-meta-row">' +
                 '<span class="clip-chip streamer">' + streamer + '</span>' +
                 '<span class="clip-chip score">Viral ' + score + '/10</span>' +
@@ -589,35 +856,56 @@ function clipCardHtml(c) {
             backupBlock +
             transcriptBlock +
             (hashtags ? '<div class="clip-hashtags">' + hashtags + '</div>' : '') +
-            '<div class="clip-actions">' + actions + '</div>' +
+            actionsHtml +
         '</div>' +
     '</div>';
 }
 
+function _filterStateLabel() {
+    var bits = [];
+    if (activeStreamerFilter) bits.push(activeStreamerFilter);
+    if (activeCategoryFilter) bits.push(activeCategoryFilter);
+    return bits.length ? ' (filtered: ' + bits.join(', ') + ')' : '';
+}
+
 function renderReady(clips) {
-    var html = clips.map(clipCardHtml).join('');
-    if (!html) html = '<div class="empty-state">No clips waiting. Either none detected yet or AI rejected everything so far.</div>';
+    var filtered = applyFilters(clips);
+    var html = filtered.map(clipCardHtml).join('');
+    if (!html) {
+        html = (activeStreamerFilter || activeCategoryFilter)
+            ? '<div class="empty-state">No ready clips matching filter. <button class="filter-chip active" id="clearFilterReady" style="margin-left:0.5rem;">Clear filter</button></div>'
+            : '<div class="empty-state">No clips waiting. Either none detected yet or AI rejected everything so far.</div>';
+    }
     document.getElementById('readyBody').innerHTML = '<div class="clips-grid">' + html + '</div>';
-    document.getElementById('readyCount').textContent = clips.length + ' ready';
+    var lbl = filtered.length === clips.length
+        ? clips.length + ' ready'
+        : filtered.length + ' of ' + clips.length + ' ready';
+    document.getElementById('readyCount').textContent = lbl + _filterStateLabel();
     document.getElementById('statReady').textContent = clips.length;
 }
 
 function renderApproved(clips) {
-    var html = clips.map(clipCardHtml).join('');
-    if (!html) html = '<div class="empty-state">No approved or uploaded clips yet.</div>';
+    var filtered = applyFilters(clips);
+    var html = filtered.map(clipCardHtml).join('');
+    if (!html) html = '<div class="empty-state">No approved or uploaded clips' +
+        (activeStreamerFilter || activeCategoryFilter ? ' matching filter.' : ' yet.') + '</div>';
     document.getElementById('approvedBodyInner').innerHTML = '<div class="clips-grid">' + html + '</div>';
     var approved = clips.filter(function(c) { return c.status === 'approved'; }).length;
     var uploaded = clips.filter(function(c) { return c.status === 'uploaded'; }).length;
-    document.getElementById('approvedCount').textContent = approved + ' approved · ' + uploaded + ' uploaded';
+    var sub = (filtered.length === clips.length) ? '' : ' (' + filtered.length + ' shown)';
+    document.getElementById('approvedCount').textContent = approved + ' approved · ' + uploaded + ' uploaded' + sub;
     document.getElementById('statApproved').textContent = approved;
     document.getElementById('statUploaded').textContent = uploaded;
 }
 
 function renderRejected(clips) {
-    var html = clips.map(clipCardHtml).join('');
-    if (!html) html = '<div class="empty-state">No rejected clips yet.</div>';
+    var filtered = applyFilters(clips);
+    var html = filtered.map(clipCardHtml).join('');
+    if (!html) html = '<div class="empty-state">No rejected clips' +
+        (activeStreamerFilter || activeCategoryFilter ? ' matching filter.' : ' yet.') + '</div>';
     document.getElementById('rejectedBodyInner').innerHTML = '<div class="clips-grid">' + html + '</div>';
-    document.getElementById('rejectedCount').textContent = clips.length + ' rejected';
+    var sub = (filtered.length === clips.length) ? '' : ' (' + filtered.length + ' of ' + clips.length + ')';
+    document.getElementById('rejectedCount').textContent = clips.length + ' rejected' + sub;
 }
 
 function renderSpikes(spikes) {
@@ -651,31 +939,68 @@ function renderSpikes(spikes) {
     document.getElementById('statSpikes').textContent = todayCount;
 }
 
-async function handleAction(action, id, extra) {
+function findClipById(id) {
+    var pools = [lastLoaded.ready, lastLoaded.approved, lastLoaded.rejected];
+    for (var i = 0; i < pools.length; i++) {
+        for (var j = 0; j < pools[i].length; j++) {
+            if (pools[i][j].id === id) return pools[i][j];
+        }
+    }
+    return null;
+}
+
+async function handleAction(action, btn) {
+    var id = btn.getAttribute('data-id');
     try {
         if (action === 'approve') {
             await patchClip(id, { status: 'approved', approved_at: new Date().toISOString() });
             toast('Approved', 'ok');
+            await loadAll(true);
         } else if (action === 'reject') {
             await patchClip(id, { status: 'rejected' });
             toast('Rejected', 'ok');
+            await loadAll(true);
         } else if (action === 'uploaded') {
             await patchClip(id, { status: 'uploaded', uploaded_at: new Date().toISOString(), tiktok_uploaded: true });
             toast('Marked uploaded', 'ok');
-        } else if (action === 'copy-path') {
-            await navigator.clipboard.writeText(extra);
-            toast('Path copied', 'ok');
+            await loadAll(true);
+        } else if (action === 'copy') {
+            // payload tells us which field to copy
+            var payload = btn.getAttribute('data-payload');
+            var clip = findClipById(id);
+            if (!clip) { toast('Clip not found', 'err'); return; }
+            if (payload === 'title') {
+                await copyToClipboard(clip.title || '', 'Title copied');
+            } else if (payload === 'description') {
+                var combo = (clip.description || '') + ((clip.description && clip.hashtags) ? '\n\n' : '') + (clip.hashtags || '');
+                await copyToClipboard(combo, 'Description copied');
+            }
+            return;
+        } else if (action === 'swap-title') {
+            var idx = parseInt(btn.getAttribute('data-idx'), 10);
+            var clip = findClipById(id);
+            if (!clip) { toast('Clip not found', 'err'); return; }
+            var backups = (clip.backup_titles || []).slice();
+            if (idx < 0 || idx >= backups.length) { toast('Invalid backup', 'err'); return; }
+            var newMain = backups[idx];
+            var oldMain = clip.title || '';
+            // New main = picked backup. Old main joins backups in its place. Picked one removed from backups.
+            backups.splice(idx, 1);
+            if (oldMain) backups.unshift(oldMain);
+            backups = backups.slice(0, 3);
+            await patchClip(id, { title: newMain, backup_titles: backups });
+            toast('Title swapped', 'ok');
+            await loadAll(true);
             return;
         } else if (action === 'toggle-transcript') {
             var el = document.getElementById('tr-' + id);
             if (el) {
                 el.classList.toggle('expanded');
-                var btn = document.querySelector('[data-action="toggle-transcript"][data-id="' + id + '"]');
-                if (btn) btn.textContent = el.classList.contains('expanded') ? 'Show less' : 'Show more';
+                var tBtn = document.querySelector('[data-action="toggle-transcript"][data-id="' + id + '"]');
+                if (tBtn) tBtn.textContent = el.classList.contains('expanded') ? 'Show less' : 'Show more';
             }
             return;
         }
-        await loadAll();
     } catch (e) {
         console.error(e);
         toast('Failed: ' + e.message, 'err');
@@ -683,12 +1008,37 @@ async function handleAction(action, id, extra) {
 }
 
 document.addEventListener('click', function(e) {
+    // Filter chip clicks
+    var chip = e.target.closest('.filter-chip[data-filter-key]');
+    if (chip) {
+        var key = chip.getAttribute('data-filter-key');
+        var val = chip.getAttribute('data-filter-value');
+        if (key === 'streamer') activeStreamerFilter = val;
+        else if (key === 'category') activeCategoryFilter = val;
+        // Re-render from cache (no fresh fetch needed)
+        renderFilterBars(lastLoaded.ready.concat(lastLoaded.approved, lastLoaded.rejected));
+        renderReady(lastLoaded.ready);
+        renderApproved(lastLoaded.approved);
+        renderRejected(lastLoaded.rejected);
+        return;
+    }
+    // Clear-filter button inside empty-state
+    if (e.target && e.target.id === 'clearFilterReady') {
+        activeStreamerFilter = '';
+        activeCategoryFilter = '';
+        renderFilterBars(lastLoaded.ready.concat(lastLoaded.approved, lastLoaded.rejected));
+        renderReady(lastLoaded.ready);
+        renderApproved(lastLoaded.approved);
+        renderRejected(lastLoaded.rejected);
+        return;
+    }
     var btn = e.target.closest('[data-action]');
     if (btn) {
         var action = btn.getAttribute('data-action');
-        var id = btn.getAttribute('data-id');
-        var path = btn.getAttribute('data-path');
-        handleAction(action, id, path);
+        // Don't preventDefault on download <a> elements - let browser handle download
+        if (btn.tagName === 'A' && btn.classList.contains('download')) return;
+        if (action === 'copy' || action === 'copy-path') e.preventDefault();
+        handleAction(action, btn);
         return;
     }
     var collapse = e.target.closest('.collapse-btn');
@@ -722,7 +1072,15 @@ async function loadAll(force) {
             fetchData('clipper_spikes', 'select=*&order=detected_at.desc&limit=40')
         ]);
 
+        // Cache so filter chips and click-to-promote can re-render without re-querying
+        lastLoaded.ready = readyClips;
+        lastLoaded.approved = approvedClips;
+        lastLoaded.rejected = rejectedClips;
+
         renderLive(streams);
+        // Daily summary spans EVERY clip, including rejected/approved/uploaded
+        renderSummaryStrip(readyClips.concat(approvedClips, rejectedClips));
+        renderFilterBars(readyClips.concat(approvedClips, rejectedClips));
         renderReady(readyClips);
         renderApproved(approvedClips);
         renderRejected(rejectedClips);
