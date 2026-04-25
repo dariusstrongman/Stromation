@@ -1,1 +1,16 @@
 workflows-backup/
+
+# Internal docs - keep local, do NOT publish
+CLAUDE.md
+.claude/
+docs/sales-playbook.md
+docs/service-agreement.md
+docs/linkedin-posts.md
+docs/linkedin-profile.md
+docs/twitter-content-30days.md
+docs/tbe-spec-system-architecture.md
+__pycache__/
+.DS_Store
+*.log
+.env
+.env.local
