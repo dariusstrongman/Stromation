@@ -825,7 +825,7 @@ function clipCardHtml(c) {
             '</div></details>';
     }
     var descBlock = description
-        ? '<div style="font-size:0.78rem;color:#94A3B8;line-height:1.5;border-left:2px solid #1F2937;padding-left:0.7rem;">' + description + '</div>'
+        ? '<div style="font-size:0.78rem;color:#94A3B8;line-height:1.55;border-left:2px solid #1F2937;padding-left:0.7rem;white-space:pre-wrap;">' + description + '</div>'
         : '';
 
     var titleBlock =
@@ -972,8 +972,16 @@ async function handleAction(action, btn) {
             if (payload === 'title') {
                 await copyToClipboard(clip.title || '', 'Title copied');
             } else if (payload === 'description') {
-                var combo = (clip.description || '') + ((clip.description && clip.hashtags) ? '\n\n' : '') + (clip.hashtags || '');
-                await copyToClipboard(combo, 'Description copied');
+                // Description is now the FULL formatted block (hashtags inline at top + bottom)
+                // ready to paste directly. Fall back to legacy concat if description is empty.
+                var desc = clip.description || '';
+                if (!desc) {
+                    desc = (clip.hashtags || '');
+                } else if (clip.hashtags && desc.indexOf('#') === -1) {
+                    // Defensive: if AI returned description without hashtag block, append
+                    desc += '\n\n' + clip.hashtags;
+                }
+                await copyToClipboard(desc, 'Description copied');
             }
             return;
         } else if (action === 'swap-title') {
