@@ -392,6 +392,8 @@ server {
         <span><span class="summary-label">Avg score (passed)</span> <span class="summary-value" id="sumAvg">—</span></span>
         <div class="summary-divider"></div>
         <span><span class="summary-label">Auto today</span> <span class="summary-value green" id="sumAuto">—</span></span>
+        <div class="summary-divider"></div>
+        <span title="A/B split: variant A has hook overlay, variant B is control (no overlay). Should be roughly 50/50."><span class="summary-label">A/B today</span> <span class="summary-value" id="sumAB">—</span></span>
     </div>
 
     <div class="dash-section">
@@ -644,6 +646,13 @@ function renderSummaryStrip(allClips) {
         : '—';
     document.getElementById('sumAvg').textContent = passed.length ? avg.toFixed(1) : '—';
     document.getElementById('sumAuto').textContent = auto.length;
+
+    // A/B split today (only counts post=true clips since rejected ones aren't representative)
+    var aCount = passed.filter(function(c){ return c.variant === 'A'; }).length;
+    var bCount = passed.filter(function(c){ return c.variant === 'B'; }).length;
+    var abEl = document.getElementById('sumAB');
+    if (aCount + bCount === 0) abEl.textContent = '—';
+    else abEl.textContent = aCount + ' / ' + bCount;
 }
 
 function charCountClass(len) {
@@ -832,10 +841,17 @@ function clipCardHtml(c) {
         : '';
 
     var hookOverlay = c.hook_overlay ? escHtml(c.hook_overlay) : '';
+    var variant = c.variant || '';
+    var variantBadge = '';
+    if (variant === 'A') variantBadge = '<span class="clip-chip" title="A/B test: variant A (with hook overlay)" style="background:rgba(197,255,74,0.15);color:#c5ff4a;">A · overlay</span>';
+    else if (variant === 'B') variantBadge = '<span class="clip-chip" title="A/B test: variant B (control - no overlay)" style="background:rgba(96,165,250,0.15);color:#60A5FA;">B · control</span>';
+
     var hookOverlayBlock = hookOverlay
         ? '<div style="font-size:0.72rem;color:#fbbf24;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:6px;padding:0.5rem 0.7rem;display:flex;align-items:center;gap:0.5rem;">'
           + '<span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;opacity:0.7;">First 2s overlay:</span>'
-          + '<strong style="color:#fde68a;">' + hookOverlay + '</strong></div>'
+          + '<strong style="color:#fde68a;">' + hookOverlay + '</strong>'
+          + (variant === 'B' ? ' <span style="font-size:0.65rem;color:#60A5FA;margin-left:auto;">(disabled in this variant)</span>' : '')
+          + '</div>'
         : '';
 
     var titleBlock =
@@ -859,6 +875,7 @@ function clipCardHtml(c) {
                 subScores +
                 (category ? '<span class="clip-chip category">' + category + '</span>' : '') +
                 (dur ? '<span class="clip-chip">' + dur + '</span>' : '') +
+                variantBadge +
                 '<span class="clip-chip">' + fmtRelative(c.created_at) + '</span>' +
             '</div>' +
             (reason ? '<div class="clip-reason">' + reason + '</div>' : '') +
