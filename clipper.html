@@ -831,6 +831,13 @@ function clipCardHtml(c) {
         ? '<div style="font-size:0.78rem;color:#94A3B8;line-height:1.55;border-left:2px solid #1F2937;padding-left:0.7rem;white-space:pre-wrap;">' + description + '</div>'
         : '';
 
+    var hookOverlay = c.hook_overlay ? escHtml(c.hook_overlay) : '';
+    var hookOverlayBlock = hookOverlay
+        ? '<div style="font-size:0.72rem;color:#fbbf24;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:6px;padding:0.5rem 0.7rem;display:flex;align-items:center;gap:0.5rem;">'
+          + '<span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;opacity:0.7;">First 2s overlay:</span>'
+          + '<strong style="color:#fde68a;">' + hookOverlay + '</strong></div>'
+        : '';
+
     var titleBlock =
         '<div class="clip-title-row">' +
             '<div class="clip-title">' + title + '</div>' +
@@ -855,6 +862,7 @@ function clipCardHtml(c) {
                 '<span class="clip-chip">' + fmtRelative(c.created_at) + '</span>' +
             '</div>' +
             (reason ? '<div class="clip-reason">' + reason + '</div>' : '') +
+            hookOverlayBlock +
             descBlock +
             backupBlock +
             transcriptBlock +
