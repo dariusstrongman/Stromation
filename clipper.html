@@ -799,6 +799,9 @@ function clipCardHtml(c) {
     if (descriptionRaw || hashtagsRaw) {
         secondary += '<button class="clip-btn copy" data-action="copy" data-payload="description" data-id="' + c.id + '">📋 Description</button>';
     }
+    if (hashtagsRaw) {
+        secondary += '<button class="clip-btn copy" data-action="copy" data-payload="hashtags" data-id="' + c.id + '">📋 Tags</button>';
+    }
 
     var transcriptBlock = transcript
         ? '<div class="clip-transcript" id="tr-' + c.id + '">' + transcript + '</div>' +
@@ -972,16 +975,19 @@ async function handleAction(action, btn) {
             if (payload === 'title') {
                 await copyToClipboard(clip.title || '', 'Title copied');
             } else if (payload === 'description') {
-                // Description is now the FULL formatted block (hashtags inline at top + bottom)
+                // Description is the FULL formatted block (hashtags inline at top + bottom)
                 // ready to paste directly. Fall back to legacy concat if description is empty.
                 var desc = clip.description || '';
                 if (!desc) {
                     desc = (clip.hashtags || '');
                 } else if (clip.hashtags && desc.indexOf('#') === -1) {
-                    // Defensive: if AI returned description without hashtag block, append
                     desc += '\n\n' + clip.hashtags;
                 }
                 await copyToClipboard(desc, 'Description copied');
+            } else if (payload === 'hashtags') {
+                // Just the hashtag string. Useful when uploading and the platform
+                // wants tags pasted into a separate field below the video.
+                await copyToClipboard(clip.hashtags || '', 'Hashtags copied');
             }
             return;
         } else if (action === 'swap-title') {
