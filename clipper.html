@@ -418,7 +418,7 @@ server {
 
     <div class="dash-section">
         <div class="dash-section-header">
-            <h2>Ready to Review</h2>
+            <h2>Trial Queue</h2>
             <span class="count" id="readyCount"></span>
         </div>
         <div class="dash-section-body">
@@ -428,12 +428,23 @@ server {
 
     <div class="dash-section">
         <div class="dash-section-header">
-            <h2>Approved / Uploaded</h2>
-            <span class="count" id="approvedCount"></span>
-            <button class="collapse-btn" data-target="approvedBody">Toggle</button>
+            <h2>Approved</h2>
+            <span class="count" id="approvedOnlyCount"></span>
+            <button class="collapse-btn" data-target="approvedOnlyBody">Toggle</button>
         </div>
-        <div class="dash-section-body hidden" id="approvedBody">
-            <div id="approvedBodyInner"></div>
+        <div class="dash-section-body hidden" id="approvedOnlyBody">
+            <div id="approvedOnlyBodyInner"></div>
+        </div>
+    </div>
+
+    <div class="dash-section">
+        <div class="dash-section-header">
+            <h2>Uploaded</h2>
+            <span class="count" id="uploadedOnlyCount"></span>
+            <button class="collapse-btn" data-target="uploadedOnlyBody">Toggle</button>
+        </div>
+        <div class="dash-section-body hidden" id="uploadedOnlyBody">
+            <div id="uploadedOnlyBodyInner"></div>
         </div>
     </div>
 
@@ -744,14 +755,18 @@ function clipCardHtml(c) {
     var title = escHtml(titleRaw || '(AI title pending)');
     var titleLen = titleRaw.length;
     var charClass = charCountClass(titleLen);
-    var score = c.score != null ? c.score : '?';
-    var hookScore = c.hook_score != null ? c.hook_score : null;
-    var ctxScore = c.context_score != null ? c.context_score : null;
-    var paceScore = c.pacing_score != null ? c.pacing_score : null;
-    var retScore = c.retention_score != null ? c.retention_score : null;
+    // BLIND TRIAL: when trial_bucket is set, hide AI scores/category/reasoning
+    // so the user's pick isn't biased by AI confidence. Show only the bucket.
+    var trialBucket = c.trial_bucket || '';
+    var TRIAL = !!trialBucket;
+    var score = TRIAL ? null : (c.score != null ? c.score : '?');
+    var hookScore = TRIAL ? null : (c.hook_score != null ? c.hook_score : null);
+    var ctxScore = TRIAL ? null : (c.context_score != null ? c.context_score : null);
+    var paceScore = TRIAL ? null : (c.pacing_score != null ? c.pacing_score : null);
+    var retScore = TRIAL ? null : (c.retention_score != null ? c.retention_score : null);
     var autoUpload = c.auto_upload === true;
-    var category = c.category ? escHtml(c.category) : '';
-    var reason = c.score_reason ? escHtml(c.score_reason) : '';
+    var category = TRIAL ? '' : (c.category ? escHtml(c.category) : '');
+    var reason = TRIAL ? '' : (c.score_reason ? escHtml(c.score_reason) : '');
     var descriptionRaw = c.description || '';
     var description = escHtml(descriptionRaw);
     var backupTitles = Array.isArray(c.backup_titles) ? c.backup_titles : [];
@@ -848,8 +863,8 @@ function clipCardHtml(c) {
         ? '<div style="font-size:0.78rem;color:#94A3B8;line-height:1.55;border-left:2px solid #1F2937;padding-left:0.7rem;white-space:pre-wrap;">' + description + '</div>'
         : '';
 
-    var hookOverlay = c.hook_overlay ? escHtml(c.hook_overlay) : '';
-    var variant = c.variant || '';
+    var hookOverlay = TRIAL ? '' : (c.hook_overlay ? escHtml(c.hook_overlay) : '');
+    var variant = TRIAL ? '' : (c.variant || '');
     var variantBadge = '';
     if (variant === 'A') variantBadge = '<span class="clip-chip" title="A/B test: variant A (with hook overlay)" style="background:rgba(197,255,74,0.15);color:#c5ff4a;">A · overlay</span>';
     else if (variant === 'B') variantBadge = '<span class="clip-chip" title="A/B test: variant B (control - no overlay)" style="background:rgba(96,165,250,0.15);color:#60A5FA;">B · control</span>';
@@ -879,8 +894,10 @@ function clipCardHtml(c) {
             titleBlock +
             '<div class="clip-meta-row">' +
                 '<span class="clip-chip streamer">' + streamer + '</span>' +
-                '<span class="clip-chip score">Viral ' + score + '/10</span>' +
-                subScores +
+                (TRIAL
+                    ? '<span class="clip-chip" style="background:rgba(99,102,241,0.18);color:#A5B4FC;font-weight:800;letter-spacing:1px;font-size:0.78rem;padding:3px 12px;">' + escHtml(trialBucket) + '</span>'
+                    : '<span class="clip-chip score">Viral ' + score + '/10</span>' + subScores
+                ) +
                 (category ? '<span class="clip-chip category">' + category + '</span>' : '') +
                 (dur ? '<span class="clip-chip">' + dur + '</span>' : '') +
                 variantBadge +
@@ -921,15 +938,26 @@ function renderReady(clips) {
 }
 
 function renderApproved(clips) {
-    var filtered = applyFilters(clips);
-    var html = filtered.map(clipCardHtml).join('');
-    if (!html) html = '<div class="empty-state">No approved or uploaded clips' +
-        (activeStreamerFilter || activeCategoryFilter ? ' matching filter.' : ' yet.') + '</div>';
-    document.getElementById('approvedBodyInner').innerHTML = '<div class="clips-grid">' + html + '</div>';
-    var approved = clips.filter(function(c) { return c.status === 'approved'; }).length;
-    var uploaded = clips.filter(function(c) { return c.status === 'uploaded'; }).length;
-    var sub = (filtered.length === clips.length) ? '' : ' (' + filtered.length + ' shown)';
-    document.getElementById('approvedCount').textContent = approved + ' approved · ' + uploaded + ' uploaded' + sub;
+    var approvedOnly = clips.filter(function(c) { return c.status === 'approved'; });
+    var uploadedOnly = clips.filter(function(c) { return c.status === 'uploaded'; });
+    var fApproved = applyFilters(approvedOnly);
+    var fUploaded = applyFilters(uploadedOnly);
+
+    document.getElementById('approvedOnlyBodyInner').innerHTML = '<div class="clips-grid">' +
+        (fApproved.map(clipCardHtml).join('') ||
+         '<div class="empty-state">No approved clips' +
+         (activeStreamerFilter || activeCategoryFilter ? ' matching filter.' : ' yet.') + '</div>') +
+        '</div>';
+    document.getElementById('uploadedOnlyBodyInner').innerHTML = '<div class="clips-grid">' +
+        (fUploaded.map(clipCardHtml).join('') ||
+         '<div class="empty-state">No uploaded clips' +
+         (activeStreamerFilter || activeCategoryFilter ? ' matching filter.' : ' yet.') + '</div>') +
+        '</div>';
+
+    var approved = approvedOnly.length;
+    var uploaded = uploadedOnly.length;
+    document.getElementById('approvedOnlyCount').textContent = approved + (fApproved.length !== approved ? ' (' + fApproved.length + ' shown)' : '');
+    document.getElementById('uploadedOnlyCount').textContent = uploaded + (fUploaded.length !== uploaded ? ' (' + fUploaded.length + ' shown)' : '');
     document.getElementById('statApproved').textContent = approved;
     document.getElementById('statUploaded').textContent = uploaded;
 }
