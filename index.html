@@ -295,6 +295,166 @@
         </div>
     </section>
 
+    <!-- Live Ops Section -->
+    <section style="background: linear-gradient(180deg, #07080a 0%, #111827 100%); padding: 5rem 0; color: #F8FAFC; position: relative; overflow: hidden;">
+        <div class="container" style="position: relative; z-index: 1;">
+            <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 4px 12px; background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.35); border-radius: 999px; font-size: 0.7rem; font-weight: 800; color: #F87171; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 1rem;">
+                    <span class="live-pulse-dot"></span> LIVE
+                </div>
+                <h2 class="section-title" style="color: #F8FAFC;">What our automations are doing right now</h2>
+                <p class="section-subtitle" style="color: #94A3B8; max-width: 620px;">Real-time view of one of our flagship internal automations &mdash; a 24/7 viral-moment detector watching 7 streamers across Twitch. Every number on this page is live.</p>
+            </div>
+
+            <div class="live-stats-grid">
+                <div class="live-stat">
+                    <div class="live-stat-value" id="liveStreamersLive">&mdash;</div>
+                    <div class="live-stat-label">Streams Live Now</div>
+                </div>
+                <div class="live-stat">
+                    <div class="live-stat-value lime" id="liveSpikesToday">&mdash;</div>
+                    <div class="live-stat-label">Viral Moments Detected Today</div>
+                </div>
+                <div class="live-stat">
+                    <div class="live-stat-value" id="liveClipsToday">&mdash;</div>
+                    <div class="live-stat-label">Clips Processed Today</div>
+                </div>
+                <div class="live-stat">
+                    <div class="live-stat-value" id="liveStreamsToday">&mdash;</div>
+                    <div class="live-stat-label">Streams Tracked Today</div>
+                </div>
+            </div>
+
+            <div class="live-feed" id="liveFeed">
+                <div class="live-feed-header">Recent activity</div>
+                <div class="live-feed-list" id="liveFeedList">
+                    <div class="live-feed-loading">Loading&hellip;</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem; font-size: 0.78rem; color: #64748B;">
+                Updated <span id="liveUpdated">&mdash;</span> &middot; auto-refreshes every 30s
+            </div>
+        </div>
+
+        <style>
+            @keyframes livePulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.4); } }
+            .live-pulse-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #F87171; animation: livePulse 1.6s infinite; }
+            .live-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 920px; margin: 0 auto 2.5rem; }
+            .live-stat { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.5rem 1.25rem; text-align: center; transition: all 0.3s; }
+            .live-stat:hover { border-color: rgba(197,255,74,0.4); transform: translateY(-2px); }
+            .live-stat-value { font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, monospace; font-size: 2.6rem; font-weight: 700; color: #F8FAFC; line-height: 1; margin-bottom: 0.5rem; letter-spacing: -1px; }
+            .live-stat-value.lime { color: #c5ff4a; }
+            .live-stat-label { font-size: 0.78rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+            .live-feed { max-width: 760px; margin: 0 auto; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden; }
+            .live-feed-header { padding: 0.85rem 1.25rem; font-size: 0.7rem; color: #64748B; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; }
+            .live-feed-list { padding: 0.5rem 0; }
+            .live-feed-loading { padding: 1rem 1.25rem; color: #64748B; font-size: 0.85rem; text-align: center; }
+            .live-feed-row { padding: 0.7rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+            .live-feed-row:last-child { border-bottom: none; }
+            .live-feed-icon { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+            .live-feed-icon.live { background: #F87171; box-shadow: 0 0 8px rgba(248,113,113,0.6); }
+            .live-feed-icon.spike { background: #fbbf24; }
+            .live-feed-icon.clip { background: #c5ff4a; }
+            .live-feed-icon.ready { background: #10B981; }
+            .live-feed-text { color: #CBD5E1; flex: 1; }
+            .live-feed-text strong { color: #F8FAFC; font-weight: 600; }
+            .live-feed-time { color: #64748B; font-size: 0.75rem; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+            @media (max-width: 720px) {
+                .live-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.7rem; }
+                .live-stat-value { font-size: 2rem; }
+                .live-stat { padding: 1.1rem 0.8rem; }
+            }
+        </style>
+
+        <script>
+        (function(){
+            var SUPA_URL = 'https://iadzcnzgbtuigyodeqas.supabase.co/rest/v1';
+            var SUPA_KEY = 'sb_publishable_8qa-nssfdtEkCz-42wOSWQ_2P7S4Zj7';
+            var H = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY };
+
+            function todayStartUtc() {
+                var d = new Date();
+                d.setUTCHours(0,0,0,0);
+                return d.toISOString().replace(/\.\d+Z$/, 'Z');
+            }
+            function rel(iso) {
+                var diff = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+                if (diff < 60) return Math.floor(diff) + 's ago';
+                if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+                if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+                return Math.floor(diff / 86400) + 'd ago';
+            }
+            function fmtCount(s) { return s.headers && s.headers.get ? parseInt(s.headers.get('content-range').split('/')[1]||'0',10) : 0; }
+            function safeText(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+            async function fetchCount(table, filter) {
+                try {
+                    var r = await fetch(SUPA_URL + '/' + table + '?' + filter + '&select=id', {
+                        headers: Object.assign({}, H, { 'Prefer':'count=exact', 'Range-Unit':'items', 'Range':'0-0' })
+                    });
+                    var cr = r.headers.get('content-range') || '0-0/0';
+                    return parseInt(cr.split('/')[1] || '0', 10);
+                } catch(e) { return null; }
+            }
+            async function fetchJson(table, params) {
+                try {
+                    var r = await fetch(SUPA_URL + '/' + table + '?' + params, { headers: H });
+                    if (!r.ok) return [];
+                    return await r.json();
+                } catch(e) { return []; }
+            }
+
+            async function refresh(){
+                var since = todayStartUtc();
+                var s = encodeURIComponent;
+                var [liveStreams, spikesToday, clipsToday, streamsToday, recentReady, recentSpikes] = await Promise.all([
+                    fetchJson('clipper_streams', 'ended_at=is.null&order=started_at.desc&limit=10&select=streamer,started_at,title,peak_viewers'),
+                    fetchCount('clipper_spikes', 'detected_at=gte.' + s(since)),
+                    fetchCount('clipper_clips', 'created_at=gte.' + s(since)),
+                    fetchCount('clipper_streams', 'started_at=gte.' + s(since)),
+                    fetchJson('clipper_clips', 'status=eq.ready&order=created_at.desc&limit=3&select=streamer,title,created_at'),
+                    fetchJson('clipper_spikes', 'order=detected_at.desc&limit=8&select=streamer,detected_at')
+                ]);
+
+                document.getElementById('liveStreamersLive').textContent = liveStreams.length;
+                document.getElementById('liveSpikesToday').textContent = spikesToday != null ? spikesToday : '\u2014';
+                document.getElementById('liveClipsToday').textContent = clipsToday != null ? clipsToday : '\u2014';
+                document.getElementById('liveStreamsToday').textContent = streamsToday != null ? streamsToday : '\u2014';
+                document.getElementById('liveUpdated').textContent = new Date().toLocaleTimeString();
+
+                // Build a merged activity feed
+                var feed = [];
+                liveStreams.forEach(function(x){
+                    feed.push({ kind:'live', when:x.started_at, text:'<strong>' + safeText(x.streamer) + '</strong> went live' + (x.peak_viewers ? ' &middot; ' + x.peak_viewers.toLocaleString() + ' viewers' : '') });
+                });
+                recentReady.forEach(function(x){
+                    var t = (x.title || '').slice(0,60);
+                    feed.push({ kind:'ready', when:x.created_at, text:'Clip ready &middot; <strong>' + safeText(x.streamer) + '</strong>' + (t ? ' &middot; ' + safeText(t) : '') });
+                });
+                recentSpikes.forEach(function(x){
+                    feed.push({ kind:'spike', when:x.detected_at, text:'Chat spike on <strong>' + safeText(x.streamer) + '</strong>' });
+                });
+                feed.sort(function(a,b){ return new Date(b.when) - new Date(a.when); });
+                feed = feed.slice(0,8);
+
+                var html = feed.map(function(it){
+                    return '<div class="live-feed-row">' +
+                           '<span class="live-feed-icon ' + it.kind + '"></span>' +
+                           '<span class="live-feed-text">' + it.text + '</span>' +
+                           '<span class="live-feed-time">' + rel(it.when) + '</span>' +
+                           '</div>';
+                }).join('');
+                document.getElementById('liveFeedList').innerHTML = html ||
+                    '<div class="live-feed-loading">No recent activity. Streamers may be offline right now.</div>';
+            }
+
+            refresh();
+            setInterval(refresh, 30000);
+        })();
+        </script>
+    </section>
+
     <!-- Early Adopter CTA Section -->
     <section class="section-light">
         <div class="container">
