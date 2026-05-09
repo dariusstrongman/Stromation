@@ -5,8 +5,15 @@
   <link>https://www.stromation.com/blog.html</link>
   <description>Automation guides and insights for business owners</description>
   <language>en-us</language>
-  <lastBuildDate>Fri, 08 May 2026 11:00:19 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 09 May 2026 11:00:18 GMT</lastBuildDate>
   <atom:link href="https://www.stromation.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>How to Automate the Lead Scoring Process for Small Businesses</title>
+    <link>https://www.stromation.com/blog/how-to-automate-small-business-lead-scoring-process.html</link>
+    <description>Learn how to streamline your lead scoring process with automation to improve sales efficiency and conversion rates.</description>
+    <pubDate>Sat, 09 May 2026 11:00:18 GMT</pubDate>
+    <guid>https://www.stromation.com/blog/how-to-automate-small-business-lead-scoring-process.html</guid>
+  </item>
   <item>
     <title>How to Automate Small Business Employee Training Programs for Maximum Efficiency</title>
     <link>https://www.stromation.com/blog/automate-small-business-employee-training-programs.html</link>
@@ -429,4 +436,4 @@
   </item>
 </channel>
 </rss>
-                                
+                                 
