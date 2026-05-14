@@ -1242,23 +1242,50 @@ async function openBid(id){
     }
 
     // ===== LINE ITEMS =====
+    // Grouped by csi_division (27 → 28 → common), then by category
+    // within each division. Lets the contractor see exactly which
+    // lines belong to which division of work.
     if(items.length>0){
-        html+='<div class="modal-section"><h3>Line Items ('+items.length+')</h3>';
-        html+='<table class="items-table"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th><th>Source</th></tr></thead><tbody>';
-        var lastCat='';
+        var divGroups = { '27': [], '28': [], 'common': [] };
         items.forEach(function(item){
-            if(item.category!==lastCat){
-                lastCat=item.category;
-                html+='<tr class="cat-row"><td colspan="6" style="padding:10px 8px;">'+esc(item.category)+'</td></tr>';
-            }
-            var srcLabel=item.source||'';
-            var srcStyle='font-size:0.7rem;color:#64748B;';
-            if(srcLabel.indexOf('spec:')===0) srcStyle='font-size:0.7rem;color:#FBBF24;font-weight:600;';
-            else if(srcLabel.indexOf('tier:qsr')===0) srcStyle='font-size:0.7rem;color:#86EFAC;';
-            else if(srcLabel.indexOf('tier:commercial')===0) srcStyle='font-size:0.7rem;color:#93C5FD;';
-            html+='<tr><td>'+esc(item.item_name||item.description||'')+'</td><td>'+esc(item.quantity)+'</td><td>'+esc(item.unit||'')+'</td><td style="text-align:right">'+fmtMoney(item.unit_price)+'</td><td style="text-align:right;font-weight:600;">'+fmtMoney(item.total_price)+'</td><td style="'+srcStyle+'">'+esc(srcLabel)+'</td></tr>';
+            var d = item.csi_division;
+            if (d === '27') divGroups['27'].push(item);
+            else if (d === '28') divGroups['28'].push(item);
+            else divGroups['common'].push(item);
         });
-        html+='</tbody></table></div>';
+        var DIV_META = {
+            '27':     { label: 'DIVISION 27 · COMMUNICATIONS',           color: '#60A5FA', bg: 'rgba(96,165,250,0.08)' },
+            '28':     { label: 'DIVISION 28 · ELECTRONIC SAFETY',        color: '#F87171', bg: 'rgba(248,113,113,0.08)' },
+            'common': { label: 'LABOR AND COMMON',                       color: '#94A3B8', bg: 'rgba(148,163,184,0.06)' }
+        };
+        html+='<div class="modal-section"><h3>Line Items ('+items.length+')</h3>';
+
+        ['27','28','common'].forEach(function(divKey){
+            var group = divGroups[divKey];
+            if (group.length === 0) return;
+            var meta = DIV_META[divKey];
+            var divSubtotal = group.reduce(function(s, it){ return s + (Number(it.total_price)||0); }, 0);
+            html+='<div style="margin-top:1rem;border-left:3px solid '+meta.color+';background:'+meta.bg+';border-radius:4px;padding:0.65rem 0.85rem;display:flex;justify-content:space-between;align-items:baseline;">';
+            html+='<div style="color:'+meta.color+';font-weight:700;letter-spacing:0.5px;font-size:0.78rem;">'+meta.label+'</div>';
+            html+='<div style="color:#fff;font-weight:700;font-size:0.95rem;">'+fmtMoney(divSubtotal)+' <span style="color:#64748B;font-weight:400;font-size:0.75rem;">('+group.length+' lines)</span></div>';
+            html+='</div>';
+            html+='<table class="items-table" style="margin-top:0.4rem;"><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th><th>Source</th></tr></thead><tbody>';
+            var lastCat='';
+            group.forEach(function(item){
+                if(item.category!==lastCat){
+                    lastCat=item.category;
+                    html+='<tr class="cat-row"><td colspan="6" style="padding:10px 8px;">'+esc(item.category||'-')+'</td></tr>';
+                }
+                var srcLabel=item.source||'';
+                var srcStyle='font-size:0.7rem;color:#64748B;';
+                if(srcLabel.indexOf('spec:')===0) srcStyle='font-size:0.7rem;color:#FBBF24;font-weight:600;';
+                else if(srcLabel.indexOf('tier:qsr')===0) srcStyle='font-size:0.7rem;color:#86EFAC;';
+                else if(srcLabel.indexOf('tier:commercial')===0) srcStyle='font-size:0.7rem;color:#93C5FD;';
+                html+='<tr><td>'+esc(item.item_name||item.description||'')+'</td><td>'+esc(item.quantity)+'</td><td>'+esc(item.unit||'')+'</td><td style="text-align:right">'+fmtMoney(item.unit_price)+'</td><td style="text-align:right;font-weight:600;">'+fmtMoney(item.total_price)+'</td><td style="'+srcStyle+'">'+esc(srcLabel)+'</td></tr>';
+            });
+            html+='</tbody></table>';
+        });
+        html+='</div>';
     }
 
     // ===== ACTIVITY LOG =====
@@ -1279,6 +1306,19 @@ async function openBid(id){
             html+='</div></div>';
         });
         html+='</div></div>';
+    }
+
+    // ===== PROPOSAL PREVIEW =====
+    // Renders the actual quote_html inside a sandboxed iframe so you
+    // see exactly what the GC will receive in the PDF, including
+    // the Div 27 / Div 28 section split.
+    if(bid.quote_html){
+        var qhEscaped = (bid.quote_html||'').replace(/"/g, '&quot;');
+        html+='<div class="modal-section"><h3>Proposal Preview <span style="font-size:0.75rem;color:#64748B;font-weight:400;">(what the GC receives)</span></h3>';
+        html+='<div style="background:#fff;border:1px solid #1E293B;border-radius:8px;overflow:hidden;">';
+        html+='<iframe srcdoc="'+qhEscaped+'" sandbox style="width:100%;height:780px;border:0;background:#fff;display:block;"></iframe>';
+        html+='</div>';
+        html+='</div>';
     }
 
     // ===== NOTES =====
