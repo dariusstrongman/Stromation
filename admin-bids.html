@@ -1039,6 +1039,44 @@ async function openBid(id){
     html+='<div class="modal-field"><label>Labor</label><div style="color:#fff;font-size:1.05rem;font-weight:700;">'+fmtMoney(bid.labor_cost)+'</div></div>';
     html+='<div class="modal-field"><label>Overhead + Profit</label><div style="color:#fff;font-size:1.05rem;font-weight:700;">'+fmtMoney((bid.overhead_cost||0)+(bid.profit_amount||0))+'</div></div>';
     html+='<div class="modal-field"><label>Total Bid</label><div style="color:#10B981;font-size:1.5rem;font-weight:800;">'+fmtMoney(bid.total_bid)+'</div></div>';
+    // Per-division subtotals from line items. Shows only when both
+    // divisions have spend so single-division bids don't display a
+    // confusing "Div 28: $0" row.
+    var div27Total=0, div28Total=0, divNullTotal=0;
+    items.forEach(function(it){
+        var t = Number(it.total_price) || 0;
+        if(it.csi_division==='27') div27Total += t;
+        else if(it.csi_division==='28') div28Total += t;
+        else divNullTotal += t;
+    });
+    if(div27Total>0 && div28Total>0){
+        html+='<div class="modal-field" style="margin-top:0.5rem;border-top:1px solid #1E293B;padding-top:0.75rem;">';
+        html+='<label>Division Split</label>';
+        html+='<div style="display:flex;gap:1rem;flex-wrap:wrap;">';
+        html+='<div style="flex:1;min-width:140px;background:#0F172A;border:1px solid #1E293B;border-radius:6px;padding:0.5rem 0.75rem;">';
+        html+='<div style="font-size:0.7rem;color:#60A5FA;font-weight:600;letter-spacing:0.5px;">DIV 27 · COMMUNICATIONS</div>';
+        html+='<div style="color:#fff;font-size:1.05rem;font-weight:700;margin-top:0.15rem;">'+fmtMoney(div27Total)+'</div>';
+        html+='</div>';
+        html+='<div style="flex:1;min-width:140px;background:#0F172A;border:1px solid #1E293B;border-radius:6px;padding:0.5rem 0.75rem;">';
+        html+='<div style="font-size:0.7rem;color:#F87171;font-weight:600;letter-spacing:0.5px;">DIV 28 · ELECTRONIC SAFETY</div>';
+        html+='<div style="color:#fff;font-size:1.05rem;font-weight:700;margin-top:0.15rem;">'+fmtMoney(div28Total)+'</div>';
+        html+='</div>';
+        html+='</div>';
+        if(divNullTotal>0){
+            html+='<div style="font-size:0.7rem;color:#64748B;margin-top:0.4rem;">+ '+fmtMoney(divNullTotal)+' common (labor/freight/PM)</div>';
+        }
+        html+='</div>';
+    } else if(div27Total>0 || div28Total>0){
+        var soleDiv = div27Total>0 ? '27' : '28';
+        var soleAmt = div27Total>0 ? div27Total : div28Total;
+        var soleLabel = div27Total>0 ? 'COMMUNICATIONS' : 'ELECTRONIC SAFETY';
+        var soleColor = div27Total>0 ? '#60A5FA' : '#F87171';
+        html+='<div class="modal-field" style="margin-top:0.5rem;"><label>Division Scope</label>';
+        html+='<div style="display:flex;gap:0.5rem;align-items:center;">';
+        html+='<span style="font-size:0.7rem;color:'+soleColor+';font-weight:600;letter-spacing:0.5px;background:rgba(255,255,255,0.05);padding:0.2rem 0.5rem;border-radius:4px;">DIV '+soleDiv+' · '+soleLabel+'</span>';
+        html+='<span style="color:#fff;font-weight:600;">'+fmtMoney(soleAmt)+'</span>';
+        html+='</div></div>';
+    }
     html+='</div></div>';
 
     // ===== PIPELINE PHASES =====
