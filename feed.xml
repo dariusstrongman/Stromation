@@ -5,8 +5,15 @@
   <link>https://www.stromation.com/blog.html</link>
   <description>Automation guides and insights for business owners</description>
   <language>en-us</language>
-  <lastBuildDate>Sat, 16 May 2026 11:00:59 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 17 May 2026 11:00:59 GMT</lastBuildDate>
   <atom:link href="https://www.stromation.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>How to Automate Small Business Employee Performance Tracking for Better Results</title>
+    <link>https://www.stromation.com/blog/how-to-automate-small-business-employee-performance-tracking.html</link>
+    <description>Discover practical steps to automate employee performance tracking and enhance productivity in your small business.</description>
+    <pubDate>Sun, 17 May 2026 11:00:59 GMT</pubDate>
+    <guid>https://www.stromation.com/blog/how-to-automate-small-business-employee-performance-tracking.html</guid>
+  </item>
   <item>
     <title>How to Automate Small Business Client Feedback Surveys for Continuous Improvement</title>
     <link>https://www.stromation.com/blog/how-to-automate-small-business-client-feedback-surveys.html</link>
@@ -485,4 +492,4 @@
   </item>
 </channel>
 </rss>
-                                          
+                                           
