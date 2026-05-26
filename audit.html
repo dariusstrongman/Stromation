@@ -136,34 +136,35 @@
         </nav>
     </header>
 
-<main id="main-content" class="trust-main">
-        <section class="trust-hero trust-hero-compact">
-            <div class="container trust-hero-grid">
-                <div class="trust-hero-copy"><div class="trust-kicker">Free automation audit</div><h1>Get a practical map of what to automate first.</h1><p class="trust-lede">This is not a sales call disguised as strategy. The audit gives you a workflow map, priority list, system plan, and build estimate so you can make a clear decision.</p><div class="trust-cta-row"><a href="#request" class="btn btn-primary btn-large">Request the Audit</a><a href="roi-calculator.html" class="btn btn-secondary btn-large">Calculate ROI First</a></div></div>
-                <div class="audit-output-card"><h3>You leave with</h3><ul><li>Workflow map</li><li>Automation opportunity score</li><li>Tool and data-flow notes</li><li>Risk and edge-case review</li><li>Scoped build estimate if it is a fit</li></ul></div>
+<main id="main-content" class="md-main md-page md-audit-page">
+        <section class="md-page-hero md-audit-hero">
+            <div class="md-grid-overlay" aria-hidden="true"></div>
+            <div class="container md-page-hero-grid">
+                <div><span class="md-kicker">Free Automation Audit</span><h1>A premium diagnostic for the workflow stealing your time.</h1><p class="md-lede">You will get a plain-English system map, automation priority score, risk notes, and a realistic build path. The goal is clarity, not pressure.</p><div class="md-cta-row"><a href="#request" class="md-btn md-btn-primary">Request the audit</a><a href="roi-calculator.html" class="md-btn md-btn-ghost">Calculate ROI</a></div></div>
+                <aside class="md-audit-output"><h3>Your audit output</h3><div><span>01</span>Workflow map</div><div><span>02</span>Opportunity score</div><div><span>03</span>Tool and data-flow notes</div><div><span>04</span>Risk and edge-case review</div><div><span>05</span>Scoped build estimate if it is a fit</div></aside>
             </div>
         </section>
-        <section class="trust-section section-light">
-            <div class="container deliverable-grid">
-                <div><span>01</span><h3>Map the current process</h3><p>We identify triggers, handoffs, manual checks, duplicate entry, and points where work gets lost.</p></div>
-                <div><span>02</span><h3>Score automation opportunities</h3><p>We rank ideas by business impact, complexity, failure risk, and how often the workflow happens.</p></div>
-                <div><span>03</span><h3>Design the system</h3><p>You get a plain-English build plan showing tools, data movement, alerts, and monitoring.</p></div>
-                <div><span>04</span><h3>Decide with clarity</h3><p>Proceed to build, adjust the scope, or keep the plan and do nothing. No pressure.</p></div>
+        <section class="md-section">
+            <div class="container md-deliverable-grid">
+                <div><span>01</span><h3>Find the leak</h3><p>We identify the specific manual steps that create delay, mistakes, or lost revenue.</p></div>
+                <div><span>02</span><h3>Design the route</h3><p>We map triggers, records, rules, exceptions, and the human approval points.</p></div>
+                <div><span>03</span><h3>Score the build</h3><p>We rank the workflow by impact, complexity, frequency, and operational risk.</p></div>
+                <div><span>04</span><h3>Decide cleanly</h3><p>You can build with Stromation, adjust scope, or keep the plan. No pressure.</p></div>
             </div>
         </section>
-        <section id="request" class="trust-section">
-            <div class="container form-shell">
-                <div class="trust-section-head"><span class="trust-kicker">Request your audit</span><h2>Tell me what manual process you want to replace.</h2><p>Keep it simple. A rough description is enough to start.</p></div>
-                <form class="contact-form trust-form" id="contactForm" method="POST" action="https://n8n.stromation.com/webhook/stromation-form" data-hp="true">
+        <section id="request" class="md-section md-form-section">
+            <div class="container md-form-layout">
+                <div><span class="md-kicker">Request your audit</span><h2>Tell me the workflow you want off your plate.</h2><p>Keep it rough. A messy description is enough to start. The audit exists to turn the mess into a map.</p><div class="md-mini-proof"><strong>Best-fit workflows</strong><span>Lead follow-up, CRM updates, intake, reporting, support triage, client onboarding, and recurring admin.</span></div></div>
+                <form class="contact-form trust-form md-premium-form" id="contactForm" method="POST" action="https://n8n.stromation.com/webhook/stromation-form" data-hp="true">
                     <div style="position:absolute;left:-9999px;"><label>Website<input type="text" name="_hp_website" tabindex="-1" autocomplete="off"></label></div>
                     <input type="hidden" name="subject" value="Stromation Audit Request (Quick Form)">
                     <div class="form-row"><div class="form-group"><label for="name">Name *</label><input type="text" id="name" name="name" required placeholder="Your name"></div><div class="form-group"><label for="email">Email *</label><input type="email" id="email" name="email" required placeholder="your@email.com"></div></div>
                     <div class="form-row"><div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(855) 932-0493"></div><div class="form-group"><label for="company">Business / Role</label><input type="text" id="company" name="company" placeholder="Your company or role"></div></div>
                     <div class="form-group"><label for="workflow">What do you want to automate? *</label><textarea id="workflow" name="workflow" required placeholder="Example: Missed calls need instant follow-up, notes should go into our CRM, and the owner needs a text alert."></textarea></div>
                     <div class="consent-card"><p>SMS Communication Consent</p><label><input type="checkbox" name="sms_consent" value="yes"><span>By checking this box, I consent to receive text messages from Stromation at the phone number provided above. Message frequency varies. Reply STOP to cancel. Msg &amp; data rates may apply. View the <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.</span></label></div>
-                    <button type="submit" class="contact-submit">Request Automation Audit</button>
+                    <button type="submit" class="contact-submit md-submit">Request Automation Audit</button>
+                    <p class="direct-contact">Prefer direct contact? Email <a href="mailto:contact@stromation.com">contact@stromation.com</a> or call/text <a href="tel:+18559320493">(855) 932-0493</a>.</p>
                 </form>
-                <p class="direct-contact">Prefer direct contact? Email <a href="mailto:contact@stromation.com">contact@stromation.com</a> or call/text <a href="tel:+18559320493">(855) 932-0493</a>.</p>
             </div>
         </section>
     </main>
