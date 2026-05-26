@@ -136,186 +136,37 @@
         </nav>
     </header>
 
-    <nav class="breadcrumb"><a href="index.html">Home</a> &gt; Free Automation Audit</nav>
-
-    <!-- Hero Section -->
-    <section class="hero" id="main-content">
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">The <span class="highlight">Free Automation Audit</span></h1>
-                <p class="hero-subtitle">
-                    A complimentary diagnostic that maps your workflow, identifies automation opportunities, and produces a build plan. No cost, no strings attached.
-                </p>
-                <div class="hero-cta">
-                    <a href="#request" class="btn btn-primary btn-large">Request Your Audit</a>
-                </div>
+<main id="main-content" class="trust-main">
+        <section class="trust-hero trust-hero-compact">
+            <div class="container trust-hero-grid">
+                <div class="trust-hero-copy"><div class="trust-kicker">Free automation audit</div><h1>Get a practical map of what to automate first.</h1><p class="trust-lede">This is not a sales call disguised as strategy. The audit gives you a workflow map, priority list, system plan, and build estimate so you can make a clear decision.</p><div class="trust-cta-row"><a href="#request" class="btn btn-primary btn-large">Request the Audit</a><a href="roi-calculator.html" class="btn btn-secondary btn-large">Calculate ROI First</a></div></div>
+                <div class="audit-output-card"><h3>You leave with</h3><ul><li>Workflow map</li><li>Automation opportunity score</li><li>Tool and data-flow notes</li><li>Risk and edge-case review</li><li>Scoped build estimate if it is a fit</li></ul></div>
             </div>
-        </div>
-    </section>
-
-    <!-- What the Audit Is -->
-    <section>
-        <div class="container">
-            <div class="about-mission">
-                <h2>What the Audit Is</h2>
-                <p>The Automation Audit is a focused discovery session where we map your current workflow, identify what's costing you time, and design a system to replace it. You'll walk away with a clear picture of what to automate, how much it costs, and whether it makes sense to proceed.</p>
-                <p style="margin-top: 1rem;"><span class="audit-price">Free</span></p>
+        </section>
+        <section class="trust-section section-light">
+            <div class="container deliverable-grid">
+                <div><span>01</span><h3>Map the current process</h3><p>We identify triggers, handoffs, manual checks, duplicate entry, and points where work gets lost.</p></div>
+                <div><span>02</span><h3>Score automation opportunities</h3><p>We rank ideas by business impact, complexity, failure risk, and how often the workflow happens.</p></div>
+                <div><span>03</span><h3>Design the system</h3><p>You get a plain-English build plan showing tools, data movement, alerts, and monitoring.</p></div>
+                <div><span>04</span><h3>Decide with clarity</h3><p>Proceed to build, adjust the scope, or keep the plan and do nothing. No pressure.</p></div>
             </div>
-        </div>
-    </section>
-
-    <!-- Deliverables -->
-    <section class="section-light">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">What You Get</h2>
-                <p class="section-subtitle">Four deliverables that give you clarity on what to build and what it costs.</p>
+        </section>
+        <section id="request" class="trust-section">
+            <div class="container form-shell">
+                <div class="trust-section-head"><span class="trust-kicker">Request your audit</span><h2>Tell me what manual process you want to replace.</h2><p>Keep it simple. A rough description is enough to start.</p></div>
+                <form class="contact-form trust-form" id="contactForm" method="POST" action="https://n8n.stromation.com/webhook/stromation-form" data-hp="true">
+                    <div style="position:absolute;left:-9999px;"><label>Website<input type="text" name="_hp_website" tabindex="-1" autocomplete="off"></label></div>
+                    <input type="hidden" name="subject" value="Stromation Audit Request (Quick Form)">
+                    <div class="form-row"><div class="form-group"><label for="name">Name *</label><input type="text" id="name" name="name" required placeholder="Your name"></div><div class="form-group"><label for="email">Email *</label><input type="email" id="email" name="email" required placeholder="your@email.com"></div></div>
+                    <div class="form-row"><div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="(855) 932-0493"></div><div class="form-group"><label for="company">Business / Role</label><input type="text" id="company" name="company" placeholder="Your company or role"></div></div>
+                    <div class="form-group"><label for="workflow">What do you want to automate? *</label><textarea id="workflow" name="workflow" required placeholder="Example: Missed calls need instant follow-up, notes should go into our CRM, and the owner needs a text alert."></textarea></div>
+                    <div class="consent-card"><p>SMS Communication Consent</p><label><input type="checkbox" name="sms_consent" value="yes"><span>By checking this box, I consent to receive text messages from Stromation at the phone number provided above. Message frequency varies. Reply STOP to cancel. Msg &amp; data rates may apply. View the <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.</span></label></div>
+                    <button type="submit" class="contact-submit">Request Automation Audit</button>
+                </form>
+                <p class="direct-contact">Prefer direct contact? Email <a href="mailto:contact@stromation.com">contact@stromation.com</a> or call/text <a href="tel:+18559320493">(855) 932-0493</a>.</p>
             </div>
-            <div class="services-grid">
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                        </svg>
-                    </div>
-                    <h3 class="service-title">Workflow Map</h3>
-                    <p class="service-desc">Visual diagram of your current state and proposed future state. See exactly what changes.</p>
-                </div>
-
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                        </svg>
-                    </div>
-                    <h3 class="service-title">Prioritized Opportunities</h3>
-                    <p class="service-desc">List of automation candidates ranked by impact and complexity. Know where to start.</p>
-                </div>
-
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                    </div>
-                    <h3 class="service-title">System Architecture</h3>
-                    <p class="service-desc">Proposed tools and integrations. We recommend the right stack for your workflow.</p>
-                </div>
-
-                <div class="service-card fade-in">
-                    <div class="service-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="service-title">Build Scope & Quote</h3>
-                    <p class="service-desc">Timeline and price range for implementation. No surprises.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- What You Need to Provide -->
-    <section>
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">What You Need to Provide</h2>
-                <p class="section-subtitle">To make the Audit useful, we need a few things from you.</p>
-            </div>
-            <ul class="deliverables-list" style="max-width: 800px; margin: 0 auto;">
-                <li>Access to observe your current workflow (screen share or walkthrough)</li>
-                <li>Description of the manual steps you want to replace</li>
-                <li>List of tools you currently use</li>
-                <li>Rough volume (how often this workflow runs)</li>
-                <li>Your desired outcome (what does success look like?)</li>
-                <li>30–60 minutes for a discovery call</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- What Happens After -->
-    <section class="section-light">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">What Happens Next</h2>
-                <p class="section-subtitle">After the Audit, you decide if you want to proceed.</p>
-            </div>
-            <div class="process-grid">
-                <div class="process-card fade-in">
-                    <div class="step-num">1</div>
-                    <h4>Submit Request</h4>
-                    <p>Fill out the contact form with your workflow details.</p>
-                </div>
-                <div class="process-card fade-in">
-                    <div class="step-num">2</div>
-                    <h4>Discovery Call</h4>
-                    <p>30–60 minute session to map your workflow.</p>
-                </div>
-                <div class="process-card fade-in">
-                    <div class="step-num">3</div>
-                    <h4>Receive Audit</h4>
-                    <p>Get your workflow map, opportunities, and quote.</p>
-                </div>
-                <div class="process-card fade-in">
-                    <div class="step-num">4</div>
-                    <h4>Decide</h4>
-                    <p>Proceed to build or walk away with clear documentation.</p>
-                </div>
-            </div>
-            <p style="text-align: center; margin-top: 2rem; color: var(--text-secondary);">If you proceed, great. If not, you keep the deliverables. No cost either way.</p>
-        </div>
-    </section>
-
-    <!-- Quick Request Form -->
-    <section id="request">
-        <div class="container" style="max-width: 600px;">
-            <div class="section-header">
-                <h2 class="section-title">Request Your Audit</h2>
-                <p class="section-subtitle">Fill out the quick form below and we will get back to you within 1 business day.</p>
-            </div>
-            <form class="contact-form" id="contactForm" method="POST" action="https://n8n.stromation.com/webhook/stromation-form" data-hp="true" style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 2rem;">
-                <div style="position:absolute;left:-9999px;"><label>Website<input type="text" name="_hp_website" tabindex="-1" autocomplete="off"></label></div>
-                <input type="hidden" name="subject" value="Stromation Audit Request (Quick Form)">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name">Name *</label>
-                        <input type="text" id="name" name="name" required placeholder="Your name">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" name="email" required placeholder="your@email.com">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" placeholder="(855) 932-0493">
-                    </div>
-                    <div class="form-group">
-                        <label for="company">Business / Role</label>
-                        <input type="text" id="company" name="company" placeholder="Your company or role">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="workflow">What do you want to automate? *</label>
-                    <textarea id="workflow" name="workflow" required placeholder="Briefly describe the manual process you want to replace."></textarea>
-                </div>
-                <div style="background: #F0F7FF; border: 2px solid #2563EB; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem;">
-                    <p style="font-weight: 600; font-size: 0.9rem; color: #1E293B; margin-bottom: 0.75rem;">SMS Communication Consent</p>
-                    <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-size: 0.9rem; color: #334155; line-height: 1.6;">
-                        <input type="checkbox" name="sms_consent" value="yes" style="margin-top: 4px; min-width: 18px; min-height: 18px; accent-color: #2563EB;">
-                        <span>By checking this box, I consent to receive text messages from Stromation at the phone number provided above. Messages may include appointment confirmations, follow-up responses, and service updates. Message frequency varies. Reply STOP to cancel. Msg &amp; data rates may apply. View our <a href="privacy.html" style="color: #2563EB; text-decoration: underline;">Privacy Policy</a> and <a href="terms.html" style="color: #2563EB; text-decoration: underline;">Terms of Service</a>.</span>
-                    </label>
-                </div>
-                <button type="submit" class="contact-submit">Request Automation Audit</button>
-            </form>
-
-            <div style="text-align: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border);">
-                <h3 style="font-size: 1.3rem; color: var(--text-primary); margin-bottom: 0.5rem;">Prefer to talk directly?</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Email us at <a href="mailto:contact@stromation.com" style="color: var(--primary);">contact@stromation.com</a> or text <a href="tel:+18559320493" style="color: var(--primary);">(855) 932-0493</a> and we will get back to you within 1 business day.</p>
-            </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- Footer -->
     <footer class="footer">
