@@ -8,12 +8,12 @@
    DESIGN TOKENS
    ========================================== */
 :root {
-    /* --- Brand Colors --- */
-    --bronze:        #8B6914;   /* primary action — warm, authoritative */
-    --bronze-dark:   #6E5210;   /* hover state */
-    --bronze-light:  #A07C1E;   /* lighter variant */
-    --bronze-tint:   #FDF8EE;   /* very light bronze wash for section bg */
-    --bronze-tint-2: #FAF3E0;   /* slightly deeper tint for cards */
+    /* --- Brand Colors (Blue — matches logo cyan family) --- */
+    --bronze:        #1A5FD4;   /* primary action — deep confident blue */
+    --bronze-dark:   #1449A8;   /* hover state */
+    --bronze-light:  #2B72E8;   /* lighter variant */
+    --bronze-tint:   #EEF4FF;   /* very light blue wash for section bg */
+    --bronze-tint-2: #E0EAFF;   /* slightly deeper tint for cards */
 
     /* --- Neutrals --- */
     --ink:           #18181B;   /* body text — not pure black, warmer */
@@ -29,7 +29,7 @@
     --success:       #16A34A;
     --success-bg:    #F0FDF4;
     /* --- Legacy aliases (backward compat) --- */
-    --primary:       var(--bronze);
+    --primary:       var(--bronze);  /* blue */
     --text-primary:  var(--ink);
     --text-secondary: var(--ink-secondary);
     --text-muted:    var(--ink-muted);
@@ -414,7 +414,7 @@ section {
     text-transform: uppercase;
     color: var(--bronze);
     background: var(--bronze-tint);
-    border: 1px solid rgba(139,105,20,0.2);
+    border: 1px solid rgba(26,95,212,0.2);
     padding: 0.35rem 0.85rem;
     border-radius: 100px;
     margin-bottom: 1.5rem;
@@ -658,7 +658,7 @@ section {
 .replace-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-4px);
-    border-color: rgba(139,105,20,0.3);
+    border-color: rgba(26,95,212,0.3);
 }
 
 .replace-card .before {
@@ -806,7 +806,7 @@ section {
     height: 36px;
     background: var(--bronze-tint);
     color: var(--bronze);
-    border: 1.5px solid rgba(139,105,20,0.25);
+    border: 1.5px solid rgba(26,95,212,0.25);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -889,7 +889,7 @@ section {
 .service-card:hover {
     box-shadow: var(--shadow-hover);
     transform: translateY(-4px);
-    border-color: rgba(139,105,20,0.3);
+    border-color: rgba(26,95,212,0.3);
 }
 
 .service-icon {
@@ -1121,7 +1121,7 @@ section {
 .pricing-preview-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-3px);
-    border-color: rgba(139,105,20,0.3);
+    border-color: rgba(26,95,212,0.3);
 }
 
 .pricing-preview-card h4 {
@@ -1644,7 +1644,7 @@ section {
 .pricing-range-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-4px);
-    border-color: rgba(139,105,20,0.3);
+    border-color: rgba(26,95,212,0.3);
 }
 
 .pricing-range-card.popular {
@@ -1797,7 +1797,7 @@ section {
 .industry-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-3px);
-    border-color: rgba(139,105,20,0.3);
+    border-color: rgba(26,95,212,0.3);
 }
 
 .industry-icon {
@@ -2166,7 +2166,7 @@ section {
 .form-group select:focus {
     outline: none;
     border-color: var(--bronze);
-    box-shadow: 0 0 0 3px rgba(139,105,20,0.1);
+    box-shadow: 0 0 0 3px rgba(26,95,212,0.1);
     background: white;
 }
 
@@ -2329,7 +2329,7 @@ section {
 .blog-featured:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-3px);
-    border-color: rgba(139,105,20,0.3);
+    border-color: rgba(26,95,212,0.3);
     color: inherit;
 }
 
@@ -2357,7 +2357,7 @@ section {
     text-transform: uppercase;
     color: var(--bronze);
     background: white;
-    border: 1px solid rgba(139,105,20,0.2);
+    border: 1px solid rgba(26,95,212,0.2);
     padding: 0.25rem 0.75rem;
     border-radius: 100px;
 }
@@ -2429,7 +2429,7 @@ section {
 .blog-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-4px);
-    border-color: rgba(139,105,20,0.25);
+    border-color: rgba(26,95,212,0.25);
     color: inherit;
 }
 
@@ -2482,7 +2482,7 @@ section {
 .tag-getting-started {
     color: var(--bronze);
     background: var(--bronze-tint);
-    border-color: rgba(139,105,20,0.2);
+    border-color: rgba(26,95,212,0.2);
 }
 
 .tag-ops {
@@ -2642,7 +2642,7 @@ section {
    ========================================== */
 .cta-banner {
     background: var(--bronze-tint);
-    border: 1px solid rgba(139,105,20,0.2);
+    border: 1px solid rgba(26,95,212,0.2);
     padding: 3.5rem 2rem;
     text-align: center;
     border-radius: var(--radius-lg);
@@ -3331,7 +3331,7 @@ section {
 .form-group textarea:focus,
 .form-group select:focus {
     border-color: var(--bronze);
-    box-shadow: 0 0 0 3px rgba(139,105,20,0.08);
+    box-shadow: 0 0 0 3px rgba(26,95,212,0.08);
 }
 
 .form-group textarea {
@@ -3532,7 +3532,7 @@ section {
 
 .tech-pill:hover {
     background: var(--bronze-tint);
-    border-color: rgba(139,105,20,0.3);
+    border-color: rgba(26,95,212,0.3);
     color: var(--bronze);
 }
 
@@ -3588,7 +3588,7 @@ section {
 
 .philosophy-box {
     background: var(--bronze-tint);
-    border: 1px solid rgba(139,105,20,0.2);
+    border: 1px solid rgba(26,95,212,0.2);
     border-left: 3px solid var(--bronze);
     border-radius: var(--radius-md);
     padding: 1.75rem 2rem;
