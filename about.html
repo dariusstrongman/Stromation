@@ -23,7 +23,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B6Z6XV02RT"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -69,17 +68,16 @@
 </head>
 <body>
     <a href="#main-content" class="skip-to-content">Skip to content</a>
-    <!-- Header -->
+
     <header class="header">
         <nav class="nav-container">
             <a href="index.html" class="logo">
-                <img src="logo.svg" alt="Stromation" class="logo-img"><span class="logo-text">Stromation</span>
+                <img src="logo.svg" alt="Stromation" class="logo-img">
+                <span class="logo-text">Stromation</span>
             </a>
-            <div class="mobile-menu-toggle" id="mobileMenuToggle" role="button" aria-label="Toggle navigation menu" aria-expanded="false" tabindex="0">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
             <div class="nav-links" id="navLinks">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="services.html" class="nav-link">Services</a>
@@ -88,75 +86,76 @@
                 <a href="case-studies.html" class="nav-link">Examples</a>
                 <a href="about.html" class="nav-link active">About</a>
                 <a href="blog.html" class="nav-link">Blog</a>
-                <a href="audit.html" class="nav-link">Contact</a>
                 <a href="audit.html" class="nav-link cta-nav">Get a Free Audit</a>
             </div>
         </nav>
     </header>
 
-    <nav class="breadcrumb"><a href="index.html">Home</a> &gt; About</nav>
+    <nav class="breadcrumb"><a href="index.html">Home</a> &rsaquo; About</nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="main-content">
+    <!-- Hero -->
+    <section class="hero-inner" id="main-content">
         <div class="container">
             <div class="hero-content">
+                <span class="section-eyebrow">The Studio</span>
                 <h1 class="hero-title">Systems Over <span class="highlight">Hype</span></h1>
-                <p class="hero-subtitle">
-                    Stromation builds workflow automations that actually work. No fragile hacks, no overcomplicated setups. Just reliable systems that replace manual steps.
-                </p>
+                <p class="hero-subtitle">Stromation builds workflow automations that actually work. No fragile hacks, no overcomplicated setups. Just reliable systems that replace manual steps.</p>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
+    <!-- About founder -->
     <section>
         <div class="container">
-            <div class="about-founder" style="display: flex; gap: 2.5rem; align-items: flex-start; flex-wrap: wrap; margin-bottom: 3rem;">
-                <div style="flex: 1; min-width: 280px;">
-                    <h2 style="margin-bottom: 0.5rem;">About Stromation</h2>
+            <div class="about-founder-grid">
+                <div class="about-founder-body">
+                    <span class="section-eyebrow">The Founder</span>
+                    <h2 class="section-title" style="text-align:left;margin-bottom:1rem;">About Stromation</h2>
                     <p>Stromation is a workflow automation studio founded by <strong>Darius</strong>, a software engineer with a Master of Science in Software Engineering and over a decade of hands-on experience in IT systems, network infrastructure, and process automation. He has built and maintained workflows for operations ranging from small businesses to enterprise environments.</p>
-                    <p style="margin-top: 1rem;">After years of watching businesses burn hours on manual data entry, copy-paste reporting, and broken handoffs between tools, he started Stromation to offer what most "automation agencies" don't: systems that are built to your actual process, properly tested, and designed to keep running without babysitting.</p>
-                    <p style="margin-top: 1rem;">We take a different approach: understand your actual process, build something that fits, and make sure it keeps running.</p>
-                    <div style="display: flex; gap: 0.6rem; margin-top: 1.25rem; flex-wrap: wrap;">
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">n8n</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Custom APIs</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">OpenAI / GPT</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Claude AI</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">REST APIs</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Webhooks</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Python</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">JavaScript</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Node.js</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Google Sheets</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Google Apps Script</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Airtable</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Notion</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Slack</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">HubSpot</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Salesforce</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">GoHighLevel</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Twilio</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">SendGrid</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Stripe</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">QuickBooks</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Calendly</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Typeform</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Jotform</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">PostgreSQL</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">MySQL</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">MongoDB</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Supabase</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Firebase</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">AWS</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Google Cloud</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Docker</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">GitHub Actions</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Cron Jobs</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Microsoft 365</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Google Workspace</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Shopify</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">WordPress</span>
-                        <span style="font-size: 0.85rem; color: var(--ink-muted); background: var(--bg-subtle); padding: 0.35rem 0.75rem; border-radius: 6px;">Webflow</span>
+                    <p>After years of watching businesses burn hours on manual data entry, copy-paste reporting, and broken handoffs between tools, he started Stromation to offer what most "automation agencies" don't: systems that are built to your actual process, properly tested, and designed to keep running without babysitting.</p>
+                    <p>We take a different approach: understand your actual process, build something that fits, and make sure it keeps running.</p>
+
+                    <h4 class="tech-stack-label">Tools &amp; Platforms We Work With</h4>
+                    <div class="tech-stack">
+                        <span class="tech-pill">n8n</span>
+                        <span class="tech-pill">Custom APIs</span>
+                        <span class="tech-pill">OpenAI / GPT</span>
+                        <span class="tech-pill">Claude AI</span>
+                        <span class="tech-pill">REST APIs</span>
+                        <span class="tech-pill">Webhooks</span>
+                        <span class="tech-pill">Python</span>
+                        <span class="tech-pill">JavaScript</span>
+                        <span class="tech-pill">Node.js</span>
+                        <span class="tech-pill">Google Sheets</span>
+                        <span class="tech-pill">Google Apps Script</span>
+                        <span class="tech-pill">Airtable</span>
+                        <span class="tech-pill">Notion</span>
+                        <span class="tech-pill">Slack</span>
+                        <span class="tech-pill">HubSpot</span>
+                        <span class="tech-pill">Salesforce</span>
+                        <span class="tech-pill">GoHighLevel</span>
+                        <span class="tech-pill">Twilio</span>
+                        <span class="tech-pill">SendGrid</span>
+                        <span class="tech-pill">Stripe</span>
+                        <span class="tech-pill">QuickBooks</span>
+                        <span class="tech-pill">Calendly</span>
+                        <span class="tech-pill">Typeform</span>
+                        <span class="tech-pill">Jotform</span>
+                        <span class="tech-pill">PostgreSQL</span>
+                        <span class="tech-pill">MySQL</span>
+                        <span class="tech-pill">MongoDB</span>
+                        <span class="tech-pill">Supabase</span>
+                        <span class="tech-pill">Firebase</span>
+                        <span class="tech-pill">AWS</span>
+                        <span class="tech-pill">Google Cloud</span>
+                        <span class="tech-pill">Docker</span>
+                        <span class="tech-pill">GitHub Actions</span>
+                        <span class="tech-pill">Cron Jobs</span>
+                        <span class="tech-pill">Microsoft 365</span>
+                        <span class="tech-pill">Google Workspace</span>
+                        <span class="tech-pill">Shopify</span>
+                        <span class="tech-pill">WordPress</span>
+                        <span class="tech-pill">Webflow</span>
                     </div>
                 </div>
             </div>
@@ -178,7 +177,6 @@
                         <p>You work directly with the founder, not a revolving door of account managers. One point of contact who knows your system.</p>
                     </div>
                 </div>
-
                 <div class="about-feature fade-in">
                     <div class="about-feature-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -187,85 +185,42 @@
                     </div>
                     <div>
                         <h4>Tool-Agnostic</h4>
-                        <p>We use n8n, custom APIs, and AI tools. Whatever fits your workflow best. No vendor lock-in.</p>
+                        <p>We use n8n, custom APIs, and AI tools. Whatever fits your workflow best. No vendor lock-in, no upselling software you don't need.</p>
                     </div>
                 </div>
-
                 <div class="about-feature fade-in">
                     <div class="about-feature-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <div>
                         <h4>Built to Last</h4>
-                        <p>Logging, monitoring, error handling. Your automations don't break silently, and when tools update, we've got you covered.</p>
+                        <p>Every system is documented, tested, and handed off with clear runbooks. If something breaks, you'll know why and how to fix it.</p>
                     </div>
                 </div>
-
                 <div class="about-feature fade-in">
                     <div class="about-feature-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <div>
-                        <h4>Clear Handoff</h4>
-                        <p>You get documentation, training, and a system you understand. No black boxes, no dependency on us to make changes.</p>
+                        <h4>Fast Turnaround</h4>
+                        <p>Most automations are scoped, built, and deployed within 1&ndash;3 weeks. No 6-month enterprise timelines for things that should take days.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Process -->
-    <section class="section-light">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">How We Work</h2>
-                <p class="section-subtitle">A straightforward process from discovery to deployment.</p>
-            </div>
-
-            <div class="process-steps">
-                <div class="process-step fade-in">
-                    <div class="step-number">1</div>
-                    <h4>Automation Audit</h4>
-                    <p>We map your workflow and identify what to automate. You get a build plan and quote.</p>
-                </div>
-
-                <div class="process-step fade-in">
-                    <div class="step-number">2</div>
-                    <h4>Scope & Agreement</h4>
-                    <p>We finalize scope, timeline, and cost. No surprises.</p>
-                </div>
-
-                <div class="process-step fade-in">
-                    <div class="step-number">3</div>
-                    <h4>Build & Test</h4>
-                    <p>We build your automation with regular check-ins. You see progress as we go.</p>
-                </div>
-
-                <div class="process-step fade-in">
-                    <div class="step-number">4</div>
-                    <h4>Deploy & Train</h4>
-                    <p>We launch, document, and train you on your new system.</p>
-                </div>
-
-                <div class="process-step fade-in">
-                    <div class="step-number">5</div>
-                    <h4>Support (Optional)</h4>
-                    <p>Ongoing monitoring and maintenance to keep things running smoothly.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Ready to talk?</h2>
-            <p>Start with a Free Automation Audit. We'll map your workflow and show you what's possible.</p>
-            <a href="audit.html" class="btn btn-primary btn-large">Request Your Audit</a>
+    <!-- CTA -->
+    <section class="section-tint">
+        <div class="container" style="text-align:center;">
+            <span class="section-eyebrow">Ready to Start?</span>
+            <h2 class="section-title">Let's Map Your Workflow</h2>
+            <p class="section-subtitle">Book a free audit and we'll identify exactly what to automate and how much time it saves.</p>
+            <a href="audit.html" class="btn-primary" style="margin-top:2rem;display:inline-block;">Get a Free Audit</a>
         </div>
     </section>
 
@@ -300,7 +255,6 @@
                         <a href="case-studies.html">Examples</a>
                         <a href="about.html">About</a>
                         <a href="blog.html">Blog</a>
-                        <a href="audit.html">Contact</a>
                         <a href="faq.html">FAQ</a>
                     </div>
                 </div>
@@ -318,7 +272,7 @@
                     <h4 class="footer-heading">Contact</h4>
                     <p><a href="mailto:contact@stromation.com">contact@stromation.com</a></p>
                     <p><a href="tel:+18559320493">(855) 932-0493</a></p>
-                    <p>Remote / Worldwide</p>
+                    <p><a href="audit.html">Free Automation Audit &rarr;</a></p>
                     <div class="footer-legal">
                         <a href="privacy.html">Privacy</a>
                         <a href="terms.html">Terms</a>
@@ -326,12 +280,11 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Stromation. All rights reserved.</p>
+                <p>&copy; 2025 Stromation. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
-    <script src="chat.js" defer></script>
 </body>
 </html>
