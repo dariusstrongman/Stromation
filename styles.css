@@ -3849,3 +3849,113 @@ section {
     border-radius: 100px;
     margin-bottom: 0.75rem;
 }
+
+/* ==========================================
+   INDUSTRY PAGE — Target outcome blocks
+   ========================================== */
+.outcome-block {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 0 2rem;
+    text-align: center;
+}
+
+.outcome-heading {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+.outcome-subhead {
+    font-size: 1.05rem;
+    color: var(--ink-secondary);
+    max-width: 720px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.6;
+}
+
+.outcome-metrics {
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .outcome-metrics { grid-template-columns: 1fr; }
+}
+
+.outcome-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    background: var(--bronze-tint);
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+}
+
+.outcome-metrics .metric-value {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.03em;
+}
+
+.outcome-metrics .metric-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+}
+
+.outcome-context {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--ink-secondary);
+    line-height: 1.5;
+}
+
+.outcome-footnote {
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+    font-style: italic;
+    max-width: 640px;
+    margin: 1rem auto 0;
+}
+
+/* ==========================================
+   SERVICES — Featured support tier (Maintain)
+   ========================================== */
+.support-card-featured {
+    position: relative;
+    border: 2px solid var(--bronze);
+    box-shadow: 0 10px 40px rgba(26, 95, 212, 0.08), 0 2px 8px rgba(0,0,0,0.04);
+    transform: translateY(-8px);
+    background: var(--bg-surface);
+}
+
+@media (max-width: 768px) {
+    .support-card-featured { transform: translateY(0); }
+}
+
+.support-pill {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bronze);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    white-space: nowrap;
+}
