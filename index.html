@@ -79,17 +79,19 @@
 </head>
 <body>
     <a href="#main-content" class="skip-to-content">Skip to content</a>
-    <!-- Header -->
+
+    <!-- ===================== HEADER ===================== -->
     <header class="header">
         <nav class="nav-container">
             <a href="index.html" class="logo">
-                <img src="logo.svg" alt="Stromation" class="logo-img"><span class="logo-text">Stromation</span>
+                <img src="logo.svg" alt="Stromation" class="logo-img">
+                <span class="logo-text">Stromation</span>
             </a>
-            <div class="mobile-menu-toggle" id="mobileMenuToggle" role="button" aria-label="Toggle navigation menu" aria-expanded="false" tabindex="0">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
             <div class="nav-links" id="navLinks">
                 <a href="index.html" class="nav-link active">Home</a>
                 <a href="services.html" class="nav-link">Services</a>
@@ -104,37 +106,79 @@
         </nav>
     </header>
 
-    <!-- Hero Section -->
+    <!-- ===================== HERO ===================== -->
     <section class="hero" id="main-content">
         <div class="container">
-            <div class="hero-content">
+            <div class="hero-split">
+                <!-- Left: copy -->
+                <div class="hero-text">
+                    <div class="hero-eyebrow">
+                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><circle cx="4" cy="4" r="4" fill="#16A34A"/></svg>
+                        Now onboarding early clients
+                    </div>
                     <h1 class="hero-title hero-anim" style="--anim-delay:0s">
-                        Replace Busywork <span class="highlight">With Systems</span>
+                        Replace Busywork<br><span class="highlight">With Systems</span>
                     </h1>
                     <p class="hero-subtitle hero-anim" style="--anim-delay:0.15s">
                         Stromation designs and deploys custom workflow automations that replace repetitive manual work. Your business runs faster, cleaner, and with fewer mistakes.
                     </p>
                     <div class="hero-cta hero-anim" style="--anim-delay:0.3s">
                         <a href="audit.html" class="btn btn-primary btn-large">Get a Free Automation Audit</a>
-                        <a href="#how-it-works" class="btn btn-secondary btn-large">See How It Works</a>
+                        <a href="#how-it-works" class="btn btn-outline btn-large">See How It Works</a>
                     </div>
+                    <div class="hero-social-proof hero-anim" style="--anim-delay:0.45s">
+                        <span>Free audit, no obligation</span>
+                        <span class="hero-social-proof-dot"></span>
+                        <span>Most builds ship in days</span>
+                        <span class="hero-social-proof-dot"></span>
+                        <span>5-hour guarantee</span>
+                    </div>
+                </div>
+
+                <!-- Right: workflow illustration -->
+                <div class="hero-illustration">
+                    <img src="img/case-leadpipeline.svg" alt="Automation workflow diagram" class="workflow-svg">
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Video Showcase -->
-    <section style="padding: 5rem 0; background: linear-gradient(180deg, var(--bg-subtle, #F1F5F9) 0%, var(--bg-white, #fff) 100%);">
-        <div class="container" style="max-width: 960px; text-align: center;">
-            <h2 class="section-title fade-in">See What We Can Do</h2>
-            <p class="section-subtitle fade-in" style="margin-bottom: 2.5rem;">48 seconds. Watch how we turn manual busywork into automated systems.</p>
-            <div class="fade-in" style="border-radius: 16px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,.15); border: 1px solid var(--border, #E2E8F0); position: relative;">
+    <!-- ===================== TRUSTED BY ===================== -->
+    <div class="logo-bar">
+        <div class="container">
+            <p class="logo-bar-label">Trusted By</p>
+            <div class="logo-bar-row">
+                <a href="#" class="logo-bar-item">
+                    <img src="img/client-thebrasseffect.png" alt="The Brass Effect">
+                </a>
+                <a href="#" class="logo-bar-item">
+                    <img src="img/client-readymadevideo.png" alt="ReadyMade Video">
+                </a>
+                <a href="https://atshack.com" target="_blank" rel="noopener noreferrer" class="logo-bar-item">
+                    <span class="logo-bar-text">ATS<span style="color:#8B6914">Hack</span></span>
+                </a>
+                <a href="https://www.estimatrx.ai" target="_blank" rel="noopener noreferrer" class="logo-bar-item">
+                    <span class="logo-bar-text">Estimatr<span style="color:#8B6914">X</span></span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== VIDEO ===================== -->
+    <section class="video-section">
+        <div class="container-narrow">
+            <div class="section-header">
+                <span class="section-eyebrow">See It In Action</span>
+                <h2 class="section-title">48 Seconds. See What We Build.</h2>
+                <p class="section-subtitle">Watch how we turn manual busywork into automated systems that run on their own.</p>
+            </div>
+            <div class="video-wrapper fade-in">
                 <video
                     width="100%"
                     controls
                     preload="none"
                     loading="lazy"
                     poster="video-thumbnail.png"
-                    style="display: block; aspect-ratio: 16/9; object-fit: cover; background: #0A0F1C;"
                 >
                     <source src="stromation-showcase.mp4" type="video/mp4">
                     Your browser does not support the video tag.
@@ -143,123 +187,125 @@
         </div>
     </section>
 
-    <!-- What We Replace Section -->
-    <section class="section-light">
+    <!-- ===================== WHAT WE REPLACE ===================== -->
+    <section>
         <div class="container">
             <div class="section-header">
+                <span class="section-eyebrow">The Problem</span>
                 <h2 class="section-title">What We Replace</h2>
                 <p class="section-subtitle">Manual steps that slow you down become reliable systems that run on their own.</p>
             </div>
             <div class="replace-grid">
                 <div class="replace-card slide-left" style="--slide-delay:0s">
                     <p class="before">Leads slip through, slow follow-ups</p>
-                    <p class="arrow">↓</p>
+                    <span class="arrow">↓</span>
                     <p class="after">Instant lead capture + auto follow-up sequences</p>
                 </div>
-                <div class="replace-card slide-right" style="--slide-delay:0.1s">
+                <div class="replace-card fade-in" style="--slide-delay:0.1s">
                     <p class="before">Copy/paste between tools, manual entry</p>
-                    <p class="arrow">↓</p>
+                    <span class="arrow">↓</span>
                     <p class="after">Clean handoffs between systems, zero errors</p>
                 </div>
-                <div class="replace-card slide-left" style="--slide-delay:0.2s">
+                <div class="replace-card slide-right" style="--slide-delay:0.2s">
                     <p class="before">Inbox overload, repetitive customer questions</p>
-                    <p class="arrow">↓</p>
+                    <span class="arrow">↓</span>
                     <p class="after">AI triage + auto-responses for common questions</p>
                 </div>
-                <div class="replace-card slide-right" style="--slide-delay:0.3s">
+                <div class="replace-card slide-left" style="--slide-delay:0.3s">
                     <p class="before">Reports take hours, manual data gathering</p>
-                    <p class="arrow">↓</p>
+                    <span class="arrow">↓</span>
                     <p class="after">Auto-generated reports delivered on schedule</p>
                 </div>
-                <div class="replace-card slide-left" style="--slide-delay:0.4s">
+                <div class="replace-card fade-in" style="--slide-delay:0.4s">
                     <p class="before">Too many tools, nothing connected</p>
-                    <p class="arrow">↓</p>
+                    <span class="arrow">↓</span>
                     <p class="after">Unified workflow with clear visibility</p>
                 </div>
                 <div class="replace-card slide-right" style="--slide-delay:0.5s">
                     <p class="before">Errors from manual entry, missed steps</p>
-                    <p class="arrow">↓</p>
+                    <span class="arrow">↓</span>
                     <p class="after">Reliable system with logging and monitoring</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Real Before/After Examples -->
-    <section>
+    <!-- ===================== REAL EXAMPLES ===================== -->
+    <section class="section-light">
         <div class="container">
             <div class="section-header">
+                <span class="section-eyebrow">Real Results</span>
                 <h2 class="section-title">Real Examples</h2>
                 <p class="section-subtitle">What this looks like for actual businesses.</p>
             </div>
-            <div style="display: grid; gap: 1.5rem; max-width: 900px; margin: 0 auto;">
-                <div class="fade-in" style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1.5rem; border: 1px solid var(--border); border-radius: 12px; background: white;">
+            <div class="examples-grid">
+                <div class="example-card fade-in">
                     <div>
-                        <p style="font-weight: 600; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Before</p>
-                        <p style="font-size: 0.95rem; color: var(--text-secondary);">Pest control company misses 10 calls a week. Customers call the next company on Google. No follow-up.</p>
+                        <p class="example-before-label">Before</p>
+                        <p class="example-before-text">Pest control company misses 10 calls a week. Customers call the next company on Google. No follow-up.</p>
                     </div>
-                    <div style="font-size: 1.5rem; color: var(--primary);">→</div>
+                    <div class="example-arrow">→</div>
                     <div>
-                        <p style="font-weight: 600; color: var(--success); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">After</p>
-                        <p style="font-size: 0.95rem;">Missed call triggers an instant text to the caller. AI collects what they need. Owner gets a lead alert. 3 out of 10 missed calls become booked jobs.</p>
-                    </div>
-                </div>
-                <div class="fade-in" style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1.5rem; border: 1px solid var(--border); border-radius: 12px; background: white;">
-                    <div>
-                        <p style="font-weight: 600; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Before</p>
-                        <p style="font-size: 0.95rem; color: var(--text-secondary);">Agency owner spends 2 hours every Monday manually pulling data from 4 tools to build a client report.</p>
-                    </div>
-                    <div style="font-size: 1.5rem; color: var(--primary);">→</div>
-                    <div>
-                        <p style="font-weight: 600; color: var(--success); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">After</p>
-                        <p style="font-size: 0.95rem;">Report auto-generates every Monday morning and lands in the clients inbox. Zero manual work. Owner sleeps in.</p>
+                        <p class="example-after-label">After</p>
+                        <p class="example-after-text">Missed call triggers an instant text to the caller. AI collects what they need. Owner gets a lead alert. 3 out of 10 missed calls become booked jobs.</p>
                     </div>
                 </div>
-                <div class="fade-in" style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1.5rem; border: 1px solid var(--border); border-radius: 12px; background: white;">
+                <div class="example-card fade-in">
                     <div>
-                        <p style="font-weight: 600; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Before</p>
-                        <p style="font-size: 0.95rem; color: var(--text-secondary);">Salon sends appointment reminders manually by text. 15% no-show rate. Rebooking takes phone calls back and forth.</p>
+                        <p class="example-before-label">Before</p>
+                        <p class="example-before-text">Agency owner spends 2 hours every Monday manually pulling data from 4 tools to build a client report.</p>
                     </div>
-                    <div style="font-size: 1.5rem; color: var(--primary);">→</div>
+                    <div class="example-arrow">→</div>
                     <div>
-                        <p style="font-weight: 600; color: var(--success); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">After</p>
-                        <p style="font-size: 0.95rem;">Automated reminders 24h and 1h before. No-shows drop to 5%. Cancellations auto-trigger a rebooking text with open slots.</p>
+                        <p class="example-after-label">After</p>
+                        <p class="example-after-text">Report auto-generates every Monday morning and lands in the client's inbox. Zero manual work. Owner sleeps in.</p>
+                    </div>
+                </div>
+                <div class="example-card fade-in">
+                    <div>
+                        <p class="example-before-label">Before</p>
+                        <p class="example-before-text">Salon sends appointment reminders manually by text. 15% no-show rate. Rebooking takes phone calls back and forth.</p>
+                    </div>
+                    <div class="example-arrow">→</div>
+                    <div>
+                        <p class="example-after-label">After</p>
+                        <p class="example-after-text">Automated reminders 24h and 1h before. No-shows drop to 5%. Cancellations auto-trigger a rebooking text with open slots.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works Section -->
+    <!-- ===================== HOW IT WORKS ===================== -->
     <section id="how-it-works">
         <div class="container">
             <div class="section-header">
+                <span class="section-eyebrow">The Process</span>
                 <h2 class="section-title">How It Works</h2>
                 <p class="section-subtitle">A clear process from discovery to deployment.</p>
             </div>
             <div class="process-grid-wrapper">
-                <div class="steps-progress-track"><div class="steps-progress-fill"></div></div>
                 <div class="process-grid">
                     <div class="process-card fade-in" data-step="1">
-                        <div class="step-icon"><img src="img/step-audit.svg" alt="Audit" width="64" height="64"></div>
+                        <div class="step-icon"><img src="img/step-audit.svg" alt="Audit" width="56" height="56"></div>
                         <div class="step-num">1</div>
                         <h4>Audit</h4>
                         <p>We map your current workflow and identify automation opportunities.</p>
                     </div>
                     <div class="process-card fade-in" data-step="2">
-                        <div class="step-icon"><img src="img/step-build.svg" alt="Build" width="64" height="64"></div>
+                        <div class="step-icon"><img src="img/step-build.svg" alt="Build" width="56" height="56"></div>
                         <div class="step-num">2</div>
                         <h4>Build</h4>
                         <p>We design and develop your custom automation system.</p>
                     </div>
                     <div class="process-card fade-in" data-step="3">
-                        <div class="step-icon"><img src="img/step-deploy.svg" alt="Deploy" width="64" height="64"></div>
+                        <div class="step-icon"><img src="img/step-deploy.svg" alt="Deploy" width="56" height="56"></div>
                         <div class="step-num">3</div>
                         <h4>Deploy</h4>
                         <p>We launch, test, and hand off with documentation and training.</p>
                     </div>
                     <div class="process-card fade-in" data-step="4">
-                        <div class="step-icon"><img src="img/step-support.svg" alt="Support" width="64" height="64"></div>
+                        <div class="step-icon"><img src="img/step-support.svg" alt="Support" width="56" height="56"></div>
                         <div class="step-num">4</div>
                         <h4>Support</h4>
                         <p>Optional monitoring and maintenance to keep things running.</p>
@@ -269,12 +315,13 @@
         </div>
     </section>
 
-    <!-- Proven Results Section -->
-    <section>
+    <!-- ===================== TRUST METRICS ===================== -->
+    <section class="section-tint">
         <div class="container">
             <div class="section-header">
+                <span class="section-eyebrow">Proof</span>
                 <h2 class="section-title">What We Built Internally</h2>
-                <p class="section-subtitle">Our own lead generation system, built in 3 days and running autonomously. <a href="case-studies.html" style="color: var(--primary-color);">See the full case study</a>.</p>
+                <p class="section-subtitle">Our own lead generation system, built in 3 days and running autonomously. <a href="case-studies.html">See the full case study</a>.</p>
             </div>
             <div class="trust-metrics">
                 <div class="trust-metric fade-in">
@@ -290,110 +337,110 @@
                     <span class="metric-label">Days to Launch</span>
                 </div>
                 <div class="trust-metric fade-in">
-                    <span class="metric-value" data-count="24/7">24/7</span>
+                    <span class="metric-value">24/7</span>
                     <span class="metric-label">Autonomous Operation</span>
                 </div>
             </div>
-            <div style="text-align: center; margin-top: 2rem;">
+            <div style="text-align:center;margin-top:2.5rem;">
                 <a href="roi-calculator.html" class="btn btn-secondary">Calculate What Manual Work Costs You</a>
             </div>
         </div>
     </section>
 
-    <!-- Early Adopter CTA Section -->
-    <section class="section-light">
+    <!-- ===================== EARLY ADOPTER ===================== -->
+    <section>
         <div class="container">
             <div class="section-header">
+                <span class="section-eyebrow">Early Access</span>
                 <h2 class="section-title">Be an Early Client</h2>
                 <p class="section-subtitle">Stromation is selectively onboarding its first clients. Early adopters get hands-on attention, priority support, and the best rates we will ever offer.</p>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto;">
-                <div class="service-card fade-in" style="text-align: center;">
-                    <div class="service-icon">
+            <div class="services-grid">
+                <div class="service-card fade-in" style="text-align:center;">
+                    <div class="service-icon" style="margin:0 auto 1.25rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <h3 class="service-title">Free Automation Audit</h3>
                     <p class="service-desc">We map your workflow, find the bottlenecks, and give you a build plan. No cost, no obligation.</p>
                 </div>
-                <div class="service-card fade-in" style="text-align: center;">
-                    <div class="service-icon">
+                <div class="service-card fade-in" style="text-align:center;">
+                    <div class="service-icon" style="margin:0 auto 1.25rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                     </div>
                     <h3 class="service-title">Fast Turnaround</h3>
                     <p class="service-desc">Most builds ship in days, not months. We built a 12-workflow lead gen system in under 3 days.</p>
                 </div>
-                <div class="service-card fade-in" style="text-align: center;">
-                    <div class="service-icon">
+                <div class="service-card fade-in" style="text-align:center;">
+                    <div class="service-icon" style="margin:0 auto 1.25rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <h3 class="service-title">Founding Rates</h3>
                     <p class="service-desc">Early clients lock in the lowest pricing we will ever offer. Rates go up as the client list grows.</p>
                 </div>
             </div>
-            <div style="max-width: 600px; margin: 2rem auto 0; text-align: center; padding: 1.25rem 1.5rem; border: 1px solid var(--success); border-radius: 10px; background: rgba(16,185,129,0.04);">
-                <p style="font-weight: 600; color: var(--success); margin-bottom: 0.25rem;">Our Guarantee</p>
-                <p style="font-size: 0.95rem; color: var(--text-secondary); margin: 0;">If the automation we build doesnt save you at least 5 hours per month, we will rebuild it or refund your retainer. No questions.</p>
+            <div class="guarantee-box">
+                <p class="guarantee-label">Our Guarantee</p>
+                <p>If the automation we build doesn't save you at least 5 hours per month, we will rebuild it or refund your retainer. No questions.</p>
             </div>
-            <div style="text-align: center; margin-top: 1.5rem;">
+            <div style="text-align:center;margin-top:2rem;">
                 <a href="audit.html" class="btn btn-primary btn-large">Get Your Free Audit</a>
             </div>
         </div>
     </section>
 
-    <!-- Client Testimonial + Logo -->
-    <section>
-        <div class="container" style="max-width: 960px; text-align: center;">
-            <p style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 500;">Trusted By</p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto;">
-                <div style="text-align: center;">
-                    <img src="img/client-thebrasseffect.png" alt="The Brass Effect" style="height: 35px; width: auto; opacity: 0.7; filter: grayscale(100%); margin-bottom: 1rem; transition: all 0.3s;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.7';this.style.filter='grayscale(100%)'">
-                    <div class="testimonial-card fade-in" style="background: var(--bg-light, #1a1a2e); border: 1px solid var(--border, #2a2a3e); border-radius: 12px; padding: 2rem;">
-                        <span class="testimonial-quote-mark">&ldquo;</span>
-                        <p class="testimonial-text" style="font-size: 1.1rem; line-height: 1.7;">This saved me 4 hours of manual work.</p>
-                        <div class="testimonial-author" style="justify-content: center; margin-top: 1rem;">
-                            <div class="testimonial-info">
-                                <span class="testimonial-name">Antonio Brass</span>
-                                <span class="testimonial-role">Owner, The Brass Effect</span>
-                            </div>
+    <!-- ===================== TESTIMONIALS ===================== -->
+    <section class="section-light">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-eyebrow">Client Stories</span>
+                <h2 class="section-title">What Clients Say</h2>
+            </div>
+            <div class="testimonials-grid">
+                <!-- Brass Effect -->
+                <div class="testimonial-card fade-in">
+                    <img src="img/client-thebrasseffect.png" alt="The Brass Effect" class="testimonial-logo">
+                    <span class="testimonial-quote-mark">&ldquo;</span>
+                    <p class="testimonial-text">This saved me 4 hours of manual work.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-info">
+                            <span class="testimonial-name">Antonio Brass</span>
+                            <span class="testimonial-role">Owner, The Brass Effect</span>
                         </div>
                     </div>
                 </div>
-                <div style="text-align: center;">
-                    <img src="img/client-readymadevideo.png" alt="ReadyMade Video" style="height: 40px; width: auto; opacity: 0.7; filter: grayscale(100%); margin-bottom: 1rem; transition: all 0.3s;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.7';this.style.filter='grayscale(100%)'">
-                    <div class="testimonial-card fade-in" style="background: var(--bg-light, #1a1a2e); border: 1px solid var(--border, #2a2a3e); border-radius: 12px; padding: 2rem;">
-                        <span class="testimonial-quote-mark">&ldquo;</span>
-                        <p class="testimonial-text" style="font-size: 1.1rem; line-height: 1.7;">Stromation streamlined our entire booking and follow-up process. What used to take us hours every week now runs on its own.</p>
-                        <div class="testimonial-author" style="justify-content: center; margin-top: 1rem;">
-                            <div class="testimonial-info">
-                                <span class="testimonial-name">ReadyMade Video Team</span>
-                                <span class="testimonial-role">ReadyMade Video</span>
-                            </div>
+                <!-- ReadyMade Video -->
+                <div class="testimonial-card fade-in">
+                    <img src="img/client-readymadevideo.png" alt="ReadyMade Video" class="testimonial-logo">
+                    <span class="testimonial-quote-mark">&ldquo;</span>
+                    <p class="testimonial-text">Stromation streamlined our entire booking and follow-up process. What used to take us hours every week now runs on its own.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-info">
+                            <span class="testimonial-name">ReadyMade Video Team</span>
+                            <span class="testimonial-role">ReadyMade Video</span>
                         </div>
                     </div>
                 </div>
-                <div style="text-align: center;">
-                    <a href="https://atshack.com" target="_blank" rel="noopener noreferrer" style="display: inline-block; height: 38px; line-height: 38px; margin-bottom: 1rem; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; color: var(--text-secondary); text-decoration: none; opacity: 0.7; transition: all 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">ATS<span style="color: var(--primary);">Hack</span></a>
-                    <div class="testimonial-card fade-in" style="background: var(--bg-light, #1a1a2e); border: 1px solid var(--border, #2a2a3e); border-radius: 12px; padding: 2rem;">
-                        <span class="testimonial-quote-mark">&ldquo;</span>
-                        <p class="testimonial-text" style="font-size: 1.1rem; line-height: 1.7;">Stromation built our entire resume engine &mdash; AI tailoring, Stripe payments, and instant PDF delivery, all fully automated.</p>
-                        <div class="testimonial-author" style="justify-content: center; margin-top: 1rem;">
-                            <div class="testimonial-info">
-                                <span class="testimonial-name">ATSHack</span>
-                                <span class="testimonial-role">atshack.com</span>
-                            </div>
+                <!-- ATSHack -->
+                <div class="testimonial-card fade-in">
+                    <a href="https://atshack.com" target="_blank" rel="noopener noreferrer" class="testimonial-logo-text">ATS<span style="color:var(--bronze)">Hack</span></a>
+                    <span class="testimonial-quote-mark">&ldquo;</span>
+                    <p class="testimonial-text">Stromation built our entire resume engine &mdash; AI tailoring, Stripe payments, and instant PDF delivery, all fully automated.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-info">
+                            <span class="testimonial-name">ATSHack</span>
+                            <span class="testimonial-role">atshack.com</span>
                         </div>
                     </div>
                 </div>
-                <div style="text-align: center;">
-                    <a href="https://www.estimatrx.ai" target="_blank" rel="noopener noreferrer" style="display: inline-block; height: 38px; line-height: 38px; margin-bottom: 1rem; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; color: var(--text-secondary); text-decoration: none; opacity: 0.7; transition: all 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">Estimatr<span style="color: var(--primary);">X</span></a>
-                    <div class="testimonial-card fade-in" style="background: var(--bg-light, #1a1a2e); border: 1px solid var(--border, #2a2a3e); border-radius: 12px; padding: 2rem;">
-                        <span class="testimonial-quote-mark">&ldquo;</span>
-                        <p class="testimonial-text" style="font-size: 1.1rem; line-height: 1.7;">Stromation owns the AI estimating engine inside our low-voltage SaaS &mdash; blueprint vision, device counts, and quote generation, built to launch with us.</p>
-                        <div class="testimonial-author" style="justify-content: center; margin-top: 1rem;">
-                            <div class="testimonial-info">
-                                <span class="testimonial-name">EstimatrX</span>
-                                <span class="testimonial-role">estimatrx.ai</span>
-                            </div>
+                <!-- EstimatrX -->
+                <div class="testimonial-card fade-in">
+                    <a href="https://www.estimatrx.ai" target="_blank" rel="noopener noreferrer" class="testimonial-logo-text">Estimatr<span style="color:var(--bronze)">X</span></a>
+                    <span class="testimonial-quote-mark">&ldquo;</span>
+                    <p class="testimonial-text">Stromation owns the AI estimating engine inside our low-voltage SaaS &mdash; blueprint vision, device counts, and quote generation, built to launch with us.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-info">
+                            <span class="testimonial-name">EstimatrX</span>
+                            <span class="testimonial-role">estimatrx.ai</span>
                         </div>
                     </div>
                 </div>
@@ -401,53 +448,54 @@
         </div>
     </section>
 
-    <!-- Why Stromation vs Alternatives -->
-    <section class="section-light">
+    <!-- ===================== COMPARISON TABLE ===================== -->
+    <section>
         <div class="container">
             <div class="section-header">
+                <span class="section-eyebrow">The Honest Comparison</span>
                 <h2 class="section-title">Why Not Just Do It Yourself?</h2>
-                <p class="section-subtitle">You could. But heres how the options actually compare.</p>
+                <p class="section-subtitle">You could. But here's how the options actually compare.</p>
             </div>
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem; min-width: 600px;">
+            <div class="comparison-table-wrapper">
+                <table class="comparison-table">
                     <thead>
-                        <tr style="border-bottom: 2px solid var(--border);">
-                            <th style="text-align: left; padding: 1rem; color: var(--text-secondary); font-weight: 600; width: 25%;"></th>
-                            <th style="text-align: center; padding: 1rem; color: var(--text-secondary); font-weight: 600;">DIY<br><span style="font-weight: 400; font-size: 0.8rem;">(drag-and-drop tools)</span></th>
-                            <th style="text-align: center; padding: 1rem; color: var(--text-secondary); font-weight: 600;">Hire a Dev<br><span style="font-weight: 400; font-size: 0.8rem;">(freelancer or agency)</span></th>
-                            <th style="text-align: center; padding: 1rem; background: rgba(37,99,235,0.05); border-radius: 12px 12px 0 0; color: var(--primary); font-weight: 700;">Stromation</th>
+                        <tr>
+                            <th></th>
+                            <th>DIY<br><span style="font-weight:400;font-size:0.8rem;">(drag-and-drop tools)</span></th>
+                            <th>Hire a Dev<br><span style="font-weight:400;font-size:0.8rem;">(freelancer or agency)</span></th>
+                            <th class="col-stromation">Stromation</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 0.85rem 1rem; font-weight: 500;">Timeline</td>
-                            <td style="text-align: center; padding: 0.85rem;">Weeks of trial and error</td>
-                            <td style="text-align: center; padding: 0.85rem;">4-12 weeks</td>
-                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); font-weight: 600;">Days</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 0.85rem 1rem; font-weight: 500;">Cost</td>
-                            <td style="text-align: center; padding: 0.85rem;">$20-100/mo in tools<br><span style="color: var(--text-muted); font-size: 0.85rem;">+ your time</span></td>
-                            <td style="text-align: center; padding: 0.85rem;">$5,000-50,000+</td>
-                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); font-weight: 600;">$500-15,000</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 0.85rem 1rem; font-weight: 500;">Maintenance</td>
-                            <td style="text-align: center; padding: 0.85rem;">You fix it when it breaks</td>
-                            <td style="text-align: center; padding: 0.85rem;">Pay hourly for changes</td>
-                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); font-weight: 600;">$99-499/mo retainer</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 0.85rem 1rem; font-weight: 500;">AI Integration</td>
-                            <td style="text-align: center; padding: 0.85rem; color: var(--text-muted);">Limited</td>
-                            <td style="text-align: center; padding: 0.85rem;">If they know AI</td>
-                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); font-weight: 600;">Built in from day one</td>
+                        <tr>
+                            <td>Timeline</td>
+                            <td>Weeks of trial and error</td>
+                            <td>4–12 weeks</td>
+                            <td class="col-stromation">Days</td>
                         </tr>
                         <tr>
-                            <td style="padding: 0.85rem 1rem; font-weight: 500;">Documentation</td>
-                            <td style="text-align: center; padding: 0.85rem; color: var(--text-muted);">Whatever you remember</td>
-                            <td style="text-align: center; padding: 0.85rem; color: var(--text-muted);">Maybe</td>
-                            <td style="text-align: center; padding: 0.85rem; background: rgba(37,99,235,0.05); border-radius: 0 0 12px 12px; font-weight: 600;">Full docs + training</td>
+                            <td>Cost</td>
+                            <td>$20–100/mo in tools<br><span class="dim" style="font-size:0.85rem;">+ your time</span></td>
+                            <td>$5,000–50,000+</td>
+                            <td class="col-stromation">$500–15,000</td>
+                        </tr>
+                        <tr>
+                            <td>Maintenance</td>
+                            <td>You fix it when it breaks</td>
+                            <td>Pay hourly for changes</td>
+                            <td class="col-stromation">$99–499/mo retainer</td>
+                        </tr>
+                        <tr>
+                            <td>AI Integration</td>
+                            <td class="dim">Limited</td>
+                            <td>If they know AI</td>
+                            <td class="col-stromation">Built in from day one</td>
+                        </tr>
+                        <tr>
+                            <td>Documentation</td>
+                            <td class="dim">Whatever you remember</td>
+                            <td class="dim">Maybe</td>
+                            <td class="col-stromation">Full docs + training</td>
                         </tr>
                     </tbody>
                 </table>
@@ -455,16 +503,17 @@
         </div>
     </section>
 
-    <!-- Best Fit / Not a Fit Section -->
-    <section>
+    <!-- ===================== FIT SECTION ===================== -->
+    <section class="section-light">
         <div class="container">
             <div class="section-header">
+                <span class="section-eyebrow">Honest Fit Check</span>
                 <h2 class="section-title">Is This Right for You?</h2>
                 <p class="section-subtitle">We work best with businesses that have a real workflow to automate.</p>
             </div>
             <div class="fit-grid">
                 <div class="fit-card best slide-left">
-                    <h3><span class="fit-badge best-fit">Best Fit</span></h3>
+                    <span class="fit-badge best-fit">Best Fit</span>
                     <ul>
                         <li>Small business owners with repeated manual admin work (intake, scheduling, follow-ups, reporting)</li>
                         <li>Agencies and consultants that need internal ops automation or client-facing automations</li>
@@ -473,7 +522,7 @@
                     </ul>
                 </div>
                 <div class="fit-card not slide-right">
-                    <h3><span class="fit-badge not-fit">Not a Fit</span></h3>
+                    <span class="fit-badge not-fit">Not a Fit</span>
                     <ul>
                         <li>Just curious about AI with no process to automate yet</li>
                         <li>Looking for a full SaaS product build on a small budget</li>
@@ -485,10 +534,11 @@
         </div>
     </section>
 
-    <!-- Trust Statements Section -->
+    <!-- ===================== BUILT FOR RELIABILITY ===================== -->
     <section>
         <div class="container">
             <div class="section-header">
+                <span class="section-eyebrow">How We Build</span>
                 <h2 class="section-title">Built for Reliability</h2>
                 <p class="section-subtitle">Not fragile hacks. Real systems that work.</p>
             </div>
@@ -503,7 +553,6 @@
                     <h3 class="service-title">Tool-Agnostic</h3>
                     <p class="service-desc">We use the right stack for your workflow: n8n, custom APIs, and AI tools. No vendor lock-in.</p>
                 </div>
-
                 <div class="service-card fade-in">
                     <div class="service-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -513,7 +562,6 @@
                     <h3 class="service-title">Built for Reliability</h3>
                     <p class="service-desc">Logging, monitoring, and clean handoffs. Not fragile hacks that break when tools update.</p>
                 </div>
-
                 <div class="service-card fade-in">
                     <div class="service-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -527,71 +575,67 @@
         </div>
     </section>
 
-    <!-- Pricing at a Glance -->
-    <section class="section-light" id="pricing-preview">
+    <!-- ===================== PRICING PREVIEW ===================== -->
+    <section class="section-tint" id="pricing-preview">
         <div class="container">
             <div class="section-header">
+                <span class="section-eyebrow">Investment</span>
                 <h2 class="section-title">Pricing at a Glance</h2>
                 <p class="section-subtitle">Free Automation Audit included with every inquiry</p>
             </div>
-
             <div class="pricing-preview-grid">
-                <div class="pricing-preview-card">
+                <div class="pricing-preview-card fade-in">
                     <h4>Starter Automation</h4>
                     <div class="preview-price">$500–$1,000</div>
                 </div>
-                <div class="pricing-preview-card">
+                <div class="pricing-preview-card fade-in">
                     <h4>Simple Automation</h4>
                     <div class="preview-price">$1,000–$2,500</div>
                 </div>
-                <div class="pricing-preview-card">
+                <div class="pricing-preview-card fade-in">
                     <h4>AI-Assisted</h4>
                     <div class="preview-price">$2,500–$6,000</div>
                 </div>
-                <div class="pricing-preview-card">
+                <div class="pricing-preview-card fade-in">
                     <h4>End-to-End Replacement</h4>
                     <div class="preview-price">$6,000–$15,000+</div>
                 </div>
             </div>
-
-            <div style="text-align: center; margin-top: 2rem;">
-                <a href="services.html#pricing" class="btn btn-secondary">See Pricing Details</a>
+            <div style="text-align:center;margin-top:2rem;">
+                <a href="services.html#pricing" class="btn btn-secondary">See Full Pricing Details</a>
             </div>
         </div>
     </section>
 
-    <!-- CTA Banner Section -->
+    <!-- ===================== FINAL CTA ===================== -->
     <section class="cta-section">
         <div class="container">
             <h2>Start with a Free Automation Audit</h2>
             <p>Get a workflow map, prioritized opportunities, and a build plan. No cost, no strings attached.</p>
             <a href="audit.html" class="btn btn-primary btn-large">Request Your Audit</a>
-            <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.85;">Not sure yet? <a href="checklist.html" style="color: #00E5FF; text-decoration: underline;">Take our free Automation Readiness Checklist</a> or <a href="roi-calculator.html" style="color: #00E5FF; text-decoration: underline;">Calculate Your ROI</a></p>
+            <p class="cta-sub">Not sure yet? <a href="checklist.html">Take our free Automation Readiness Checklist</a> or <a href="roi-calculator.html">Calculate Your ROI</a></p>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ===================== FOOTER ===================== -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="footer-logo"><img src="logos/stromation-icon.svg" alt="Stromation" style="height: 28px; width: auto; vertical-align: middle; margin-right: 0.5rem;">Stromation</div>
+                    <a href="index.html" class="footer-logo">
+                        <img src="logos/stromation-icon.svg" alt="Stromation icon">
+                        Stromation
+                    </a>
                     <p>Custom workflow automations that replace repetitive manual work. Your business runs faster, cleaner, and with fewer mistakes.</p>
                     <div class="social-icons">
                         <a href="mailto:contact@stromation.com" class="social-icon" aria-label="Email">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                         </a>
                         <a href="https://x.com/stromationhq" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="X (Twitter)">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                         </a>
                         <a href="https://www.linkedin.com/in/dariusstroman" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                         </a>
                     </div>
                 </div>
@@ -611,10 +655,10 @@
                 <div>
                     <h4 class="footer-heading">Services</h4>
                     <div class="footer-links">
-                        <a href="services.html#intake">Intake & Lead Handling</a>
-                        <a href="services.html#ops">Ops & Admin Workflows</a>
+                        <a href="services.html#intake">Intake &amp; Lead Handling</a>
+                        <a href="services.html#ops">Ops &amp; Admin Workflows</a>
                         <a href="services.html#support">Customer Support</a>
-                        <a href="services.html#reporting">Reporting & Visibility</a>
+                        <a href="services.html#reporting">Reporting &amp; Visibility</a>
                         <a href="services.html#custom">Custom Workflows</a>
                     </div>
                 </div>
