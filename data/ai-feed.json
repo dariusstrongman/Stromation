@@ -1,0 +1,22 @@
+[
+ {
+  "date": "Sun, Jul 5",
+  "title": "Anthropic launches Cowork, a Claude Desktop agent that works in your files — no coding required",
+  "url": "https://venturebeat.com/technology/anthropic-launches-cowork-a-claude-desktop-agent-that-works-in-your-files-no",
+  "src": "VentureBeat AI",
+  "why": "Anthropic launched Cowork, a Claude Desktop agent that works inside your files with zero coding. this is the biggest usability jump for non-devs since chatgpt, and it lands right in builder territory.",
+  "blurb": "Anthropic dropped Cowork, a Claude Desktop agent that dives into your files without any need for coding. anyone can now automate stuff like document summaries and file cleanup by just asking. if youre building something, get Cowork running alongside n8n this week and see what it takes off your plate.",
+  "move": "Set up Cowork with n8n to automate your workflows without coding. Connect it to your existing tools and see the difference.",
+  "tweet": "Anthropic's Cowork lets you use Claude in your files, no coding needed. Builders and founders, integrate it with n8n to automate your workflows without writing a single line of code."
+ },
+ {
+  "date": "Sat, Jul 4",
+  "title": "Microsoft launches its own AI deployment company with $2.5 billion commitment",
+  "url": "https://techcrunch.com/2026/07/02/microsoft-launches-its-own-ai-deployment-company-with-2-5-billion-commitment/",
+  "src": "TechCrunch AI",
+  "why": "microsoft is putting $2.5 billion into a company that does nothing but deploy AI into businesses. theyre not just building tools anymore, theyre going all in on deployment services. thats a big signal about where the money actually is.",
+  "blurb": "microsoft is making a big splash by launching a new company dedicated to AI deployment, backed by $2.5 billion. the signal: the money is moving from building models to deploying them inside real businesses. if the biggest software company on earth says deployment is the business, thats worth acting on.",
+  "move": "if youre building anything for businesses, the deployment layer just got validated by $2.5B. look at what shipped in the deployment stack this quarter and figure out which piece of AI rollout you can own for your niche this week.",
+  "tweet": "Microsoft's new $2.5B AI deployment company is a big move into services, not just tools. The model layer is a commodity. The deployment layer is the business."
+ }
+]
