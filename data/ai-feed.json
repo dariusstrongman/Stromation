@@ -1,5 +1,15 @@
 [
  {
+  "date": "Mon, Jul 6",
+  "title": "Anthropic launches Cowork, a Claude Desktop agent that works in your files — no coding required",
+  "url": "https://venturebeat.com/technology/anthropic-launches-cowork-a-claude-desktop-agent-that-works-in-your-files-no",
+  "src": "VentureBeat AI",
+  "why": "Anthropic's launch of Cowork, a Claude Desktop agent that works in your files without needing any coding, is a major step forward for practical automation, enabling builders and founders to easily integrate AI into their workflow.",
+  "blurb": "Anthropic launched Cowork, a Claude desktop agent that works in your files without any coding required. This is a big deal for builders who want to integrate AI into their workflows easily. Get it up and running with n8n to automate file tasks this week.",
+  "move": "Get Cowork running alongside n8n to automate file tasks across your projects. Its an easy way to integrate AI into your workflow without writing code.",
+  "tweet": "Anthropic's Cowork lets you automate file tasks without coding. Pair it with n8n to streamline your workflow this week. File management just got smarter."
+ },
+ {
   "date": "Sun, Jul 5",
   "title": "Anthropic launches Cowork, a Claude Desktop agent that works in your files — no coding required",
   "url": "https://venturebeat.com/technology/anthropic-launches-cowork-a-claude-desktop-agent-that-works-in-your-files-no",
