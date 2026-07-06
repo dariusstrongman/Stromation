@@ -3,286 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="About Stromation and its founder. Learn about our approach to building reliable workflow automations.">
-    <title>About - Stromation Workflow Automation</title>
-    <link rel="canonical" href="https://www.stromation.com/about.html">
-    <meta property="og:title" content="About - Stromation Workflow Automation">
-    <meta property="og:description" content="About Stromation and its founder. Learn about our approach to building reliable workflow automations.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.stromation.com/about.html">
-    <meta property="og:site_name" content="Stromation">
-    <meta property="og:image" content="https://www.stromation.com/banner-1500x500.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@stromationhq">
-    <meta name="twitter:title" content="About - Stromation Workflow Automation">
-    <meta name="twitter:description" content="About Stromation and its founder. Learn about our approach to building reliable workflow automations.">
-    <meta name="twitter:image" content="https://www.stromation.com/banner-1500x500.png">
-    <link rel="icon" type="image/svg+xml" href="logos/logo-transparent.svg">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>About - Stromation AI News</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B6Z6XV02RT"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-B6Z6XV02RT');
-    </script>
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "AboutPage",
-        "name": "About Stromation",
-        "description": "Stromation is a workflow automation studio founded by Darius. We design and deploy custom automations that replace repetitive manual work.",
-        "url": "https://www.stromation.com/about.html",
-        "mainEntity": {
-            "@type": "Organization",
-            "name": "Stromation",
-            "url": "https://www.stromation.com",
-            "founder": {
-                "@type": "Person",
-                "name": "Darius",
-                "jobTitle": "Founder",
-                "alumniOf": {
-                    "@type": "CollegeOrUniversity",
-                    "name": "Master of Science in Software Engineering"
-                }
-            },
-            "email": "contact@stromation.com",
-            "areaServed": "Worldwide"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles-news.css">
+    <style>
+        .page-header {
+            padding: 80px 0 40px;
+            text-align: center;
         }
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.stromation.com/" },
-            { "@type": "ListItem", "position": 2, "name": "About", "item": "https://www.stromation.com/about.html" }
-        ]
-    }
-    </script>
+        .page-header h1 {
+            font-size: clamp(40px, 6vw, 64px);
+            margin-bottom: 24px;
+        }
+        .content-block {
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+        .content-block p {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .content-block h2 {
+            font-size: 32px;
+            margin: 48px 0 24px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin: 48px 0;
+        }
+        .stat-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            padding: 32px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
 </head>
 <body>
-    <a href="#main-content" class="skip-to-content">Skip to content</a>
-
-    <header class="header">
-        <nav class="nav-container">
+    <nav class="site-nav">
+        <div class="container nav-container">
             <a href="index.html" class="logo">
-                <img src="logo.svg" alt="Stromation" class="logo-img">
-                <span class="logo-text">Stromation</span>
+                Stromation<span class="logo-dot"></span>
             </a>
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
-                <span></span><span></span><span></span>
-            </button>
-            <div class="nav-links" id="navLinks">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="services.html" class="nav-link">Services</a>                <a href="industries.html" class="nav-link">Industries</a>
-                <a href="case-studies.html" class="nav-link">Examples</a>
-                <a href="about.html" class="nav-link active">About</a>
-                <a href="blog.html" class="nav-link">Blog</a><a href="ai-tools.html" class="nav-link">AI Tools</a>
-                <a href="audit.html" class="nav-link cta-nav">Get a Free Audit</a>
-            </div>
-        </nav>
-    </header>
-
-    <nav class="breadcrumb"><a href="index.html">Home</a> &rsaquo; About</nav>
-
-    <!-- Hero -->
-    <section class="hero-inner" id="main-content">
-        <div class="container">
-            <div class="hero-content">
-                <span class="section-eyebrow">The Studio</span>
-                <h1 class="hero-title">Systems Over <span class="highlight">Hype</span></h1>
-                <p class="hero-subtitle">Stromation builds workflow automations that actually work. No fragile hacks, no overcomplicated setups. Just reliable systems that replace manual steps.</p>
+            <div class="nav-links">
+                <a href="index.html">News</a>
+                <a href="tools.html">AI Tools</a>
+                <a href="guides.html">Guides</a>
+                <a href="about.html" class="text-main">About</a>
+                <a href="advertise.html">Advertise</a>
+                <a href="index.html#subscribe" class="btn-subscribe">Subscribe</a>
             </div>
         </div>
-    </section>
+    </nav>
 
-    <!-- About founder -->
-    <section>
-        <div class="container">
-            <div class="about-founder-grid">
-                <div class="about-founder-body">
-                    <span class="section-eyebrow">The Founder</span>
-                    <h2 class="section-title text-left">About Stromation</h2>
-                    <p>Stromation is a workflow automation studio founded by <strong>Darius</strong>, a software engineer with a Master of Science in Software Engineering and over a decade of hands-on experience in IT systems, network infrastructure, and process automation. He has built and maintained workflows for operations ranging from small businesses to enterprise environments.</p>
-                    <p>After years of watching businesses burn hours on manual data entry, copy-paste reporting, and broken handoffs between tools, he started Stromation to offer what most "automation agencies" don't: systems that are built to your actual process, properly tested, and designed to keep running without babysitting.</p>
-                    <p>We take a different approach: understand your actual process, build something that fits, and make sure it keeps running.</p>
-
-                    <h4 class="tech-stack-label">Tools &amp; Platforms We Work With</h4>
-                    <div class="tech-stack">
-                        <span class="tech-pill">n8n</span>
-                        <span class="tech-pill">Custom APIs</span>
-                        <span class="tech-pill">OpenAI / GPT</span>
-                        <span class="tech-pill">Claude AI</span>
-                        <span class="tech-pill">REST APIs</span>
-                        <span class="tech-pill">Webhooks</span>
-                        <span class="tech-pill">Python</span>
-                        <span class="tech-pill">JavaScript</span>
-                        <span class="tech-pill">Node.js</span>
-                        <span class="tech-pill">Google Sheets</span>
-                        <span class="tech-pill">Google Apps Script</span>
-                        <span class="tech-pill">Airtable</span>
-                        <span class="tech-pill">Notion</span>
-                        <span class="tech-pill">Slack</span>
-                        <span class="tech-pill">HubSpot</span>
-                        <span class="tech-pill">Salesforce</span>
-                        <span class="tech-pill">GoHighLevel</span>
-                        <span class="tech-pill">Twilio</span>
-                        <span class="tech-pill">SendGrid</span>
-                        <span class="tech-pill">Stripe</span>
-                        <span class="tech-pill">QuickBooks</span>
-                        <span class="tech-pill">Calendly</span>
-                        <span class="tech-pill">Typeform</span>
-                        <span class="tech-pill">Jotform</span>
-                        <span class="tech-pill">PostgreSQL</span>
-                        <span class="tech-pill">MySQL</span>
-                        <span class="tech-pill">MongoDB</span>
-                        <span class="tech-pill">Supabase</span>
-                        <span class="tech-pill">Firebase</span>
-                        <span class="tech-pill">AWS</span>
-                        <span class="tech-pill">Google Cloud</span>
-                        <span class="tech-pill">Docker</span>
-                        <span class="tech-pill">GitHub Actions</span>
-                        <span class="tech-pill">Cron Jobs</span>
-                        <span class="tech-pill">Microsoft 365</span>
-                        <span class="tech-pill">Google Workspace</span>
-                        <span class="tech-pill">Shopify</span>
-                        <span class="tech-pill">WordPress</span>
-                        <span class="tech-pill">Webflow</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="philosophy-box">
-                <h4>Our Philosophy</h4>
-                <p><strong>Replace steps, not jobs.</strong> Automation should handle the boring, repetitive work so you can focus on the parts that actually need a human. We're not here to make things complicated. We're here to make things work.</p>
-            </div>
-
-            <div class="about-features">
-                <div class="about-feature fade-in">
-                    <div class="about-feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4>Direct Communication</h4>
-                        <p>You work directly with the founder, not a revolving door of account managers. One point of contact who knows your system.</p>
-                    </div>
-                </div>
-                <div class="about-feature fade-in">
-                    <div class="about-feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4>Tool-Agnostic</h4>
-                        <p>We use n8n, custom APIs, and AI tools. Whatever fits your workflow best. No vendor lock-in, no upselling software you don't need.</p>
-                    </div>
-                </div>
-                <div class="about-feature fade-in">
-                    <div class="about-feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4>Built to Last</h4>
-                        <p>Every system is documented, tested, and handed off with clear runbooks. If something breaks, you'll know why and how to fix it.</p>
-                    </div>
-                </div>
-                <div class="about-feature fade-in">
-                    <div class="about-feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4>Fast Turnaround</h4>
-                        <p>Most automations are scoped, built, and deployed within 1&ndash;3 weeks. No 6-month enterprise timelines for things that should take days.</p>
-                    </div>
-                </div>
-            </div>
+    <main class="container">
+        <div class="page-header">
+            <h1>The Signal in the <span class="text-gradient">Noise</span></h1>
         </div>
-    </section>
 
-    <!-- CTA -->
-    <section class="section-tint">
-        <div class="container text-center">
-            <span class="section-eyebrow">Ready to Start?</span>
-            <h2 class="section-title">Let's Map Your Workflow</h2>
-            <p class="section-subtitle">Book a free audit and we'll identify exactly what to automate and how much time it saves.</p>
-            <a href="audit.html" class="btn btn-primary mt-3">Get a Free Audit</a>
-        </div>
-    </section>
+        <div class="content-block">
+            <p>Artificial Intelligence is moving faster than any technology in human history. But the media covering it is broken.</p>
+            <p>Most AI news falls into two categories: dense academic papers that business leaders can't decipher, or clickbait hype promising that "everything changes tomorrow."</p>
+            <p>Stromation was built to be the bridge. We provide the fastest, most accurate, and most practical AI news for operators, founders, and professionals who need to understand what's happening—and what to actually do about it.</p>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <a href="index.html" class="footer-logo">
-                        <img src="logos/stromation-icon.svg" alt="Stromation">
-                        Stromation
-                    </a>
-                    <p>Custom workflow automations that replace repetitive manual work.</p>
-                    <div class="social-icons">
-                        <a href="mailto:contact@stromation.com" class="social-icon" aria-label="Email">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        </a>
-                        <a href="https://x.com/stromationhq" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="X (Twitter)">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                        </a>
-                        <a href="https://www.linkedin.com/in/dariusstroman" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                        </a>
-                    </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">50k+</div>
+                    <div class="stat-label">Daily Readers</div>
                 </div>
-                <div>
-                    <h4 class="footer-heading">Quick Links</h4>
-                    <div class="footer-links">
-                        <a href="index.html">Home</a>
-                        <a href="services.html">Services</a>
-                        <a href="industries.html">Industries</a>
-                        <a href="case-studies.html">Examples</a>
-                        <a href="about.html">About</a>
-                        <a href="blog.html">Blog</a>
-                        <a href="faq.html">FAQ</a>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number">5 min</div>
+                    <div class="stat-label">Reading Time</div>
                 </div>
-                <div>
-                    <h4 class="footer-heading">Services</h4>
-                    <div class="footer-links">
-                        <a href="services.html#intake">Intake &amp; Lead Handling</a>
-                        <a href="services.html#ops">Ops &amp; Admin Workflows</a>
-                        <a href="services.html#support">Customer Support</a>
-                        <a href="services.html#reporting">Reporting &amp; Visibility</a>
-                        <a href="services.html#custom">Custom Workflows</a>
-                    </div>
-                </div>
-                <div class="footer-contact">
-                    <h4 class="footer-heading">Contact</h4>
-                    <p><a href="mailto:contact@stromation.com">contact@stromation.com</a></p>
-                    <p><a href="tel:+18559320493">(855) 932-0493</a></p>
-                    <p><a href="audit.html">Free Automation Audit &rarr;</a></p>
-                    <div class="footer-legal">
-                        <a href="privacy.html">Privacy</a>
-                        <a href="terms.html">Terms</a>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Signal, Zero Hype</div>
                 </div>
             </div>
+
+            <h2>Our Editorial Standard</h2>
+            <p><strong>1. No Hype:</strong> We don't use words like "insane" or "mind-blowing." We report the facts and the implications.</p>
+            <p><strong>2. Business Focus:</strong> If a new model drops, we don't just report the parameter count. We report how it changes the unit economics of your business.</p>
+            <p><strong>3. Human Written:</strong> Our analysis is written by operators who actually build with AI, not generated by LLMs to chase SEO traffic.</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
             <div class="footer-bottom">
-                <p>&copy; 2025 Stromation. All rights reserved.</p>
+                <p>&copy; 2026 Stromation. All rights reserved.</p>
             </div>
         </div>
     </footer>
-
-    <script src="script.js"></script>
 </body>
 </html>

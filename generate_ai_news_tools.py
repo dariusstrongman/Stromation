@@ -1,0 +1,328 @@
+import os
+
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools Directory - Stromation</title>
+    <meta name="description" content="The ultimate curated directory of AI tools for business, marketing, coding, and productivity.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles-news.css">
+    <style>
+        .tools-header {
+            padding: 80px 0 40px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 64px;
+        }
+        
+        .tools-header h1 {
+            font-size: clamp(40px, 6vw, 64px);
+            margin-bottom: 24px;
+        }
+        
+        .tools-header p {
+            font-size: 20px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .tools-filters {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        
+        .filter-btn {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--text-main);
+            color: var(--bg-dark);
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 80px;
+        }
+        
+        .tool-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 32px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-focus);
+        }
+        
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .tool-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+        }
+        
+        .tool-title h3 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .tool-category {
+            font-size: 12px;
+            color: var(--accent-cyan);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+        
+        .tool-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        
+        .tool-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-light);
+            padding-top: 20px;
+        }
+        
+        .tool-pricing {
+            font-size: 14px;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+        }
+        
+        .tool-link {
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .tool-link:hover {
+            color: var(--accent-cyan);
+        }
+    </style>
+</head>
+<body>
+    <nav class="site-nav">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                Stromation<span class="logo-dot"></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">News</a>
+                <a href="tools.html" class="text-main">AI Tools</a>
+                <a href="guides.html">Guides</a>
+                <a href="about.html">About</a>
+                <a href="advertise.html">Advertise</a>
+                <a href="index.html#subscribe" class="btn-subscribe">Subscribe</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="tools-header">
+            <div class="container">
+                <h1>The AI Tools <span class="text-gradient">Directory</span></h1>
+                <p>Curated, tested, and reviewed AI tools for operators and founders. No hype, just what actually works in production.</p>
+                
+                <div class="tools-filters">
+                    <button class="filter-btn active">All Tools</button>
+                    <button class="filter-btn">Coding & Dev</button>
+                    <button class="filter-btn">Marketing</button>
+                    <button class="filter-btn">Productivity</button>
+                    <button class="filter-btn">Video & Audio</button>
+                    <button class="filter-btn">Automation</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="tools-grid">
+                <!-- Tool 1 -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon" style="background: #1e1e1e;">C</div>
+                        <div class="tool-title">
+                            <h3>Cursor</h3>
+                            <span class="tool-category">Coding & Dev</span>
+                        </div>
+                    </div>
+                    <p>The AI-first code editor built as a fork of VS Code. Features native integration with Claude 3.5 Sonnet and GPT-4o for inline code generation and codebase chat.</p>
+                    <div class="tool-footer">
+                        <span class="tool-pricing">Freemium / $20/mo</span>
+                        <a href="#" class="tool-link">Visit Website →</a>
+                    </div>
+                </div>
+
+                <!-- Tool 2 -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon" style="background: #2a1b3d; color: #b794f4;">A</div>
+                        <div class="tool-title">
+                            <h3>Anthropic Claude</h3>
+                            <span class="tool-category">Productivity</span>
+                        </div>
+                    </div>
+                    <p>The most capable LLM for writing, analysis, and coding. Claude 3.5 Sonnet currently leads industry benchmarks for reasoning and produces the least "AI-sounding" text.</p>
+                    <div class="tool-footer">
+                        <span class="tool-pricing">Freemium / $20/mo</span>
+                        <a href="#" class="tool-link">Visit Website →</a>
+                    </div>
+                </div>
+
+                <!-- Tool 3 -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon" style="background: #0f2922; color: #48bb78;">P</div>
+                        <div class="tool-title">
+                            <h3>Perplexity AI</h3>
+                            <span class="tool-category">Productivity</span>
+                        </div>
+                    </div>
+                    <p>An AI search engine that provides cited answers to complex queries. Replaces Google for research tasks by reading multiple web pages and synthesizing the findings.</p>
+                    <div class="tool-footer">
+                        <span class="tool-pricing">Freemium / $20/mo</span>
+                        <a href="#" class="tool-link">Visit Website →</a>
+                    </div>
+                </div>
+
+                <!-- Tool 4 -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon" style="background: #3c1e1e; color: #fc8181;">N</div>
+                        <div class="tool-title">
+                            <h3>n8n</h3>
+                            <span class="tool-category">Automation</span>
+                        </div>
+                    </div>
+                    <p>Advanced workflow automation tool with deep AI integration. Allows you to build custom AI agents that connect to your existing SaaS tools and databases.</p>
+                    <div class="tool-footer">
+                        <span class="tool-pricing">Open Source / $24/mo</span>
+                        <a href="#" class="tool-link">Visit Website →</a>
+                    </div>
+                </div>
+
+                <!-- Tool 5 -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon" style="background: #1a365d; color: #63b3ed;">M</div>
+                        <div class="tool-title">
+                            <h3>Midjourney</h3>
+                            <span class="tool-category">Design & Image</span>
+                        </div>
+                    </div>
+                    <p>The industry standard for AI image generation. V6 produces photorealistic images, consistent typography, and precise adherence to complex prompts.</p>
+                    <div class="tool-footer">
+                        <span class="tool-pricing">Paid / $10/mo</span>
+                        <a href="#" class="tool-link">Visit Website →</a>
+                    </div>
+                </div>
+
+                <!-- Tool 6 -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon" style="background: #32261a; color: #f6ad55;">E</div>
+                        <div class="tool-title">
+                            <h3>ElevenLabs</h3>
+                            <span class="tool-category">Video & Audio</span>
+                        </div>
+                    </div>
+                    <p>The most realistic AI voice generator available. Supports voice cloning, emotional range control, and dubbing across 29 languages.</p>
+                    <div class="tool-footer">
+                        <span class="tool-pricing">Freemium / $5/mo</span>
+                        <a href="#" class="tool-link">Visit Website →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        Stromation<span class="logo-dot"></span>
+                    </a>
+                    <p>The signal in the noise. Daily AI news, tools, and insights for business leaders.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Content</h4>
+                    <ul>
+                        <li><a href="index.html">News</a></li>
+                        <li><a href="tools.html">AI Tools</a></li>
+                        <li><a href="guides.html">Guides</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="advertise.html">Advertise</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Stromation. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="https://twitter.com/stromationhq">Twitter / X</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+"""
+
+with open("tools.html", "w") as f:
+    f.write(html_content)
+
+print("tools.html generated successfully.")

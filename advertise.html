@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advertise - Stromation AI News</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles-news.css">
+    <style>
+        .page-header {
+            padding: 80px 0 40px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-size: clamp(40px, 6vw, 64px);
+            margin-bottom: 24px;
+        }
+        .content-block {
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+        .content-block p {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .sponsor-form {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            padding: 40px;
+            border-radius: var(--radius-md);
+            margin-top: 48px;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-light);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            color: var(--text-main);
+            font-family: inherit;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+        }
+        .btn-submit {
+            background: var(--text-main);
+            color: var(--bg-dark);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <nav class="site-nav">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                Stromation<span class="logo-dot"></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">News</a>
+                <a href="tools.html">AI Tools</a>
+                <a href="guides.html">Guides</a>
+                <a href="about.html">About</a>
+                <a href="advertise.html" class="text-main">Advertise</a>
+                <a href="index.html#subscribe" class="btn-subscribe">Subscribe</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Reach the <span class="text-gradient">AI Elite</span></h1>
+        </div>
+
+        <div class="content-block">
+            <p>Stromation is read daily by over 50,000 founders, executives, and operators from companies like Apple, Microsoft, OpenAI, and Y Combinator startups.</p>
+            <p>If you are building an AI tool, enterprise SaaS, or B2B service, there is no better place to reach decision-makers who actively invest in technology.</p>
+            
+            <div class="sponsor-form">
+                <h3>Request Media Kit & Availability</h3>
+                <p style="font-size: 14px; margin-top: 8px; margin-bottom: 24px;">Current inventory is booked 3 weeks in advance.</p>
+                
+                <form id="sponsorForm" action="https://n8n.stromation.com/webhook/stromation-sponsor" method="POST">
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <input type="text" name="company" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Work Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Monthly Budget</label>
+                        <select name="budget" class="form-control">
+                            <option>$2,000 - $5,000</option>
+                            <option>$5,000 - $10,000</option>
+                            <option>$10,000+</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">Request Media Kit</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Stromation. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        document.getElementById('sponsorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            btn.innerText = 'Sending Request...';
+            setTimeout(() => {
+                btn.innerText = 'Request Sent!';
+                btn.style.background = 'var(--accent-mint)';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
