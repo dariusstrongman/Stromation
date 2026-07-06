@@ -1,13 +1,13 @@
 [
  {
   "date": "Sun, Jul 5",
-  "title": "Salesforce rolls out new Slackbot AI agent as it battles Microsoft and Google in workplace AI",
-  "url": "https://venturebeat.com/technology/salesforce-rolls-out-new-slackbot-ai-agent-as-it-battles-microsoft-and",
+  "title": "Anthropic launches Cowork, a Claude Desktop agent that works in your files — no coding required",
+  "url": "https://venturebeat.com/technology/anthropic-launches-cowork-a-claude-desktop-agent-that-works-in-your-files-no",
   "src": "VentureBeat AI",
-  "why": "Salesforce's new Slackbot AI agent marks a significant advancement in workplace automation tools, offering immediate utility for businesses looking to streamline operations.",
-  "blurb": "Salesforce has launched a new Slackbot AI agent, aiming to take on Microsoft and Google in the AI workspace battle. This new tool integrates directly into Slack, allowing teams to automate workflows without switching apps. Builders should explore this for time-saving solutions.",
-  "move": "Start using the Slackbot AI to automate your workflows. Use tools like Zapier to connect it with other apps and streamline your operations.",
-  "tweet": "Salesforce's new Slackbot AI is here. Builders, this means you can automate workflows directly in Slack. Check it out and start saving time."
+  "why": "Anthropic's launch of Cowork, a Claude Desktop agent that works in your files without coding, is a major step forward for automation and usability, providing immediate utility to builders and founders looking to streamline workflows.",
+  "blurb": "Anthropic has dropped Cowork, a Claude Desktop agent that dives into your files without any need for coding. This means anyone can automate tasks like document summarization and workflow management. If youre building something, get Cowork running with n8n this week to level up your automation game.",
+  "move": "Set up Cowork with n8n to automate your workflows without coding. Connect it to your existing tools and see the difference.",
+  "tweet": "Anthropic's Cowork lets you use Claude in your files, no coding needed. Builders and founders, integrate it with n8n to automate your workflows without writing a single line of code."
  },
  {
   "date": "Sat, Jul 5, 2026",
