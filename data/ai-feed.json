@@ -4,13 +4,13 @@
   "title": "Anthropic launches Cowork, a Claude Desktop agent that works in your files — no coding required",
   "url": "https://venturebeat.com/technology/anthropic-launches-cowork-a-claude-desktop-agent-that-works-in-your-files-no",
   "src": "VentureBeat AI",
-  "why": "Anthropic's launch of Cowork, a Claude Desktop agent that works in your files without coding, is a major step forward for automation and usability, providing immediate utility to builders and founders looking to streamline workflows.",
-  "blurb": "Anthropic has dropped Cowork, a Claude Desktop agent that dives into your files without any need for coding. This means anyone can automate tasks like document summarization and workflow management. If youre building something, get Cowork running with n8n this week to level up your automation game.",
+  "why": "Anthropic launched Cowork, a Claude Desktop agent that works inside your files with zero coding. this is the biggest usability jump for non-devs since chatgpt, and it lands right in builder territory.",
+  "blurb": "Anthropic dropped Cowork, a Claude Desktop agent that dives into your files without any need for coding. anyone can now automate stuff like document summaries and file cleanup by just asking. if youre building something, get Cowork running alongside n8n this week and see what it takes off your plate.",
   "move": "Set up Cowork with n8n to automate your workflows without coding. Connect it to your existing tools and see the difference.",
   "tweet": "Anthropic's Cowork lets you use Claude in your files, no coding needed. Builders and founders, integrate it with n8n to automate your workflows without writing a single line of code."
  },
  {
-  "date": "Sat, Jul 5, 2026",
+  "date": "Sat, Jul 4",
   "title": "Microsoft launches its own AI deployment company with $2.5 billion commitment",
   "url": "https://techcrunch.com/2026/07/02/microsoft-launches-its-own-ai-deployment-company-with-2-5-billion-commitment/",
   "src": "TechCrunch AI",
