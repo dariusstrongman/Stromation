@@ -393,6 +393,11 @@
         </div>
         <div class="lg hot">
           <div class="when">jul 2026</div>
+          <div><div class="what">the machine learns to war game</div>
+          <div class="how">every build now gets fought on paper first, move by move, failure by failure. plans assume sunshine. war games assume reality.</div></div>
+        </div>
+        <div class="lg hot">
+          <div class="when">jul 2026</div>
           <div><div class="what">stromation becomes the house</div>
           <div class="how">one flag over all the work instead of one product pretending to be everything.</div></div>
         </div>
@@ -606,6 +611,7 @@
     var lines = [
       '<span class="c">&gt;</span> idea received: <span class="w">"' + idea.replace(/[<>&]/g,'') + '"</span>',
       '<span class="c">&gt;</span> scoping ........ <span class="ok">done</span>',
+      '<span class="c">&gt;</span> war game ....... <span class="w">' + (8 + hashStr(idea) % 9) + ' moves simulated, ' + (2 + hashStr(idea) % 3) + ' counter-moves ready</span>',
       '<span class="c">&gt;</span> shape .......... <span class="w">' + shape + '</span>',
       '<span class="c">&gt;</span> stack .......... <span class="w">' + stack + '</span>',
       '<span class="c">&gt;</span> first demo ..... <span class="w">' + est + '</span>',
@@ -630,7 +636,7 @@
   /* ---------- lab typing ---------- */
   (function(){
     var el = document.getElementById('typed');
-    var phrases = ['wiring the core loop...', 'it gets its own name...', 'first demo taking shape...', 'shipping soon.'];
+    var phrases = ['war gaming every move...', 'wiring the core loop...', 'it gets its own name...', 'first demo taking shape...', 'shipping soon.'];
     if (reduce){ el.textContent = phrases[phrases.length-1]; return; }
     var pi = 0, ci = 0, del = false;
     (function step(){
