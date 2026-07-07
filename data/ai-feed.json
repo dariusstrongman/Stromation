@@ -1,5 +1,15 @@
 [
  {
+  "date": "Tue, Jul 7",
+  "title": "Salesforce rolls out new Slackbot AI agent as it battles Microsoft and Google in workplace AI",
+  "url": "https://venturebeat.com/technology/salesforce-rolls-out-new-slackbot-ai-agent-as-it-battles-microsoft-and",
+  "src": "VentureBeat AI",
+  "why": "Salesforce's launch of a new Slackbot AI agent highlights a significant development in workplace automation, offering a practical tool that builders and founders can leverage today.",
+  "blurb": "Salesforce just rolled out a new AI agent for Slack, targeting a $15 billion market and taking on Microsoft and Google. But its not just about competition. Its about enhancing productivity where work actually happens. With Slack in 750,000 businesses, this AI can automate routine tasks. Use n8n to connect it with other tools you use. Add an AI teammate to your Slack today.",
+  "move": "Use the new Slackbot to automate routine tasks by connecting it with other tools via n8n. Its like adding an extra team member to your workflow.",
+  "tweet": "Salesforce's new AI Slackbot is here to boost productivity. Integrate it with n8n and automate your routine tasks. Its like adding an AI teammate to your Slack. Whats your next move?"
+ },
+ {
   "date": "Mon, Jul 6",
   "title": "Anthropic launches Cowork, a Claude Desktop agent that works in your files — no coding required",
   "url": "https://venturebeat.com/technology/anthropic-launches-cowork-a-claude-desktop-agent-that-works-in-your-files-no",
