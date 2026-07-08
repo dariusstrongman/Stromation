@@ -1,5 +1,15 @@
 [
  {
+  "date": "Wed, Jul 8",
+  "title": "Salesforce rolls out new Slackbot AI agent as it battles Microsoft and Google in workplace AI",
+  "url": "https://venturebeat.com/technology/salesforce-rolls-out-new-slackbot-ai-agent-as-it-battles-microsoft-and",
+  "src": "VentureBeat AI",
+  "why": "Salesforce's introduction of a new Slackbot AI agent is a significant development for those in automation and workplace AI, showing tangible advancements in tools that can be used today.",
+  "blurb": "Salesforce has unveiled a new AI Slackbot, positioning itself against giants like Microsoft and Google in the AI workspace arena. This Slackbot is not just for chat but is a robust automation tool within Slack's ecosystem. Builders should look at integrating this with n8n for customized workflows.",
+  "move": "If youre using Slack, start integrating the new AI Slackbot with n8n to create custom workflows. This will streamline your team's operations.",
+  "tweet": "Salesforce drops a new AI Slackbot, challenging Microsoft and Google. If youre building on Slack, now's the time to integrate with n8n for custom workflows."
+ },
+ {
   "date": "Tue, Jul 7",
   "title": "Railway secures $100 million to challenge AWS with AI-native cloud infrastructure",
   "url": "https://venturebeat.com/infrastructure/railway-secures-usd100-million-to-challenge-aws-with-ai-native-cloud",
