@@ -1,5 +1,15 @@
 [
  {
+  "date": "Thu, Jul 9",
+  "title": "SpaceXAI releases Grok 4.5, which Elon describes as an &#8216;Opus-class model'",
+  "url": "https://techcrunch.com/2026/07/08/spacexai-releases-grok-4-5-which-elon-describes-as-an-opus-class-model/",
+  "src": "TechCrunch AI",
+  "why": "SpaceXAI's release of Grok 4.5 as an 'Opus-class model' signifies a major leap forward in AI capabilities and tools available to builders and automation experts today.",
+  "blurb": "SpaceXAI just dropped Grok 4.5, which Elon Musk is hyping as an 'Opus-class model'. But what does Opus-class even mean? Theyre keeping it under wraps. Try integrating Grok 4.5 with n8n this week and test if it can really boost your automation game.",
+  "move": "Test Grok 4.5 with n8n for automation. Connect it to your workflows and see if it outperforms your current setup.",
+  "tweet": "SpaceXAI's Grok 4.5 is labeled 'Opus-class' by Elon. Big claims, but the details? Still murky. Builders, time to test it out with n8n and see if its truly next-level."
+ },
+ {
   "date": "Wed, Jul 8",
   "title": "Salesforce rolls out new Slackbot AI agent as it battles Microsoft and Google in workplace AI",
   "url": "https://venturebeat.com/technology/salesforce-rolls-out-new-slackbot-ai-agent-as-it-battles-microsoft-and",
