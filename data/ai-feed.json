@@ -1,5 +1,15 @@
 [
  {
+  "date": "Sat, Jul 11",
+  "title": "An AI agent startup just let its agent run its $100M fundraise",
+  "url": "https://techcrunch.com/2026/07/09/an-ai-agent-startup-just-let-its-agent-run-its-100-million-fundraise/",
+  "src": "TechCrunch AI",
+  "why": "An AI agent startup autonomously managing a $100M fundraise showcases the potential of AI-driven automation in business operations, making it a major interest for builders and founders.",
+  "blurb": "An AI agent startup autonomously managed a $100 million fundraising round. They trusted AI for investor outreach and negotiation, speeding up the process. If youre a builder, consider using n8n to automate your funding tasks. Its time to let AI handle the grunt work.",
+  "move": "If youre building, connect n8n to automate your funding tasks this week. Set it up to handle emails, schedule meetings, and follow-ups effortlessly.",
+  "tweet": "This AI startup just let its agent run a $100M fundraise. The real kicker? It handled everything from outreach to negotiation. Builders, time to think about automating your own processes."
+ },
+ {
   "date": "Fri, Jul 10",
   "title": "OpenAI launches its new family of models with GPT-5.6",
   "url": "https://techcrunch.com/2026/07/09/openai-launches-its-new-family-of-models-with-gpt-5-6/",
