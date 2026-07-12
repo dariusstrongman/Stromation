@@ -1,5 +1,15 @@
 [
  {
+  "date": "Sun, Jul 12",
+  "title": "Meta enters the crowded AI coding battle with Muse Spark 1.1",
+  "url": "https://techcrunch.com/2026/07/09/meta-enters-the-crowded-ai-coding-battle-with-muse-spark-1-1/",
+  "src": "TechCrunch AI",
+  "why": "Meta entering the AI coding space with Muse Spark 1.1 is a significant development that could impact builders and automation experts by providing new tools and competition in AI-driven coding solutions.",
+  "blurb": "Meta has launched Muse Spark 1.1, jumping into the competitive AI coding space. Theyre looking beyond social media, aiming to be a key player in AI-driven coding solutions. For builders, its a great chance to test Muse Spark with n8n for automation tasks.",
+  "move": "Test Muse Spark 1.1 with n8n to automate some coding tasks and see how it compares to other tools.",
+  "tweet": "Meta's not just about social anymore. With Muse Spark 1.1, they're entering the AI coding game. Builders, try integrating it with n8n for your next project."
+ },
+ {
   "date": "Sat, Jul 11",
   "title": "An AI agent startup just let its agent run its $100M fundraise",
   "url": "https://techcrunch.com/2026/07/09/an-ai-agent-startup-just-let-its-agent-run-its-100-million-fundraise/",
