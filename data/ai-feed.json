@@ -1,5 +1,15 @@
 [
  {
+  "date": "Mon, Jul 13",
+  "title": "Migrating a production AI agent to GPT-5.6: 2.2x faster, 27% cheaper",
+  "url": "https://ploy.ai/blog/migrating-a-production-ai-agent-to-gpt-5-6",
+  "src": "HN 236pts",
+  "why": "Migrating a production AI agent to GPT-5.6 for a 2.2x speed increase and 27% cost reduction offers immediate, actionable insights for founders and automation experts seeking performance and efficiency improvements in AI deployment.",
+  "blurb": "Migrating AI agents to GPT-5.6 means 2.2x speed and 27% cost savings. But its more than just numbers, its about keeping that competitive edge in AI. This week, consider using n8n to automate your migration process and boost your AI stack efficiently.",
+  "move": "Try migrating your AI to GPT-5.6 using n8n. Set it up to automate your workflow adjustments for max efficiency.",
+  "tweet": "Migrating to GPT-5.6 speeds up AI agents by 2.2x & cuts costs by 27%. Its not just an upgrade, its staying competitive. Try using n8n to make the switch smoothly."
+ },
+ {
   "date": "Sun, Jul 12",
   "title": "Meta enters the crowded AI coding battle with Muse Spark 1.1",
   "url": "https://techcrunch.com/2026/07/09/meta-enters-the-crowded-ai-coding-battle-with-muse-spark-1-1/",
