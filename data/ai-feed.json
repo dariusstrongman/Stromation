@@ -1,5 +1,15 @@
 [
  {
+  "date": "Tue, Jul 14",
+  "title": "Video-generation startup PixVerse raises $439M, valuation soars past $2B",
+  "url": "https://techcrunch.com/2026/07/13/video-generation-startup-pixverse-raises-439m-valuation-soars-past-2b/",
+  "src": "TechCrunch AI",
+  "why": "PixVerse's $439M funding round and $2B+ valuation highlight the explosive growth and investment in AI video-generation startups, making it a key story for builders and founders interested in the business and innovation side of AI.",
+  "blurb": "PixVerse just raised $439M, pushing its valuation over $2B. This big move signals major growth in AI video generation. Builders, you should explore integrating PixVerse's API with n8n to streamline your video tasks. Time to upgrade your video game.",
+  "move": "Use n8n to connect PixVerse's API with your workflow. Automate video tasks and integrate it with your current systems.",
+  "tweet": "PixVerse just banked $439M with a $2B valuation. AI video is heating up. Builders, consider connecting PixVerse's API with n8n to automate your video workflows. This is the future knocking."
+ },
+ {
   "date": "Mon, Jul 13",
   "title": "Migrating a production AI agent to GPT-5.6: 2.2x faster, 27% cheaper",
   "url": "https://ploy.ai/blog/migrating-a-production-ai-agent-to-gpt-5-6",
