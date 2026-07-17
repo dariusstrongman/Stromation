@@ -1,5 +1,15 @@
 [
  {
+  "date": "Fri, Jul 17",
+  "title": "Roblox launches an AI-powered game-creation feature in its mobile app",
+  "url": "https://techcrunch.com/2026/07/16/roblox-launches-an-ai-powered-game-creation-feature-in-its-mobile-app/",
+  "src": "TechCrunch AI",
+  "why": "Roblox's launch of an AI-powered game-creation feature directly empowers builders and creators with a tool they can use today, potentially transforming the gaming and digital creation landscape.",
+  "blurb": "Roblox has introduced a new AI-powered feature in their mobile app that simplifies game creation. With over 50 million daily users, this tool isnt just for gamers. Builders can now prototype games faster and integrate with existing workflows using n8n. Try it out.",
+  "move": "Use n8n to connect Roblox's new AI game creation feature to your existing workflows. Automate game updates or integrate with other development tools.",
+  "tweet": "Roblox's new AI feature lets you create games on mobile with just a few taps. Builders can now integrate this with existing workflows using n8n for seamless automation. Game changer for quick prototyping."
+ },
+ {
   "date": "Thu, Jul 16",
   "title": "Inkling: Our Open-Weights Model",
   "url": "https://thinkingmachines.ai/news/introducing-inkling/",
