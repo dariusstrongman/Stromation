@@ -1,5 +1,15 @@
 [
  {
+  "date": "Wed, Jul 22",
+  "title": "Jack Dorsey launches Buzz to combine team chat, AI agents and Git hosting",
+  "url": "https://runtimewire.com/article/jack-dorsey-block-buzz-team-chat-ai-agents-git",
+  "src": "HN 356pts",
+  "why": "Jack Dorsey's launch of Buzz, a platform integrating team chat, AI agents, and Git hosting, presents an exciting new tool for automation enthusiasts and developers, merging communication and coding workflows.",
+  "blurb": "Jack Dorsey just launched Buzz, a platform that combines team chat, AI agents, and Git hosting. Its like having Slack and GitHub with AI brains. The real kicker? You can automate code deployments with n8n when AI flags bugs. Gonna try it?",
+  "move": "Set up n8n to automate code deployments when an AI in Buzz flags a bug. Efficiency game strong.",
+  "tweet": "Jack Dorsey's Buzz combines team chat, AI agents, and Git hosting. Imagine automating code deployments with an AI flagging bugs. Builders, time to explore how Buzz fits into your workflow."
+ },
+ {
   "date": "Tue, Jul 21",
   "title": "Gritt exits stealth with $32 million for robots to build solar plants — then, everything else",
   "url": "https://techcrunch.com/2026/07/21/gritt-exits-stealth-with-34-million-for-robots-to-build-solar-plants-then-everything-else/",
