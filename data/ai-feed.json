@@ -1,5 +1,15 @@
 [
  {
+  "date": "Fri, Jul 24",
+  "title": "DARPA, U.S. Air Force fly AI-controlled F-16",
+  "url": "https://www.darpa.mil/news/2026/darpa-us-air-force-fly-ai-controlled-f-16",
+  "src": "HN 257pts",
+  "why": "The successful flight of an AI-controlled F-16 by DARPA and the U.S. Air Force showcases a significant leap in automation and AI applications in defense, highlighting practical and impactful advancements in AI technology.",
+  "blurb": "DARPA and the U.S. Air Force just flew an AI-controlled F-16. Its more than a cool feat. This shows AI can handle complex, real-world tasks. Builders, consider using n8n to automate some of your own complex workflows. What could you automate next?",
+  "move": "Use n8n to automate complex workflows in your business. It can handle more than you think, just like AI did with the F-16.",
+  "tweet": "DARPA's AI-controlled F-16 is a major step for automation. Builders, look at how AI can handle complex tasks. Use n8n to automate some of your workflows this week."
+ },
+ {
   "date": "Thu, Jul 23",
   "title": "Travis Kalanick's robotics company raises $1.7B, led by a16z",
   "url": "https://techcrunch.com/2026/07/22/travis-kalanicks-robotics-company-raises-1-7b-led-by-a16z/",
