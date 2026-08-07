@@ -63,8 +63,9 @@
 
 <canvas id="stage" width="640" height="400"></canvas>
 <div id="caption">connecting…</div>
-<div id="books">burn <b id="burn">—</b> / cap <b id="cap">—</b> · revenue
-  <b id="rev">—</b> · next heartbeat <b id="next">—</b></div>
+<div id="books">thinking <b id="burn">—</b>/<b id="cap">—</b> ·
+  capital <b id="capital">—</b> · revenue <b id="rev">—</b> ·
+  next heartbeat <b id="next">—</b></div>
 
 <div id="feedwrap">
   <div id="feedtitle">What he's doing
@@ -222,16 +223,21 @@ function setStatus(){
 }
 async function refreshBooks(){
   const [co,led]=await Promise.all([
-    sb.from('company').select('budget_monthly_usd').limit(1).single(),
-    sb.from('ledger').select('amount_usd,ts')]);
+    sb.from('company').select('budget_monthly_usd,starting_capital_usd').limit(1).single(),
+    sb.from('ledger').select('amount_usd,ts,category')]);
   if(!co.data)return;
   const cap=+co.data.budget_monthly_usd;
   const m=new Date(),start=Date.UTC(m.getUTCFullYear(),m.getUTCMonth(),1);
-  let burn=0,rev=0;
-  for(const r of led.data||[]){if(new Date(r.ts)<start)continue;
-    const a=+r.amount_usd;a<0?burn+=-a:rev+=a}
+  let burn=0,rev=0,spent=0;
+  for(const r of led.data||[]){
+    const a=+r.amount_usd;
+    if(a>0){rev+=a;continue}
+    if(r.category==='tools'||r.category==='other'){spent+=-a;continue}
+    if(new Date(r.ts)>=start)burn+=-a;
+  }
   $('burn').textContent='$'+burn.toFixed(2);$('cap').textContent='$'+cap.toFixed(2);
   $('rev').textContent='$'+rev.toFixed(2);
+  $('capital').textContent='$'+Math.max(0,(+co.data.starting_capital_usd||0)-spent).toFixed(2);
 }
 async function load(){
   const emp=await sb.from('employees').select('name,sprite,personality')
