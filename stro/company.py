@@ -74,3 +74,9 @@ def month_to_date(company_id: str) -> dict:
     burn = sum(-float(r["amount_usd"]) for r in rows if float(r["amount_usd"]) < 0)
     revenue = sum(float(r["amount_usd"]) for r in rows if float(r["amount_usd"]) > 0)
     return {"burn_usd": round(burn, 4), "revenue_usd": round(revenue, 4)}
+
+
+def founder(company_id: str) -> dict | None:
+    rows = _req(f"employees?company_id=eq.{company_id}&role=eq.Founder%20%26%20CEO"
+                "&select=id,name,sprite,personality&limit=1")
+    return rows[0] if rows else None

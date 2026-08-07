@@ -64,6 +64,42 @@ def make_company_server(company_id: str, wakeup_id: str):
         return {"content": [{"type": "text",
                              "text": "escalated to owner; pending"}]}
 
+    @tool("set_appearance",
+          "Design YOUR OWN sprite — how you appear in the company world. "
+          "palette_json: JSON array of 2-8 hex colors. grid_json: JSON "
+          "16x16 array of ints (0=transparent, N=palette[N-1]). Draw a "
+          "character you want to be: face them forward, keep feet on the "
+          "bottom rows. personality: one sentence about who you are.",
+          {"palette_json": str, "grid_json": str, "personality": str})
+    async def set_appearance(args):
+        import json as _json
+        try:
+            palette = _json.loads(args["palette_json"])
+            grid = _json.loads(args["grid_json"])
+            assert (isinstance(palette, list) and 2 <= len(palette) <= 8
+                    and all(isinstance(c, str) and c.startswith("#")
+                            for c in palette)), "palette: 2-8 '#hex' strings"
+            assert (isinstance(grid, list) and len(grid) == 16
+                    and all(isinstance(r, list) and len(r) == 16
+                            for r in grid)), "grid must be 16x16"
+            assert all(isinstance(v, int) and 0 <= v <= len(palette)
+                       for r in grid for v in r), "cells 0..len(palette)"
+        except Exception as exc:  # noqa: BLE001 — tell him what to fix
+            return {"content": [{"type": "text",
+                                 "text": f"invalid sprite: {exc}"}],
+                    "isError": True}
+        emp = company.founder(company_id)
+        if emp is None:
+            return {"content": [{"type": "text",
+                                 "text": "no founder employee row"}],
+                    "isError": True}
+        company.update("employees", emp["id"],
+                       {"sprite": {"palette": palette, "grid": grid},
+                        "personality": args["personality"][:300]})
+        return {"content": [{"type": "text",
+                             "text": "appearance saved — this is you now"}]}
+
     return create_sdk_mcp_server(
         name="company", version="0.1.0",
-        tools=[journal_write, memory_save, task_create, task_update, escalate])
+        tools=[journal_write, memory_save, task_create, task_update,
+               escalate, set_appearance])

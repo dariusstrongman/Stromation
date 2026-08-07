@@ -53,6 +53,15 @@ def _state_briefing(co: dict) -> str:
     else:
         parts.append("## Recent journal\n(empty — this is your FIRST day. "
                      "Decide what business to build and begin.)")
+    emp = company.founder(co["id"])
+    if emp is not None and not emp.get("sprite"):
+        parts.append(
+            "## Your appearance (one-time)\n"
+            "You exist in the company world as a character. Design yourself "
+            "with set_appearance: a 16x16 pixel sprite (palette_json + "
+            "grid_json) and one personality sentence. This is YOUR choice — "
+            "professional, hoodie, whatever feels like you. Do it early "
+            "this session; it is how the owner will recognize you forever.")
     parts.append("\nThis is one work session. Orient, pick the highest-"
                  "leverage work, do it for real, then journal before you "
                  "finish. Never end a session without a journal entry.")
@@ -90,7 +99,8 @@ async def wake():
                        "mcp__company__memory_save",
                        "mcp__company__task_create",
                        "mcp__company__task_update",
-                       "mcp__company__escalate"],
+                       "mcp__company__escalate",
+                       "mcp__company__set_appearance"],
         mcp_servers={"company": make_company_server(co["id"], wk["id"])},
     )
 
