@@ -54,6 +54,7 @@
   <button id="voice">🔊 voice: on</button>
   <button id="rec" class="rec">● record</button>
   <a id="dl" style="display:none"></a>
+  <audio id="vo" crossorigin="anonymous" preload="auto"></audio>
 </div>
 <div id="hint">9:16, ready to post. <b>Record</b> plays the session from the
   start and downloads a .webm when it ends — captions are drawn into the
@@ -219,8 +220,9 @@ setTimeout(()=>{ if(!voicesReady){
     +'Recorded video has no audio either way: canvas capture is video-only. '
     +'Real voiceover needs a TTS key.';
 }},2500);
+function hasRealVoice(){return !!(narration&&narration.audio_url)}
 function say(text){
-  if(!voiceOn||!text)return;
+  if(!voiceOn||!text||hasRealVoice())return;
   const u=new SpeechSynthesisUtterance(text);
   if(ukVoice)u.voice=ukVoice;
   u.lang='en-GB';u.rate=.88;u.pitch=.92;
@@ -229,13 +231,19 @@ function say(text){
 $('voice').onclick=()=>{voiceOn=!voiceOn;
   if(!voiceOn){speechSynthesis.cancel();$('voice').textContent='🔇 voice off'}
   else pickVoice()};
-function stop(){playing=false;clearTimeout(timer);$('play').textContent='▶ play'}
+function stop(){playing=false;clearTimeout(timer);$('play').textContent='▶ play';
+  if(!recorder||recorder.state!=='recording')$('vo').pause()}
 async function play(fromRecord){
   if(playing&&!fromRecord){stop();return}
   playing=true;$('play').textContent='⏸ pause';
   state.turns=0;state.cost=0;state.live=false;state.pos={...SPOTS.out};
   state.caption='';state.sub='';state.cta=false;
   speechSynthesis.cancel();
+  const vo=$('vo');
+  if(hasRealVoice()){
+    if(vo.src!==narration.audio_url)vo.src=narration.audio_url;
+    vo.currentTime=0; vo.play().catch(()=>{});
+  } else { vo.pause(); }
   // The documentary track, if the crew filmed this day: paragraphs are
   // spoken and captioned in step with the events beneath them.
   const paras = narration ? narration.script.split(/\n\s*\n/).filter(Boolean) : [];
@@ -267,9 +275,15 @@ async function play(fromRecord){
       state.live=false;
     }
     i++;
-    const speed=+$('speed').value;
-    const gapMs=nxt?Math.min(new Date(nxt.ts)-new Date(e.ts),4000):1800;
-    timer=setTimeout(step,Math.max(700,gapMs)/speed);
+    let waitMs;
+    if(hasRealVoice()&&$('vo').duration){
+      waitMs=Math.max(320,($('vo').duration*1000)/Math.max(events.length,1));
+    } else {
+      const speed=+$('speed').value;
+      const gapMs=nxt?Math.min(new Date(nxt.ts)-new Date(e.ts),4000):1800;
+      waitMs=Math.max(700,gapMs)/speed;
+    }
+    timer=setTimeout(step,waitMs);
   };
   step();
 }
@@ -279,10 +293,21 @@ $('rec').onclick=()=>{
   if(recorder&&recorder.state==='recording'){recorder.stop();return}
   chunks=[];
   const stream=cv.captureStream(30);
+  try{
+    if(hasRealVoice()){
+      const ac=window._ac||(window._ac=new AudioContext());
+      const src=window._voSrc||(window._voSrc=ac.createMediaElementSource($('vo')));
+      const dest=ac.createMediaStreamDestination();
+      src.connect(dest); src.connect(ac.destination);
+      dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
+      if(ac.state==='suspended')ac.resume();
+    }
+  }catch(e){console.warn('audio mix unavailable',e)}
   recorder=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp9',
                                      videoBitsPerSecond:6_000_000});
   recorder.ondataavailable=ev=>{if(ev.data.size)chunks.push(ev.data)};
   recorder.onstop=()=>{
+    $('vo').pause();
     $('rec').classList.remove('on');$('rec').textContent='● record';
     const blob=new Blob(chunks,{type:'video/webm'});
     const a=$('dl');a.href=URL.createObjectURL(blob);
@@ -321,13 +346,16 @@ async function loadSession(){
   state.day=+sel.selectedOptions[0].dataset.day||1;
   const [{data},nar]=await Promise.all([
     sb.from('events').select('*').eq('wakeup_id',sel.value).order('id',{ascending:true}),
-    sb.from('narrations').select('title,script,day').eq('wakeup_id',sel.value).maybeSingle(),
+    sb.from('narrations').select('title,script,day,audio_url').eq('wakeup_id',sel.value).maybeSingle(),
   ]);
   events=data||[];
   narration=nar.data||null;
   state.title = narration ? narration.title : '';
   state.caption = narration ? `“${narration.title}”` : `Day ${state.day}.`;
-  state.sub = narration ? 'press play' : `${events.length} moments · press play`;
+  state.sub = narration
+    ? (narration.audio_url?'🎙 voiced · press play':'press play')
+    : `${events.length} moments · press play`;
+  $('vo').src = narration&&narration.audio_url ? narration.audio_url : '';
 }
 load().then(()=>tick());
 </script>
