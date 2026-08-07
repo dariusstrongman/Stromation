@@ -12,7 +12,7 @@ from claude_agent_sdk import (AssistantMessage, ClaudeAgentOptions,
                               ResultMessage, TextBlock, ToolResultBlock,
                               ToolUseBlock, UserMessage, query)
 
-from . import company
+from . import company, narrator
 from .tools import make_company_server
 
 HERE = pathlib.Path(__file__).parent
@@ -140,7 +140,10 @@ async def wake():
         mcp_servers={"company": make_company_server(co["id"], wk["id"])},
     )
 
+    session_events: list[dict] = []
+
     def emit(kind: str, title: str | None, body: str | None):
+        session_events.append({"kind": kind, "title": title, "body": body})
         # The observatory watches through these rows. Telemetry must never
         # break a work session.
         try:
@@ -191,6 +194,17 @@ async def wake():
         "finished_at": datetime.now(timezone.utc).isoformat(),
         "summary": last_text[:2000]})
     emit("session_end", status, f"{turns} turns, ${cost:.4f}")
+
+    # The documentary crew films every day, including the bad ones.
+    try:
+        day = len(company._req(
+            f"wakeups?company_id=eq.{co['id']}&num_turns=gt.0&select=id")) or 1
+        narrator.write_narration(
+            co["id"], wk["id"], day, session_events,
+            company.month_to_date(co["id"]),
+            os.environ.get("NARRATOR_MODEL", "claude-haiku-4-5-20251001"))
+    except Exception:  # noqa: BLE001 — narration never breaks the company
+        pass
     print(f"{status}: {turns} turns, ${cost:.4f}")
 
 

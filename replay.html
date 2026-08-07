@@ -51,6 +51,7 @@
     <option value="8">8×</option>
     <option value="20">20×</option>
   </select>
+  <button id="voice">🔊 voice: on</button>
   <button id="rec" class="rec">● record</button>
   <a id="dl" style="display:none"></a>
 </div>
@@ -70,7 +71,7 @@ const cv=$('stage'),cx=cv.getContext('2d');cx.imageSmoothingEnabled=false;
 const S=3, OX=0, OY=150, W=180, H=120;      // office: 540x360 at y=150
 const state={sprite:null,name:'Stro',day:1,live:false,lastTool:null,
   pos:{x:10,y:78},target:{x:110,y:74},walking:false,step:0,
-  caption:'',sub:'',turns:0,cost:0};
+  caption:'',sub:'',turns:0,cost:0,title:''};
 const SPOTS={out:{x:6,y:78},door:{x:22,y:78},desk:{x:112,y:74},
              window:{x:140,y:52},coffee:{x:46,y:96}};
 
@@ -118,7 +119,7 @@ function frame(){
   cx.fillStyle='#f0a832';cx.font='700 15px ui-monospace,monospace';
   cx.fillText('STROMATION', 26, 46);
   cx.fillStyle='#4b5460';cx.font='13px ui-monospace,monospace';
-  cx.fillText(`DAY ${state.day}`, 26, 70);
+  cx.fillText(`DAY ${state.day}${state.title?' · '+state.title:''}`, 26, 70);
   cx.fillStyle='#7d8590';cx.font='13px ui-monospace,monospace';
   const w=cx.measureText(state.name).width;cx.fillText(state.name, 514-w, 46);
   const stat=state.live?'AT WORK':'OFFICE DARK';
@@ -191,13 +192,35 @@ function tick(){
 }
 
 /* ---- playback ---- */
-let events=[],playing=false,timer=null,recorder=null,chunks=[];
+let events=[],playing=false,timer=null,recorder=null,chunks=[],narration=null;
+let voiceOn=true, ukVoice=null;
+function pickVoice(){
+  const vs=speechSynthesis.getVoices();
+  ukVoice = vs.find(v=>/en[-_]GB/i.test(v.lang)&&/(daniel|arthur|male|google uk english male)/i.test(v.name))
+        || vs.find(v=>/en[-_]GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null;
+}
+speechSynthesis.onvoiceschanged=pickVoice;pickVoice();
+function say(text){
+  if(!voiceOn||!text)return;
+  const u=new SpeechSynthesisUtterance(text);
+  if(ukVoice)u.voice=ukVoice;
+  u.lang='en-GB';u.rate=.88;u.pitch=.92;
+  speechSynthesis.speak(u);
+}
+$('voice').onclick=()=>{voiceOn=!voiceOn;
+  $('voice').textContent='🔊 voice: '+(voiceOn?'on':'off');
+  if(!voiceOn)speechSynthesis.cancel()};
 function stop(){playing=false;clearTimeout(timer);$('play').textContent='▶ play'}
 async function play(fromRecord){
   if(playing&&!fromRecord){stop();return}
   playing=true;$('play').textContent='⏸ pause';
   state.turns=0;state.cost=0;state.live=false;state.pos={...SPOTS.out};
   state.caption='';state.sub='';
+  speechSynthesis.cancel();
+  // The documentary track, if the crew filmed this day: paragraphs are
+  // spoken and captioned in step with the events beneath them.
+  const paras = narration ? narration.script.split(/\n\s*\n/).filter(Boolean) : [];
+  let pi=0, nextParaAt = paras.length ? Math.floor(events.length/paras.length) : Infinity;
   let i=0;
   const step=()=>{
     if(!playing||i>=events.length){
@@ -206,8 +229,14 @@ async function play(fromRecord){
       return;
     }
     const e=events[i], nxt=events[i+1];
-    const n=narrate(e);
-    if(n){state.caption=n.cap;state.sub=n.sub}
+    if(paras.length && i>=pi*nextParaAt && pi<paras.length){
+      const p=paras[pi++]; state.caption=p; state.sub=''; say(p);
+    } else if(!paras.length){
+      const n=narrate(e);
+      if(n){state.caption=n.cap;state.sub=n.sub}
+    } else {
+      const n=narrate(e); if(n)state.sub=n.cap;   // literal action under the prose
+    }
     moveFor(e);
     if(e.kind==='tool_use')state.turns++;
     if(e.kind==='session_end'){
@@ -267,10 +296,15 @@ async function loadSession(){
   stop();
   const sel=$('session');
   state.day=+sel.selectedOptions[0].dataset.day||1;
-  const {data}=await sb.from('events').select('*')
-    .eq('wakeup_id',sel.value).order('id',{ascending:true});
+  const [{data},nar]=await Promise.all([
+    sb.from('events').select('*').eq('wakeup_id',sel.value).order('id',{ascending:true}),
+    sb.from('narrations').select('title,script,day').eq('wakeup_id',sel.value).maybeSingle(),
+  ]);
   events=data||[];
-  state.caption=`Day ${state.day}. ${events.length} moments.`;state.sub='press play';
+  narration=nar.data||null;
+  state.title = narration ? narration.title : '';
+  state.caption = narration ? `“${narration.title}”` : `Day ${state.day}.`;
+  state.sub = narration ? 'press play' : `${events.length} moments · press play`;
 }
 load().then(()=>tick());
 </script>

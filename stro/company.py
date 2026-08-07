@@ -98,7 +98,8 @@ def month_to_date(company_id: str) -> dict:
         microsecond=0).isoformat().replace("+00:00", "Z")
     rows = _req(f"ledger?company_id=eq.{company_id}&ts=gte.{start}"
                 "&select=category,amount_usd")
-    burn = sum(-float(r["amount_usd"]) for r in rows if float(r["amount_usd"]) < 0)
+    burn = sum(-float(r["amount_usd"]) for r in rows
+               if float(r["amount_usd"]) < 0 and r.get("category") != "media")
     revenue = sum(float(r["amount_usd"]) for r in rows if float(r["amount_usd"]) > 0)
     return {"burn_usd": round(burn, 4), "revenue_usd": round(revenue, 4)}
 
