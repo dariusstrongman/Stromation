@@ -12,7 +12,7 @@ from claude_agent_sdk import (AssistantMessage, ClaudeAgentOptions,
                               ResultMessage, TextBlock, ToolResultBlock,
                               ToolUseBlock, UserMessage, query)
 
-from . import company, narrator
+from . import company, narrator, voiceover
 from .tools import make_company_server
 
 HERE = pathlib.Path(__file__).parent
@@ -199,10 +199,12 @@ async def wake():
     try:
         day = len(company._req(
             f"wakeups?company_id=eq.{co['id']}&num_turns=gt.0&select=id")) or 1
-        narrator.write_narration(
+        nar = narrator.write_narration(
             co["id"], wk["id"], day, session_events,
             company.month_to_date(co["id"]),
             os.environ.get("NARRATOR_MODEL", "claude-haiku-4-5-20251001"))
+        if nar:
+            voiceover.voice_narration(nar)
     except Exception:  # noqa: BLE001 — narration never breaks the company
         pass
     print(f"{status}: {turns} turns, ${cost:.4f}")
