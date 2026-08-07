@@ -71,7 +71,7 @@ const cv=$('stage'),cx=cv.getContext('2d');cx.imageSmoothingEnabled=false;
 const S=3, OX=0, OY=150, W=180, H=120;      // office: 540x360 at y=150
 const state={sprite:null,name:'Stro',day:1,live:false,lastTool:null,
   pos:{x:10,y:78},target:{x:110,y:74},walking:false,step:0,
-  caption:'',sub:'',turns:0,cost:0,title:''};
+  caption:'',sub:'',turns:0,cost:0,title:'',cta:false};
 const SPOTS={out:{x:6,y:78},door:{x:22,y:78},desk:{x:112,y:74},
              window:{x:140,y:52},coffee:{x:46,y:96}};
 
@@ -132,9 +132,15 @@ function frame(){
   cx.strokeStyle='#1e232b';cx.strokeRect(0,OY,540,H*S);
   // narration
   let y=OY+H*S+56;
-  cx.fillStyle='#e8eaf0';
-  for(const l of wrap(state.caption,470,'600 22px ui-monospace,monospace').slice(0,5)){
-    cx.fillText(l,30,y);y+=32}
+  if(state.cta){
+    cx.fillStyle='#f0a832';
+    for(const l of wrap(state.caption,470,'700 30px ui-monospace,monospace')){
+      cx.fillText(l,30,y+40);y+=42}
+  } else {
+    cx.fillStyle='#e8eaf0';
+    for(const l of wrap(state.caption,470,'600 22px ui-monospace,monospace').slice(0,5)){
+      cx.fillText(l,30,y);y+=32}
+  }
   if(state.sub){
     y+=10;cx.fillStyle='#6b7480';
     for(const l of wrap(state.sub,470,'15px ui-monospace,monospace').slice(0,4)){
@@ -193,13 +199,26 @@ function tick(){
 
 /* ---- playback ---- */
 let events=[],playing=false,timer=null,recorder=null,chunks=[],narration=null;
-let voiceOn=true, ukVoice=null;
+let voiceOn=true, ukVoice=null, voicesReady=false;
 function pickVoice(){
   const vs=speechSynthesis.getVoices();
+  if(!vs.length)return;
+  voicesReady=true;
   ukVoice = vs.find(v=>/en[-_]GB/i.test(v.lang)&&/(daniel|arthur|male|google uk english male)/i.test(v.name))
-        || vs.find(v=>/en[-_]GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null;
+        || vs.find(v=>/en[-_]GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || vs[0] || null;
+  $('voice').textContent = voiceOn
+    ? '🔊 '+(ukVoice?ukVoice.name.slice(0,16):'default') : '🔇 voice off';
 }
-speechSynthesis.onvoiceschanged=pickVoice;pickVoice();
+speechSynthesis.onvoiceschanged=pickVoice;
+pickVoice(); setTimeout(pickVoice,300); setTimeout(pickVoice,1500);
+setTimeout(()=>{ if(!voicesReady){
+  $('voice').textContent='🔇 no voices';
+  $('hint').innerHTML='<b style="color:#e5534b">No speech voices installed</b>'
+    +' — this system can\'t talk. On Linux: <code>sudo apt install '
+    +'speech-dispatcher espeak-ng</code>, then restart the browser.<br>'
+    +'Recorded video has no audio either way: canvas capture is video-only. '
+    +'Real voiceover needs a TTS key.';
+}},2500);
 function say(text){
   if(!voiceOn||!text)return;
   const u=new SpeechSynthesisUtterance(text);
@@ -208,14 +227,14 @@ function say(text){
   speechSynthesis.speak(u);
 }
 $('voice').onclick=()=>{voiceOn=!voiceOn;
-  $('voice').textContent='🔊 voice: '+(voiceOn?'on':'off');
-  if(!voiceOn)speechSynthesis.cancel()};
+  if(!voiceOn){speechSynthesis.cancel();$('voice').textContent='🔇 voice off'}
+  else pickVoice()};
 function stop(){playing=false;clearTimeout(timer);$('play').textContent='▶ play'}
 async function play(fromRecord){
   if(playing&&!fromRecord){stop();return}
   playing=true;$('play').textContent='⏸ pause';
   state.turns=0;state.cost=0;state.live=false;state.pos={...SPOTS.out};
-  state.caption='';state.sub='';
+  state.caption='';state.sub='';state.cta=false;
   speechSynthesis.cancel();
   // The documentary track, if the crew filmed this day: paragraphs are
   // spoken and captioned in step with the events beneath them.
@@ -224,8 +243,12 @@ async function play(fromRecord){
   let i=0;
   const step=()=>{
     if(!playing||i>=events.length){
+      state.live=false;state.target={...SPOTS.out};state.cta=true;
+      state.caption='Watch him live at stromation.com';
+      state.sub='He wakes at 06:00, 13:00 and 20:00 UTC.';
+      say('Watch him live, at stromation dot com.');
       stop();
-      if(recorder&&recorder.state==='recording')setTimeout(()=>recorder.stop(),900);
+      if(recorder&&recorder.state==='recording')setTimeout(()=>recorder.stop(),4500);
       return;
     }
     const e=events[i], nxt=events[i+1];
