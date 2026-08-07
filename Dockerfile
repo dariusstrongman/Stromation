@@ -12,7 +12,15 @@ COPY stro/requirements.txt stro/requirements.txt
 RUN pip3 install --break-system-packages -r stro/requirements.txt
 COPY stro/ stro/
 
-RUN mkdir -p /workspace
-ENV STRO_WORKSPACE=/workspace
+# Claude Code refuses to run permission-free as root and needs a writable
+# HOME for its config; give the founder a real user and his own home.
+RUN useradd -m -u 10001 stro \
+    && mkdir -p /workspace \
+    && chown -R stro:stro /workspace /app
+USER stro
+ENV HOME=/home/stro \
+    STRO_HOME=/home/stro \
+    STRO_WORKSPACE=/workspace \
+    IS_SANDBOX=1
 
 CMD ["python3", "-m", "stro.main"]

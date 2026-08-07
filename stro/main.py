@@ -116,12 +116,18 @@ async def wake():
         print("budget_blocked")
         return
 
+    _cli_err: list[str] = []
     options = ClaudeAgentOptions(
         system_prompt=(HERE / "founder.md").read_text(),
         model=co["model"],
         max_turns=MAX_TURNS,
         cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
         permission_mode="bypassPermissions",   # headless founder, no human
+        # The CLI's own stderr is the only place launch failures explain
+        # themselves; capture it so a crash is diagnosable from the world.
+        stderr=lambda line: _cli_err.append(line),
+        env={**os.environ, "HOME": os.environ.get("STRO_HOME", "/home/stro"),
+             "IS_SANDBOX": "1"},
         allowed_tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep",
                        "WebSearch", "WebFetch",
                        "mcp__company__journal_write",
@@ -169,7 +175,11 @@ async def wake():
                 cost = msg.total_cost_usd or 0.0
       status = "completed"
     except Exception as exc:  # noqa: BLE001 — a crashed session still gets booked
-        status, last_text = "failed", f"session crashed: {exc}"
+        detail = " | ".join(_cli_err[-12:])[:1500]
+        status = "failed"
+        last_text = f"session crashed: {exc}" + (f"\nCLI stderr: {detail}"
+                                                 if detail else "")
+        emit("session_end", "crash detail", last_text)
 
     company.insert("ledger", {
         "company_id": co["id"], "wakeup_id": wk["id"],
