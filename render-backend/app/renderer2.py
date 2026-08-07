@@ -128,7 +128,24 @@ def compile_timeline(timeline: dict, sources: dict[str, str], out_path: str,
               f"scale={W}:{H}:force_original_aspect_ratio=decrease,"
               f"pad={W}:{H}:(ow-iw)/2:(oh-ih)/2,fps={fps},format=yuv420p,setsar=1[v{k}]")
         parts.append(vf)
-        if info.has_audio and vol > 0:
+        # Phase 3 audio-under b-roll: the clip's PICTURE comes from this
+        # asset while the audio continues from the DONOR clip (audioFrom) —
+        # preview and final render identically, by design (no divergence).
+        donor = c.get("audioFrom")
+        if donor and donor.get("assetId") in input_idx:
+            d_idx = input_idx[donor["assetId"]]
+            d_info = probes.get(donor["assetId"])
+            d_speed = float(donor.get("speed") or 1.0)
+            if getattr(d_info, "has_audio", False):
+                parts.append(
+                    f"[{d_idx}:a]atrim=start={float(donor['sourceStart']):.3f}"
+                    f":end={float(donor['sourceEnd']):.3f},"
+                    f"asetpts=PTS-STARTPTS,{_atempo_chain(d_speed)},"
+                    f"aresample=48000,aformat=channel_layouts=stereo[a{k}]")
+            else:
+                parts.append(f"anullsrc=channel_layout=stereo:sample_rate=48000,"
+                             f"atrim=duration={out_dur:.3f}[a{k}]")
+        elif info.has_audio and vol > 0:
             parts.append(f"[{idx}:a]atrim=start={s:.3f}:end={e:.3f},asetpts=PTS-STARTPTS,"
                          f"{_atempo_chain(speed)},volume={vol:.2f},"
                          f"aresample=48000,aformat=channel_layouts=stereo[a{k}]")

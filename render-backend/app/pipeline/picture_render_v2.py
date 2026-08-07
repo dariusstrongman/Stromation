@@ -110,7 +110,24 @@ def render_picture_edit(result: dict, sources: dict[str, str], out_path: str,
             f"scale={W}:{H}:force_original_aspect_ratio=decrease,"
             f"pad={W}:{H}:(ow-iw)/2:(oh-ih)/2,fps={fps},format=yuv420p,"
             f"setsar=1[v{k}]")
-        if getattr(info, "has_audio", False):
+        # Phase 3 audio-under: a b-roll clip carries audioFrom — the HOST
+        # clip's speech continues under the covering picture. The donor
+        # asset is always already an input (its surrounding clips use it).
+        donor = c.get("audioFrom")
+        if donor and donor.get("assetId") in input_idx:
+            d_idx = input_idx[donor["assetId"]]
+            d_info = probes.get(donor["assetId"])
+            d_speed = float(donor.get("speed") or 1.0)
+            if getattr(d_info, "has_audio", False):
+                parts.append(
+                    f"[{d_idx}:a]atrim=start={float(donor['sourceStart']):.3f}"
+                    f":end={float(donor['sourceEnd']):.3f},"
+                    f"asetpts=PTS-STARTPTS,{_atempo_chain(d_speed)},"
+                    f"aresample=48000,aformat=channel_layouts=stereo[a{k}]")
+            else:
+                parts.append(f"anullsrc=channel_layout=stereo:sample_rate=48000,"
+                             f"atrim=duration={out_dur:.3f}[a{k}]")
+        elif getattr(info, "has_audio", False):
             parts.append(f"[{input_idx[aid]}:a]atrim=start={s:.3f}:end={e:.3f},"
                          f"asetpts=PTS-STARTPTS,{_atempo_chain(speed)},"
                          f"aresample=48000,aformat=channel_layouts=stereo[a{k}]")
