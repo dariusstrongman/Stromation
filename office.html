@@ -19,8 +19,7 @@
   .mark small{color:var(--amber);letter-spacing:.28em}
   header a{color:var(--dim);text-decoration:none;margin-left:auto;font-size:12px}
   header a:hover{color:var(--amber)}
-  #stage{margin:26px 0 8px;image-rendering:pixelated;border:1px solid var(--line);border-radius:6px;
-         width:min(94vw,960px);height:auto}
+  #stage{image-rendering:pixelated;width:100vw;height:72vh;display:block}
   #caption{color:var(--dim);min-height:20px;text-align:center;padding:0 16px}
   #who{color:var(--amber)}
   #ticker{color:var(--dim);font-size:12px;max-width:640px;text-align:center;
@@ -43,8 +42,7 @@ const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6
 const sb=window.supabase.createClient(URL_,KEY);
 const cv=document.getElementById('stage'),cx=cv.getContext('2d');
 cx.imageSmoothingEnabled=false;
-const S=4;                      // world pixel scale
-const W=160,H=100;              // world units (640x400 canvas)
+const S=4,H=100;let W=160,GEO={};
 
 /* ---------- world state (only ever set from real rows) ---------- */
 const world={
@@ -52,33 +50,26 @@ const world={
   live:false, lastKind:null, bubble:null, bubbleUntil:0,
   pos:{x:34,y:64}, target:{x:96,y:60}, walking:false, step:0,
 };
-const SPOTS={door:{x:20,y:64}, desk:{x:96,y:60}, window:{x:118,y:38},
-             coffee:{x:40,y:80}, out:{x:6,y:64}};
+let SPOTS={};
 
 /* ---------- room painting ---------- */
 function px(x,y,w,h,c){cx.fillStyle=c;cx.fillRect(x*S,y*S,w*S,h*S)}
 function room(dark){
-  const f=dark?.35:1, sh=c=>shade(c,f);
-  px(0,0,W,H,sh('#141821'));                       // walls
-  px(0,50,W,H-50,sh('#1d232e'));                   // floor
+  const sh=c=>shade(c,dark?.35:1);
+  px(0,0,W,H,sh('#141821'));px(0,50,W,H-50,sh('#1d232e'));
   for(let i=0;i<W;i+=10)px(i,50,1,H-50,sh('#171c26'));
-  // window with real sky (UTC hour)
   const hr=new Date().getUTCHours();
   const sky=hr>=6&&hr<18?'#2c4a6e':hr>=18&&hr<21?'#3a2c4e':'#0d1220';
-  px(104,16,30,20,sh('#0a0c10'));px(106,18,26,16,dark?shade(sky,.6):sky);
-  px(118,18,1,16,sh('#0a0c10'));px(106,25,26,1,sh('#0a0c10'));
-  // door (left)
+  px(GEO.winX,16,30,20,sh('#0a0c10'));px(GEO.winX+2,18,26,16,dark?shade(sky,.6):sky);
+  px(GEO.winX+14,18,1,16,sh('#0a0c10'));px(GEO.winX+2,25,26,1,sh('#0a0c10'));
   px(12,42,14,22,sh('#2a2117'));px(23,52,2,3,sh('#f0a832'));
-  // desk + laptop
-  px(84,58,28,3,sh('#4a3826'));px(86,61,2,8,sh('#33261a'));px(108,61,2,8,sh('#33261a'));
-  px(93,52,10,6,sh('#0a0c10'));
-  px(94,53,8,4, world.live&&isTyping()?'#7fd0a0':sh('#1a212c')); // screen
-  // coffee corner
-  px(34,74,10,3,sh('#3a3a44'));px(37,70,3,4,sh('#c9d1d9'));px(38,69,1,1,sh('#e5534b'));
-  // ceiling light
-  px(76,4,10,2,sh('#3a3f4a'));
+  px(GEO.deskX,58,28,3,sh('#4a3826'));px(GEO.deskX+2,61,2,8,sh('#33261a'));px(GEO.deskX+24,61,2,8,sh('#33261a'));
+  px(GEO.deskX+9,52,10,6,sh('#0a0c10'));
+  px(GEO.deskX+10,53,8,4,world.live&&isTyping()?'#7fd0a0':sh('#1a212c'));
+  px(GEO.cofX,74,10,3,sh('#3a3a44'));px(GEO.cofX+3,70,3,4,sh('#c9d1d9'));px(GEO.cofX+4,69,1,1,sh('#e5534b'));
+  px(GEO.lightX,4,10,2,sh('#3a3f4a'));
   if(world.live){cx.fillStyle='rgba(240,200,120,0.05)';
-    cx.beginPath();cx.moveTo(76*S,6*S);cx.lineTo(60*S,50*S);cx.lineTo(102*S,50*S);cx.fill()}
+    cx.beginPath();cx.moveTo((GEO.lightX+5)*S,6*S);cx.lineTo((GEO.lightX-11)*S,50*S);cx.lineTo((GEO.lightX+21)*S,50*S);cx.fill()}
 }
 function shade(hex,f){
   const n=parseInt(hex.slice(1),16);
@@ -87,6 +78,20 @@ function shade(hex,f){
 }
 
 /* ---------- the founder, as he drew himself ---------- */
+function layout(){
+  const cssH=Math.max(300,innerHeight*0.72);
+  W=Math.max(160,Math.round(H*innerWidth/cssH));
+  cv.width=W*S;cv.height=H*S;
+  cx.imageSmoothingEnabled=false;
+  const deskX=Math.round(W*0.55);
+  GEO={deskX,winX:deskX+20,cofX:Math.round(W*0.2),lightX:Math.round(W*0.5)-5};
+  SPOTS={door:{x:20,y:64},out:{x:6,y:64},desk:{x:deskX+13,y:60},
+         window:{x:deskX+34,y:38},coffee:{x:GEO.cofX+5,y:80}};
+}
+window.addEventListener('resize',layout);
+layout();
+world.pos={...SPOTS.out};world.target={...SPOTS.desk};
+
 function drawStro(){
   const p=world.pos, bob=world.walking?(world.step>>3)%2:0;
   if(!world.sprite){          // he hasn't chosen a self yet: a waiting outline
