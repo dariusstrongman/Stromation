@@ -51,6 +51,16 @@ class EditorDocument(BaseModel):
         ancestry = {str(value) for value in self.sourceAssetIds}
         if {str(item.get("assetId")) for item in pictures} - ancestry:
             raise ValueError("picture clip is outside source asset ancestry")
+        # audio-under donors must obey the same ancestry rule — a forged
+        # donor assetId otherwise persisted an immutable timeline that only
+        # failed at export time (render-side ownership checks still stand)
+        donors = {str((item.get("audioFrom") or {}).get("assetId"))
+                  for item in pictures
+                  if isinstance(item.get("audioFrom"), dict)
+                  and (item.get("audioFrom") or {}).get("assetId")}
+        if donors - ancestry:
+            raise ValueError("audio-under donor is outside source asset "
+                             "ancestry")
         return self
 
 

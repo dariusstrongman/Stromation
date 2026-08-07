@@ -786,9 +786,9 @@ def test_engine_output_contract_fields():
                   "trimAdjustments", "deterministicHash", "createdAt"):
         assert field in out, field
     # pin the constant, and pin the VALUE so a bump is always a conscious act
-    # (2.2.0: Phase 3 b-roll execution — audio-under clips, brollApplied key)
+    # (2.3.0: splice-remapped transition boundaries + per-clip segmentId)
     assert out["schemaVersion"] == 1
-    assert out["engineVersion"] == pe2.ENGINE_VERSION == "2.2.0"
+    assert out["engineVersion"] == pe2.ENGINE_VERSION == "2.3.0"
     # canonical fields + documented compatibility aliases carry equal values
     assert out["actualDuration"] == out["actualDurationSeconds"] == 12.0
     assert out["requestedDuration"] == {"min": None, "max": None}

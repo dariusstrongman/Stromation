@@ -1206,8 +1206,19 @@ def deterministic_gate(plan: EditorialPlan, segments: list[Segment],
         rules.append({"rule": name, "weight": weight, "hard": hard,
                       "passed": passed, "detail": detail})
 
+    # The gate judges TRUTH via substring matching, so Phase 3's namespaced
+    # craft violations must not reach it: a retention advice sentence
+    # containing the word "hook" was enough to fail the hard hook_grounded
+    # rule on a perfectly grounded plan. Craft rules run their own revise
+    # loop; the gate stays a pure truth instrument.
+    _CRAFT_PREFIXES = ("hook_v2:", "broll:", "graphics_v2:", "captions_v2:",
+                       "rhythm:", "retention:")
+    gate_violations = [v for v in violations
+                       if not v.startswith(_CRAFT_PREFIXES)]
+
     def no_violation(*needles: str) -> bool:
-        return not any(any(n in viol for n in needles) for viol in violations)
+        return not any(any(n in viol for n in needles)
+                       for viol in gate_violations)
 
     rule("hook_grounded", 10, True,
          no_violation("hook"), "hook exists, in range, first and immediate")
@@ -1608,6 +1619,12 @@ def _normalize_timeline_arithmetic(raw: dict, segments: list[Segment]) -> None:
     # ledgers can only ever describe edits this code performed (audit A6/A4).
     raw.pop("dialogueAdjustments", None)
     raw.pop("brollInsertions", None)
+    # Caption emphasisWord is system-set too (refine_captions re-adds it under
+    # PHASE3_CAPTIONS): a model-supplied value would bypass the one-per-caption
+    # and must-exist-in-text rules whenever the flag is off.
+    for cap in raw.get("captions") or []:
+        if isinstance(cap, dict):
+            cap.pop("emphasisWord", None)
     # Phase 2 dialogue integrity: snap speech-severing cuts to safe
     # boundaries FIRST, so the arithmetic below is rebuilt from the snapped
     # trims. Flag-gated inside; a no-op when PHASE2_DIALOGUE is off.

@@ -25,6 +25,7 @@ Flags (env, "1"/"true"/"yes"):
 """
 from __future__ import annotations
 
+import math
 import os
 import re
 
@@ -62,21 +63,58 @@ def any_enabled() -> bool:
 # Openings that instantly read as "another video" — the retention research's
 # one unambiguous negative signal (36.6% of viewers leave in the first 3% of
 # runtime; a throat-clearing opening spends that attention on nothing).
+# transcribed speech carries commas and filler ("So, today we're…"), and the
+# house transcript style drops apostrophes ("today were going") — the pattern
+# tolerates both, while story lines that merely SHARE words with a greeting
+# ("my name is on the lawsuit", "what's up with this ceiling") stay legal
+_S = r"[\s,]+"
+_FILLER = r"(?:(?:um+|uh+|so|well|alright|all right|okay|ok|yo)[\s,!.]*\s)*"
 BANNED_OPENINGS = re.compile(
-    r"^\s*(today (we|i)('re| are| am|'m)?\b|hi guys\b|hey guys\b|"
-    r"hey everyone\b|hello everyone\b|welcome back\b|welcome to\b|"
-    r"in this video\b|what's up\b|whats up\b|before we (start|begin)\b|"
-    r"my name is\b|so today\b)", re.I)
+    r"^\s*" + _FILLER + r"(?:"
+    r"today" + _S + r"(?:we|i|were|im)\b(?:'re|'m)?|"
+    r"hi" + _S + r"guys\b|"
+    r"hey" + _S + r"(?:guys|everyone|everybody|y'?all)\b|"
+    r"hello" + _S + r"(?:everyone|everybody|guys)\b|"
+    r"good" + _S + r"(?:morning|afternoon|evening)\b|"
+    r"welcome" + _S + r"back\b|"
+    r"welcome" + _S + r"to" + _S + r"(?:the" + _S + r"|my" + _S
+    + r"|our" + _S + r"|another" + _S + r")?"
+    r"(?:channel|video|show|episode|vlog|stream)\b|"
+    r"in" + _S + r"(?:this|today'?s)" + _S + r"video\b|"
+    r"what(?:'?s|" + _S + r"is)" + _S + r"up\b(?!" + _S + r"with\b)|"
+    r"before" + _S + r"we" + _S + r"(?:start|begin|get" + _S
+    + r"(?:started|into|going)|dive|jump)\b|"
+    r"my" + _S + r"name(?:'?s|" + _S + r"is)" + _S + r"\w+"
+    r"(?:[.,!]|" + _S + r"and" + _S + r"(?:i|im|welcome)\b|$)|"
+    r"let" + _S + r"me" + _S + r"introduce" + _S + r"myself\b|"
+    r"so" + _S + r"today" + _S + r"(?:we|i|were|im)\b"
+    r")", re.I)
 
 
 def _hook_opening_text(plan, segments: list[Segment]) -> str:
+    """The line actually SPOKEN inside the hook cut. A span that only clips
+    the cut's edge (or sits entirely outside it) is not the hook's opening —
+    judging it produced false stock-intro rulings on lines the viewer never
+    hears."""
     seg = next((s for s in segments if s.segmentId == plan.hook.segmentId),
                None)
     if seg is None:
         return ""
-    span = next((sp for sp in seg.speechSpans
-                 if sp.end > plan.hook.sourceIn), None)
-    return (span.text if span else (seg.transcript or "")).strip()
+    lo = float(plan.hook.sourceIn)
+    hi = float(getattr(plan.hook, "sourceOut", None)
+               or lo + float(plan.hook.durationSeconds or 0) or lo)
+    best, best_ov = None, 0.0
+    for sp in seg.speechSpans:
+        ov = min(sp.end, hi) - max(sp.start, lo)
+        if ov > best_ov:
+            best, best_ov = sp, ov
+    if best is not None:
+        if best_ov < 0.3 and best_ov < 0.3 * max(best.end - best.start, 1e-9):
+            return ""                       # edge clip: essentially unheard
+        return (best.text or "").strip()
+    if seg.speechSpans:
+        return ""              # spans exist, none in the cut: a silent hook
+    return (seg.transcript or "").strip()
 
 
 def hook_v2_violations(plan, segments: list[Segment]) -> list[str]:
@@ -92,10 +130,13 @@ def hook_v2_violations(plan, segments: list[Segment]) -> list[str]:
                        f"({text[:40]!r}) — start inside the story, not "
                        "outside it")
     # anti-chronological: opening on the earliest recorded moment is only
-    # legitimate when that moment also WINS on merit
+    # legitimate when that moment also WINS on merit. Chronology is only
+    # KNOWABLE within one recording (sourceStart really orders it); across
+    # assets there is no creation-time data, so the rule honestly stands down
+    # rather than presenting lexicographic assetId order as chronology.
     usable = [s for s in segments if is_usable_for_editorial_selection(s)]
-    if usable:
-        earliest = min(usable, key=lambda s: (s.assetId, s.sourceStart))
+    if usable and len({s.assetId for s in usable}) == 1:
+        earliest = min(usable, key=lambda s: s.sourceStart)
         if plan.hook.segmentId == earliest.segmentId:
             top2 = {c["segmentId"] for c in rank_hook_candidates(segments)[:2]}
             if top2 and plan.hook.segmentId not in top2:
@@ -175,9 +216,11 @@ def _tokens(text: str) -> set[str]:
 
 
 def _face_protected(seg: Segment) -> bool:
-    """Never cover an emotional close-up — the human face IS the content."""
+    """Never cover an emotional close-up — the human face IS the content.
+    Unknown shot size ("") on an emotional segment is treated as protected:
+    when we cannot see how tight the framing is, covering it is the risk."""
     return (seg.emotion or "").lower() in _HIGH_EMOTION \
-        and seg.shotSize == "close"
+        and seg.shotSize in ("close", "")
 
 
 def propose_broll(raw: dict, segments: list[Segment],
@@ -227,7 +270,9 @@ def propose_broll(raw: dict, segments: list[Segment],
         best, best_conf, best_tokens = None, 0.0, []
         for cand in pool:
             shared = said & cand["searchTokens"]
-            if not shared:
+            # one shared token is coincidence, not illustration — a single
+            # generic noun ("team") cleared the floor on unrelated footage
+            if len(shared) < 2:
                 continue
             conf = round(min(1.0, len(shared)
                              / max(3.0, len(cand["searchTokens"]) ** 0.5)), 3)
@@ -242,13 +287,19 @@ def propose_broll(raw: dict, segments: list[Segment],
             motivation = "pacing_relief"
         if best is None or best_conf < BROLL_MIN_CONFIDENCE:
             continue
-        dur = round(min(BROLL_MAX_SECONDS,
-                        host_dur - 2 * BROLL_EDGE_GUARD_SECONDS,
-                        best["sourceEnd"] - best["sourceStart"]), 3)
+        # floor (never round) to the ms grid: rounding UP made the proposer
+        # emit values its own edge-guard validator rejects by sub-ms amounts
+        floor_ms = lambda v: math.floor(v * 1000.0) / 1000.0  # noqa: E731
+        dur = floor_ms(min(BROLL_MAX_SECONDS,
+                           host_dur - 2 * BROLL_EDGE_GUARD_SECONDS,
+                           best["sourceEnd"] - best["sourceStart"]))
         if dur < BROLL_MIN_SECONDS:
             continue
-        offset = round((host_dur - dur) / 2, 3)     # centered: never covers
-        insertions.append({                          # a sentence's landing
+        # geometrically centered; the edge guards protect the host clip's
+        # opening and landing. Word-level boundary snapping is a documented
+        # follow-up — placement does not consult wordTimings yet.
+        offset = floor_ms((host_dur - dur) / 2)
+        insertions.append({
             "id": f"broll-{len(insertions)}-{best['segmentId']}",
             "targetIndex": idx,
             "offsetSeconds": offset,
@@ -392,17 +443,20 @@ CAPTION_MAX_LINE_CHARS = 42
 CAPTION_MIN_SECONDS = 0.83            # 5/6s, the Netflix floor
 _EMPHASIS_NEGATION = frozenset(("no", "not", "never", "don't", "dont",
                                 "won't", "wont", "can't", "cant", "stop"))
-_CLAUSE_BREAK = re.compile(r",|;| and | but | so | because | which | that ",
-                           re.I)
+# a comma directly followed by a digit is a thousands separator ("1,000"),
+# not a clause boundary — splitting there mangled on-screen numbers
+_CLAUSE_BREAK = re.compile(r",(?!\d)|;| and | but | so | because | which "
+                           r"| that ", re.I)
+_NUMBER = re.compile(r"\$?\d[\d,]*(?:\.\d+)?%?")
 
 
 def _emphasis_word(text: str) -> str | None:
     """The ONE word a viewer's eye should catch: number > negation > the
     longest substantive word. Deterministic; never more than one."""
+    m = _NUMBER.search(text)
+    if m:
+        return m.group(0).rstrip(",.")     # "1,000" stays whole; "$5", "30%"
     words = re.findall(r"[A-Za-z0-9$%']+", text)
-    for w in words:
-        if any(c.isdigit() for c in w):
-            return w
     for w in words:
         if w.lower() in _EMPHASIS_NEGATION:
             return w
@@ -426,38 +480,64 @@ def refine_captions(raw: dict, segments: list[Segment]) -> None:
         text = cap["text"].strip()
         start = float(cap.get("timelineStart") or 0)
         end = float(cap.get("timelineEnd") or 0)
-        pieces = [cap]
-        if len(text) > CAPTION_MAX_LINE_CHARS and end > start:
-            mid = len(text) / 2
-            best_cut, best_dist = None, 1e9
-            for m in _CLAUSE_BREAK.finditer(text):
-                if abs(m.start() - mid) < best_dist:
-                    best_cut, best_dist = m, abs(m.start() - mid)
-            if best_cut:
-                a = text[:best_cut.start()].strip(" ,;")
-                b = text[best_cut.end():].strip() if best_cut.group(0) in (",", ";") \
-                    else (text[best_cut.start():].strip())
-                if a and b:
-                    ratio = len(a) / max(1, len(a) + len(b))
-                    split_t = round(start + (end - start) * ratio, 3)
-                    pieces = [dict(cap, text=a, timelineEnd=split_t),
-                              dict(cap, text=b, timelineStart=split_t)]
-        for p in pieces:
+        for p in _split_caption(cap, text, start, end):
             p["emphasisWord"] = _emphasis_word(p["text"])
             refined.append(p)
-    # extend sub-minimum captions into following slack
-    for i, cap in enumerate(refined):
-        if not isinstance(cap, dict):
+    # extend sub-minimum captions into following slack — in TIME order
+    # (the model's list order is not guaranteed; using list order inverted
+    # out-of-order captions), never past the next caption, never past the
+    # end of the video, and never SHRINKING (extension only)
+    timed = sorted((c for c in refined if isinstance(c, dict)),
+                   key=lambda c: float(c.get("timelineStart") or 0))
+    try:
+        planned = float(raw.get("plannedDurationSeconds"))
+    except (TypeError, ValueError):
+        planned = None
+    for i, cap in enumerate(timed):
+        start = float(cap.get("timelineStart") or 0)
+        end = float(cap.get("timelineEnd") or 0)
+        if not 0 < end - start < CAPTION_MIN_SECONDS:
             continue
-        dur = float(cap.get("timelineEnd") or 0) \
-            - float(cap.get("timelineStart") or 0)
-        if 0 < dur < CAPTION_MIN_SECONDS:
-            nxt = refined[i + 1] if i + 1 < len(refined) else None
-            limit = float(nxt.get("timelineStart")) if isinstance(nxt, dict) \
-                else float(cap["timelineEnd"]) + CAPTION_MIN_SECONDS
-            cap["timelineEnd"] = round(min(
-                float(cap["timelineStart"]) + CAPTION_MIN_SECONDS, limit), 3)
-    raw["captions"] = refined
+        nxt = timed[i + 1] if i + 1 < len(timed) else None
+        limit = float(nxt.get("timelineStart")) if nxt is not None \
+            else end + CAPTION_MIN_SECONDS
+        if planned is not None:
+            limit = min(limit, planned)
+        cap["timelineEnd"] = round(
+            max(end, min(start + CAPTION_MIN_SECONDS, limit)), 3)
+    raw["captions"] = timed if len(timed) == len(refined) else refined
+
+
+def _split_caption(cap: dict, text: str, start: float, end: float,
+                   depth: int = 0) -> list[dict]:
+    """Split a long caption at clause boundaries, recursively, but never
+    manufacture a sub-floor piece — a wall that cannot be split cleanly in
+    the time it has stays whole for the validator to judge."""
+    piece = dict(cap, text=text, timelineStart=round(start, 3),
+                 timelineEnd=round(end, 3))
+    if len(text) <= CAPTION_MAX_LINE_CHARS or depth >= 2 \
+            or end - start < 2 * CAPTION_MIN_SECONDS:
+        return [piece]
+    mid = len(text) / 2
+    best_cut, best_dist = None, 1e9
+    for m in _CLAUSE_BREAK.finditer(text):
+        if abs(m.start() - mid) < best_dist:
+            best_cut, best_dist = m, abs(m.start() - mid)
+    if not best_cut:
+        return [piece]
+    a = text[:best_cut.start()].strip(" ,;")
+    b = text[best_cut.end():].strip() \
+        if best_cut.group(0).strip() in (",", ";") \
+        else text[best_cut.start():].strip()
+    if not (a and b):
+        return [piece]
+    ratio = len(a) / max(1, len(a) + len(b))
+    split_t = round(start + (end - start) * ratio, 3)
+    if split_t - start < CAPTION_MIN_SECONDS \
+            or end - split_t < CAPTION_MIN_SECONDS:
+        return [piece]
+    return (_split_caption(cap, a, start, split_t, depth + 1)
+            + _split_caption(cap, b, split_t, end, depth + 1))
 
 
 def caption_v2_violations(plan) -> list[str]:
@@ -509,7 +589,9 @@ def breath_pad_cuts(raw: dict, segments: list[Segment]) -> None:
         except (KeyError, TypeError, ValueError):
             continue
         _, tail_res = reserves.get(i, (0.0, 0.0))
-        at_sentence_end = any(abs(sp.end - s_out) <= 0.03
+        # 0.15s: real cuts rarely land frame-exact on the sentence end; a
+        # 30ms gate made the feature a near no-op on human-planned trims
+        at_sentence_end = any(abs(sp.end - s_out) <= 0.15
                               for sp in seg.speechSpans)
         room = seg.sourceEnd - tail_res - s_out
         next_speech = min((sp.start for sp in seg.speechSpans
@@ -518,6 +600,15 @@ def breath_pad_cuts(raw: dict, segments: list[Segment]) -> None:
                   (next_speech - s_out) if next_speech else BREATH_PAD_SECONDS)
         if at_sentence_end and pad >= 0.05:
             new_out = round(s_out + pad, 3)
+            # never duplicate footage: if another entry replays this same
+            # segment starting inside the pad, extending here would show the
+            # same source twice back to back — a visible stutter no gate sees
+            if any(isinstance(o, dict) and o is not e
+                   and o.get("segmentId") == e.get("segmentId")
+                   and float(o.get("sourceIn") or 0) < new_out - 1e-6
+                   and float(o.get("sourceOut") or 0) > s_out + 1e-6
+                   for o in raw["timeline"]):
+                continue
             adjustments.append({"index": i, "field": "sourceOut",
                                 "from": round(s_out, 3), "to": new_out,
                                 "reason": "breath room after sentence end"})
@@ -563,14 +654,21 @@ def rhythm_violations(plan, segments: list[Segment]) -> list[str]:
     (same framing over and over) and metronomic timing."""
     out: list[str] = []
     rep = rhythm_report(plan, segments)
-    if rep.get("shotCount", 0) < 3:
+    # a 3-shot edit is too small to judge statistically (the same reasoning
+    # as the utilization rule's small-catalog exemption)
+    if rep.get("shotCount", 0) < 4:
         return out
     distinct_sizes = {s.shotSize for s in segments if s.shotSize}
     if rep["longestSameSizeRun"] > 3 and len(distinct_sizes) >= 2:
         out.append(f"rhythm: {rep['longestSameSizeRun']} consecutive shots "
                    "share one shot size while the catalog offers variety — "
                    "break the run")
-    if rep["shotLengthCv"] < 0.25:
+    by_id = {s.segmentId: s for s in segments}
+    sizes_in_cut = {by_id[e.segmentId].shotSize for e in plan.timeline
+                    if e.segmentId in by_id and by_id[e.segmentId].shotSize}
+    # uniform timing + varied framing is a legitimate beat-synced montage;
+    # the bad pattern is metronomic timing WITH repeated framing
+    if rep["shotLengthCv"] < 0.25 and len(sizes_in_cut) < 3:
         out.append(f"rhythm: shot lengths are metronomic (cv "
                    f"{rep['shotLengthCv']}) — vary the cut rhythm; some "
                    "shots breathe, some snap")

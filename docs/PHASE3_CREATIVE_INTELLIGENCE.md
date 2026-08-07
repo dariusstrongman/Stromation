@@ -33,7 +33,7 @@ plan_editorial ──────┤
                      ├── validate tail: phase3_violations (joins the revise loop)
                      └── result: retentionReport (CRITIC — advisory, optional floor)
 
-picture_edit_v2 (2.2.0) ── executes plan.brollInsertions into REAL clips:
+picture_edit_v2 (2.3.0) ── executes plan.brollInsertions into REAL clips:
     host → A1 | broll(audioFrom: host window) | A2   (duration unchanged)
 picture_render_v2 + renderer2 ── BOTH honor audioFrom (no preview/final gap)
 product_editor ── trim/split keep the donor window in lockstep (speed-aware)
@@ -107,17 +107,40 @@ the V2 journey + Phase 2 substrate data) → `PHASE3_GRAPHICS` →
 `PHASE3_RETENTION_CRITIC` (advisory first; set a floor only after reading a
 few reports). Rollback for any flag: unset + restart. Note: enabling BROLL
 changes `ENGINE_VERSION` output identity only when insertions exist; the
-2.2.0 bump already retires cross-version reuse safely.
+2.3.0 bump already retires cross-version reuse safely.
 
 ## Known limitations (honest list)
 
-- Graphics and punch-in reframes are planned/validated but not rendered into
-  the final file yet (renderer work; `pending_renderer_support` discipline).
+- **Soft transitions and reframes execute in the PREVIEW renderer only.**
+  The final export path (`renderer2`) has no xfade or crop support yet, so
+  `status: "executable"` means "the preview can execute this"; the final
+  file renders those boundaries as hard cuts. Closing this is the next
+  renderer milestone.
+- Graphics are planned/validated but never reach a rendered frame OR the
+  engine blueprint yet (the bridge emits an empty graphics track); the
+  vocabulary is renderer-*ready*, not renderer-*backed*. Same for
+  `emphasisWord`: no renderer consumes it today.
 - B-roll candidate quality is lexical-overlap only — no visual-semantic
-  matching until embeddings exist; stock/generated providers are seams, not
-  sources, today.
-- The retention critic scores proxies; it does not watch the rendered video
-  (that remains the Phase-3-roadmap rendered-cut critic, Batch D1 ordering).
+  matching until embeddings exist. The provider seam requires candidates to
+  exist in the SOURCE CATALOG (grounding rule): stock/generated providers
+  must ingest their footage as segments first; a candidate outside the
+  catalog is correctly rejected by validation.
+- B-roll placement is geometrically centered inside the host clip with edge
+  guards; it does not consult `wordTimings`, so the picture swap can land
+  mid-phrase (speech itself is never interrupted — audio-under). Word-level
+  boundary snapping is a follow-up.
+- `pacing_relief` insertions carry `confidence = 0.25` as a floor sentinel,
+  not a measured score — read `motivation` + empty `matchedTokens`.
+- The retention critic scores proxies; three of seven axes read
+  model-authored fields (energies, claim types, loops), so a floor can be
+  gamed by rewriting prose — grounding/tension gates police those fields
+  independently. Advisory use is the intended mode; it does not watch the
+  rendered video (that remains the rendered-cut critic, Batch D1 ordering).
+- `PHASE3_AUDIO_EDIT` breath padding is largely absorbed when
+  `PHASE2_DIALOGUE` is on (snapping already lands cuts on word boundaries);
+  rolled out alone it pads only cuts within 0.15s of a sentence end.
+- An `audio_rendering` source-gain instruction targeting an audio-under
+  clip is a no-op (the donor branch has no volume filter yet).
 - Music swell/duck remain plan-level intent; the audio engine executes them
   in a later phase.
 - Caption timing refinement splits proportionally by text length, not by
