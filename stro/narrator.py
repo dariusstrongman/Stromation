@@ -31,12 +31,15 @@ RULES:
   triumph. Failure is part of the story.
 - Speak in present tense. Short paragraphs, one beat each — this is read
   aloud, so write for the ear.
+- OPEN WITH A HOOK. The first sentence must stop a stranger scrolling: the
+  stakes, the strangeness, or the sharpest fact of the day. "He has thirty
+  days of money left and no customers." Not "The morning begins."
 - 120-200 words total. No headings, no bullet points, no stage directions,
   no markdown. Prose only.
 - Do not use the words 'digital', 'algorithm', 'AI' or 'artificial' more
   than once between them. He is simply the founder.
-- Open on the moment of waking. Close on what remains undone, or what it
-  cost."""
+- Close on what remains undone, or what it cost. Do NOT write a sign-off
+  or call to action — that is added afterwards."""
 
 
 def _summarize_events(events: list[dict]) -> str:
