@@ -1,0 +1,123 @@
+"""One wake-up of the founder. Run by Railway cron; each run is one work
+session with a hard budget gate and a metered cost.
+
+    python -m stro.main
+"""
+import asyncio
+import os
+import pathlib
+from datetime import datetime, timezone
+
+from claude_agent_sdk import (AssistantMessage, ClaudeAgentOptions,
+                              ResultMessage, TextBlock, query)
+
+from . import company
+from .tools import make_company_server
+
+HERE = pathlib.Path(__file__).parent
+MAX_TURNS = int(os.environ.get("STRO_MAX_TURNS", "40"))
+# Stop before the cap so one session can't blow through it.
+BUDGET_SOFT_STOP = 0.95
+
+
+def _state_briefing(co: dict) -> str:
+    books = company.month_to_date(co["id"])
+    cap = float(co["budget_monthly_usd"])
+    runway = max(0.0, cap - books["burn_usd"])
+    parts = [
+        f"# Company: {co['name']}",
+        f"Objective: {co['objective']}",
+        f"## Books (this month)\nburn ${books['burn_usd']:.2f} / cap ${cap:.2f}"
+        f" | revenue ${books['revenue_usd']:.2f}"
+        f" | thinking budget left ${runway:.2f}",
+    ]
+    mems = company.memories(co["id"])
+    if mems:
+        parts.append("## Memory\n" + "\n".join(
+            f"- [{m['kind']}] {m['slug']}: {m['content'][:300]}" for m in mems))
+    tasks = company.open_tasks(co["id"])
+    if tasks:
+        parts.append("## Open tasks\n" + "\n".join(
+            f"- (p{t['priority']}, {t['status']}) {t['title']} — {t['why'] or ''}"
+            f" [id {t['id']}]" for t in tasks))
+    pend = company.pending_escalations(co["id"])
+    if pend:
+        parts.append("## Escalations awaiting the owner (do NOT re-raise)\n"
+                     + "\n".join(f"- {e['action']}" for e in pend))
+    journal = company.recent_journal(co["id"])
+    if journal:
+        parts.append("## Recent journal (newest first)\n" + "\n".join(
+            f"- {j['ts'][:16]} [{j['entry_type']}] {j['content'][:400]}"
+            for j in journal))
+    else:
+        parts.append("## Recent journal\n(empty — this is your FIRST day. "
+                     "Decide what business to build and begin.)")
+    parts.append("\nThis is one work session. Orient, pick the highest-"
+                 "leverage work, do it for real, then journal before you "
+                 "finish. Never end a session without a journal entry.")
+    return "\n\n".join(parts)
+
+
+async def wake():
+    co = company.get_company()
+    books = company.month_to_date(co["id"])
+    cap = float(co["budget_monthly_usd"])
+
+    wk = company.insert("wakeups", {"company_id": co["id"]})
+    if books["burn_usd"] >= cap * BUDGET_SOFT_STOP:
+        company.update("wakeups", wk["id"],
+                       {"status": "budget_blocked",
+                        "finished_at": datetime.now(timezone.utc).isoformat(),
+                        "summary": f"burn ${books['burn_usd']:.2f} at cap"})
+        company.insert("escalations", {
+            "company_id": co["id"], "wakeup_id": wk["id"],
+            "action": "Monthly budget exhausted — founder cannot work",
+            "reason": f"burn ${books['burn_usd']:.2f} of ${cap:.2f} cap. "
+                      "Raise the cap or wait for the 1st."})
+        print("budget_blocked")
+        return
+
+    options = ClaudeAgentOptions(
+        system_prompt=(HERE / "founder.md").read_text(),
+        model=co["model"],
+        max_turns=MAX_TURNS,
+        cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
+        permission_mode="bypassPermissions",   # headless founder, no human
+        allowed_tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep",
+                       "WebSearch", "WebFetch",
+                       "mcp__company__journal_write",
+                       "mcp__company__memory_save",
+                       "mcp__company__task_create",
+                       "mcp__company__task_update",
+                       "mcp__company__escalate"],
+        mcp_servers={"company": make_company_server(co["id"], wk["id"])},
+    )
+
+    cost, turns, last_text = 0.0, 0, ""
+    try:
+        async for msg in query(prompt=_state_briefing(co), options=options):
+            if isinstance(msg, AssistantMessage):
+                turns += 1
+                for block in msg.content:
+                    if isinstance(block, TextBlock):
+                        last_text = block.text
+            elif isinstance(msg, ResultMessage):
+                cost = msg.total_cost_usd or 0.0
+        status = "completed"
+    except Exception as exc:  # noqa: BLE001 — a crashed session still gets booked
+        status, last_text = "failed", f"session crashed: {exc}"
+
+    company.insert("ledger", {
+        "company_id": co["id"], "wakeup_id": wk["id"],
+        "category": "inference",
+        "description": f"founder work session ({turns} turns)",
+        "amount_usd": -round(cost, 4)})
+    company.update("wakeups", wk["id"], {
+        "status": status, "cost_usd": round(cost, 4), "num_turns": turns,
+        "finished_at": datetime.now(timezone.utc).isoformat(),
+        "summary": last_text[:2000]})
+    print(f"{status}: {turns} turns, ${cost:.4f}")
+
+
+if __name__ == "__main__":
+    asyncio.run(wake())

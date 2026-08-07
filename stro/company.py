@@ -1,0 +1,73 @@
+"""Supabase-backed company state: the world Stro lives in."""
+import json
+import os
+import urllib.request
+
+SB_URL = os.environ["SUPABASE_URL"].rstrip("/")
+SB_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
+
+
+def _req(path: str, method: str = "GET", body=None):
+    req = urllib.request.Request(
+        f"{SB_URL}/rest/v1/{path}", method=method,
+        data=json.dumps(body).encode() if body is not None else None,
+        headers={"apikey": SB_KEY, "Authorization": f"Bearer {SB_KEY}",
+                 "Content-Type": "application/json",
+                 "Prefer": "return=representation"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        text = r.read().decode()
+        return json.loads(text) if text else None
+
+
+def get_company() -> dict:
+    rows = _req("company?select=*&limit=1")
+    if not rows:
+        raise SystemExit("No company row — seed one (see README).")
+    return rows[0]
+
+
+def insert(table: str, row: dict) -> dict:
+    return _req(table, "POST", row)[0]
+
+
+def update(table: str, row_id: str, patch: dict):
+    _req(f"{table}?id=eq.{row_id}", "PATCH", patch)
+
+
+def recent_journal(company_id: str, limit: int = 25) -> list[dict]:
+    return _req(f"journal?company_id=eq.{company_id}"
+                f"&select=ts,entry_type,content&order=ts.desc&limit={limit}")
+
+
+def open_tasks(company_id: str) -> list[dict]:
+    return _req(f"tasks?company_id=eq.{company_id}"
+                "&status=in.(open,in_progress)"
+                "&select=id,title,why,status,priority&order=priority")
+
+
+def memories(company_id: str) -> list[dict]:
+    return _req(f"memory?company_id=eq.{company_id}"
+                "&select=slug,kind,content&order=updated_at.desc&limit=50")
+
+
+def pending_escalations(company_id: str) -> list[dict]:
+    return _req(f"escalations?company_id=eq.{company_id}&status=eq.pending"
+                "&select=action,reason,ts")
+
+
+def resolved_escalations_since(company_id: str, since_iso: str) -> list[dict]:
+    return _req(f"escalations?company_id=eq.{company_id}"
+                f"&status=in.(approved,denied)&resolved_at=gte.{since_iso}"
+                "&select=action,status,resolution,resolved_at")
+
+
+def month_to_date(company_id: str) -> dict:
+    """Burn and revenue for the current calendar month, in USD."""
+    from datetime import datetime, timezone
+    start = datetime.now(timezone.utc).replace(
+        day=1, hour=0, minute=0, second=0, microsecond=0).isoformat()
+    rows = _req(f"ledger?company_id=eq.{company_id}&ts=gte.{start}"
+                "&select=category,amount_usd")
+    burn = sum(-float(r["amount_usd"]) for r in rows if float(r["amount_usd"]) < 0)
+    revenue = sum(float(r["amount_usd"]) for r in rows if float(r["amount_usd"]) > 0)
+    return {"burn_usd": round(burn, 4), "revenue_usd": round(revenue, 4)}
