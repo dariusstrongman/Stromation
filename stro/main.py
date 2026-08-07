@@ -79,9 +79,12 @@ def _state_briefing(co: dict) -> str:
                      "never write them into journal/memory/tasks/customer "
                      "content)\n" + "\n".join(
             f"- {name}: {value}" for name, value in sorted(creds.items())))
-    parts.append("\nThis is one work session. Orient, pick the highest-"
-                 "leverage work, do it for real, then journal before you "
-                 "finish. Never end a session without a journal entry.")
+    parts.append(
+        f"\nThis is one work session and you have about {MAX_TURNS} turns of "
+        "work in it — roughly a morning. Pace yourself: pick ONE thing worth "
+        "finishing rather than starting five. When you are around five turns "
+        "from the end, stop working and journal. A day you cannot remember "
+        "tomorrow was worth very little today.")
     return "\n\n".join(parts)
 
 
@@ -183,6 +186,52 @@ async def wake():
         last_text = f"session crashed: {exc}" + (f"\nCLI stderr: {detail}"
                                                  if detail else "")
         emit("session_end", "crash detail", last_text)
+
+    # If the session ended without him writing anything down — ran out of
+    # turns mid-thought, timed out, crashed — give him a short, focused last
+    # call whose only job is to remember the day. Losing the work is bad;
+    # losing the MEMORY of the work is what actually compounds.
+    wrote = company._req(f"journal?wakeup_id=eq.{wk['id']}&select=id&limit=1")
+    if not wrote and turns > 0:
+        emit("thought", None, "Out of time — writing the day down.")
+        did = [f"{e['title'] or e['kind']}: {(e['body'] or '')[:120]}"
+               for e in session_events if e["kind"] == "tool_use"][-25:]
+        recap = (
+            f"Your work session just ended ({status}) after {turns} turns.\n\n"
+            "WHAT YOU DID THIS SESSION, in order:\n- " + "\n- ".join(did) +
+            "\n\nYou have a handful of turns left and exactly one job: "
+            "record this day so tomorrow's you inherits it. Call "
+            "journal_write with what you did, what you decided and WHY, and "
+            "what failed. Update or create tasks so the next session knows "
+            "where to resume. Do not start new work.")
+        try:
+            wrap_opts = ClaudeAgentOptions(
+                system_prompt=(HERE / "founder.md").read_text(),
+                model=co["model"], max_turns=8,
+                cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
+                permission_mode="bypassPermissions",
+                stderr=lambda line: _cli_err.append(line),
+                env={**os.environ,
+                     "HOME": os.environ.get("STRO_HOME", "/home/stro"),
+                     "IS_SANDBOX": "1"},
+                allowed_tools=["mcp__company__journal_write",
+                               "mcp__company__memory_save",
+                               "mcp__company__task_create",
+                               "mcp__company__task_update"],
+                mcp_servers={"company": make_company_server(co["id"], wk["id"])},
+            )
+            async with asyncio.timeout(420):
+                async for msg in query(prompt=recap, options=wrap_opts):
+                    if isinstance(msg, AssistantMessage):
+                        for block in msg.content:
+                            if isinstance(block, ToolUseBlock):
+                                import json as _j
+                                emit("tool_use", block.name,
+                                     _j.dumps(block.input)[:1500])
+                    elif isinstance(msg, ResultMessage):
+                        cost += msg.total_cost_usd or 0.0
+        except Exception:  # noqa: BLE001 — best effort; never fatal
+            pass
 
     company.insert("ledger", {
         "company_id": co["id"], "wakeup_id": wk["id"],
