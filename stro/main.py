@@ -9,7 +9,8 @@ import pathlib
 from datetime import datetime, timezone
 
 from claude_agent_sdk import (AssistantMessage, ClaudeAgentOptions,
-                              ResultMessage, TextBlock, query)
+                              ResultMessage, TextBlock, ToolResultBlock,
+                              ToolUseBlock, UserMessage, query)
 
 from . import company
 from .tools import make_company_server
@@ -93,7 +94,18 @@ async def wake():
         mcp_servers={"company": make_company_server(co["id"], wk["id"])},
     )
 
+    def emit(kind: str, title: str | None, body: str | None):
+        # The observatory watches through these rows. Telemetry must never
+        # break a work session.
+        try:
+            company.insert("events", {
+                "company_id": co["id"], "wakeup_id": wk["id"], "kind": kind,
+                "title": title, "body": (body or "")[:4000] or None})
+        except Exception:  # noqa: BLE001
+            pass
+
     cost, turns, last_text = 0.0, 0, ""
+    emit("session_start", "Stro wakes up", None)
     try:
         async for msg in query(prompt=_state_briefing(co), options=options):
             if isinstance(msg, AssistantMessage):
@@ -101,6 +113,16 @@ async def wake():
                 for block in msg.content:
                     if isinstance(block, TextBlock):
                         last_text = block.text
+                        emit("thought", None, block.text)
+                    elif isinstance(block, ToolUseBlock):
+                        import json as _json
+                        emit("tool_use", block.name,
+                             _json.dumps(block.input)[:1500])
+            elif isinstance(msg, UserMessage):
+                content = msg.content if isinstance(msg.content, list) else []
+                for block in content:
+                    if isinstance(block, ToolResultBlock):
+                        emit("tool_result", None, str(block.content))
             elif isinstance(msg, ResultMessage):
                 cost = msg.total_cost_usd or 0.0
         status = "completed"
@@ -116,6 +138,7 @@ async def wake():
         "status": status, "cost_usd": round(cost, 4), "num_turns": turns,
         "finished_at": datetime.now(timezone.utc).isoformat(),
         "summary": last_text[:2000]})
+    emit("session_end", status, f"{turns} turns, ${cost:.4f}")
     print(f"{status}: {turns} turns, ${cost:.4f}")
 
 
