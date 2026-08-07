@@ -45,6 +45,16 @@ def _state_briefing(co: dict) -> str:
     if pend:
         parts.append("## Escalations awaiting the owner (do NOT re-raise)\n"
                      + "\n".join(f"- {e['action']}" for e in pend))
+    from datetime import datetime as _dt, timedelta, timezone as _tz
+    week_ago = (_dt.now(_tz.utc) - timedelta(days=7)).isoformat().replace(
+        "+00:00", "Z")
+    answered = company.resolved_escalations_since(co["id"], week_ago)
+    if answered:
+        parts.append("## The owner has ANSWERED these (act accordingly)\n"
+                     + "\n".join(
+            f"- [{e['status'].upper()}] {e['action']}"
+            f"{' — ' + e['resolution'] if e.get('resolution') else ''}"
+            for e in answered))
     journal = company.recent_journal(co["id"])
     if journal:
         parts.append("## Recent journal (newest first)\n" + "\n".join(
@@ -72,6 +82,14 @@ async def wake():
     co = company.get_company()
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
+
+    if not company.infra_booked_today(co["id"]):
+        company.insert("ledger", {
+            "company_id": co["id"], "category": "infrastructure",
+            "description": "daily infrastructure accrual "
+                           "(Railway + Supabase + domain)",
+            "amount_usd": -float(os.environ.get("INFRA_DAILY_USD", "0.20"))})
+        books = company.month_to_date(co["id"])   # re-read after booking
 
     wk = company.insert("wakeups", {"company_id": co["id"]})
     if books["burn_usd"] >= cap * BUDGET_SOFT_STOP:
@@ -117,6 +135,8 @@ async def wake():
     cost, turns, last_text = 0.0, 0, ""
     emit("session_start", "Stro wakes up", None)
     try:
+      async with asyncio.timeout(int(os.environ.get("STRO_SESSION_MAX_S",
+                                                    "2400"))):
         async for msg in query(prompt=_state_briefing(co), options=options):
             if isinstance(msg, AssistantMessage):
                 turns += 1
@@ -135,7 +155,7 @@ async def wake():
                         emit("tool_result", None, str(block.content))
             elif isinstance(msg, ResultMessage):
                 cost = msg.total_cost_usd or 0.0
-        status = "completed"
+      status = "completed"
     except Exception as exc:  # noqa: BLE001 — a crashed session still gets booked
         status, last_text = "failed", f"session crashed: {exc}"
 

@@ -61,6 +61,14 @@ def resolved_escalations_since(company_id: str, since_iso: str) -> list[dict]:
                 "&select=action,status,resolution,resolved_at")
 
 
+def infra_booked_today(company_id: str) -> bool:
+    from datetime import datetime, timezone
+    day = datetime.now(timezone.utc).strftime("%Y-%m-%dT00:00:00Z")
+    rows = _req(f"ledger?company_id=eq.{company_id}&category=eq.infrastructure"
+                f"&ts=gte.{day}&select=id&limit=1")
+    return bool(rows)
+
+
 def month_to_date(company_id: str) -> dict:
     """Burn and revenue for the current calendar month, in USD."""
     from datetime import datetime, timezone
