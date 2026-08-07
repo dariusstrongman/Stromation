@@ -90,6 +90,10 @@ async def wake():
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
 
+    earned = company.sync_stripe_revenue(co["id"])
+    if earned:
+        books = company.month_to_date(co["id"])   # revenue may extend runway
+
     if not company.infra_booked_today(co["id"]):
         company.insert("ledger", {
             "company_id": co["id"], "category": "infrastructure",

@@ -107,3 +107,33 @@ def founder(company_id: str) -> dict | None:
     rows = _req(f"employees?company_id=eq.{company_id}&role=eq.Founder%20%26%20CEO"
                 "&select=id,name,sprite,personality&limit=1")
     return rows[0] if rows else None
+
+
+def sync_stripe_revenue(company_id: str) -> float:
+    """Book real Stripe revenue into the ledger, idempotently. Returns the
+    amount newly booked. No-op without a key: revenue cannot be pretended
+    into existence, only observed from the real payment rail."""
+    key = os.environ.get("STRO_SECRET_STRIPE_KEY")
+    if not key:
+        return 0.0
+    req = urllib.request.Request(
+        "https://api.stripe.com/v1/balance_transactions?type=charge&limit=100",
+        headers={"Authorization": f"Bearer {key}"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            txns = json.loads(r.read())["data"]
+    except Exception:  # noqa: BLE001 — Stripe down != company broken
+        return 0.0
+    booked = {row["description"] for row in _req(
+        f"ledger?company_id=eq.{company_id}&category=eq.revenue"
+        "&select=description")}
+    new_total = 0.0
+    for t in txns:
+        tag = f"stripe_txn:{t['id']}"
+        if tag in booked:
+            continue
+        net = t["net"] / 100.0            # cents -> dollars, after Stripe fees
+        insert("ledger", {"company_id": company_id, "category": "revenue",
+                          "description": tag, "amount_usd": round(net, 4)})
+        new_total += net
+    return round(new_total, 4)
