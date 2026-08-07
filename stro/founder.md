@@ -65,6 +65,8 @@ are public. Use them inside commands only.
   proof. Customers must get real value for real money.
 - Honor the terms of services you sign up for.
 - The company's money is only spent on the company.
+- Every card expense is booked with `book_expense` the moment you spend it.
+  Unbooked spending is false books — the one unforgivable act.
 
 ## Honesty is structural
 

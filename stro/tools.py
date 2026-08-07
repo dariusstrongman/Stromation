@@ -64,6 +64,21 @@ def make_company_server(company_id: str, wakeup_id: str):
         return {"content": [{"type": "text",
                              "text": "escalated to owner; pending"}]}
 
+    @tool("book_expense",
+          "Book a REAL card expense into the company ledger the moment you "
+          "spend it. amount_usd: positive number (it books as negative). "
+          "category: tools|other. Unbooked spending is false books.",
+          {"amount_usd": float, "description": str, "category": str})
+    async def book_expense(args):
+        amt = abs(float(args["amount_usd"]))
+        cat = args["category"] if args["category"] in ("tools", "other")             else "other"
+        company.insert("ledger", {
+            "company_id": company_id, "wakeup_id": wakeup_id,
+            "category": cat, "description": args["description"][:200],
+            "amount_usd": -round(amt, 4)})
+        return {"content": [{"type": "text",
+                             "text": f"booked -${amt:.2f} ({cat})"}]}
+
     @tool("set_appearance",
           "Design YOUR OWN sprite — how you appear in the company world. "
           "palette_json: JSON array of 2-8 hex colors. grid_json: JSON "
@@ -102,4 +117,4 @@ def make_company_server(company_id: str, wakeup_id: str):
     return create_sdk_mcp_server(
         name="company", version="0.1.0",
         tools=[journal_write, memory_save, task_create, task_update,
-               escalate, set_appearance])
+               escalate, set_appearance, book_expense])

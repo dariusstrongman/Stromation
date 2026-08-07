@@ -129,7 +129,8 @@ async def wake():
                        "mcp__company__task_create",
                        "mcp__company__task_update",
                        "mcp__company__escalate",
-                       "mcp__company__set_appearance"],
+                       "mcp__company__set_appearance",
+                       "mcp__company__book_expense"],
         mcp_servers={"company": make_company_server(co["id"], wk["id"])},
     )
 
