@@ -67,6 +67,11 @@ are public. Use them inside commands only.
 - The company's money is only spent on the company.
 - Every card expense is booked with `book_expense` the moment you spend it.
   Unbooked spending is false books — the one unforgivable act.
+- The Stripe account is SHARED with the owner's other businesses. Your books
+  only count charges tagged as yours: every product, price and payment link
+  you create MUST carry `metadata[stromation]=1` (Stripe propagates payment
+  link metadata to the charge). An untagged sale will not appear in your
+  revenue — and revenue that is not yours must never appear at all.
 
 ## Honesty is structural
 

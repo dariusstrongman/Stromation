@@ -109,30 +109,41 @@ def founder(company_id: str) -> dict | None:
     return rows[0] if rows else None
 
 
-def sync_stripe_revenue(company_id: str) -> float:
-    """Book real Stripe revenue into the ledger, idempotently. Returns the
-    amount newly booked. No-op without a key: revenue cannot be pretended
-    into existence, only observed from the real payment rail."""
+def sync_stripe_revenue(company_id: str, since_iso: str) -> float:
+    """Book ONLY this company's real Stripe revenue, idempotently.
+
+    The Stripe account is shared with the owner's other businesses, so a
+    naive balance-transaction sweep books THEIR income as Stro's — which is
+    exactly the fabricated economy this project forbids. Two hard filters:
+    charges created after the company existed, AND carrying the company's
+    own metadata tag. A sale the founder did not tag is not counted; false
+    revenue is worse than missing revenue.
+    """
     key = os.environ.get("STRO_SECRET_STRIPE_KEY")
     if not key:
         return 0.0
+    from datetime import datetime
+    start = int(datetime.fromisoformat(
+        since_iso.replace("Z", "+00:00")).timestamp())
     req = urllib.request.Request(
-        "https://api.stripe.com/v1/balance_transactions?type=charge&limit=100",
+        f"https://api.stripe.com/v1/charges?limit=100&created[gte]={start}",
         headers={"Authorization": f"Bearer {key}"})
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
-            txns = json.loads(r.read())["data"]
+            charges = json.loads(r.read())["data"]
     except Exception:  # noqa: BLE001 — Stripe down != company broken
         return 0.0
     booked = {row["description"] for row in _req(
         f"ledger?company_id=eq.{company_id}&category=eq.revenue"
         "&select=description")}
     new_total = 0.0
-    for t in txns:
-        tag = f"stripe_txn:{t['id']}"
-        if tag in booked:
+    for c in charges:
+        tag = f"stripe_charge:{c['id']}"
+        meta = c.get("metadata") or {}
+        if (tag in booked or not c.get("paid") or c.get("refunded")
+                or meta.get("stromation") != "1"):
             continue
-        net = t["net"] / 100.0            # cents -> dollars, after Stripe fees
+        net = c["amount"] / 100.0
         insert("ledger", {"company_id": company_id, "category": "revenue",
                           "description": tag, "amount_usd": round(net, 4)})
         new_total += net

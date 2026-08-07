@@ -90,7 +90,7 @@ async def wake():
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
 
-    earned = company.sync_stripe_revenue(co["id"])
+    earned = company.sync_stripe_revenue(co["id"], co["created_at"])
     if earned:
         books = company.month_to_date(co["id"])   # revenue may extend runway
 
