@@ -155,14 +155,29 @@ function onEvent(e){
     (e.body||e.title||e.kind||'').slice(0,140);
   setCaption();
 }
+function avatarURL(){
+  if(!world.sprite)return null;
+  const c=document.createElement('canvas');c.width=16;c.height=16;
+  const g=c.getContext('2d');
+  const {palette,grid}=world.sprite;
+  for(let r=0;r<16;r++)for(let col=0;col<16;col++){const v=grid[r][col];
+    if(v){g.fillStyle=palette[v-1]||'#fff';g.fillRect(col,r,1,1)}}
+  return c.toDataURL();
+}
+function applyAvatar(){
+  const u=avatarURL();if(!u)return;
+  let l=document.querySelector('link[rel="icon"]');
+  if(!l){l=document.createElement('link');l.rel='icon';document.head.appendChild(l)}
+  l.href=u;
+}
 function nextBeat(){const n=new Date(),hrs=[6,13,20];
   for(const h of hrs){const t=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate(),h));if(t>n)return t}
   return new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+1,6))}
 function setCaption(){
   const c=document.getElementById('caption');
-  if(world.live){c.innerHTML=`<span id="who">${world.name}</span> is in the office${world.personality?' — <i>'+esc(world.personality)+'</i>':''}`}
+  if(world.live){c.innerHTML=`${avatarURL()?`<img src="${avatarURL()}" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:-4px;margin-right:6px">`:``}<span id="who">${world.name}</span> is in the office${world.personality?' — <i>'+esc(world.personality)+'</i>':''}`}
   else{const ms=nextBeat()-new Date(),h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);
-    c.innerHTML=`office is dark — <span id="who">${world.name}</span> returns in ${h}h ${String(m).padStart(2,'0')}m`}
+    c.innerHTML=`${avatarURL()?`<img src="${avatarURL()}" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:-4px;margin-right:6px">`:``}office is dark — <span id="who">${world.name}</span> returns in ${h}h ${String(m).padStart(2,'0')}m`}
 }
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -180,9 +195,9 @@ async function load(){
 sb.channel('office')
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'events'},p=>onEvent(p.new))
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'employees'},p=>{
-    world.sprite=p.new.sprite;world.personality=p.new.personality;setCaption()})
+    world.sprite=p.new.sprite;applyAvatar();world.personality=p.new.personality;setCaption()})
   .subscribe();
-load().then(()=>tick());
+load().then(()=>{applyAvatar();tick()});
 setInterval(setCaption,30000);
 </script>
 </body>
