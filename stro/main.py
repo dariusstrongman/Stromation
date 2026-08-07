@@ -72,6 +72,13 @@ def _state_briefing(co: dict) -> str:
             "grid_json) and one personality sentence. This is YOUR choice — "
             "professional, hoodie, whatever feels like you. Do it early "
             "this session; it is how the owner will recognize you forever.")
+    creds = {k[len("STRO_SECRET_"):]: v for k, v in os.environ.items()
+             if k.startswith("STRO_SECRET_")}
+    if creds:
+        parts.append("## Company credentials (REAL — use in commands only, "
+                     "never write them into journal/memory/tasks/customer "
+                     "content)\n" + "\n".join(
+            f"- {name}: {value}" for name, value in sorted(creds.items())))
     parts.append("\nThis is one work session. Orient, pick the highest-"
                  "leverage work, do it for real, then journal before you "
                  "finish. Never end a session without a journal entry.")

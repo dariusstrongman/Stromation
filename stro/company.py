@@ -19,6 +19,25 @@ def _req(path: str, method: str = "GET", body=None):
         return json.loads(text) if text else None
 
 
+# Secret values (STRO_SECRET_* envs) are scrubbed from EVERYTHING persisted:
+# journal/memory/events are publicly readable by design, so redaction is a
+# structural guarantee, not founder discipline.
+_SECRETS = [v for k, v in os.environ.items()
+            if k.startswith("STRO_SECRET_") and len(v) >= 6]
+
+
+def _scrub(obj):
+    if isinstance(obj, str):
+        for sec in _SECRETS:
+            obj = obj.replace(sec, "[REDACTED]")
+        return obj
+    if isinstance(obj, dict):
+        return {k: _scrub(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_scrub(v) for v in obj]
+    return obj
+
+
 def get_company() -> dict:
     rows = _req("company?select=*&limit=1")
     if not rows:
@@ -27,11 +46,11 @@ def get_company() -> dict:
 
 
 def insert(table: str, row: dict) -> dict:
-    return _req(table, "POST", row)[0]
+    return _req(table, "POST", _scrub(row))[0]
 
 
 def update(table: str, row_id: str, patch: dict):
-    _req(f"{table}?id=eq.{row_id}", "PATCH", patch)
+    _req(f"{table}?id=eq.{row_id}", "PATCH", _scrub(patch))
 
 
 def recent_journal(company_id: str, limit: int = 25) -> list[dict]:
