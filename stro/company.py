@@ -64,8 +64,11 @@ def resolved_escalations_since(company_id: str, since_iso: str) -> list[dict]:
 def month_to_date(company_id: str) -> dict:
     """Burn and revenue for the current calendar month, in USD."""
     from datetime import datetime, timezone
+    # 'Z' not '+00:00': a '+' inside a querystring decodes as a space and
+    # PostgREST rejects the mangled timestamp with a 400.
     start = datetime.now(timezone.utc).replace(
-        day=1, hour=0, minute=0, second=0, microsecond=0).isoformat()
+        day=1, hour=0, minute=0, second=0,
+        microsecond=0).isoformat().replace("+00:00", "Z")
     rows = _req(f"ledger?company_id=eq.{company_id}&ts=gte.{start}"
                 "&select=category,amount_usd")
     burn = sum(-float(r["amount_usd"]) for r in rows if float(r["amount_usd"]) < 0)
