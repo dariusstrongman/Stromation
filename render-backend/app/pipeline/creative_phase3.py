@@ -215,7 +215,6 @@ def propose_broll(raw: dict, segments: list[Segment],
             continue
         try:
             t_in, t_out = float(e["timelineIn"]), float(e["timelineOut"])
-            s_in = float(e["sourceIn"])
         except (KeyError, TypeError, ValueError):
             continue
         host_dur = t_out - t_in
@@ -487,12 +486,18 @@ def breath_pad_cuts(raw: dict, segments: list[Segment]) -> None:
     """PHASE3_AUDIO_EDIT: a cut landing exactly on a sentence end clips the
     speaker's breath. Where unused source allows, pad the out-point by up to
     BREATH_PAD_SECONDS past the sentence end — recorded in the dialogue
-    ledger like every other system repair."""
+    ledger like every other system repair.
+
+    MUST run BEFORE the planner's arithmetic rebuild (it mutates source
+    ranges; the cursor pass then recomputes timeline bookkeeping), and it
+    respects the plan's own reserved transition handles (the Batch A
+    lesson: a repair must never consume geometry the plan reserved)."""
     if not (isinstance(raw, dict) and isinstance(raw.get("timeline"), list)):
         return
+    from .editorial_phase2 import _reserved_handles
+    reserves = _reserved_handles(raw)
     by_id = {s.segmentId: s for s in segments}
-    ledger = raw.setdefault("dialogueAdjustments", []) \
-        if any(isinstance(e, dict) for e in raw["timeline"]) else []
+    adjustments: list[dict] = []
     for i, e in enumerate(raw["timeline"]):
         if not isinstance(e, dict):
             continue
@@ -503,22 +508,22 @@ def breath_pad_cuts(raw: dict, segments: list[Segment]) -> None:
             s_out = float(e["sourceOut"])
         except (KeyError, TypeError, ValueError):
             continue
+        _, tail_res = reserves.get(i, (0.0, 0.0))
         at_sentence_end = any(abs(sp.end - s_out) <= 0.03
                               for sp in seg.speechSpans)
-        room = seg.sourceEnd - s_out
+        room = seg.sourceEnd - tail_res - s_out
         next_speech = min((sp.start for sp in seg.speechSpans
                            if sp.start > s_out + 0.03), default=None)
         pad = min(BREATH_PAD_SECONDS, room,
                   (next_speech - s_out) if next_speech else BREATH_PAD_SECONDS)
         if at_sentence_end and pad >= 0.05:
             new_out = round(s_out + pad, 3)
-            ledger.append({"index": i, "field": "sourceOut",
-                           "from": round(s_out, 3), "to": new_out,
-                           "reason": "breath room after sentence end"})
+            adjustments.append({"index": i, "field": "sourceOut",
+                                "from": round(s_out, 3), "to": new_out,
+                                "reason": "breath room after sentence end"})
             e["sourceOut"] = new_out
-    if not ledger and "dialogueAdjustments" in raw \
-            and not raw["dialogueAdjustments"]:
-        raw.pop("dialogueAdjustments")
+    if adjustments:
+        raw.setdefault("dialogueAdjustments", []).extend(adjustments)
 
 
 # =============================================================== Visual rhythm
@@ -682,13 +687,19 @@ def phase3_violations(plan, segments: list[Segment]) -> list[str]:
     return out
 
 
-def normalize_phase3(raw: dict, segments: list[Segment]) -> None:
-    """System-authored repairs, run at the END of the planner's normalize
-    (after snapping and arithmetic rebuild). Order matters: breath padding
-    adjusts out-points; captions refine display only; b-roll placement needs
-    the final timeline geometry."""
+def normalize_phase3_pre_arithmetic(raw: dict,
+                                    segments: list[Segment]) -> None:
+    """Source-range repairs — run AFTER dialogue snapping, BEFORE the
+    planner's cursor rebuild, so timeline bookkeeping and pacing sync are
+    recomputed from the padded trims."""
     if enabled(AUDIO_FLAG):
         breath_pad_cuts(raw, segments)
+
+
+def normalize_phase3_post(raw: dict, segments: list[Segment]) -> None:
+    """Display/coverage repairs — run at the very END of normalize: caption
+    refinement and b-roll placement need the FINAL timeline geometry and
+    never mutate source ranges or timeline arithmetic."""
     if enabled(CAPTIONS_FLAG):
         refine_captions(raw, segments)
     if enabled(BROLL_FLAG):

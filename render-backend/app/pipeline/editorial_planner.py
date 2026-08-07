@@ -155,6 +155,7 @@ class Caption(BaseModel):
     timelineEnd: float = Field(gt=0)
     styleTemplate: str = "default"
     safeArea: str = "platform-safe"
+    emphasisWord: str | None = None      # Phase 3: system-set, one per caption
 
 
 class GraphicItem(BaseModel):
@@ -320,6 +321,25 @@ class LoopPlan(BaseModel):
     closedBySegmentId: str
 
 
+class BrollInsertion(BaseModel):
+    """One SYSTEM-planned b-roll coverage: the picture cuts away while the
+    host clip's speech continues underneath (audio-under). Phase 3
+    (PHASE3_BROLL) — system-authored in normalize, never model-written."""
+    id: str
+    targetIndex: int = Field(ge=0)
+    offsetSeconds: float = Field(ge=0)      # from the host clip's timelineIn
+    durationSeconds: float = Field(gt=0)
+    assetId: str
+    sourceStart: float = Field(ge=0)
+    sourceEnd: float = Field(gt=0)
+    brollSegmentId: str
+    origin: str = "catalog"                 # catalog|uploaded|generated_placeholder|stock
+    motivation: str
+    matchedTokens: list[str] = Field(default_factory=list)
+    confidence: float = Field(ge=0, le=1)
+    audioUnder: bool = True
+
+
 class EditorialPlan(BaseModel):
     schemaVersion: Literal[1]
     storySentence: GroundedText
@@ -353,6 +373,8 @@ class EditorialPlan(BaseModel):
     # Phase 2 (all optional — a Phase 1 plan validates unchanged)
     loops: list[LoopPlan] = Field(default_factory=list)
     dialogueAdjustments: list[dict] = Field(default_factory=list)  # system-written
+    # Phase 3 (optional; system-written in normalize under PHASE3_BROLL)
+    brollInsertions: list[BrollInsertion] = Field(default_factory=list)
 
 
 # ----------------------------------------------------- structured user policies
@@ -1161,10 +1183,12 @@ def validate_plan(plan: EditorialPlan, segments: list[Segment],
     # -- Phase 2 editorial-intelligence checks (flag-gated, additive; joining
     # this list makes them hard by construction — violations force a revise).
     # They can only ADD violations, never remove or weaken a truth ruling.
-    from . import editorial_phase2
+    from . import creative_phase3, editorial_phase2
     if editorial_phase2.any_enabled():
         v.extend(editorial_phase2.phase2_violations(plan, segments,
                                                     constraints))
+    if creative_phase3.any_enabled():
+        v.extend(creative_phase3.phase3_violations(plan, segments))
     return v
 
 
@@ -1579,16 +1603,21 @@ def _normalize_timeline_arithmetic(raw: dict, segments: list[Segment]) -> None:
     """
     if not isinstance(raw, dict) or not isinstance(raw.get("timeline"), list):
         return
-    # dialogueAdjustments is SYSTEM-OWNED: whatever the model emitted there
-    # is discarded before repair runs, so the persisted ledger can only ever
-    # describe edits this code actually performed (audit A6/A4).
+    # dialogueAdjustments and brollInsertions are SYSTEM-OWNED: whatever the
+    # model emitted there is discarded before repair runs, so the persisted
+    # ledgers can only ever describe edits this code performed (audit A6/A4).
     raw.pop("dialogueAdjustments", None)
+    raw.pop("brollInsertions", None)
     # Phase 2 dialogue integrity: snap speech-severing cuts to safe
     # boundaries FIRST, so the arithmetic below is rebuilt from the snapped
     # trims. Flag-gated inside; a no-op when PHASE2_DIALOGUE is off.
-    from . import editorial_phase2
+    from . import creative_phase3, editorial_phase2
     if editorial_phase2.enabled(editorial_phase2.DIALOGUE_FLAG):
         editorial_phase2.snap_timeline_speech(raw, segments)
+    # Phase 3 source-range repairs (breath padding) — before the cursor
+    # rebuild so all timeline bookkeeping reflects the padded trims.
+    if creative_phase3.any_enabled():
+        creative_phase3.normalize_phase3_pre_arithmetic(raw, segments)
     by_id = {s.segmentId: s for s in segments}
     cursor = 0.0
     for entry in raw["timeline"]:
@@ -1752,6 +1781,12 @@ def _normalize_timeline_arithmetic(raw: dict, segments: list[Segment]) -> None:
             raw["technicalWarnings"] = [w for w in warns
                                         if _fact_verifiable(w)]
 
+    # Phase 3 display/coverage repairs (caption refinement, b-roll planning)
+    # — LAST: they need the FINAL timeline geometry and post-drop captions,
+    # and they never mutate source ranges or timeline arithmetic.
+    if creative_phase3.any_enabled():
+        creative_phase3.normalize_phase3_post(raw, segments)
+
 
 def plan_editorial(segments: list[Segment], constraints: dict,
                    music_available: bool, generate,
@@ -1784,8 +1819,9 @@ def plan_editorial(segments: list[Segment], constraints: dict,
     ]
     # Phase 2: for every flag that is ON, tell the model exactly the rules
     # the validator will enforce (empty list when all flags are off).
-    from . import editorial_phase2
+    from . import creative_phase3, editorial_phase2
     base_parts += editorial_phase2.prompt_parts(segments)
+    base_parts += creative_phase3.prompt_parts(segments)
     schema = _response_schema()
     history: list[list[str]] = []
     feedback: list[dict] = []
@@ -1846,6 +1882,13 @@ def plan_editorial(segments: list[Segment], constraints: dict,
                 # the truth gate — evaluated only for plans that already
                 # passed every truth rule, so interest can only ever choose
                 # among honest plans, not rescue a dishonest one.
+                # Phase 3 retention critique — ADVISORY report attached to
+                # every approved result when the flag is on (the optional
+                # floor is enforced in validate_plan, not here)
+                if creative_phase3.enabled(creative_phase3.CRITIC_FLAG) \
+                        and plan.status == "approved":
+                    result["retentionReport"] = \
+                        creative_phase3.retention_report(plan, segments)
                 if editorial_phase2.enabled(editorial_phase2.INTEREST_FLAG) \
                         and plan.status == "approved":
                     ig = editorial_phase2.interest_gate(plan, segments,
