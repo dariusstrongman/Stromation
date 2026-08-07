@@ -16,7 +16,13 @@ from . import company, narrator, voiceover
 from .tools import make_company_server
 
 HERE = pathlib.Path(__file__).parent
-MAX_TURNS = int(os.environ.get("STRO_MAX_TURNS", "40"))
+# A session is bounded by MONEY, not turns. Turns are a crude proxy: a
+# frugal turn and a wasteful one cost wildly different amounts, and capping
+# turns punishes efficiency instead of rewarding it. The turn ceiling stays
+# only as a runaway backstop, set high.
+SESSION_BUDGET_USD = float(os.environ.get("STRO_SESSION_BUDGET_USD", "0.55"))
+MAX_TURNS = int(os.environ.get("STRO_MAX_TURNS", "150"))
+EFFORT = os.environ.get("STRO_EFFORT", "medium")
 # Stop before the cap so one session can't blow through it.
 BUDGET_SOFT_STOP = 0.95
 
@@ -32,10 +38,10 @@ def _state_briefing(co: dict) -> str:
         f" | revenue ${books['revenue_usd']:.2f}"
         f" | thinking budget left ${runway:.2f}",
     ]
-    mems = company.memories(co["id"])
+    mems = company.memories(co["id"])[:25]
     if mems:
         parts.append("## Memory\n" + "\n".join(
-            f"- [{m['kind']}] {m['slug']}: {m['content'][:300]}" for m in mems))
+            f"- [{m['kind']}] {m['slug']}: {m['content'][:220]}" for m in mems))
     tasks = company.open_tasks(co["id"])
     if tasks:
         parts.append("## Open tasks\n" + "\n".join(
@@ -55,10 +61,10 @@ def _state_briefing(co: dict) -> str:
             f"- [{e['status'].upper()}] {e['action']}"
             f"{' — ' + e['resolution'] if e.get('resolution') else ''}"
             for e in answered))
-    journal = company.recent_journal(co["id"])
+    journal = company.recent_journal(co["id"], limit=12)
     if journal:
         parts.append("## Recent journal (newest first)\n" + "\n".join(
-            f"- {j['ts'][:16]} [{j['entry_type']}] {j['content'][:400]}"
+            f"- {j['ts'][:16]} [{j['entry_type']}] {j['content'][:280]}"
             for j in journal))
     else:
         parts.append("## Recent journal\n(empty — this is your FIRST day. "
@@ -80,11 +86,14 @@ def _state_briefing(co: dict) -> str:
                      "content)\n" + "\n".join(
             f"- {name}: {value}" for name, value in sorted(creds.items())))
     parts.append(
-        f"\nThis is one work session and you have about {MAX_TURNS} turns of "
-        "work in it — roughly a morning. Pace yourself: pick ONE thing worth "
-        "finishing rather than starting five. When you are around five turns "
-        "from the end, stop working and journal. A day you cannot remember "
-        "tomorrow was worth very little today.")
+        f"\nThis session is bounded by MONEY, not time: about "
+        f"${SESSION_BUDGET_USD:.2f} of thinking. Every turn you take re-reads "
+        "everything before it, so a noisy command early costs you on every "
+        "turn after it — silence is literally cheaper. Keep tool output "
+        "small (pipe to `head`/`tail`, use `--quiet`, `-q`, `2>/dev/null`, "
+        "never print progress bars or whole files you do not need). Pick ONE "
+        "thing worth finishing rather than starting five, and leave room to "
+        "write the day down. Efficiency buys you more work, not less.")
     return "\n\n".join(parts)
 
 
@@ -124,6 +133,8 @@ async def wake():
         system_prompt=(HERE / "founder.md").read_text(),
         model=co["model"],
         max_turns=MAX_TURNS,
+        max_budget_usd=SESSION_BUDGET_USD,
+        effort=EFFORT,
         cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
         permission_mode="bypassPermissions",   # headless founder, no human
         # The CLI's own stderr is the only place launch failures explain
@@ -157,6 +168,7 @@ async def wake():
             pass
 
     cost, turns, last_text = 0.0, 0, ""
+    usage_note: list[str] = []
     emit("session_start", "Stro wakes up", None)
     try:
       async with asyncio.timeout(int(os.environ.get("STRO_SESSION_MAX_S",
@@ -179,6 +191,13 @@ async def wake():
                         emit("tool_result", None, str(block.content))
             elif isinstance(msg, ResultMessage):
                 cost = msg.total_cost_usd or 0.0
+                u = msg.usage or {}
+                if isinstance(u, dict) and u:
+                    usage_note.append(
+                        "tokens in={} out={} cache_read={} cache_write={}".format(
+                            u.get("input_tokens", 0), u.get("output_tokens", 0),
+                            u.get("cache_read_input_tokens", 0),
+                            u.get("cache_creation_input_tokens", 0)))
       status = "completed"
     except Exception as exc:  # noqa: BLE001 — a crashed session still gets booked
         detail = " | ".join(_cli_err[-12:])[:1500]
@@ -241,7 +260,8 @@ async def wake():
     company.update("wakeups", wk["id"], {
         "status": status, "cost_usd": round(cost, 4), "num_turns": turns,
         "finished_at": datetime.now(timezone.utc).isoformat(),
-        "summary": last_text[:2000]})
+        "summary": (last_text[:1800] + ("\n\n" + usage_note[-1]
+                                        if usage_note else ""))[:2000]})
     emit("session_end", status, f"{turns} turns, ${cost:.4f}")
 
     # The documentary crew films every day, including the bad ones.
