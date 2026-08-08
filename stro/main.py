@@ -288,7 +288,8 @@ async def wake(mode: str = "focus", model: str | None = None,
              "mcp__company__task_create", "mcp__company__task_update",
              "mcp__company__escalate", "mcp__company__set_appearance",
              "mcp__company__book_expense", "mcp__company__hire",
-             "mcp__company__delegate", "mcp__company__fire"]
+             "mcp__company__delegate", "mcp__company__fire",
+             "mcp__company__set_my_model"]
             if mode == "focus" else
             # A check-in gets a small, immediate toolset: a long list gets
             # deferred and he burns his whole budget searching for his own
