@@ -346,12 +346,7 @@ async def wake(mode: str = "focus", model: str | None = None,
         # themselves; capture it so a crash is diagnosable from the world.
         stderr=lambda line: _cli_err.append(line),
         env={**os.environ, "HOME": os.environ.get("STRO_HOME", "/home/stro"),
-             "IS_SANDBOX": "1",
-             # Measured: a tick pays ~21k cache WRITE tokens (72% of its
-             # cost) because the 5-minute TTL dies in the gap between
-             # check-ins. At a 40-minute heartbeat each read refreshes a
-             # 1-hour entry, so the chain never breaks and the write is
-             # paid about once a day instead of thirty-six times.},
+             "IS_SANDBOX": "1"},
         allowed_tools=(
             ["Bash", "Read", "Write", "Edit", "Glob", "Grep",
              "WebSearch", "WebFetch",
