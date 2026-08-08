@@ -93,7 +93,8 @@ layout();
 world.pos={...SPOTS.door};world.target={...SPOTS.desk};
 
 function drawStro(){
-  const p=world.pos, bob=world.walking?(world.step>>3)%2:0;
+  const rest=(!world.live&&!world.walking)?1:0;   // resting, not stuck
+  const p=world.pos, bob=(world.walking?(world.step>>3)%2:0)+rest;
   if(!world.sprite){          // he hasn't chosen a self yet: a waiting outline
     cx.strokeStyle='#4b5460';cx.setLineDash([3,3]);
     cx.strokeRect((p.x-8)*S,(p.y-16+bob)*S,16*S,16*S);cx.setLineDash([]);
@@ -135,7 +136,7 @@ function tick(){
 function onEvent(e){
   world.lastKind=e.title;
   const say=(txt,ms=6000)=>{world.bubble=txt;world.bubbleUntil=Date.now()+ms};
-  if(e.kind==='session_start'){world.live=true;world.pos={...SPOTS.out};
+  if(e.kind==='session_start'){if(!world.live)world.pos={...SPOTS.door};world.live=true;
     world.target={...SPOTS.desk};say('good morning.')}
   else if(e.kind==='session_end'){say('done for now.');
     setTimeout(()=>{world.target={...SPOTS.desk};

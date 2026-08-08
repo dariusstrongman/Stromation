@@ -180,7 +180,7 @@ function onEvent(e){
   addLine(e);
   world.lastKind=e.title;
   const say=(txt,ms=6000)=>{world.bubble=txt;world.bubbleUntil=Date.now()+ms};
-  if(e.kind==='session_start'){world.live=true;world.pos={...SPOTS.out};
+  if(e.kind==='session_start'){if(!world.live)world.pos={...SPOTS.door};world.live=true;
     world.target={...SPOTS.desk};say('good morning.');setStatus()}
   else if(e.kind==='session_end'){say('done for now.');
     setTimeout(()=>{world.target={...SPOTS.desk};
