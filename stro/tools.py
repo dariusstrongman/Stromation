@@ -107,7 +107,8 @@ def make_company_server(company_id: str, wakeup_id: str):
           "Give an employee a task. They work AFTER your session ends and "
           "their report is waiting for you next session — so delegate "
           "things you do not need an answer to right now. Each delegation "
-          "costs their salary.",
+          "costs their salary. ADVISORS cannot see your files or run "
+          "anything, so put everything they need in `context`.",
           {"employee_name": str, "task": str, "context": str})
     async def delegate(args):
         matches = [e for e in staff.active_staff(company_id)

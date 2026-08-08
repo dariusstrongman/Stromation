@@ -22,23 +22,46 @@ from . import company
 # a senior costs what a senior costs. Roles are NOT fixed — he decides what
 # a person is for. Models outside this roster need credentials the owner
 # has not provisioned, which is itself something worth escalating about.
+# Two kinds of colleague. WORKERS get hands — a shell, the filesystem, the
+# web — and can actually build things. ADVISORS only read what you hand
+# them and write back; they are cheap, they have enormous context, and they
+# are the right hire for research, analysis and copy.
 ROSTER = {
     "claude-opus-5": {
-        "band": "senior", "rate": "$15/$75 per Mtok",
+        "band": "senior", "kind": "worker", "provider": "anthropic",
+        "rate": "$15/$75 per Mtok",
         "good_at": "hardest reasoning, architecture, gnarly debugging"},
     "claude-sonnet-5": {
-        "band": "mid", "rate": "$3/$15 per Mtok",
+        "band": "mid", "kind": "worker", "provider": "anthropic",
+        "rate": "$3/$15 per Mtok",
         "good_at": "engineering, long tool work, most real tasks"},
     "claude-haiku-4-5-20251001": {
-        "band": "junior", "rate": "$1/$5 per Mtok",
+        "band": "junior", "kind": "worker", "provider": "anthropic",
+        "rate": "$1/$5 per Mtok",
         "good_at": "routine work, drafting, checking, summarising"},
+    "gemini-2.5-pro": {
+        "band": "senior", "kind": "advisor", "provider": "google",
+        "rate": "$1.25/$10 per Mtok",
+        "good_at": "deep research and analysis over huge amounts of text"},
+    "gemini-2.5-flash": {
+        "band": "junior", "kind": "advisor", "provider": "google",
+        "rate": "$0.30/$2.50 per Mtok",
+        "good_at": "cheap fast research, summarising, drafting copy"},
+}
+GOOGLE_PRICES = {           # $ per million tokens (in, out)
+    "gemini-2.5-pro": (1.25, 10.0),
+    "gemini-2.5-flash": (0.30, 2.50),
 }
 
 
 def roster_text() -> str:
-    lines = [f"- {m} ({v['band']}, {v['rate']}) — {v['good_at']}"
+    lines = [f"- {m} ({v['band']} {v['kind']}, {v['rate']}) — {v['good_at']}"
              for m, v in ROSTER.items()]
-    return "\n".join(lines)
+    return ("\n".join(lines) +
+            "\nWORKERS have a shell and the filesystem and can build things. "
+            "ADVISORS cannot touch anything — they only read the task and "
+            "context you give them and write back, so hand them everything "
+            "they need. Advisors are much cheaper.")
 
 
 def active_staff(company_id: str) -> list[dict]:
@@ -99,6 +122,35 @@ def _employee_prompt(emp: dict, task: str, context: str, notes: list) -> str:
     return "\n".join(p for p in parts if p)
 
 
+def _ask_gemini(model: str, system: str, task: str) -> tuple[str, float]:
+    """An advisor: no hands, just judgment. Returns (report, cost)."""
+    import json as _json
+    import urllib.request
+    key = os.environ.get("STRO_SECRET_GEMINI_KEY")
+    if not key:
+        return ("no Gemini credentials provisioned", 0.0)
+    payload = {"systemInstruction": {"parts": [{"text": system}]},
+               "contents": [{"parts": [{"text": task}]}],
+               "generationConfig": {"maxOutputTokens": 4000}}
+    req = urllib.request.Request(
+        f"https://generativelanguage.googleapis.com/v1beta/models/"
+        f"{model}:generateContent?key={key}",
+        method="POST", data=_json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=300) as r:
+        data = _json.loads(r.read())
+    cands = data.get("candidates") or []
+    text = ""
+    if cands:
+        text = "".join(p.get("text", "")
+                       for p in cands[0].get("content", {}).get("parts", []))
+    u = data.get("usageMetadata") or {}
+    pin, pout = GOOGLE_PRICES.get(model, (0.30, 2.50))
+    cost = (u.get("promptTokenCount", 0) / 1e6 * pin
+            + u.get("candidatesTokenCount", 0) / 1e6 * pout)
+    return (text, round(cost, 6))
+
+
 async def run_delegation(co: dict, d: dict) -> None:
     """Run one employee's task and book their salary."""
     emps = company._req(f"employees?id=eq.{d['employee_id']}&select=*")
@@ -112,6 +164,27 @@ async def run_delegation(co: dict, d: dict) -> None:
         f"memory?employee_id=eq.{emp['id']}&select=content"
         "&order=updated_at.desc&limit=10")
     model = emp.get("model") or "claude-haiku-4-5-20251001"
+
+    spec = ROSTER.get(model, {})
+    if spec.get("provider") == "google":
+        try:
+            system = _employee_prompt(emp, d["task"], d.get("context") or "",
+                                      notes)
+            text, cost = _ask_gemini(model, system, d["task"])
+            status = "done"
+        except Exception as exc:  # noqa: BLE001
+            status, text, cost = "failed", f"{exc}", 0.0
+        company.update("delegations", d["id"], {
+            "status": status, "result": text[:4000], "cost_usd": round(cost, 4),
+            "completed_at": datetime.now(timezone.utc).isoformat()})
+        if cost:
+            company.insert("ledger", {
+                "company_id": co["id"], "category": "salary",
+                "employee_id": emp["id"],
+                "description": f"{emp['name']} ({emp['role']}): "
+                               f"{d['task'][:80]}",
+                "amount_usd": -round(cost, 4)})
+        return
 
     cost, text = 0.0, ""
     try:
