@@ -97,8 +97,12 @@ let SPOTS={}, HOME={};
 // the clock, and a session running anyway really is him getting up for it.
 const WORK_START=14, WORK_END=22;
 function phaseNow(){
-  const h=new Date().getUTCHours();
-  if(world.live) return (h>=WORK_START&&h<WORK_END)?'work':'called_in';
+  // ?hour=3 previews any hour of his day without waiting for it. Debug
+  // affordance only — it changes what is DRAWN, never what is claimed:
+  // the feed, books and captions still come from real rows.
+  const q=new URLSearchParams(location.search).get('hour');
+  const h=q!==null?(+q%24):new Date().getUTCHours();
+  if(world.live&&q===null) return (h>=WORK_START&&h<WORK_END)?'work':'called_in';
   if(h>=WORK_START&&h<WORK_END) return 'work';
   if(h>=WORK_END||h<2) return 'evening';
   if(h<13) return 'sleep';
