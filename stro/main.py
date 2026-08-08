@@ -305,8 +305,9 @@ async def wake(mode: str = "focus", model: str | None = None,
         return False
 
     _cli_err: list[str] = []
+    persona = "founder.md" if mode == "focus" else "founder_tick.md"
     options = ClaudeAgentOptions(
-        system_prompt=(HERE / "founder.md").read_text(),
+        system_prompt=(HERE / persona).read_text(),
         model=session_model,
         max_turns=MAX_TURNS if mode == "focus" else 14,
         max_budget_usd=session_budget,
@@ -404,7 +405,7 @@ async def wake(mode: str = "focus", model: str | None = None,
     # call whose only job is to remember the day. Losing the work is bad;
     # losing the MEMORY of the work is what actually compounds.
     wrote = company._req(f"journal?wakeup_id=eq.{wk['id']}&select=id&limit=1")
-    if not wrote and turns > 0:
+    if not wrote and turns > 0 and mode == "focus":
         emit("thought", None, "Out of time — writing the day down.")
         did = [f"{e['title'] or e['kind']}: {(e['body'] or '')[:120]}"
                for e in session_events if e["kind"] == "tool_use"][-25:]
