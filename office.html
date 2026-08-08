@@ -90,7 +90,9 @@ function layout(){
 }
 window.addEventListener('resize',layout);
 layout();
-world.pos={...SPOTS.door};world.target={...SPOTS.desk};
+// A page load is not an arrival: he was already at work before you
+// opened the tab. Start him where he belongs, not at the door.
+world.pos={...SPOTS.desk};world.target={...SPOTS.desk};
 
 function drawStro(){
   const rest=(!world.live&&!world.walking)?1:0;   // resting, not stuck

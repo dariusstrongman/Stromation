@@ -181,7 +181,9 @@ function layout(){
 }
 window.addEventListener('resize',layout);
 layout();
-world.pos={...SPOTS.door};world.target={...SPOTS.desk};
+// A page load is not an arrival: he was already at work before you
+// opened the tab. Start him where he belongs, not at the door.
+world.pos={...SPOTS.desk};world.target={...SPOTS.desk};
 
 function drawStro(){
   // Between wakes he sits a pixel lower — resting, not stuck.
@@ -218,13 +220,32 @@ function bubble(){
   cx.fillStyle='#0b0d10';cx.fillText(t,bx+6,by+13);
 }
 function isTyping(){return ['Bash','Write','Edit'].includes(world.lastKind)}
+// Where he settles in a given phase — the place a refresh should find him
+// ALREADY standing, rather than watching him arrive again.
+function restingSpot(ph){
+  if(ph==='work'||ph==='called_in') return SPOTS.desk;
+  if(ph==='sleep') return HOME.bed;
+  if(ph==='morning') return HOME.kettle;
+  return HOME.couch;
+}
+
 function tick(){
   const ph=phaseNow();
   // Home is a real place he goes, not a metaphor: outside working hours he
   // is genuinely off the clock, and drifting between couch, kettle and bed
   // is an honest picture of a person who is not at work.
+  //
+  // First paint after a page load is NOT an arrival. Walking him in from
+  // the door on every refresh made a continuously-running company look
+  // like it restarted whenever you looked at it. Only a real scene change
+  // — being called in, or going home — uses the door.
+  const arriving = !!world.placed;
   if(ph!=='work'&&ph!=='called_in'){
-    if(world.scene!=='home'){world.scene='home';world.pos={...HOME.door}}
+    if(world.scene!=='home'){
+      world.scene='home';
+      world.pos = arriving ? {...HOME.door} : {...restingSpot(ph)};
+      world.target = {...restingSpot(ph)};
+    }
     if(!world.walking&&Date.now()>(world.nextDrift||0)){
       const dest = ph==='sleep' ? HOME.bed
         : ph==='morning' ? [HOME.kettle,HOME.bed,HOME.door][(Date.now()/9e4|0)%3]
@@ -234,8 +255,11 @@ function tick(){
     }
   } else if(world.scene!=='office'){
     // Called in out of hours: he comes from home, through the door.
-    world.scene='office';world.pos={...SPOTS.door};world.target={...SPOTS.desk};
+    world.scene='office';
+    world.pos = arriving ? {...SPOTS.door} : {...SPOTS.desk};
+    world.target={...SPOTS.desk};
   }
+  world.placed = true;
   const p=world.pos,t=world.target,dx=t.x-p.x,dy=t.y-p.y,d=Math.hypot(dx,dy);
   world.walking=d>1;
   const speed = ph==='sleep' ? .25 : .55;
