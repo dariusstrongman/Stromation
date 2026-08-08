@@ -93,15 +93,31 @@ def _state_briefing(co: dict) -> str:
         "folders, commit to git as you go, and leave notes for your future "
         "self. Anything you want to survive lives here or in memory; nothing "
         "else does.")
+    # Report the budget as WORK, not as a dollar figure: a small-looking
+    # number made him quit at 35% usage having done almost nothing. What
+    # matters is how many turns it buys, and that unspent budget is wasted.
+    per_turn = 0.018
+    prior = company._req(
+        f"wakeups?company_id=eq.{co['id']}&num_turns=gt.3"
+        "&select=num_turns,cost_usd&order=started_at.desc&limit=5")
+    if prior:
+        costs = [(float(w["cost_usd"] or 0), w["num_turns"]) for w in prior]
+        tot_c = sum(c for c, _ in costs)
+        tot_t = sum(t for _, t in costs) or 1
+        if tot_c > 0:
+            per_turn = max(0.004, tot_c / tot_t)
+    affordable = int(SESSION_BUDGET_USD / per_turn)
     parts.append(
-        f"\nThis session is bounded by MONEY, not time: about "
-        f"${SESSION_BUDGET_USD:.2f} of thinking. Every turn you take re-reads "
-        "everything before it, so a noisy command early costs you on every "
-        "turn after it — silence is literally cheaper. Keep tool output "
-        "small (pipe to `head`/`tail`, use `--quiet`, `-q`, `2>/dev/null`, "
-        "never print progress bars or whole files you do not need). Pick ONE "
-        "thing worth finishing rather than starting five, and leave room to "
-        "write the day down. Efficiency buys you more work, not less.")
+        f"\nYou have roughly **{affordable} turns** of work in this session "
+        "— a solid working block, comfortably enough to finish something "
+        "real. USE IT: unspent budget does not roll over, and a session that "
+        "ends early having accomplished nothing is pure waste. Do not ration "
+        "yourself into paralysis.\n"
+        "Spend it well rather than sparingly: every turn re-reads everything "
+        "before it, so keep tool output small (pipe to `head`/`tail`, "
+        "`--quiet`, `2>/dev/null`, never print progress bars or whole files). "
+        "Pick ONE thing worth finishing rather than starting five, and leave "
+        "a few turns at the end to write the day down.")
     return "\n\n".join(parts)
 
 
