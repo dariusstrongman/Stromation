@@ -13,8 +13,13 @@ being nested inside another.
 import os
 from datetime import datetime, timezone
 
-from claude_agent_sdk import (AssistantMessage, ClaudeAgentOptions,
-                              ResultMessage, TextBlock, query)
+from claude_agent_sdk import (
+    AssistantMessage,
+    ClaudeAgentOptions,
+    ResultMessage,
+    TextBlock,
+    query,
+)
 
 from . import company
 

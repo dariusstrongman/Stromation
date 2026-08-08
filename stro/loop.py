@@ -90,18 +90,57 @@ def _park(co: dict, reasons: list[str], why: str) -> None:
             "why": f"The loop could not run a session for this ({why[:160]}). "
                    "It will not be raised again automatically."})
     except Exception:  # noqa: BLE001
-        pass
+        print("[loop] swallowed a failure at line 93")
+
+
+def _report_broken(co: dict, streak: int, why: str) -> None:
+    """A company meant to run forever must be able to say when it cannot.
+
+    Escalates ONCE per outage: the owner learns something is wrong without
+    being buried, and the founder's own escalation queue is not spammed.
+    """
+    st = dict(co.get("trigger_state") or {})
+    if st.get("outage_reported"):
+        return
+    st["outage_reported"] = True
+    try:
+        company.update("company", co["id"], {"trigger_state": st})
+        company.insert("escalations", {
+            "company_id": co["id"],
+            "action": f"The company has been unable to work for {streak} "
+                      "consecutive cycles",
+            "reason": f"Last error: {why[:400]}. Nothing will run until this "
+                      "is fixed. This is reported once per outage."})
+    except Exception as exc:  # noqa: BLE001
+        print(f"[loop] could not report outage: {exc!r}")
+
+
+def _report_recovered(co: dict) -> None:
+    st = dict(co.get("trigger_state") or {})
+    if not st.get("outage_reported"):
+        return
+    st["outage_reported"] = False
+    try:
+        company.update("company", co["id"], {"trigger_state": st})
+    except Exception as exc:  # noqa: BLE001
+        print(f"[loop] could not clear outage flag: {exc!r}")
 
 
 async def run() -> None:
     print("stro is awake; the office does not close")
+    streak, last_err, last_co = 0, "", None
     while True:
         try:
             co = company.get_company()
             budget_left = allowance(co)
 
-            # Broke for now: stay alive, stay quiet, cost nothing.
+            # Out of money for now: stay alive, stay quiet, cost nothing.
+            # This is a normal end-of-month state, not a failure — the
+            # allowance refills as the calendar advances.
             if budget_left < 0.02:
+                if streak:
+                    _report_recovered(co)
+                streak, last_co = 0, co
                 await asyncio.sleep(600)
                 continue
 
@@ -128,13 +167,28 @@ async def run() -> None:
                         # and month-end blocking is routine, so this is the
                         # likelier way to lose a signal than a crash.
                         _park(co, reasons, "monthly budget exhausted")
-                except Exception as exc:  # noqa: BLE001
+                except Exception as exc:
                     _park(co, reasons, str(exc))
                     raise
             # nothing to do: the free path, and by far the most common one
+            if streak:
+                print(f"[loop] recovered after {streak} failed cycles")
+                _report_recovered(co)
+            streak, last_co = 0, co
         except Exception as exc:  # noqa: BLE001 — the company outlives its bugs
-            print(f"loop error (continuing): {exc}")
-        await asyncio.sleep(CHECK_EVERY_S)
+            streak += 1
+            last_err = f"{exc!r}"
+            print(f"[loop] error #{streak} (continuing): {last_err}")
+            # Ten consecutive failures is not a blip. Tell the owner, once.
+            if streak == 10 and last_co:
+                _report_broken(last_co, streak, last_err)
+
+        # Back off when the world is broken rather than hammering a dead
+        # dependency every minute for days.
+        delay = CHECK_EVERY_S
+        if streak:
+            delay = min(CHECK_EVERY_S * (2 ** min(streak, 5)), 1800)
+        await asyncio.sleep(delay)
 
 
 if __name__ == "__main__":

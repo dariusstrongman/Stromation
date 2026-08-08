@@ -58,10 +58,13 @@ def recent_journal(company_id: str, limit: int = 25) -> list[dict]:
                 f"&select=ts,entry_type,content&order=ts.desc&limit={limit}")
 
 
-def open_tasks(company_id: str) -> list[dict]:
+def open_tasks(company_id: str, limit: int = 25) -> list[dict]:
+    """Bounded on purpose: this feeds every briefing, so an unclosed task
+    backlog would otherwise raise the price of every future session."""
     return _req(f"tasks?company_id=eq.{company_id}"
                 "&status=in.(open,in_progress)"
-                "&select=id,title,why,status,priority&order=priority")
+                "&select=id,title,why,status,priority"
+                f"&order=priority&limit={limit}")
 
 
 def memories(company_id: str) -> list[dict]:
@@ -136,7 +139,7 @@ def sync_stripe_revenue(company_id: str, since_iso: str) -> float:
         return 0.0
     booked = {row["description"] for row in _req(
         f"ledger?company_id=eq.{company_id}&category=eq.revenue"
-        "&select=description")}
+        "&select=description&order=ts.desc&limit=200")}
     new_total = 0.0
     for c in charges:
         tag = f"stripe_charge:{c['id']}"

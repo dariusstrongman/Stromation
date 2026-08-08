@@ -12,7 +12,7 @@ import imaplib
 import json
 import os
 import urllib.request
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 from . import company
 
@@ -79,7 +79,7 @@ def _new_mail(state: dict, company_id: str = "") -> tuple[str | None, dict]:
                            "mail trigger cannot detect a mailbox reset. If "
                            "mail ever stops waking me, suspect that first."})
         except Exception:  # noqa: BLE001
-            pass
+            print("[triggers] swallowed a failure at line 82")
     if validity and state.get("mail_uidvalidity") != validity:
         state["mail_uidvalidity"] = validity
         state["mail_uid"] = top
@@ -100,8 +100,14 @@ def _new_mail(state: dict, company_id: str = "") -> tuple[str | None, dict]:
 
 
 def _new_payment(company_id: str) -> str | None:
-    """Paid orders are checked against the ledger, which is already the
-    high-water mark: anything booked has been handled."""
+    """Paid orders, checked against recently booked revenue.
+
+    The ledger lookup is bounded deliberately: this runs every sixty
+    seconds forever, and an unbounded scan reads every sale the company
+    ever made, on every cycle, for the rest of its life. Stripe only
+    returns the 20 newest charges, so 200 booked rows is far more overlap
+    than the comparison can ever need.
+    """
     key = os.environ.get("STRO_SECRET_STRIPE_KEY")
     if not key:
         return None
@@ -115,7 +121,7 @@ def _new_payment(company_id: str) -> str | None:
         return None
     booked = {row["description"] for row in company._req(
         f"ledger?company_id=eq.{company_id}&category=eq.revenue"
-        "&select=description")}
+        "&select=description&order=ts.desc&limit=200")}
     fresh = [c for c in charges
              if c.get("paid") and not c.get("refunded")
              and (c.get("metadata") or {}).get("stromation") == "1"
@@ -190,31 +196,31 @@ def check(co: dict, max_idle_min: int) -> list[str]:
         if r:
             found.append(r)
     except Exception:  # noqa: BLE001
-        pass
+        print("[triggers] swallowed a failure at line 199")
     for fn in (_new_mail,):
         try:
             r, state = fn(state, cid)
             if r:
                 found.append(r)
         except Exception:  # noqa: BLE001
-            pass
+            print("[triggers] swallowed a failure at line 206")
     for fn in (_staff_reports, _owner_answered):
         try:
             r, state = fn(cid, state)
             if r:
                 found.append(r)
         except Exception:  # noqa: BLE001
-            pass
+            print("[triggers] swallowed a failure at line 213")
     try:
         r = _idle(cid, max_idle_min)
         if r:
             found.append(r)
     except Exception:  # noqa: BLE001
-        pass
+        print("[triggers] swallowed a failure at line 219")
 
     if state != before:
         try:
             _save(cid, state)
         except Exception:  # noqa: BLE001
-            pass
+            print("[triggers] swallowed a failure at line 225")
     return found

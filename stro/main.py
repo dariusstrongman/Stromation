@@ -8,9 +8,16 @@ import os
 import pathlib
 from datetime import datetime, timezone
 
-from claude_agent_sdk import (AssistantMessage, ClaudeAgentOptions,
-                              ResultMessage, TextBlock, ToolResultBlock,
-                              ToolUseBlock, UserMessage, query)
+from claude_agent_sdk import (
+    AssistantMessage,
+    ClaudeAgentOptions,
+    ResultMessage,
+    TextBlock,
+    ToolResultBlock,
+    ToolUseBlock,
+    UserMessage,
+    query,
+)
 
 from . import company, narrator, staff, voiceover
 from .tools import make_company_server
@@ -117,7 +124,9 @@ def _state_briefing(co: dict, mode: str = "focus",
     if pend:
         parts.append("## Escalations awaiting the owner (do NOT re-raise)\n"
                      + "\n".join(f"- {e['action']}" for e in pend))
-    from datetime import datetime as _dt, timedelta, timezone as _tz
+    from datetime import datetime as _dt
+    from datetime import timedelta
+    from datetime import timezone as _tz
     week_ago = (_dt.now(_tz.utc) - timedelta(days=7)).isoformat().replace(
         "+00:00", "Z")
     answered = company.resolved_escalations_since(co["id"], week_ago)
@@ -175,7 +184,9 @@ def _state_briefing(co: dict, mode: str = "focus",
             "## Staff\nYou work alone. Hire when a function is genuinely "
             "eating your time — an employee's model IS their salary, paid "
             "from the same runway you live on.")
-    from datetime import datetime as _dt2, timedelta as _td2, timezone as _tz2
+    from datetime import datetime as _dt2
+    from datetime import timedelta as _td2
+    from datetime import timezone as _tz2
     since = (_dt2.now(_tz2.utc) - _td2(days=3)).isoformat().replace(
         "+00:00", "Z")
     reports = staff.completed_since(co["id"], since)
@@ -337,7 +348,7 @@ async def wake(mode: str = "focus", model: str | None = None,
                 "company_id": co["id"], "wakeup_id": wk["id"], "kind": kind,
                 "title": title, "body": (body or "")[:4000] or None})
         except Exception:  # noqa: BLE001
-            pass
+            print("[main] swallowed a failure at line 340")
 
     cost, turns, last_text = 0.0, 0, ""
     usage_note: list[str] = []
@@ -433,7 +444,7 @@ async def wake(mode: str = "focus", model: str | None = None,
                     elif isinstance(msg, ResultMessage):
                         cost += msg.total_cost_usd or 0.0
         except Exception:  # noqa: BLE001 — best effort; never fatal
-            pass
+            print("[main] swallowed a failure at line 436")
 
     # The founder has gone home; the staff work their tasks now, so their
     # reports are waiting for him next session.
@@ -442,7 +453,7 @@ async def wake(mode: str = "focus", model: str | None = None,
         try:
             await staff.run_delegation(co, d)
         except Exception:  # noqa: BLE001 — an employee failing is not fatal
-            pass
+            print("[main] swallowed a failure at line 445")
 
     company.insert("ledger", {
         "company_id": co["id"], "wakeup_id": wk["id"],
@@ -474,7 +485,7 @@ async def wake(mode: str = "focus", model: str | None = None,
         if nar:
             voiceover.voice_narration(nar)
     except Exception:  # noqa: BLE001 — narration never breaks the company
-        pass
+        print("[main] swallowed a failure at line 477")
     print(f"{status}: {turns} turns, ${cost:.4f}")
     return True
 
