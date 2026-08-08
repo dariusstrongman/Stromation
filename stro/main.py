@@ -27,13 +27,50 @@ EFFORT = os.environ.get("STRO_EFFORT", "medium")
 BUDGET_SOFT_STOP = 0.95
 
 
+def _tick_briefing(co: dict, budget: float, reasons: list[str] | None,
+                   per_turn: float) -> str:
+    """The cheap path. A check-in ships ~3k tokens, not ~32k: no
+    credentials, no roster, no memory, no books. Prompt size is the
+    dominant cost of a tick, so this is what makes an hourly heartbeat
+    affordable."""
+    ws = os.environ.get("STRO_WORKSPACE", "/workspace")
+    parts = [f"# {co['name']} — check-in",
+             f"You are the founder. Objective: {co['objective']}"]
+    if reasons:
+        parts.append("## Why you are awake\n- " + "\n- ".join(reasons))
+    tasks = company.open_tasks(co["id"])[:6]
+    if tasks:
+        parts.append("## Open tasks\n" + "\n".join(
+            f"- (p{t['priority']}) {t['title'][:110]} [id {t['id']}]"
+            for t in tasks))
+    jr = company.recent_journal(co["id"], limit=3)
+    if jr:
+        parts.append("## Last entries\n" + "\n".join(
+            f"- {j['content'][:160]}" for j in jr))
+    parts.append(
+        f"## Workspace\n{ws} — persists between sessions; your work is there.")
+    parts.append(
+        "## Watched for you, free\nPaid orders, company email, staff reports "
+        "and owner answers are polled automatically every minute. Never "
+        "spend a turn checking them — if something had arrived it would be "
+        "listed above.")
+    parts.append(
+        f"\nThis is a CHECK-IN: about {max(3, int(budget / per_turn))} turns. "
+        "Do the smallest useful thing and stop — answer, ship, fix, or note "
+        "it as a task. Do NOT start building; that is your focus block. "
+        "Journal one line before you finish. Keep tool output tiny.")
+    return "\n\n".join(parts)
+
+
 def _state_briefing(co: dict, mode: str = "focus",
                     budget: float | None = None,
                     reasons: list[str] | None = None) -> str:
+    budget = budget if budget is not None else SESSION_BUDGET_USD
+    if mode == "tick":
+        return _tick_briefing(co, budget, reasons, 0.004)
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
     runway = max(0.0, cap - books["burn_usd"])
-    budget = budget if budget is not None else SESSION_BUDGET_USD
     parts = [
         f"# Company: {co['name']}",
         f"Objective: {co['objective']}",
