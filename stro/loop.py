@@ -21,6 +21,12 @@ from .main import wake
 
 CHECK_EVERY_S = int(os.environ.get("STRO_CHECK_EVERY_S", "60"))
 MAX_IDLE_MIN = int(os.environ.get("STRO_MAX_IDLE_MIN", "25"))
+# Office hours, UTC. Routine work concentrates here so the same budget buys
+# a much denser heartbeat — and so the owner is awake for most of it. The
+# company still LIVES around the clock: money on the table always rings
+# through. Set STRO_WORK_HOURS_UTC="" for genuine 24/7.
+_WH = os.environ.get("STRO_WORK_HOURS_UTC", "14-22")
+WORK_START, WORK_END = (int(x) for x in _WH.split("-")) if "-" in _WH else (0, 24)
 # More than one real work session a day, because check-ins deliberately
 # cannot build anything — the focus blocks are the only time the business
 # actually moves.
@@ -149,9 +155,22 @@ async def run() -> None:
                 continue
 
             now = datetime.now(timezone.utc)
+            open_for_business = WORK_START <= now.hour < WORK_END
             is_focus = (now.hour in FOCUS_HOURS
                         and not focus_done_this_slot(co, now.hour))
             reasons = triggers.check(co, MAX_IDLE_MIN)
+
+            # Out of hours the founder is off the clock, but the business is
+            # not closed: a paid customer is waiting on something they have
+            # already bought, and that outranks office hours. Everything
+            # else — the idle clock, mail, staff reports, owner answers —
+            # keeps until morning.
+            if not open_for_business and not is_focus:
+                urgent = [r for r in reasons if "PAID ORDER" in r]
+                if not urgent:
+                    await asyncio.sleep(CHECK_EVERY_S)
+                    continue
+                reasons = urgent
 
             if is_focus:
                 mark_focus_done(co, now.hour)
