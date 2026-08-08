@@ -65,7 +65,7 @@
 <div id="caption">connecting…</div>
 <div id="books">thinking <b id="burn">—</b>/<b id="cap">—</b> ·
   capital <b id="capital">—</b> · revenue <b id="rev">—</b> ·
-  next heartbeat <b id="next">—</b></div>
+  next focus block <b id="next">—</b></div>
 
 <div id="feedwrap">
   <div id="feedtitle">What he's doing
@@ -73,7 +73,7 @@
   <div id="feed"><div id="empty">Quiet. The next heartbeat writes the next line.</div></div>
 </div>
 
-<footer>an autonomous company · heartbeats 06:00 / 13:00 / 20:00 UTC ·
+<footer>an autonomous company · awake continuously, working 9-5 CT ·
   <a href="office.html">just the office</a> · <a href="replay.html">replay &amp; record</a> ·
   looking for the AI video editor? <a href="https://www.readymadevideo.com/">readymadevideo.com</a></footer>
 
@@ -92,14 +92,14 @@ const world={sprite:null,name:'Stro',personality:null,live:false,
   lastKind:null,bubble:null,bubbleUntil:0,
   pos:{x:34,y:64},target:{x:96,y:60},walking:false,step:0};
 let SPOTS={}, HOME={};
-// His actual working hours (UTC), the same ones the loop enforces. What
-// the room shows is therefore true: outside these hours he really is off
-// the clock, and a session running anyway really is him getting up for it.
+// The hours he actually keeps, in UTC. What the room shows is therefore
+// true: outside these hours he really is off the clock, and a session
+// running anyway really is him getting up for a customer.
 // Defaults only. The loop publishes the hours it actually enforces into
 // company.trigger_state.work_hours, and load() overwrites these — a page
 // that hardcodes one schedule while the loop runs another would be
 // confidently lying about where he is.
-let WORK_START=14, WORK_END=22;
+let WORK_START=14, WORK_END=22, FOCUS_HOURS=[13];
 // ?hour=3 previews any hour of his day without waiting for it. Debug
 // affordance only — it changes what is DRAWN, never what is claimed: the
 // feed, books and captions still come from real rows. Parsed ONCE: this
@@ -303,24 +303,51 @@ function applyAvatar(){
   if(!l){l=document.createElement('link');l.rel='icon';document.head.appendChild(l)}
   l.href=u;
 }
-function nextBeat(){const n=new Date(),hrs=[6,13,20];
-  for(const h of hrs){const t=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate(),h));if(t>n)return t}
-  return new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+1,6))}
-setInterval(()=>{const ms=nextBeat()-new Date();
-  $('next').textContent=`${Math.floor(ms/36e5)}h ${String(Math.floor(ms%36e5/6e4)).padStart(2,'0')}m`},1000);
+// He is no longer woken three times a day on a cron — the loop runs
+// continuously and this counted down to a schedule that stopped existing.
+// What is actually worth waiting for is the next FOCUS block, the only
+// session that can build anything; FOCUS_HOURS comes from the loop itself.
+function nextFocus(){
+  const n=new Date(), hrs=[...FOCUS_HOURS].sort((a,b)=>a-b);
+  if(!hrs.length) return null;
+  for(const h of hrs){
+    const t=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate(),h));
+    if(t>n) return t;
+  }
+  return new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+1,hrs[0]));
+}
+setInterval(()=>{
+  if(world.live){$('next').textContent='working now';return}
+  const t=nextFocus();
+  if(!t){$('next').textContent='—';return}
+  const ms=t-new Date();
+  $('next').textContent=`${Math.floor(ms/36e5)}h ${String(Math.floor(ms%36e5/6e4)).padStart(2,'0')}m`;
+},1000);
+
+// The pill and the caption must describe the SAME world the canvas draws.
+// They used to key off world.live alone, so every working hour between
+// wakes — most of the day — the page drew a lit office with him at his
+// desk while announcing that the office was dark and he was asleep.
+const PILL={work:'AT HIS DESK', called_in:'CALLED IN', evening:'HOME',
+            sleep:'ASLEEP', morning:'GETTING READY'};
 
 function setStatus(){
-  $('dot').className=world.live?'live':'';
-  $('stxt').textContent=world.live?'WORKING NOW':'asleep';
-  const c=$('caption');
   const ph=phaseNow();
+  $('dot').className=world.live?'live':'';
+  $('stxt').textContent=world.live
+    ? (ph==='called_in'?'CALLED IN':'WORKING NOW')
+    : (PILL[ph]||'AWAY');
+  const c=$('caption');
   const ava=avatarURL()?`<img src="${avatarURL()}" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:-4px;margin-right:6px">`:``;
   if(ph==='called_in'){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> got up out of hours — a customer needs something`;return}
   if(!world.live&&ph==='evening'){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> is home for the evening`;return}
   if(!world.live&&ph==='sleep'){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> is asleep — back at 9`;return}
   if(!world.live&&ph==='morning'){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> is getting ready for work`;return}
   if(world.live){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> is in the office${world.personality?' — <i>'+esc(world.personality)+'</i>':''}`}
-  else c.innerHTML=`${avatarURL()?`<img src="${avatarURL()}" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:-4px;margin-right:6px">`:``}office is dark — <span id="who">${esc(world.name)}</span> is asleep`;
+  // Working hours, no session running: he is at his desk between tasks.
+  // This is the common case all day and it used to fall through to the
+  // "office is dark" line below, contradicting the office on screen.
+  else c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> is at his desk — nothing needs him this minute`;
 }
 async function refreshBooks(){
   const [co,led]=await Promise.all([
@@ -346,6 +373,7 @@ async function load(){
   const wh=cfg.data?.trigger_state?.work_hours;
   if(wh&&Number.isFinite(wh.start)&&Number.isFinite(wh.end)){
     WORK_START=wh.start;WORK_END=wh.end;
+    if(Array.isArray(wh.focus)&&wh.focus.length)FOCUS_HOURS=wh.focus;
   }
   const emp=await sb.from('employees').select('name,sprite,personality')
     .eq('role','Founder & CEO').limit(1).single();
