@@ -215,18 +215,21 @@ async def wake(mode: str = "focus", model: str | None = None,
         stderr=lambda line: _cli_err.append(line),
         env={**os.environ, "HOME": os.environ.get("STRO_HOME", "/home/stro"),
              "IS_SANDBOX": "1"},
-        allowed_tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep",
-                       "WebSearch", "WebFetch",
-                       "mcp__company__journal_write",
-                       "mcp__company__memory_save",
-                       "mcp__company__task_create",
-                       "mcp__company__task_update",
-                       "mcp__company__escalate",
-                       "mcp__company__set_appearance",
-                       "mcp__company__book_expense",
-                       "mcp__company__hire",
-                       "mcp__company__delegate",
-                       "mcp__company__fire"],
+        allowed_tools=(
+            ["Bash", "Read", "Write", "Edit", "Glob", "Grep",
+             "WebSearch", "WebFetch",
+             "mcp__company__journal_write", "mcp__company__memory_save",
+             "mcp__company__task_create", "mcp__company__task_update",
+             "mcp__company__escalate", "mcp__company__set_appearance",
+             "mcp__company__book_expense", "mcp__company__hire",
+             "mcp__company__delegate", "mcp__company__fire"]
+            if mode == "focus" else
+            # A check-in gets a small, immediate toolset: a long list gets
+            # deferred and he burns his whole budget searching for his own
+            # hands instead of using them.
+            ["Bash", "Read", "Grep",
+             "mcp__company__journal_write", "mcp__company__task_create",
+             "mcp__company__task_update"]),
         mcp_servers={"company": make_company_server(co["id"], wk["id"])},
     )
 
@@ -279,10 +282,18 @@ async def wake(mode: str = "focus", model: str | None = None,
       status = "completed"
     except Exception as exc:  # noqa: BLE001 — a crashed session still gets booked
         detail = " | ".join(_cli_err[-12:])[:1500]
-        status = "failed"
-        last_text = f"session crashed: {exc}" + (f"\nCLI stderr: {detail}"
-                                                 if detail else "")
-        emit("session_end", "crash detail", last_text)
+        spent_out = ("maximum budget" in str(exc)
+                     or "max_budget" in str(exc).lower())
+        if spent_out:
+            # He used exactly what he was given. That is the budget doing
+            # its job, not a failure — do not book it as one.
+            status = "completed"
+            last_text = f"spent the session budget after {turns} turns"
+        else:
+            status = "failed"
+            last_text = f"session crashed: {exc}" + (
+                f"\nCLI stderr: {detail}" if detail else "")
+            emit("session_end", "crash detail", last_text)
 
     # If the session ended without him writing anything down — ran out of
     # turns mid-thought, timed out, crashed — give him a short, focused last
@@ -304,7 +315,8 @@ async def wake(mode: str = "focus", model: str | None = None,
         try:
             wrap_opts = ClaudeAgentOptions(
                 system_prompt=(HERE / "founder.md").read_text(),
-                model=co["model"], max_turns=8,
+                model=session_model, max_turns=6,
+                max_budget_usd=max(0.03, session_budget * 0.5),
                 cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
                 permission_mode="bypassPermissions",
                 stderr=lambda line: _cli_err.append(line),
