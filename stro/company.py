@@ -152,3 +152,43 @@ def sync_stripe_revenue(company_id: str, since_iso: str) -> float:
                           "description": tag, "amount_usd": round(net, 4)})
         new_total += net
     return round(new_total, 4)
+
+
+def live_products() -> list[dict]:
+    """What the company actually sells right now, from Stripe.
+
+    The briefing has always shown the books but never the shop. That gap
+    let the founder believe a shipped product was lost when a container
+    wiped his workspace — the artifacts lived on external hosting and in
+    Stripe the whole time. This is company state, like a bank balance:
+    facts, not advice about what to do with them.
+    """
+    key = os.environ.get("STRO_SECRET_STRIPE_KEY")
+    if not key:
+        return []
+    out = []
+    try:
+        req = urllib.request.Request(
+            "https://api.stripe.com/v1/payment_links?limit=10&active=true",
+            headers={"Authorization": f"Bearer {key}"})
+        with urllib.request.urlopen(req, timeout=25) as r:
+            links = json.loads(r.read())["data"]
+    except Exception as exc:  # noqa: BLE001
+        print(f"[company] could not read payment links: {exc!r}")
+        return []
+    for link in links:
+        meta = link.get("metadata") or {}
+        # ONLY this company's links. The Stripe account is shared with the
+        # owner's other businesses, and showing the founder someone else's
+        # products would have him believe he owns them — the same
+        # contamination that once put $39 of the owner's revenue in his
+        # books. The tag is the boundary.
+        if meta.get("stromation") != "1":
+            continue
+        after = (link.get("after_completion") or {}).get("redirect", {})
+        out.append({
+            "url": link.get("url"),
+            "product": meta.get("product") or "(unnamed)",
+            "delivers_to": after.get("url"),
+        })
+    return out

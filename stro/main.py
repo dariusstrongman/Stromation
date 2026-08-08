@@ -80,6 +80,10 @@ def _tick_briefing(co: dict, budget: float, reasons: list[str] | None,
             f"- {j['content'][:160]}" for j in jr))
     parts.append(
         f"## Workspace\n{ws} — persists between sessions; your work is there.")
+    shop = company.live_products()
+    if shop:
+        parts.append("## Live shop\n" + "\n".join(
+            f"- {p['product']}: {p['url']}" for p in shop))
     parts.append(
         "## Watched for you, free\nPaid orders, company email, staff reports "
         "and owner answers are polled automatically every minute. Never "
@@ -111,10 +115,10 @@ def _state_briefing(co: dict, mode: str = "focus",
         f" | revenue ${books['revenue_usd']:.2f}"
         f" | thinking budget left ${runway:.2f}",
     ]
-    mems = company.memories(co["id"])[:25]
+    mems = company.memories(co["id"])[:12]
     if mems:
         parts.append("## Memory\n" + "\n".join(
-            f"- [{m['kind']}] {m['slug']}: {m['content'][:220]}" for m in mems))
+            f"- [{m['kind']}] {m['slug']}: {m['content'][:180]}" for m in mems))
     tasks = company.open_tasks(co["id"])
     if tasks:
         parts.append("## Open tasks\n" + "\n".join(
@@ -136,10 +140,10 @@ def _state_briefing(co: dict, mode: str = "focus",
             f"- [{e['status'].upper()}] {e['action']}"
             f"{' — ' + e['resolution'] if e.get('resolution') else ''}"
             for e in answered))
-    journal = company.recent_journal(co["id"], limit=12)
+    journal = company.recent_journal(co["id"], limit=8)
     if journal:
         parts.append("## Recent journal (newest first)\n" + "\n".join(
-            f"- {j['ts'][:16]} [{j['entry_type']}] {j['content'][:280]}"
+            f"- {j['ts'][:16]} [{j['entry_type']}] {j['content'][:220]}"
             for j in journal))
     else:
         parts.append("## Recent journal\n(empty — this is your FIRST day. "
@@ -153,6 +157,21 @@ def _state_briefing(co: dict, mode: str = "focus",
             "grid_json) and one personality sentence. This is YOUR choice — "
             "professional, hoodie, whatever feels like you. Do it early "
             "this session; it is how the owner will recognize you forever.")
+    shop = company.live_products()
+    if shop:
+        parts.append("## What you are selling right now (live in Stripe)\n"
+                     + "\n".join(
+            f"- **{p['product']}** — checkout {p['url']}"
+            + (f", delivers via {p['delivers_to']}" if p['delivers_to'] else
+               " — NO DELIVERY CONFIGURED")
+            for p in shop)
+            + "\nThese are live and a stranger can buy them now. Your local "
+              "workspace is scratch space; what is listed here is the real "
+              "shop, and it survives whatever happens to the container.")
+    else:
+        parts.append("## What you are selling right now\nNothing is live in "
+                     "Stripe. Until something is, revenue is impossible.")
+
     per_turn = _measured_per_turn(co, mode, co.get("model"))
 
     team = staff.active_staff(co["id"])
@@ -166,8 +185,9 @@ def _state_briefing(co: dict, mode: str = "focus",
         f"${per_turn:.4f} per turn of your own thought. You can change that "
         "with set_my_model — a better brain costs more per turn, a cheaper "
         "one buys more days of runway.\n"
-        "Everyone you could hire, and what they cost:\n"
-        + staff.roster_text()
+        + ("Everyone you could hire, and what they cost:\n"
+           + staff.roster_text() if not team else
+           "Call `hire` to see the roster if you need someone new.")
         + "\n\nNote the asymmetry: an advisor answering a research question "
           "typically costs a fraction of a cent — often 20-50x less than "
           "working it out yourself turn by turn. If a question is research "
