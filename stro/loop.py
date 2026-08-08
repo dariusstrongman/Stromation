@@ -21,7 +21,11 @@ from .main import wake
 
 CHECK_EVERY_S = int(os.environ.get("STRO_CHECK_EVERY_S", "60"))
 MAX_IDLE_MIN = int(os.environ.get("STRO_MAX_IDLE_MIN", "25"))
-FOCUS_HOUR_UTC = int(os.environ.get("STRO_FOCUS_HOUR_UTC", "13"))
+# More than one real work session a day, because check-ins deliberately
+# cannot build anything — the focus blocks are the only time the business
+# actually moves.
+FOCUS_HOURS = [int(h) for h in
+               os.environ.get("STRO_FOCUS_HOUR_UTC", "13").split(",") if h.strip()]
 TICK_MODEL = os.environ.get("STRO_TICK_MODEL", "claude-haiku-4-5-20251001")
 TICK_BUDGET = float(os.environ.get("STRO_TICK_BUDGET_USD", "0.06"))
 FOCUS_BUDGET = float(os.environ.get("STRO_FOCUS_BUDGET_USD", "0.55"))
@@ -50,17 +54,17 @@ def allowance(co: dict) -> float:
     return min(remaining_today, cap / 5)
 
 
-def focus_done_today(co: dict) -> bool:
+def focus_done_this_slot(co: dict, hour: int) -> bool:
     st = co.get("trigger_state") or {}
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    return st.get("focus_date") == today
+    slot = datetime.now(timezone.utc).strftime("%Y-%m-%d") + f"H{hour}"
+    return st.get("focus_slot") == slot
 
 
-def mark_focus_done(co: dict) -> None:
+def mark_focus_done(co: dict, hour: int) -> None:
     """Recorded BEFORE the block runs. A focus session that crashes must not
     retry every minute for the rest of the hour."""
     st = dict(co.get("trigger_state") or {})
-    st["focus_date"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    st["focus_slot"] = datetime.now(timezone.utc).strftime("%Y-%m-%d") + f"H{hour}"
     company.update("company", co["id"], {"trigger_state": st})
 
 
@@ -145,12 +149,12 @@ async def run() -> None:
                 continue
 
             now = datetime.now(timezone.utc)
-            is_focus = (now.hour == FOCUS_HOUR_UTC
-                        and not focus_done_today(co))
+            is_focus = (now.hour in FOCUS_HOURS
+                        and not focus_done_this_slot(co, now.hour))
             reasons = triggers.check(co, MAX_IDLE_MIN)
 
             if is_focus:
-                mark_focus_done(co)
+                mark_focus_done(co, now.hour)
                 # The day's real work: the good model, the full budget.
                 await wake(mode="focus",
                            model=co["model"],

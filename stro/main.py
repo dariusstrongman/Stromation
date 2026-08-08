@@ -229,6 +229,14 @@ def _state_briefing(co: dict, mode: str = "focus",
                      + "\n- ".join(reasons))
     if mode == "tick":
         parts.append(
+            "\n## Record before you run out\n"
+            "If you learn something that would change what the next check-in "
+            "does — a file missing, a task now impossible, a wall hit — "
+            "journal it FIRST, in one line, before doing anything else. A "
+            "check-in that discovers something and cannot afford to write it "
+            "down makes the next check-in discover it again. That is the "
+            "most expensive loop this company can be in.")
+        parts.append(
             f"\n## This is a CHECK-IN, not a work session (~{affordable} "
             "turns)\nSomething above needed attention. Handle the smallest "
             "useful piece of it and stop — answer the customer, ship the "
