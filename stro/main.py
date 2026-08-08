@@ -257,6 +257,13 @@ def _state_briefing(co: dict, mode: str = "focus",
             "down makes the next check-in discover it again. That is the "
             "most expensive loop this company can be in.")
         parts.append(
+            f"\n## Budget: about ${budget:.2f}\n"
+            "That is a target, not a wall — you have a little headroom to "
+            "finish whatever is in your hands. Land yourself: when you are "
+            "close, stop starting things, complete the current one and "
+            "write your closing note. Being cut off mid-action loses the "
+            "action AND the record of it.")
+        parts.append(
             f"\n## This is a CHECK-IN, not a work session (~{affordable} "
             "turns)\nSomething above needed attention. Handle the smallest "
             "useful piece of it and stop — answer the customer, ship the "
@@ -282,6 +289,14 @@ def _state_briefing(co: dict, mode: str = "focus",
                 "works. Find out what, and do more of it.")
         parts.append(focus_note)
     parts.append(
+        f"\n## Budget: about ${budget:.2f} — a target, not a wall\n"
+        "You have a little headroom past it to finish what is in your hands "
+        "and write closing notes. Land yourself rather than being cut off: "
+        "when you are near the target, stop starting new things, finish the "
+        "current one, journal what happened and what the next session should "
+        "pick up. A session that is severed mid-action loses both the work "
+        "and the memory of it.")
+    parts.append(
         f"\nYou have roughly **{affordable} turns** of work in this session "
         "— a solid working block, comfortably enough to finish something "
         "real. USE IT: unspent budget does not roll over, and a session that "
@@ -303,6 +318,12 @@ async def wake(mode: str = "focus", model: str | None = None,
     co = company.get_company()
     session_model = model or co["model"]
     session_budget = budget if budget is not None else SESSION_BUDGET_USD
+    # Soft target vs hard ceiling. He is told the target and asked to land
+    # himself; the ceiling exists only so a session that ignores it cannot
+    # run away. Overshooting slightly to finish an action and record it is
+    # cheaper than losing the action entirely.
+    session_ceiling = round(session_budget * float(
+        os.environ.get("STRO_BUDGET_HEADROOM", "1.35")), 4)
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
 
@@ -338,7 +359,7 @@ async def wake(mode: str = "focus", model: str | None = None,
         system_prompt=(HERE / persona).read_text(),
         model=session_model,
         max_turns=MAX_TURNS if mode == "focus" else 14,
-        max_budget_usd=session_budget,
+        max_budget_usd=session_ceiling,
         effort=EFFORT,
         cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
         permission_mode="bypassPermissions",   # headless founder, no human
@@ -433,7 +454,7 @@ async def wake(mode: str = "focus", model: str | None = None,
     # call whose only job is to remember the day. Losing the work is bad;
     # losing the MEMORY of the work is what actually compounds.
     wrote = company._req(f"journal?wakeup_id=eq.{wk['id']}&select=id&limit=1")
-    if not wrote and turns > 0 and mode == "focus":
+    if not wrote and turns >= 3:
         emit("thought", None, "Out of time — writing the day down.")
         did = [f"{e['title'] or e['kind']}: {(e['body'] or '')[:120]}"
                for e in session_events if e["kind"] == "tool_use"][-25:]
@@ -449,7 +470,7 @@ async def wake(mode: str = "focus", model: str | None = None,
             wrap_opts = ClaudeAgentOptions(
                 system_prompt=(HERE / "founder.md").read_text(),
                 model=session_model, max_turns=6,
-                max_budget_usd=max(0.03, session_budget * 0.5),
+                max_budget_usd=max(0.02, session_budget * 0.25),
                 cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
                 permission_mode="bypassPermissions",
                 stderr=lambda line: _cli_err.append(line),

@@ -19,7 +19,9 @@ a missing file, an impossible task, a wall — journal it FIRST, before
 anything else. A check-in that learns something and cannot afford to record
 it dooms the next check-in to learn it again.
 
-Finish by journaling one short line. Brevity here is what keeps the company
+Your budget is a target with a little headroom, not a hard stop. Finish
+what you started rather than being cut off mid-action, then journal one
+short line before you go. Brevity here is what keeps the company
 alive all day.
 
 You keep office hours. Routine work happens during the day; outside them
