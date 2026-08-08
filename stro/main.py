@@ -118,8 +118,34 @@ def _state_briefing(co: dict, mode: str = "focus",
             "grid_json) and one personality sentence. This is YOUR choice — "
             "professional, hoodie, whatever feels like you. Do it early "
             "this session; it is how the owner will recognize you forever.")
+    per_turn = 0.018
+    _prior = company._req(
+        f"wakeups?company_id=eq.{co['id']}&num_turns=gt.3"
+        "&select=num_turns,cost_usd&order=started_at.desc&limit=5")
+    if _prior:
+        _c = sum(float(w["cost_usd"] or 0) for w in _prior)
+        _t = sum(w["num_turns"] for w in _prior) or 1
+        if _c > 0:
+            per_turn = max(0.004, _c / _t)
+
     team = staff.active_staff(co["id"])
     pay = staff.payroll(co["id"])
+    # What HIS OWN thinking costs, next to what everyone else costs. This
+    # is the comparison that makes delegation a real decision rather than a
+    # feature he never touches.
+    parts.append(
+        f"## What thinking costs\n"
+        f"You are running on **{co['model']}** at roughly "
+        f"${per_turn:.4f} per turn of your own thought. You can change that "
+        "with set_my_model — a better brain costs more per turn, a cheaper "
+        "one buys more days of runway.\n"
+        "Everyone you could hire, and what they cost:\n"
+        + staff.roster_text()
+        + "\n\nNote the asymmetry: an advisor answering a research question "
+          "typically costs a fraction of a cent — often 20-50x less than "
+          "working it out yourself turn by turn. If a question is research "
+          "rather than judgment, delegating it is almost always the cheaper "
+          "answer.")
     if team:
         parts.append("## Your staff (their salary is real, from your runway)\n"
                      + "\n".join(
@@ -128,11 +154,9 @@ def _state_briefing(co: dict, mode: str = "focus",
             for e in team))
     else:
         parts.append(
-            "## Staff\nYou work alone. You can `hire` when a function is "
-            "genuinely eating your time — an employee's model IS their "
-            "salary, paid from the same runway you live on, so hire the "
-            "cheapest person who can do the job and only when the work "
-            "justifies it. Available to hire:\n" + staff.roster_text())
+            "## Staff\nYou work alone. Hire when a function is genuinely "
+            "eating your time — an employee's model IS their salary, paid "
+            "from the same runway you live on.")
     from datetime import datetime as _dt2, timedelta as _td2, timezone as _tz2
     since = (_dt2.now(_tz2.utc) - _td2(days=3)).isoformat().replace(
         "+00:00", "Z")
@@ -163,16 +187,6 @@ def _state_briefing(co: dict, mode: str = "focus",
     # Report the budget as WORK, not as a dollar figure: a small-looking
     # number made him quit at 35% usage having done almost nothing. What
     # matters is how many turns it buys, and that unspent budget is wasted.
-    per_turn = 0.018
-    prior = company._req(
-        f"wakeups?company_id=eq.{co['id']}&num_turns=gt.3"
-        "&select=num_turns,cost_usd&order=started_at.desc&limit=5")
-    if prior:
-        costs = [(float(w["cost_usd"] or 0), w["num_turns"]) for w in prior]
-        tot_c = sum(c for c, _ in costs)
-        tot_t = sum(t for _, t in costs) or 1
-        if tot_c > 0:
-            per_turn = max(0.004, tot_c / tot_t)
     affordable = max(3, int(budget / per_turn))
     parts.append(
         "## What is watched for you, free, every minute\n"

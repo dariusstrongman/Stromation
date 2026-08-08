@@ -145,6 +145,33 @@ def make_company_server(company_id: str, wakeup_id: str):
                              "text": f"{matches[0]['name']} has left the "
                                      "company. Their salary stops."}]}
 
+    @tool("set_my_model",
+          "Choose the model YOUR OWN focus blocks run on. This is a real "
+          "resource decision: a better brain thinks harder and costs more "
+          "per turn, a cheaper one buys you more turns and more days of "
+          "runway. Pick deliberately — upgrade when the work is genuinely "
+          "hard, downgrade when it is routine and you need the runway. Only "
+          "worker models can be your brain.",
+          {"model": str, "why": str})
+    async def set_my_model(args):
+        spec = staff.ROSTER.get(args["model"])
+        if not spec or spec.get("kind") != "worker":
+            workers = [m for m, v in staff.ROSTER.items()
+                       if v.get("kind") == "worker"]
+            return {"content": [{"type": "text",
+                                 "text": "your brain must be one of: "
+                                         + ", ".join(workers)}],
+                    "isError": True}
+        company.update("company", company_id, {"model": args["model"]})
+        company.insert("journal", {
+            "company_id": company_id, "entry_type": "decision",
+            "content": f"Changed my own model to {args['model']} "
+                       f"({spec['band']}, {spec['rate']}). Why: {args['why']}"})
+        return {"content": [{"type": "text",
+                             "text": f"your focus blocks now run on "
+                                     f"{args['model']} ({spec['rate']}). "
+                                     "Takes effect next focus block."}]}
+
     @tool("set_appearance",
           "Design YOUR OWN sprite — how you appear in the company world. "
           "palette_json: JSON array of 2-8 hex colors. grid_json: JSON "
@@ -184,4 +211,4 @@ def make_company_server(company_id: str, wakeup_id: str):
         name="company", version="0.1.0",
         tools=[journal_write, memory_save, task_create, task_update,
                escalate, set_appearance, book_expense,
-               hire, delegate, fire])
+               hire, delegate, fire, set_my_model])
