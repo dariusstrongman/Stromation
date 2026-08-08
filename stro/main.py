@@ -351,8 +351,7 @@ async def wake(mode: str = "focus", model: str | None = None,
              # cost) because the 5-minute TTL dies in the gap between
              # check-ins. At a 40-minute heartbeat each read refreshes a
              # 1-hour entry, so the chain never breaks and the write is
-             # paid about once a day instead of thirty-six times.
-             "ENABLE_PROMPT_CACHING_1H": "1"},
+             # paid about once a day instead of thirty-six times.},
         allowed_tools=(
             ["Bash", "Read", "Write", "Edit", "Glob", "Grep",
              "WebSearch", "WebFetch",
@@ -461,8 +460,7 @@ async def wake(mode: str = "focus", model: str | None = None,
                 stderr=lambda line: _cli_err.append(line),
                 env={**os.environ,
                      "HOME": os.environ.get("STRO_HOME", "/home/stro"),
-                     "IS_SANDBOX": "1",
-                     "ENABLE_PROMPT_CACHING_1H": "1"},
+                     "IS_SANDBOX": "1"},
                 allowed_tools=["mcp__company__journal_write",
                                "mcp__company__memory_save",
                                "mcp__company__task_create",
