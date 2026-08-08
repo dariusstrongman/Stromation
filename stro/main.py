@@ -137,6 +137,13 @@ def _state_briefing(co: dict, mode: str = "focus",
         if tot_c > 0:
             per_turn = max(0.004, tot_c / tot_t)
     affordable = max(3, int(budget / per_turn))
+    parts.append(
+        "## What is watched for you, free, every minute\n"
+        "Paid orders, company email, staff reports and owner answers are "
+        "polled automatically at zero cost, and you are woken when any of "
+        "them changes. NEVER spend a turn checking whether an order or an "
+        "email has arrived — if one had, it would say so below. Polling an "
+        "empty inbox is the most expensive way to do nothing.")
     if reasons:
         parts.append("## Why you are awake right now\n- "
                      + "\n- ".join(reasons))
@@ -150,6 +157,14 @@ def _state_briefing(co: dict, mode: str = "focus",
             "what you found needs real work, write it down as a task and "
             "leave it. Being brief here is what keeps you alive all day.")
         return "\n\n".join(parts)
+    if mode == "focus":
+        parts.append(
+            "## This is your focus block — the day's real work\n"
+            "Do not spend it on verification, status checks or tidying. "
+            "Spend it MOVING THE BUSINESS: something a stranger could see, "
+            "use, or buy by the end of it. You have a product and no "
+            "customers, so the binding constraint is almost certainly "
+            "distribution, not the product. Ship something outward.")
     parts.append(
         f"\nYou have roughly **{affordable} turns** of work in this session "
         "— a solid working block, comfortably enough to finish something "
