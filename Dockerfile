@@ -28,10 +28,14 @@ COPY stro/ stro/
 RUN useradd -m -u 10001 stro \
     && mkdir -p /workspace \
     && chown -R stro:stro /workspace /app
-USER stro
 ENV HOME=/home/stro \
     STRO_HOME=/home/stro \
     STRO_WORKSPACE=/workspace \
     IS_SANDBOX=1
 
+# /workspace is a Railway VOLUME: what he builds survives the container, so
+# the company can accumulate instead of restarting from an empty folder.
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["python3", "-m", "stro.main"]

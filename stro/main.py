@@ -85,6 +85,14 @@ def _state_briefing(co: dict) -> str:
                      "never write them into journal/memory/tasks/customer "
                      "content)\n" + "\n".join(
             f"- {name}: {value}" for name, value in sorted(creds.items())))
+    ws = os.environ.get("STRO_WORKSPACE", "/workspace")
+    parts.append(
+        f"## Your workspace: {ws}\n"
+        "This disk PERSISTS between sessions. Whatever you built last time is "
+        "still there — look before you rebuild. Keep your work in project "
+        "folders, commit to git as you go, and leave notes for your future "
+        "self. Anything you want to survive lives here or in memory; nothing "
+        "else does.")
     parts.append(
         f"\nThis session is bounded by MONEY, not time: about "
         f"${SESSION_BUDGET_USD:.2f} of thinking. Every turn you take re-reads "
