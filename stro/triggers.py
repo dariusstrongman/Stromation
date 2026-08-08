@@ -33,7 +33,7 @@ def _save(company_id: str, state: dict) -> None:
     company.update("company", company_id, {"trigger_state": state})
 
 
-def _new_mail(state: dict, company_id: str = "") -> tuple[str | None, dict]:
+def _new_mail(state: dict, company_id: str) -> tuple[str | None, dict]:
     """Fires on mail newer than anything seen before — read or not.
 
     Deliberately does NOT use the \\Seen flag: whether the founder opened
@@ -78,8 +78,8 @@ def _new_mail(state: dict, company_id: str = "") -> tuple[str | None, dict]:
                 "content": "This mailbox does not report UIDVALIDITY, so the "
                            "mail trigger cannot detect a mailbox reset. If "
                            "mail ever stops waking me, suspect that first."})
-        except Exception:  # noqa: BLE001
-            print("[triggers] swallowed a failure at line 82")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[triggers] journalling the UIDVALIDITY warning failed: {exc!r}")
     if validity and state.get("mail_uidvalidity") != validity:
         state["mail_uidvalidity"] = validity
         state["mail_uid"] = top
@@ -179,6 +179,23 @@ def _idle(company_id: str, max_idle_min: int) -> str | None:
             if mins >= max_idle_min else None)
 
 
+def check_urgent_only(co: dict) -> list[str]:
+    """Only what outranks being off the clock, and only triggers that keep
+    NO high-water mark.
+
+    Deliberately narrow. A mark-keeping trigger fires once; asking it while
+    unwilling to act on the answer consumes the signal forever. Payments
+    are safe to ask any time because their mark IS the ledger — an unbooked
+    charge keeps re-firing until it is handled.
+    """
+    try:
+        r = _new_payment(co["id"])
+    except Exception as exc:  # noqa: BLE001
+        print(f"[triggers] payment check failed: {exc!r}")
+        return []
+    return [r] if r else []
+
+
 def check(co: dict, max_idle_min: int) -> list[str]:
     """Every reason to act right now. Costs nothing to ask.
 
@@ -195,32 +212,32 @@ def check(co: dict, max_idle_min: int) -> list[str]:
         r = _new_payment(cid)
         if r:
             found.append(r)
-    except Exception:  # noqa: BLE001
-        print("[triggers] swallowed a failure at line 199")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[triggers] payment check failed: {exc!r}")
     for fn in (_new_mail,):
         try:
             r, state = fn(state, cid)
             if r:
                 found.append(r)
-        except Exception:  # noqa: BLE001
-            print("[triggers] swallowed a failure at line 206")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[triggers] mail check failed: {exc!r}")
     for fn in (_staff_reports, _owner_answered):
         try:
             r, state = fn(cid, state)
             if r:
                 found.append(r)
-        except Exception:  # noqa: BLE001
-            print("[triggers] swallowed a failure at line 213")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[triggers] staff/owner check failed: {exc!r}")
     try:
         r = _idle(cid, max_idle_min)
         if r:
             found.append(r)
-    except Exception:  # noqa: BLE001
-        print("[triggers] swallowed a failure at line 219")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[triggers] idle check failed: {exc!r}")
 
     if state != before:
         try:
             _save(cid, state)
-        except Exception:  # noqa: BLE001
-            print("[triggers] swallowed a failure at line 225")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[triggers] saving trigger state failed: {exc!r}")
     return found

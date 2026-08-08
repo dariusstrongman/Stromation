@@ -30,8 +30,40 @@ HERE = pathlib.Path(__file__).parent
 SESSION_BUDGET_USD = float(os.environ.get("STRO_SESSION_BUDGET_USD", "0.55"))
 MAX_TURNS = int(os.environ.get("STRO_MAX_TURNS", "150"))
 EFFORT = os.environ.get("STRO_EFFORT", "medium")
+# A session may overshoot its target by this much to finish what is in its
+# hands and record it. Callers that pace against a daily allowance must
+# divide by this before passing a budget, or the headroom spends money the
+# governor already said was unavailable.
+BUDGET_HEADROOM = float(os.environ.get("STRO_BUDGET_HEADROOM", "1.35"))
 # Stop before the cap so one session can't blow through it.
 BUDGET_SOFT_STOP = 0.95
+
+
+def _cost_blind(co: dict, wakeup_id: str, model: str, turns: int) -> None:
+    """A session did real work and reported no cost. Report it once.
+
+    Not fatal on purpose: stopping the company on a metering fault would
+    be its own outage. But the owner must know immediately, because every
+    spending limit is now off and the books are wrong.
+    """
+    st = dict(co.get("trigger_state") or {})
+    if st.get("cost_blind_reported"):
+        return
+    st["cost_blind_reported"] = True
+    try:
+        company.update("company", co["id"], {"trigger_state": st})
+        company.insert("escalations", {
+            "company_id": co["id"], "wakeup_id": wakeup_id,
+            "action": "Inference cost is not being reported — every "
+                      "spending limit is currently inactive",
+            "reason": f"A {turns}-turn session on {model} via "
+                      f"{models.describe()} returned $0.00. The ledger, the "
+                      "daily allowance and the budget gate all read this "
+                      "number, so nothing is capping spend and the books "
+                      "understate it. Check the provider configuration "
+                      "before leaving this running."})
+    except Exception as exc:  # noqa: BLE001
+        print(f"[main] could not report cost blindness: {exc!r}")
 
 
 def _measured_per_turn(co: dict, mode: str,
@@ -323,8 +355,7 @@ async def wake(mode: str = "focus", model: str | None = None,
     # himself; the ceiling exists only so a session that ignores it cannot
     # run away. Overshooting slightly to finish an action and record it is
     # cheaper than losing the action entirely.
-    session_ceiling = round(session_budget * float(
-        os.environ.get("STRO_BUDGET_HEADROOM", "1.35")), 4)
+    session_ceiling = round(session_budget * BUDGET_HEADROOM, 4)
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
 
@@ -358,10 +389,9 @@ async def wake(mode: str = "focus", model: str | None = None,
     persona = "founder.md" if mode == "focus" else "founder_tick.md"
     options = ClaudeAgentOptions(
         system_prompt=(HERE / persona).read_text(),
-        model=models.resolve(session_model),
+        **models.session_kwargs(session_model, EFFORT),
         max_turns=MAX_TURNS if mode == "focus" else 14,
         max_budget_usd=session_ceiling,
-        effort=EFFORT,
         cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
         permission_mode="bypassPermissions",   # headless founder, no human
         # The CLI's own stderr is the only place launch failures explain
@@ -398,11 +428,12 @@ async def wake(mode: str = "focus", model: str | None = None,
             company.insert("events", {
                 "company_id": co["id"], "wakeup_id": wk["id"], "kind": kind,
                 "title": title, "body": (body or "")[:4000] or None})
-        except Exception:  # noqa: BLE001
-            print("[main] swallowed a failure at line 340")
+        except Exception as exc:  # noqa: BLE001 — telemetry never breaks work
+            print(f"[main] could not record event: {exc!r}")
 
     cost, turns, last_text = 0.0, 0, ""
     usage_note: list[str] = []
+    tokens: dict[str, int] = {}
     emit("session_start", "Stro wakes up", None)
     try:
       async with asyncio.timeout(int(os.environ.get("STRO_SESSION_MAX_S",
@@ -429,6 +460,13 @@ async def wake(mode: str = "focus", model: str | None = None,
                 cost = msg.total_cost_usd or 0.0
                 u = msg.usage or {}
                 if isinstance(u, dict) and u:
+                    for k, dest in (("input_tokens", "input_tokens"),
+                                    ("output_tokens", "output_tokens"),
+                                    ("cache_read_input_tokens",
+                                     "cache_read_tokens"),
+                                    ("cache_creation_input_tokens",
+                                     "cache_write_tokens")):
+                        tokens[dest] = tokens.get(dest, 0) + int(u.get(k) or 0)
                     usage_note.append(
                         "tokens in={} out={} cache_read={} cache_write={}".format(
                             u.get("input_tokens", 0), u.get("output_tokens", 0),
@@ -469,8 +507,12 @@ async def wake(mode: str = "focus", model: str | None = None,
             "where to resume. Do not start new work.")
         try:
             wrap_opts = ClaudeAgentOptions(
-                system_prompt=(HERE / "founder.md").read_text(),
-                model=models.resolve(session_model), max_turns=6,
+                # the persona the SESSION used: a check-in that ran out of
+                # room should not pay for the full founder prompt to write
+                # one line down.
+                system_prompt=(HERE / persona).read_text(),
+                **models.session_kwargs(session_model, EFFORT),
+                max_turns=6,
                 max_budget_usd=max(0.02, session_budget * 0.25),
                 cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
                 permission_mode="bypassPermissions",
@@ -494,8 +536,8 @@ async def wake(mode: str = "focus", model: str | None = None,
                                      _j.dumps(block.input)[:1500])
                     elif isinstance(msg, ResultMessage):
                         cost += msg.total_cost_usd or 0.0
-        except Exception:  # noqa: BLE001 — best effort; never fatal
-            print("[main] swallowed a failure at line 436")
+        except Exception as exc:  # noqa: BLE001 — best effort; never fatal
+            print(f"[main] wrap-up session failed: {exc!r}")
 
     # The founder has gone home; the staff work their tasks now, so their
     # reports are waiting for him next session.
@@ -503,19 +545,39 @@ async def wake(mode: str = "focus", model: str | None = None,
         emit("tool_use", "staff", f"delegation running: {d['task'][:100]}")
         try:
             await staff.run_delegation(co, d)
-        except Exception:  # noqa: BLE001 — an employee failing is not fatal
-            print("[main] swallowed a failure at line 445")
+        except Exception as exc:  # noqa: BLE001 — an employee failing is not fatal
+            print(f"[main] delegation failed: {exc!r}")
+
+    # Every economic control in this company reads this one number: the
+    # ledger, the daily allowance, the budget gate, the per-turn estimate.
+    # If the runtime ever stops reporting cost — a provider change is the
+    # obvious way — all of them silently stop working, the books read
+    # $0.00, and the founder is told he is spending nothing while he
+    # spends. False books are the one thing he is told never to produce,
+    # so the system must not produce them either. Say so, once, loudly.
+    if turns > 0 and cost <= 0:
+        _cost_blind(co, wk["id"], session_model, turns)
 
     company.insert("ledger", {
         "company_id": co["id"], "wakeup_id": wk["id"],
         "category": "inference",
         "description": f"founder work session ({turns} turns)",
         "amount_usd": -round(cost, 4)})
-    company.update("wakeups", wk["id"], {
+    finish = {
         "status": status, "cost_usd": round(cost, 4), "num_turns": turns,
         "finished_at": datetime.now(timezone.utc).isoformat(),
         "summary": (last_text[:1800] + ("\n\n" + usage_note[-1]
-                                        if usage_note else ""))[:2000]})
+                                        if usage_note else ""))[:2000]}
+    # Token counts are queryable rather than buried in prose: whether the
+    # prefix is caching decides whether the heartbeat is every 16 minutes
+    # or every 41. They live in migration 0010, so degrade if it has not
+    # been applied yet — a missing column must not cost a whole session.
+    try:
+        company.update("wakeups", wk["id"], {**finish, **tokens})
+    except Exception as exc:  # noqa: BLE001
+        print(f"[main] token columns unavailable ({exc!r}); "
+              "run migration 0010_wakeup_tokens.sql")
+        company.update("wakeups", wk["id"], finish)
     emit("session_end", status, f"{turns} turns, ${cost:.4f}")
 
     # The documentary crew films the DAY, not every check-in. Narrating a
@@ -535,8 +597,8 @@ async def wake(mode: str = "focus", model: str | None = None,
             os.environ.get("NARRATOR_MODEL", "claude-haiku-4-5-20251001"))
         if nar:
             voiceover.voice_narration(nar)
-    except Exception:  # noqa: BLE001 — narration never breaks the company
-        print("[main] swallowed a failure at line 477")
+    except Exception as exc:  # noqa: BLE001 — narration never breaks the company
+        print(f"[main] narration failed: {exc!r}")
     print(f"{status}: {turns} turns, ${cost:.4f}")
     return True
 

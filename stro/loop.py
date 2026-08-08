@@ -17,7 +17,7 @@ import os
 from datetime import datetime, timedelta, timezone
 
 from . import company, triggers
-from .main import wake
+from .main import BUDGET_HEADROOM, wake
 
 CHECK_EVERY_S = int(os.environ.get("STRO_CHECK_EVERY_S", "60"))
 MAX_IDLE_MIN = int(os.environ.get("STRO_MAX_IDLE_MIN", "25"))
@@ -99,8 +99,8 @@ def _park(co: dict, reasons: list[str], why: str) -> None:
             "company_id": co["id"], "priority": 2, "title": title,
             "why": f"The loop could not run a session for this ({why[:160]}). "
                    "It will not be raised again automatically."})
-    except Exception:  # noqa: BLE001
-        print("[loop] swallowed a failure at line 93")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[loop] could not park signal: {exc!r}")
 
 
 def _report_broken(co: dict, streak: int, why: str) -> None:
@@ -109,6 +109,15 @@ def _report_broken(co: dict, streak: int, why: str) -> None:
     Escalates ONCE per outage: the owner learns something is wrong without
     being buried, and the founder's own escalation queue is not spammed.
     """
+    # Re-read rather than trusting `co`: the caller passes the last company
+    # row that loaded successfully, which under backoff can be half an hour
+    # stale. Writing that snapshot back wholesale would revert any trigger
+    # mark advanced since.
+    try:
+        co = company.get_company()
+    except Exception as exc:  # noqa: BLE001 — if this fails, so will the rest
+        print(f"[loop] could not re-read company to report outage: {exc!r}")
+        return
     st = dict(co.get("trigger_state") or {})
     if st.get("outage_reported"):
         return
@@ -136,12 +145,33 @@ def _report_recovered(co: dict) -> None:
         print(f"[loop] could not clear outage flag: {exc!r}")
 
 
+def publish_hours(co: dict) -> None:
+    """Put the working hours where the world can read them.
+
+    index.html draws a home and an office based on these hours and claims
+    what it shows is true. It cannot be true if the page hardcodes one set
+    and the loop enforces another, so the loop publishes and the page
+    reads. Written only when it changes.
+    """
+    st = dict(co.get("trigger_state") or {})
+    hours = {"start": WORK_START, "end": WORK_END, "focus": FOCUS_HOURS}
+    if st.get("work_hours") == hours:
+        return
+    st["work_hours"] = hours
+    try:
+        company.update("company", co["id"], {"trigger_state": st})
+        co["trigger_state"] = st
+    except Exception as exc:  # noqa: BLE001 — cosmetic; never blocks work
+        print(f"[loop] could not publish work hours: {exc!r}")
+
+
 async def run() -> None:
     print("stro is awake; the office does not close")
     streak, last_err, last_co = 0, "", None
     while True:
         try:
             co = company.get_company()
+            publish_hours(co)
             budget_left = allowance(co)
 
             # Out of money for now: stay alive, stay quiet, cost nothing.
@@ -158,32 +188,49 @@ async def run() -> None:
             open_for_business = WORK_START <= now.hour < WORK_END
             is_focus = (now.hour in FOCUS_HOURS
                         and not focus_done_this_slot(co, now.hour))
-            reasons = triggers.check(co, MAX_IDLE_MIN)
 
             # Out of hours the founder is off the clock, but the business is
             # not closed: a paid customer is waiting on something they have
             # already bought, and that outranks office hours. Everything
-            # else — the idle clock, mail, staff reports, owner answers —
-            # keeps until morning.
+            # else keeps until morning.
+            #
+            # Which triggers we ASK is the whole point. Every mark-keeping
+            # trigger fires exactly once, so asking one while refusing to
+            # act on it destroys the signal: mail arriving at 3am would
+            # advance the high-water mark, be filtered out as non-urgent,
+            # and never be raised again — while the check-in persona tells
+            # him never to look, because he would have been told. Out of
+            # hours we therefore consult ONLY the payment trigger, which
+            # holds no mark (it compares against the ledger and re-fires
+            # until the money is booked). Mail and the rest are simply not
+            # asked, so they are still waiting in the morning.
             if not open_for_business and not is_focus:
-                urgent = [r for r in reasons if "PAID ORDER" in r]
-                if not urgent:
+                reasons = triggers.check_urgent_only(co)
+                if not reasons:
                     await asyncio.sleep(CHECK_EVERY_S)
                     continue
-                reasons = urgent
+            else:
+                reasons = triggers.check(co, MAX_IDLE_MIN)
+
+            # A session may overshoot its target by BUDGET_HEADROOM to land
+            # itself, so the target handed out has to leave room for that
+            # inside what the day actually has left. Without the divide,
+            # the last session of the day spends 35% more than the governor
+            # said was available.
+            spendable = budget_left / BUDGET_HEADROOM
 
             if is_focus:
                 mark_focus_done(co, now.hour)
                 # The day's real work: the good model, the full budget.
                 await wake(mode="focus",
                            model=co["model"],
-                           budget=min(FOCUS_BUDGET, budget_left),
+                           budget=min(FOCUS_BUDGET, spendable),
                            reasons=["today's focus block"] + reasons)
             elif reasons:
                 try:
                     ran = await wake(mode="tick",
                                      model=TICK_MODEL,
-                                     budget=min(TICK_BUDGET, budget_left),
+                                     budget=min(TICK_BUDGET, spendable),
                                      reasons=reasons)
                     if not ran:
                         # Budget-blocked: wake() returns rather than raising,

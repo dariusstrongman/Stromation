@@ -196,11 +196,11 @@ async def run_delegation(co: dict, d: dict) -> None:
         opts = ClaudeAgentOptions(
             system_prompt=_employee_prompt(emp, d["task"], d.get("context") or "",
                                            notes),
-            model=models.resolve(model),
+            **models.session_kwargs(model, os.environ.get("STRO_EFFORT",
+                                                          "medium")),
             max_turns=int(os.environ.get("STRO_EMPLOYEE_MAX_TURNS", "30")),
             max_budget_usd=float(os.environ.get("STRO_EMPLOYEE_BUDGET_USD",
                                                 "0.40")),
-            effort=os.environ.get("STRO_EFFORT", "medium"),
             cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
             permission_mode="bypassPermissions",
             env={**os.environ, "HOME": os.environ.get("STRO_HOME", "/home/stro"),

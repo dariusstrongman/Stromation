@@ -54,8 +54,8 @@ def _summarize_events(events: list[dict]) -> str:
             desc = ""
             try:
                 desc = (json.loads(body) or {}).get("description", "")
-            except Exception:  # noqa: BLE001
-                print("[narrator] swallowed a failure at line 58")
+            except Exception as exc:  # noqa: BLE001
+                print(f"[narrator] unreadable tool body: {exc!r}")
             short = title.replace("mcp__company__", "")
             lines.append(f"HE DOES: {short} — {desc or body[:160]}")
         elif kind == "tool_result":

@@ -49,6 +49,39 @@ def resolve(model: str | None) -> str | None:
     return model
 
 
+# Anthropic documents effort on a closed list of models, and Haiku 4.5 —
+# the model every check-in runs on — is NOT on it. Passing the parameter
+# anyway is at best ignored and at worst a 400 that kills the session, so
+# the caller asks first rather than sending it blind.
+# https://platform.claude.com/docs/en/build-with-claude/effort
+_EFFORT_MODELS = frozenset((
+    "claude-fable-5", "claude-mythos-5", "claude-mythos-preview",
+    "claude-opus-5", "claude-opus-4-8", "claude-opus-4-7", "claude-opus-4-6",
+    "claude-opus-4-5-20251101", "claude-sonnet-5", "claude-sonnet-4-6",
+))
+
+
+def supports_effort(model: str | None) -> bool:
+    """Whether this model accepts the effort parameter at all."""
+    if not model:
+        return False
+    name = model.split("/")[-1]
+    # Bedrock ids look like us.anthropic.claude-sonnet-5-v1:0
+    for known in _EFFORT_MODELS:
+        if name == known or known in name:
+            return True
+    return False
+
+
+def session_kwargs(model: str | None, effort: str | None) -> dict:
+    """Options that depend on which model is actually running, ready to
+    splat into ClaudeAgentOptions."""
+    kw: dict = {"model": resolve(model)}
+    if effort and supports_effort(model):
+        kw["effort"] = effort
+    return kw
+
+
 def describe() -> str:
     if not using_bedrock():
         return "Anthropic API (direct)"
