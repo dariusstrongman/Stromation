@@ -27,10 +27,13 @@ EFFORT = os.environ.get("STRO_EFFORT", "medium")
 BUDGET_SOFT_STOP = 0.95
 
 
-def _state_briefing(co: dict) -> str:
+def _state_briefing(co: dict, mode: str = "focus",
+                    budget: float | None = None,
+                    reasons: list[str] | None = None) -> str:
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
     runway = max(0.0, cap - books["burn_usd"])
+    budget = budget if budget is not None else SESSION_BUDGET_USD
     parts = [
         f"# Company: {co['name']}",
         f"Objective: {co['objective']}",
@@ -133,7 +136,20 @@ def _state_briefing(co: dict) -> str:
         tot_t = sum(t for _, t in costs) or 1
         if tot_c > 0:
             per_turn = max(0.004, tot_c / tot_t)
-    affordable = int(SESSION_BUDGET_USD / per_turn)
+    affordable = max(3, int(budget / per_turn))
+    if reasons:
+        parts.append("## Why you are awake right now\n- "
+                     + "\n- ".join(reasons))
+    if mode == "tick":
+        parts.append(
+            f"\n## This is a CHECK-IN, not a work session (~{affordable} "
+            "turns)\nSomething above needed attention. Handle the smallest "
+            "useful piece of it and stop — answer the customer, ship the "
+            "order, note what you found, tick a task off. Do NOT start "
+            "building anything; that is what your focus block is for. If "
+            "what you found needs real work, write it down as a task and "
+            "leave it. Being brief here is what keeps you alive all day.")
+        return "\n\n".join(parts)
     parts.append(
         f"\nYou have roughly **{affordable} turns** of work in this session "
         "— a solid working block, comfortably enough to finish something "
@@ -148,8 +164,14 @@ def _state_briefing(co: dict) -> str:
     return "\n\n".join(parts)
 
 
-async def wake():
+async def wake(mode: str = "focus", model: str | None = None,
+               budget: float | None = None,
+               reasons: list[str] | None = None):
+    """One unit of work. A `tick` is short, cheap and reactive; a `focus`
+    block is the day's real session on the good model."""
     co = company.get_company()
+    session_model = model or co["model"]
+    session_budget = budget if budget is not None else SESSION_BUDGET_USD
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
 
@@ -182,9 +204,9 @@ async def wake():
     _cli_err: list[str] = []
     options = ClaudeAgentOptions(
         system_prompt=(HERE / "founder.md").read_text(),
-        model=co["model"],
-        max_turns=MAX_TURNS,
-        max_budget_usd=SESSION_BUDGET_USD,
+        model=session_model,
+        max_turns=MAX_TURNS if mode == "focus" else 14,
+        max_budget_usd=session_budget,
         effort=EFFORT,
         cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
         permission_mode="bypassPermissions",   # headless founder, no human
@@ -227,7 +249,9 @@ async def wake():
     try:
       async with asyncio.timeout(int(os.environ.get("STRO_SESSION_MAX_S",
                                                     "2400"))):
-        async for msg in query(prompt=_state_briefing(co), options=options):
+        async for msg in query(prompt=_state_briefing(co, mode, session_budget,
+                                                  reasons),
+                               options=options):
             if isinstance(msg, AssistantMessage):
                 turns += 1
                 for block in msg.content:
