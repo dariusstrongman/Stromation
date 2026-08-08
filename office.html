@@ -90,7 +90,7 @@ function layout(){
 }
 window.addEventListener('resize',layout);
 layout();
-world.pos={...SPOTS.out};world.target={...SPOTS.desk};
+world.pos={...SPOTS.door};world.target={...SPOTS.desk};
 
 function drawStro(){
   const p=world.pos, bob=world.walking?(world.step>>3)%2:0;
@@ -138,7 +138,7 @@ function onEvent(e){
   if(e.kind==='session_start'){world.live=true;world.pos={...SPOTS.out};
     world.target={...SPOTS.desk};say('good morning.')}
   else if(e.kind==='session_end'){say('done for now.');
-    setTimeout(()=>{world.target={...SPOTS.out};
+    setTimeout(()=>{world.target={...SPOTS.desk};
       setTimeout(()=>{world.live=false},2600)},1200)}
   else if(e.kind==='thought'){world.target={...SPOTS.window};
     say((e.body||'thinking…'))}

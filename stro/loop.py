@@ -64,6 +64,19 @@ def mark_focus_done(co: dict) -> None:
     company.update("company", co["id"], {"trigger_state": st})
 
 
+def _park(co: dict, reasons: list[str], why: str) -> None:
+    """A trigger fires once. If the session it triggered never ran, the
+    signal is gone — so write it down where the founder will find it."""
+    try:
+        company.insert("tasks", {
+            "company_id": co["id"], "priority": 2,
+            "title": f"Missed signal: {'; '.join(reasons)[:120]}",
+            "why": f"The loop could not run a session for this ({why[:160]}). "
+                   "It will not be raised again automatically."})
+    except Exception:  # noqa: BLE001
+        pass
+
+
 async def run() -> None:
     print("stro is awake; the office does not close")
     while True:
@@ -89,10 +102,17 @@ async def run() -> None:
                            budget=min(FOCUS_BUDGET, budget_left),
                            reasons=["today's focus block"] + reasons)
             elif reasons:
-                await wake(mode="tick",
-                           model=TICK_MODEL,
-                           budget=min(TICK_BUDGET, budget_left),
-                           reasons=reasons)
+                try:
+                    await wake(mode="tick",
+                               model=TICK_MODEL,
+                               budget=min(TICK_BUDGET, budget_left),
+                               reasons=reasons)
+                except Exception as exc:  # noqa: BLE001
+                    # The marks already advanced, so this signal will never
+                    # fire again. Park it where he will see it instead of
+                    # losing it — without re-arming the trigger.
+                    _park(co, reasons, str(exc))
+                    raise
             # nothing to do: the free path, and by far the most common one
         except Exception as exc:  # noqa: BLE001 — the company outlives its bugs
             print(f"loop error (continuing): {exc}")

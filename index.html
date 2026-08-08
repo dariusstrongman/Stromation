@@ -127,10 +127,12 @@ function layout(){
 }
 window.addEventListener('resize',layout);
 layout();
-world.pos={...SPOTS.out};world.target={...SPOTS.desk};
+world.pos={...SPOTS.door};world.target={...SPOTS.desk};
 
 function drawStro(){
-  const p=world.pos,bob=world.walking?(world.step>>3)%2:0;
+  // Between wakes he sits a pixel lower — resting, not stuck.
+  const rest=(!world.live&&!world.walking)?1:0;
+  const p=world.pos,bob=(world.walking?(world.step>>3)%2:0)+rest;
   if(!world.sprite){cx.strokeStyle='#4b5460';cx.setLineDash([3,3]);
     cx.strokeRect((p.x-8)*S,(p.y-16+bob)*S,16*S,16*S);cx.setLineDash([]);return}
   const {palette,grid}=world.sprite;
@@ -181,7 +183,7 @@ function onEvent(e){
   if(e.kind==='session_start'){world.live=true;world.pos={...SPOTS.out};
     world.target={...SPOTS.desk};say('good morning.');setStatus()}
   else if(e.kind==='session_end'){say('done for now.');
-    setTimeout(()=>{world.target={...SPOTS.out};
+    setTimeout(()=>{world.target={...SPOTS.desk};
       setTimeout(()=>{world.live=false;setStatus();refreshBooks()},2600)},1200)}
   else if(e.kind==='thought'){world.target={...SPOTS.window};say(e.body||'thinking…')}
   else if(e.kind==='tool_use'){

@@ -28,12 +28,15 @@ BUDGET_SOFT_STOP = 0.95
 
 
 def _measured_per_turn(co: dict, mode: str) -> float:
-    """Cost per turn from recent sessions of the SAME shape. Falls back to
-    a model-appropriate estimate — telling him he has 30 turns when his new
-    model affords 7 makes the session feel inexplicably short."""
-    field = "num_turns" if mode == "focus" else "num_turns"
+    """Cost per turn from recent sessions of the SAME shape.
+
+    Ticks run on Haiku and outnumber focus blocks massively, so pooling
+    them makes a focus briefing quote tick economics and wildly overstate
+    how many turns it can afford — the exact miscalibration this exists to
+    prevent.
+    """
     rows = company._req(
-        f"wakeups?company_id=eq.{co['id']}&{field}=gt.3"
+        f"wakeups?company_id=eq.{co['id']}&mode=eq.{mode}&num_turns=gt.3"
         "&select=num_turns,cost_usd&order=started_at.desc&limit=5")
     tot_c = sum(float(w["cost_usd"] or 0) for w in rows)
     tot_t = sum(w["num_turns"] for w in rows) or 0
@@ -136,15 +139,7 @@ def _state_briefing(co: dict, mode: str = "focus",
             "grid_json) and one personality sentence. This is YOUR choice — "
             "professional, hoodie, whatever feels like you. Do it early "
             "this session; it is how the owner will recognize you forever.")
-    per_turn = 0.018
-    _prior = company._req(
-        f"wakeups?company_id=eq.{co['id']}&num_turns=gt.3"
-        "&select=num_turns,cost_usd&order=started_at.desc&limit=5")
-    if _prior:
-        _c = sum(float(w["cost_usd"] or 0) for w in _prior)
-        _t = sum(w["num_turns"] for w in _prior) or 1
-        if _c > 0:
-            per_turn = max(0.004, _c / _t)
+    per_turn = _measured_per_turn(co, mode)
 
     team = staff.active_staff(co["id"])
     pay = staff.payroll(co["id"])
@@ -279,7 +274,7 @@ async def wake(mode: str = "focus", model: str | None = None,
             "amount_usd": -float(os.environ.get("INFRA_DAILY_USD", "0.20"))})
         books = company.month_to_date(co["id"])   # re-read after booking
 
-    wk = company.insert("wakeups", {"company_id": co["id"]})
+    wk = company.insert("wakeups", {"company_id": co["id"], "mode": mode})
     if books["burn_usd"] >= cap * BUDGET_SOFT_STOP:
         company.update("wakeups", wk["id"],
                        {"status": "budget_blocked",
@@ -464,8 +459,9 @@ async def wake(mode: str = "focus", model: str | None = None,
         print(f"{status}: {turns} turns, ${cost:.4f}")
         return
     try:
-        day = len(company._req(
-            f"wakeups?company_id=eq.{co['id']}&num_turns=gt.0&select=id")) or 1
+        started = datetime.fromisoformat(
+            co["created_at"].replace("Z", "+00:00"))
+        day = max(1, (datetime.now(timezone.utc) - started).days + 1)
         nar = narrator.write_narration(
             co["id"], wk["id"], day, session_events,
             company.month_to_date(co["id"]),

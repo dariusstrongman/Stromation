@@ -18,8 +18,15 @@ from . import company
 
 
 def _state(co: dict) -> dict:
+    """Returns the SAME dict object held on `co`, deliberately: check()
+    mutates it in place and loop.mark_focus_done() then reads the advanced
+    marks off `co` before writing. Returning a copy here would silently
+    clobber the mail high-water mark."""
     st = co.get("trigger_state")
-    return st if isinstance(st, dict) else {}
+    if not isinstance(st, dict):
+        st = {}
+        co["trigger_state"] = st
+    return st
 
 
 def _save(company_id: str, state: dict) -> None:
@@ -41,7 +48,14 @@ def _new_mail(state: dict) -> tuple[str | None, dict]:
     try:
         m = imaplib.IMAP4_SSL(host, 993, timeout=25)
         m.login(user, pw)
-        m.select("INBOX")
+        _, sel = m.select("INBOX")
+        validity = 0
+        try:
+            _, vd = m.status("INBOX", "(UIDVALIDITY)")
+            raw = vd[0].decode() if vd and vd[0] else ""
+            validity = int(raw.split("UIDVALIDITY")[1].strip(" ()\r\n"))
+        except Exception:  # noqa: BLE001
+            validity = 0
         _, data = m.uid("search", None, "ALL")
         uids = [int(x) for x in (data[0].split() if data and data[0] else [])]
         m.logout()
@@ -50,11 +64,21 @@ def _new_mail(state: dict) -> tuple[str | None, dict]:
     if not uids:
         return None, state
     top = max(uids)
+    # A UID only means anything within its UIDVALIDITY generation. If the
+    # mailbox is recreated or migrated, UIDs reset to low numbers and a
+    # stale high-water mark would silence mail forever — the same bug with
+    # the sign flipped. Re-baseline instead of comparing across generations.
+    if validity and state.get("mail_uidvalidity") != validity:
+        state["mail_uidvalidity"] = validity
+        state["mail_uid"] = top
+        return None, state
     seen = int(state.get("mail_uid", 0))
     if seen == 0:
         # First run: adopt the current mailbox as the baseline rather than
         # announcing every message that ever arrived.
         state["mail_uid"] = top
+        if validity:
+            state["mail_uidvalidity"] = validity
         return None, state
     if top > seen:
         n = len([u for u in uids if u > seen])
