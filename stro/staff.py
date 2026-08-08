@@ -21,7 +21,7 @@ from claude_agent_sdk import (
     query,
 )
 
-from . import company
+from . import company, models
 
 # Who the founder can hire. Salary bands are real per-million-token prices;
 # a senior costs what a senior costs. Roles are NOT fixed — he decides what
@@ -196,7 +196,7 @@ async def run_delegation(co: dict, d: dict) -> None:
         opts = ClaudeAgentOptions(
             system_prompt=_employee_prompt(emp, d["task"], d.get("context") or "",
                                            notes),
-            model=model,
+            model=models.resolve(model),
             max_turns=int(os.environ.get("STRO_EMPLOYEE_MAX_TURNS", "30")),
             max_budget_usd=float(os.environ.get("STRO_EMPLOYEE_BUDGET_USD",
                                                 "0.40")),

@@ -19,7 +19,7 @@ from claude_agent_sdk import (
     query,
 )
 
-from . import company, narrator, staff, voiceover
+from . import company, models, narrator, staff, voiceover
 from .tools import make_company_server
 
 HERE = pathlib.Path(__file__).parent
@@ -181,6 +181,7 @@ def _state_briefing(co: dict, mode: str = "focus",
     # feature he never touches.
     parts.append(
         f"## What thinking costs\n"
+        f"Inference is bought through **{models.describe()}**.\n"
         f"You are running on **{co['model']}** at roughly "
         f"${per_turn:.4f} per turn of your own thought. You can change that "
         "with set_my_model — a better brain costs more per turn, a cheaper "
@@ -357,7 +358,7 @@ async def wake(mode: str = "focus", model: str | None = None,
     persona = "founder.md" if mode == "focus" else "founder_tick.md"
     options = ClaudeAgentOptions(
         system_prompt=(HERE / persona).read_text(),
-        model=session_model,
+        model=models.resolve(session_model),
         max_turns=MAX_TURNS if mode == "focus" else 14,
         max_budget_usd=session_ceiling,
         effort=EFFORT,
@@ -469,7 +470,7 @@ async def wake(mode: str = "focus", model: str | None = None,
         try:
             wrap_opts = ClaudeAgentOptions(
                 system_prompt=(HERE / "founder.md").read_text(),
-                model=session_model, max_turns=6,
+                model=models.resolve(session_model), max_turns=6,
                 max_budget_usd=max(0.02, session_budget * 0.25),
                 cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
                 permission_mode="bypassPermissions",
