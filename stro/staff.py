@@ -204,7 +204,7 @@ async def run_delegation(co: dict, d: dict) -> None:
             cwd=os.environ.get("STRO_WORKSPACE", "/workspace"),
             permission_mode="bypassPermissions",
             env={**os.environ, "HOME": os.environ.get("STRO_HOME", "/home/stro"),
-                 "IS_SANDBOX": "1"},
+                 "IS_SANDBOX": "1", "ENABLE_PROMPT_CACHING_1H": "1"},
             allowed_tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep",
                            "WebSearch", "WebFetch"],
         )
