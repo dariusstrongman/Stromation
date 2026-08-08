@@ -12,7 +12,7 @@ from claude_agent_sdk import (AssistantMessage, ClaudeAgentOptions,
                               ResultMessage, TextBlock, ToolResultBlock,
                               ToolUseBlock, UserMessage, query)
 
-from . import company, narrator, voiceover
+from . import company, narrator, staff, voiceover
 from .tools import make_company_server
 
 HERE = pathlib.Path(__file__).parent
@@ -78,6 +78,33 @@ def _state_briefing(co: dict) -> str:
             "grid_json) and one personality sentence. This is YOUR choice — "
             "professional, hoodie, whatever feels like you. Do it early "
             "this session; it is how the owner will recognize you forever.")
+    team = staff.active_staff(co["id"])
+    pay = staff.payroll(co["id"])
+    if team:
+        parts.append("## Your staff (their salary is real, from your runway)\n"
+                     + "\n".join(
+            f"- {e['name']} — {e['role']} ({e['model']}), "
+            f"${pay.get(e['id'], 0):.2f} this month"
+            for e in team))
+    else:
+        parts.append(
+            "## Staff\nYou work alone. You can `hire` when a function is "
+            "genuinely eating your time — an employee's model IS their "
+            "salary, paid from the same runway you live on, so hire the "
+            "cheapest person who can do the job and only when the work "
+            "justifies it. Available to hire:\n" + staff.roster_text())
+    from datetime import datetime as _dt2, timedelta as _td2, timezone as _tz2
+    since = (_dt2.now(_tz2.utc) - _td2(days=3)).isoformat().replace(
+        "+00:00", "Z")
+    reports = staff.completed_since(co["id"], since)
+    if reports:
+        by_id = {e["id"]: e["name"] for e in
+                 company._req(f"employees?company_id=eq.{co['id']}&select=id,name")}
+        parts.append("## Reports back from your staff\n" + "\n".join(
+            f"- {by_id.get(r['employee_id'], '?')} on '{r['task'][:60]}' "
+            f"[{r['status']}, ${float(r['cost_usd'] or 0):.2f}]: "
+            f"{(r['result'] or '')[:400]}" for r in reports))
+
     creds = {k[len("STRO_SECRET_"):]: v for k, v in os.environ.items()
              if k.startswith("STRO_SECRET_")}
     if creds:
@@ -174,7 +201,10 @@ async def wake():
                        "mcp__company__task_update",
                        "mcp__company__escalate",
                        "mcp__company__set_appearance",
-                       "mcp__company__book_expense"],
+                       "mcp__company__book_expense",
+                       "mcp__company__hire",
+                       "mcp__company__delegate",
+                       "mcp__company__fire"],
         mcp_servers={"company": make_company_server(co["id"], wk["id"])},
     )
 
@@ -274,6 +304,15 @@ async def wake():
                     elif isinstance(msg, ResultMessage):
                         cost += msg.total_cost_usd or 0.0
         except Exception:  # noqa: BLE001 — best effort; never fatal
+            pass
+
+    # The founder has gone home; the staff work their tasks now, so their
+    # reports are waiting for him next session.
+    for d in staff.pending_delegations(co["id"])[:4]:
+        emit("tool_use", "staff", f"delegation running: {d['task'][:100]}")
+        try:
+            await staff.run_delegation(co, d)
+        except Exception:  # noqa: BLE001 — an employee failing is not fatal
             pass
 
     company.insert("ledger", {

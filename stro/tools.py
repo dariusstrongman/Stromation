@@ -2,7 +2,7 @@
 attributable to a wake-up and visible to the owner."""
 from claude_agent_sdk import create_sdk_mcp_server, tool
 
-from . import company
+from . import company, staff
 
 
 def make_company_server(company_id: str, wakeup_id: str):
@@ -79,6 +79,71 @@ def make_company_server(company_id: str, wakeup_id: str):
         return {"content": [{"type": "text",
                              "text": f"booked -${amt:.2f} ({cat})"}]}
 
+    @tool("hire",
+          "Hire an employee. Their model IS their salary — a senior costs "
+          "senior money every time they work, and payroll comes out of the "
+          "same runway you live on. Hire only when a function is genuinely "
+          "eating your time, and hire the cheapest person who can do the "
+          "job. name: what you call them. role: what they are for. "
+          "model: pick from the roster in your briefing. why: the business "
+          "reason.",
+          {"name": str, "role": str, "model": str, "why": str})
+    async def hire(args):
+        if args["model"] not in staff.ROSTER:
+            return {"content": [{"type": "text",
+                                 "text": f"no such model. roster:\n"
+                                         f"{staff.roster_text()}"}],
+                    "isError": True}
+        row = company.insert("employees", {
+            "company_id": company_id, "name": args["name"][:60],
+            "role": args["role"][:80], "model": args["model"],
+            "hired_reason": args["why"][:300]})
+        return {"content": [{"type": "text",
+                             "text": f"{row['name']} hired as {row['role']} "
+                                     f"({args['model']}). They start when you "
+                                     "delegate something."}]}
+
+    @tool("delegate",
+          "Give an employee a task. They work AFTER your session ends and "
+          "their report is waiting for you next session — so delegate "
+          "things you do not need an answer to right now. Each delegation "
+          "costs their salary.",
+          {"employee_name": str, "task": str, "context": str})
+    async def delegate(args):
+        matches = [e for e in staff.active_staff(company_id)
+                   if e["name"].lower() == args["employee_name"].lower()]
+        if not matches:
+            names = ", ".join(e["name"] for e in staff.active_staff(company_id))
+            return {"content": [{"type": "text",
+                                 "text": f"no active employee by that name. "
+                                         f"staff: {names or '(nobody)'}"}],
+                    "isError": True}
+        company.insert("delegations", {
+            "company_id": company_id, "employee_id": matches[0]["id"],
+            "task": args["task"][:2000],
+            "context": (args.get("context") or "")[:2000]})
+        return {"content": [{"type": "text",
+                             "text": f"delegated to {matches[0]['name']}; "
+                                     "report ready next session"}]}
+
+    @tool("fire",
+          "Let an employee go. Their salary stops. Do this when the "
+          "function no longer needs a person, when they are not earning "
+          "their keep, or when the company cannot afford them.",
+          {"employee_name": str, "reason": str})
+    async def fire(args):
+        matches = [e for e in staff.active_staff(company_id)
+                   if e["name"].lower() == args["employee_name"].lower()]
+        if not matches:
+            return {"content": [{"type": "text", "text": "no such employee"}],
+                    "isError": True}
+        company.update("employees", matches[0]["id"], {
+            "status": "departed", "departed_reason": args["reason"][:300],
+            "departed_at": "now()"})
+        return {"content": [{"type": "text",
+                             "text": f"{matches[0]['name']} has left the "
+                                     "company. Their salary stops."}]}
+
     @tool("set_appearance",
           "Design YOUR OWN sprite — how you appear in the company world. "
           "palette_json: JSON array of 2-8 hex colors. grid_json: JSON "
@@ -117,4 +182,5 @@ def make_company_server(company_id: str, wakeup_id: str):
     return create_sdk_mcp_server(
         name="company", version="0.1.0",
         tools=[journal_write, memory_save, task_create, task_update,
-               escalate, set_appearance, book_expense])
+               escalate, set_appearance, book_expense,
+               hire, delegate, fire])
