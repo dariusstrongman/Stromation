@@ -55,7 +55,7 @@ let SPOTS={};
 /* ---------- room painting ---------- */
 function px(x,y,w,h,c){cx.fillStyle=c;cx.fillRect(x*S,y*S,w*S,h*S)}
 function room(dark){
-  const sh=c=>shade(c,dark?.35:1);
+  const sh=c=>shade(c,dark?.72:1);
   px(0,0,W,H,sh('#141821'));px(0,50,W,H-50,sh('#1d232e'));
   for(let i=0;i<W;i+=10)px(i,50,1,H-50,sh('#171c26'));
   const hr=new Date().getUTCHours();
@@ -126,7 +126,7 @@ function tick(){
   world.walking=d>1;
   if(world.walking){p.x+=dx/d*.55;p.y+=dy/d*.55;world.step++}
   room(!world.live);
-  if(world.live||world.walking)drawStro();
+  drawStro();
   bubble();
   requestAnimationFrame(tick);
 }

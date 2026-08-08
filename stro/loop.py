@@ -50,22 +50,18 @@ def allowance(co: dict) -> float:
     return min(remaining_today, cap / 5)
 
 
-def spent_today(company_id: str) -> float:
-    day = datetime.now(timezone.utc).strftime("%Y-%m-%dT00:00:00Z")
-    rows = company._req(
-        f"ledger?company_id=eq.{company_id}&ts=gte.{day}"
-        "&select=category,amount_usd")
-    return round(sum(-float(r["amount_usd"]) for r in rows
-                     if float(r["amount_usd"]) < 0
-                     and r["category"] in ("inference", "salary")), 4)
+def focus_done_today(co: dict) -> bool:
+    st = co.get("trigger_state") or {}
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return st.get("focus_date") == today
 
 
-def focus_done_today(company_id: str) -> bool:
-    day = datetime.now(timezone.utc).strftime("%Y-%m-%dT00:00:00Z")
-    rows = company._req(
-        f"wakeups?company_id=eq.{company_id}&started_at=gte.{day}"
-        "&num_turns=gt.8&select=id&limit=1")
-    return bool(rows)
+def mark_focus_done(co: dict) -> None:
+    """Recorded BEFORE the block runs. A focus session that crashes must not
+    retry every minute for the rest of the hour."""
+    st = dict(co.get("trigger_state") or {})
+    st["focus_date"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    company.update("company", co["id"], {"trigger_state": st})
 
 
 async def run() -> None:
@@ -82,10 +78,11 @@ async def run() -> None:
 
             now = datetime.now(timezone.utc)
             is_focus = (now.hour == FOCUS_HOUR_UTC
-                        and not focus_done_today(co["id"]))
-            reasons = triggers.check(co["id"], MAX_IDLE_MIN)
+                        and not focus_done_today(co))
+            reasons = triggers.check(co, MAX_IDLE_MIN)
 
             if is_focus:
+                mark_focus_done(co)
                 # The day's real work: the good model, the full budget.
                 await wake(mode="focus",
                            model=co["model"],

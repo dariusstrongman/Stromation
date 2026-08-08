@@ -1,37 +1,71 @@
-"""Reasons to wake up — all of them free.
+"""Reasons to wake up — all of them free, and each fires only once.
 
-Nothing in this module costs a token. That is the whole point: the company
-can be alive around the clock because *noticing* is free and only *acting*
-is billed.
+Nothing here costs a token. That is the point: the company can be alive
+around the clock because *noticing* is free and only *acting* is billed.
+
+Every trigger keeps a high-water mark. Without one, a trigger reports the
+continued existence of an old thing rather than the arrival of a new one —
+and a single unread newsletter would wake the founder every sixty seconds
+for the rest of its life.
 """
 import imaplib
 import json
 import os
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from . import company
 
 
-def _new_mail() -> str | None:
+def _state(co: dict) -> dict:
+    st = co.get("trigger_state")
+    return st if isinstance(st, dict) else {}
+
+
+def _save(company_id: str, state: dict) -> None:
+    company.update("company", company_id, {"trigger_state": state})
+
+
+def _new_mail(state: dict) -> tuple[str | None, dict]:
+    """Fires on mail newer than anything seen before — read or not.
+
+    Deliberately does NOT use the \\Seen flag: whether the founder opened
+    something is his business, and junk he chooses to ignore must not wake
+    him forever.
+    """
     host = (os.environ.get("STRO_SECRET_EMAIL_IMAP") or "").split(":")[0]
     user = os.environ.get("STRO_SECRET_COMPANY_EMAIL")
     pw = os.environ.get("STRO_SECRET_COMPANY_EMAIL_PASSWORD")
     if not (host and user and pw):
-        return None
+        return None, state
     try:
         m = imaplib.IMAP4_SSL(host, 993, timeout=25)
         m.login(user, pw)
         m.select("INBOX")
-        _, data = m.search(None, "UNSEEN")
-        n = len(data[0].split()) if data and data[0] else 0
+        _, data = m.uid("search", None, "ALL")
+        uids = [int(x) for x in (data[0].split() if data and data[0] else [])]
         m.logout()
-        return f"{n} unread email(s) in the company inbox" if n else None
     except Exception:  # noqa: BLE001 — a flaky mailbox must not wake anyone
-        return None
+        return None, state
+    if not uids:
+        return None, state
+    top = max(uids)
+    seen = int(state.get("mail_uid", 0))
+    if seen == 0:
+        # First run: adopt the current mailbox as the baseline rather than
+        # announcing every message that ever arrived.
+        state["mail_uid"] = top
+        return None, state
+    if top > seen:
+        n = len([u for u in uids if u > seen])
+        state["mail_uid"] = top
+        return f"{n} new email(s) in the company inbox", state
+    return None, state
 
 
 def _new_payment(company_id: str) -> str | None:
+    """Paid orders are checked against the ledger, which is already the
+    high-water mark: anything booked has been handled."""
     key = os.environ.get("STRO_SECRET_STRIPE_KEY")
     if not key:
         return None
@@ -58,23 +92,37 @@ def _new_payment(company_id: str) -> str | None:
     return None
 
 
-def _staff_reports(company_id: str) -> str | None:
-    from datetime import timedelta
-    since = (datetime.now(timezone.utc) - timedelta(hours=6)).isoformat(
-    ).replace("+00:00", "Z")
+def _staff_reports(company_id: str, state: dict) -> tuple[str | None, dict]:
     rows = company._req(
-        f"delegations?company_id=eq.{company_id}&status=eq.done"
-        f"&completed_at=gte.{since}&select=id&limit=5")
-    return f"{len(rows)} employee report(s) came back" if rows else None
+        f"delegations?company_id=eq.{company_id}&status=in.(done,failed)"
+        "&select=id,completed_at&order=completed_at.desc&limit=10")
+    if not rows:
+        return None, state
+    latest = rows[0]["completed_at"]
+    if state.get("delegation_at") == latest:
+        return None, state
+    prev = state.get("delegation_at")
+    state["delegation_at"] = latest
+    if prev is None:
+        return None, state
+    n = len([r for r in rows if r["completed_at"] > prev])
+    return (f"{n} employee report(s) came back", state)
 
 
-def _owner_answered(company_id: str) -> str | None:
-    from datetime import timedelta
-    since = (datetime.now(timezone.utc) - timedelta(hours=12)).isoformat(
-    ).replace("+00:00", "Z")
-    rows = company.resolved_escalations_since(company_id, since)
-    return (f"the owner answered {len(rows)} escalation(s)"
-            if rows else None)
+def _owner_answered(company_id: str, state: dict) -> tuple[str | None, dict]:
+    rows = company._req(
+        f"escalations?company_id=eq.{company_id}&status=in.(approved,denied)"
+        "&select=resolved_at,action&order=resolved_at.desc&limit=10")
+    if not rows or not rows[0].get("resolved_at"):
+        return None, state
+    latest = rows[0]["resolved_at"]
+    if state.get("escalation_at") == latest:
+        return None, state
+    prev = state.get("escalation_at")
+    state["escalation_at"] = latest
+    if prev is None:
+        return None, state
+    return ("the owner answered an escalation — act on it", state)
 
 
 def _idle(company_id: str, max_idle_min: int) -> str | None:
@@ -89,18 +137,48 @@ def _idle(company_id: str, max_idle_min: int) -> str | None:
             if mins >= max_idle_min else None)
 
 
-def check(company_id: str, max_idle_min: int) -> list[str]:
-    """Every reason to act right now. Costs nothing to ask."""
-    found = []
-    for fn in (lambda: _new_payment(company_id),
-               _new_mail,
-               lambda: _staff_reports(company_id),
-               lambda: _owner_answered(company_id),
-               lambda: _idle(company_id, max_idle_min)):
-        try:
-            r = fn()
-        except Exception:  # noqa: BLE001
-            r = None
+def check(co: dict, max_idle_min: int) -> list[str]:
+    """Every reason to act right now. Costs nothing to ask.
+
+    High-water marks advance whether or not the resulting session succeeds:
+    a trigger that re-fires until it is 'handled' is how you get an
+    infinite loop at three in the morning.
+    """
+    cid = co["id"]
+    state = _state(co)
+    before = dict(state)
+    found: list[str] = []
+
+    try:
+        r = _new_payment(cid)
         if r:
             found.append(r)
+    except Exception:  # noqa: BLE001
+        pass
+    for fn in (_new_mail,):
+        try:
+            r, state = fn(state)
+            if r:
+                found.append(r)
+        except Exception:  # noqa: BLE001
+            pass
+    for fn in (_staff_reports, _owner_answered):
+        try:
+            r, state = fn(cid, state)
+            if r:
+                found.append(r)
+        except Exception:  # noqa: BLE001
+            pass
+    try:
+        r = _idle(cid, max_idle_min)
+        if r:
+            found.append(r)
+    except Exception:  # noqa: BLE001
+        pass
+
+    if state != before:
+        try:
+            _save(cid, state)
+        except Exception:  # noqa: BLE001
+            pass
     return found

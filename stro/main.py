@@ -27,6 +27,23 @@ EFFORT = os.environ.get("STRO_EFFORT", "medium")
 BUDGET_SOFT_STOP = 0.95
 
 
+def _measured_per_turn(co: dict, mode: str) -> float:
+    """Cost per turn from recent sessions of the SAME shape. Falls back to
+    a model-appropriate estimate — telling him he has 30 turns when his new
+    model affords 7 makes the session feel inexplicably short."""
+    field = "num_turns" if mode == "focus" else "num_turns"
+    rows = company._req(
+        f"wakeups?company_id=eq.{co['id']}&{field}=gt.3"
+        "&select=num_turns,cost_usd&order=started_at.desc&limit=5")
+    tot_c = sum(float(w["cost_usd"] or 0) for w in rows)
+    tot_t = sum(w["num_turns"] for w in rows) or 0
+    if tot_c > 0 and tot_t:
+        return max(0.002, tot_c / tot_t)
+    defaults = {"claude-opus-5": 0.09, "claude-sonnet-5": 0.018,
+                "claude-haiku-4-5-20251001": 0.006}
+    return defaults.get(co.get("model") or "", 0.018)
+
+
 def _tick_briefing(co: dict, budget: float, reasons: list[str] | None,
                    per_turn: float) -> str:
     """The cheap path. A check-in ships ~3k tokens, not ~32k: no
@@ -67,7 +84,8 @@ def _state_briefing(co: dict, mode: str = "focus",
                     reasons: list[str] | None = None) -> str:
     budget = budget if budget is not None else SESSION_BUDGET_USD
     if mode == "tick":
-        return _tick_briefing(co, budget, reasons, 0.004)
+        return _tick_briefing(co, budget, reasons,
+                              _measured_per_turn(co, "tick"))
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
     runway = max(0.0, cap - books["burn_usd"])
@@ -209,13 +227,21 @@ def _state_briefing(co: dict, mode: str = "focus",
             "leave it. Being brief here is what keeps you alive all day.")
         return "\n\n".join(parts)
     if mode == "focus":
-        parts.append(
+        focus_note = (
             "## This is your focus block — the day's real work\n"
             "Do not spend it on verification, status checks or tidying. "
             "Spend it MOVING THE BUSINESS: something a stranger could see, "
-            "use, or buy by the end of it. You have a product and no "
-            "customers, so the binding constraint is almost certainly "
-            "distribution, not the product. Ship something outward.")
+            "use, or buy by the end of it.")
+        if books["revenue_usd"] <= 0:
+            focus_note += (
+                " You have never made a sale, so the binding constraint is "
+                "almost certainly distribution rather than the product. Ship "
+                "something outward.")
+        else:
+            focus_note += (
+                f" You have earned ${books['revenue_usd']:.2f} — something "
+                "works. Find out what, and do more of it.")
+        parts.append(focus_note)
     parts.append(
         f"\nYou have roughly **{affordable} turns** of work in this session "
         "— a solid working block, comfortably enough to finish something "
@@ -430,7 +456,13 @@ async def wake(mode: str = "focus", model: str | None = None,
                                         if usage_note else ""))[:2000]})
     emit("session_end", status, f"{turns} turns, ${cost:.4f}")
 
-    # The documentary crew films every day, including the bad ones.
+    # The documentary crew films the DAY, not every check-in. Narrating a
+    # four-turn inbox glance produced episodes like "The First Audit" and
+    # spends real money under a category the budget gate deliberately
+    # ignores — uncapped by construction.
+    if mode != "focus":
+        print(f"{status}: {turns} turns, ${cost:.4f}")
+        return
     try:
         day = len(company._req(
             f"wakeups?company_id=eq.{co['id']}&num_turns=gt.0&select=id")) or 1
