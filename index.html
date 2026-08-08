@@ -91,7 +91,19 @@ const S=4,H=100;let W=160,GEO={};
 const world={sprite:null,name:'Stro',personality:null,live:false,
   lastKind:null,bubble:null,bubbleUntil:0,
   pos:{x:34,y:64},target:{x:96,y:60},walking:false,step:0};
-let SPOTS={};
+let SPOTS={}, HOME={};
+// His actual working hours (UTC), the same ones the loop enforces. What
+// the room shows is therefore true: outside these hours he really is off
+// the clock, and a session running anyway really is him getting up for it.
+const WORK_START=14, WORK_END=22;
+function phaseNow(){
+  const h=new Date().getUTCHours();
+  if(world.live) return (h>=WORK_START&&h<WORK_END)?'work':'called_in';
+  if(h>=WORK_START&&h<WORK_END) return 'work';
+  if(h>=WORK_END||h<2) return 'evening';
+  if(h<13) return 'sleep';
+  return 'morning';
+}
 
 function px(x,y,w,h,c){cx.fillStyle=c;cx.fillRect(x*S,y*S,w*S,h*S)}
 function shade(hex,f){const n=parseInt(hex.slice(1),16);
@@ -115,6 +127,30 @@ function room(dark){
   if(world.live){cx.fillStyle='rgba(240,200,120,0.05)';
     cx.beginPath();cx.moveTo((GEO.lightX+5)*S,6*S);cx.lineTo((GEO.lightX-11)*S,50*S);cx.lineTo((GEO.lightX+21)*S,50*S);cx.fill()}
 }
+function drawHome(dim){
+  const sh=c=>shade(c,dim);
+  px(0,0,W,H,sh('#171420'));                         // walls, warmer than work
+  px(0,50,W,H-50,sh('#241d2a'));                     // floor
+  for(let i=0;i<W;i+=12)px(i,50,1,H-50,sh('#1e1826'));
+  const hr=new Date().getUTCHours();
+  const sky=(hr>=13&&hr<22)?'#3a4a6e':'#0a0c18';
+  px(HOME.winX,14,26,18,sh('#0a0c10'));px(HOME.winX+2,16,22,14,shade(sky,dim));
+  px(HOME.winX+12,16,1,14,sh('#0a0c10'));
+  // couch + a screen he watches
+  px(HOME.couchX,58,26,4,sh('#3b3350'));px(HOME.couchX,52,26,6,sh('#2f2942'));
+  px(HOME.couchX+2,62,2,6,sh('#241f33'));px(HOME.couchX+22,62,2,6,sh('#241f33'));
+  px(HOME.tvX,26,20,13,sh('#0a0c10'));
+  px(HOME.tvX+1,27,18,11,(phaseNow()==='evening')?shade('#4a6fa5',dim):sh('#151622'));
+  // bed
+  px(HOME.bedX,54,24,16,sh('#33304a'));px(HOME.bedX,50,24,5,sh('#463f63'));
+  px(HOME.bedX+2,52,8,4,sh('#c9d1d9'));              // pillow
+  // kettle corner + a lamp that is on while he is up
+  px(12,58,10,3,sh('#2f2942'));px(15,54,3,4,sh('#c9d1d9'));
+  px(HOME.lampX,20,2,14,sh('#3a3f4a'));
+  if(phaseNow()!=='sleep'){cx.fillStyle='rgba(255,214,150,0.05)';
+    cx.beginPath();cx.moveTo(HOME.lampX*S,34*S);
+    cx.lineTo((HOME.lampX-14)*S,50*S);cx.lineTo((HOME.lampX+16)*S,50*S);cx.fill()}
+}
 function layout(){
   const cssH=Math.max(240,innerHeight*0.52);
   W=Math.max(160,Math.round(H*innerWidth/cssH));
@@ -124,6 +160,10 @@ function layout(){
   GEO={deskX,winX:deskX+20,cofX:Math.round(W*0.2),lightX:Math.round(W*0.5)-5};
   SPOTS={door:{x:20,y:64},out:{x:6,y:64},desk:{x:deskX+13,y:60},
          window:{x:deskX+34,y:38},coffee:{x:GEO.cofX+5,y:80}};
+  const bedX=Math.round(W*0.68), couchX=Math.round(W*0.28);
+  HOME={bedX,couchX,tvX:couchX+3,winX:Math.round(W*0.5),lampX:couchX-8,
+        bed:{x:bedX+12,y:56},couch:{x:couchX+13,y:58},
+        kettle:{x:18,y:60},door:{x:6,y:64}};
 }
 window.addEventListener('resize',layout);
 layout();
@@ -131,8 +171,18 @@ world.pos={...SPOTS.door};world.target={...SPOTS.desk};
 
 function drawStro(){
   // Between wakes he sits a pixel lower — resting, not stuck.
+  const asleep = (world.scene==='home' && phaseNow()==='sleep'
+                  && !world.walking);
   const rest=(!world.live&&!world.walking)?1:0;
   const p=world.pos,bob=(world.walking?(world.step>>3)%2:0)+rest;
+  if(asleep&&world.sprite){
+    // lying down: the sprite rotated onto the bed, plus a slow breath
+    const {palette,grid}=world.sprite;
+    const breathe=(Date.now()/1400|0)%2;
+    for(let r=0;r<16;r++)for(let c=0;c<16;c++){const v=grid[r][c];
+      if(v)px(p.x-8+r, p.y-4-c+breathe, 1,1, palette[v-1]||'#fff')}
+    return;
+  }
   if(!world.sprite){cx.strokeStyle='#4b5460';cx.setLineDash([3,3]);
     cx.strokeRect((p.x-8)*S,(p.y-16+bob)*S,16*S,16*S);cx.setLineDash([]);return}
   const {palette,grid}=world.sprite;
@@ -153,11 +203,30 @@ function bubble(){
 }
 function isTyping(){return ['Bash','Write','Edit'].includes(world.lastKind)}
 function tick(){
+  const ph=phaseNow();
+  // Home is a real place he goes, not a metaphor: outside working hours he
+  // is genuinely off the clock, and drifting between couch, kettle and bed
+  // is an honest picture of a person who is not at work.
+  if(ph!=='work'&&ph!=='called_in'){
+    if(world.scene!=='home'){world.scene='home';world.pos={...HOME.door}}
+    if(!world.walking&&Date.now()>(world.nextDrift||0)){
+      const dest = ph==='sleep' ? HOME.bed
+        : ph==='morning' ? [HOME.kettle,HOME.bed,HOME.door][(Date.now()/9e4|0)%3]
+        : [HOME.couch,HOME.kettle,HOME.couch][(Date.now()/12e4|0)%3];
+      world.target={...dest};
+      world.nextDrift=Date.now()+(ph==='sleep'?9e5:6e4);
+    }
+  } else if(world.scene!=='office'){
+    // Called in out of hours: he comes from home, through the door.
+    world.scene='office';world.pos={...SPOTS.door};world.target={...SPOTS.desk};
+  }
   const p=world.pos,t=world.target,dx=t.x-p.x,dy=t.y-p.y,d=Math.hypot(dx,dy);
   world.walking=d>1;
-  if(world.walking){p.x+=dx/d*.55;p.y+=dy/d*.55;world.step++}
-  room(!world.live);
-  drawStro();          // he lives here; between wakes he is simply at rest
+  const speed = ph==='sleep' ? .25 : .55;
+  if(world.walking){p.x+=dx/d*speed;p.y+=dy/d*speed;world.step++}
+  if(world.scene==='home') drawHome(ph==='sleep'?.45:.85);
+  else room(!world.live);
+  drawStro();
   bubble();requestAnimationFrame(tick);
 }
 
@@ -182,9 +251,15 @@ function onEvent(e){
   const say=(txt,ms=6000)=>{world.bubble=txt;world.bubbleUntil=Date.now()+ms};
   if(e.kind==='session_start'){if(!world.live)world.pos={...SPOTS.door};world.live=true;
     world.target={...SPOTS.desk};say('good morning.');setStatus()}
-  else if(e.kind==='session_end'){say('done for now.');
-    setTimeout(()=>{world.target={...SPOTS.desk};
-      setTimeout(()=>{world.live=false;setStatus();refreshBooks()},2600)},1200)}
+  else if(e.kind==='session_end'){
+    const late = phaseNow()==='called_in';
+    say(late?'back to bed.':'done for now.');
+    setTimeout(()=>{
+      // Out of hours he leaves through the door and the next frame puts
+      // him back home; in hours he just settles at his desk.
+      world.target={...(late?SPOTS.out:SPOTS.desk)};
+      setTimeout(()=>{world.live=false;if(late)world.scene=null;
+                      setStatus();refreshBooks()},2600)},1200)}
   else if(e.kind==='thought'){world.target={...SPOTS.window};say(e.body||'thinking…')}
   else if(e.kind==='tool_use'){
     if((e.title||'').endsWith('escalate')){world.target={...SPOTS.door};
@@ -222,7 +297,13 @@ function setStatus(){
   $('dot').className=world.live?'live':'';
   $('stxt').textContent=world.live?'WORKING NOW':'asleep';
   const c=$('caption');
-  if(world.live){c.innerHTML=`${avatarURL()?`<img src="${avatarURL()}" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:-4px;margin-right:6px">`:``}<span id="who">${esc(world.name)}</span> is in the office${world.personality?' — <i>'+esc(world.personality)+'</i>':''}`}
+  const ph=phaseNow();
+  const ava=avatarURL()?`<img src="${avatarURL()}" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:-4px;margin-right:6px">`:``;
+  if(ph==='called_in'){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> got up out of hours — a customer needs something`;return}
+  if(!world.live&&ph==='evening'){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> is home for the evening`;return}
+  if(!world.live&&ph==='sleep'){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> is asleep — back at 9`;return}
+  if(!world.live&&ph==='morning'){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> is getting ready for work`;return}
+  if(world.live){c.innerHTML=`${ava}<span id="who">${esc(world.name)}</span> is in the office${world.personality?' — <i>'+esc(world.personality)+'</i>':''}`}
   else c.innerHTML=`${avatarURL()?`<img src="${avatarURL()}" style="width:20px;height:20px;image-rendering:pixelated;vertical-align:-4px;margin-right:6px">`:``}office is dark — <span id="who">${esc(world.name)}</span> is asleep`;
 }
 async function refreshBooks(){
