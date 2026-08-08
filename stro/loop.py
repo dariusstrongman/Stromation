@@ -66,11 +66,27 @@ def mark_focus_done(co: dict) -> None:
 
 def _park(co: dict, reasons: list[str], why: str) -> None:
     """A trigger fires once. If the session it triggered never ran, the
-    signal is gone — so write it down where the founder will find it."""
+    signal is gone — so write it down where the founder will find it.
+
+    Two things this must not do. It must never park the idle clock: wake()
+    writes its row before doing anything, so idle re-fires every cycle even
+    when sessions fail, and parking it would file ~57 identical tasks a day.
+    And it must not duplicate — parked tasks flow into every briefing, so a
+    persistent failure would inflate the prompt it is trying to protect.
+    """
+    real = [r for r in reasons if "since any work happened" not in r
+            and "never worked a day" not in r]
+    if not real:
+        return
+    title = f"Missed signal: {'; '.join(real)[:110]}"
     try:
+        dupes = company._req(
+            f"tasks?company_id=eq.{co['id']}&status=in.(open,in_progress)"
+            "&select=id,title")
+        if any(t["title"] == title for t in dupes):
+            return
         company.insert("tasks", {
-            "company_id": co["id"], "priority": 2,
-            "title": f"Missed signal: {'; '.join(reasons)[:120]}",
+            "company_id": co["id"], "priority": 2, "title": title,
             "why": f"The loop could not run a session for this ({why[:160]}). "
                    "It will not be raised again automatically."})
     except Exception:  # noqa: BLE001
@@ -103,14 +119,16 @@ async def run() -> None:
                            reasons=["today's focus block"] + reasons)
             elif reasons:
                 try:
-                    await wake(mode="tick",
-                               model=TICK_MODEL,
-                               budget=min(TICK_BUDGET, budget_left),
-                               reasons=reasons)
+                    ran = await wake(mode="tick",
+                                     model=TICK_MODEL,
+                                     budget=min(TICK_BUDGET, budget_left),
+                                     reasons=reasons)
+                    if not ran:
+                        # Budget-blocked: wake() returns rather than raising,
+                        # and month-end blocking is routine, so this is the
+                        # likelier way to lose a signal than a crash.
+                        _park(co, reasons, "monthly budget exhausted")
                 except Exception as exc:  # noqa: BLE001
-                    # The marks already advanced, so this signal will never
-                    # fire again. Park it where he will see it instead of
-                    # losing it — without re-arming the trigger.
                     _park(co, reasons, str(exc))
                     raise
             # nothing to do: the free path, and by far the most common one

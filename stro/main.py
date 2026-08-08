@@ -27,7 +27,8 @@ EFFORT = os.environ.get("STRO_EFFORT", "medium")
 BUDGET_SOFT_STOP = 0.95
 
 
-def _measured_per_turn(co: dict, mode: str) -> float:
+def _measured_per_turn(co: dict, mode: str,
+                       model: str | None = None) -> float:
     """Cost per turn from recent sessions of the SAME shape.
 
     Ticks run on Haiku and outnumber focus blocks massively, so pooling
@@ -42,9 +43,12 @@ def _measured_per_turn(co: dict, mode: str) -> float:
     tot_t = sum(w["num_turns"] for w in rows) or 0
     if tot_c > 0 and tot_t:
         return max(0.002, tot_c / tot_t)
+    # The model that will RUN this session, which for a tick is the tick
+    # model, not the company's. Quoting Sonnet's rate to a Haiku check-in
+    # understates its affordable turns threefold.
     defaults = {"claude-opus-5": 0.09, "claude-sonnet-5": 0.018,
                 "claude-haiku-4-5-20251001": 0.006}
-    return defaults.get(co.get("model") or "", 0.018)
+    return defaults.get(model or co.get("model") or "", 0.018)
 
 
 def _tick_briefing(co: dict, budget: float, reasons: list[str] | None,
@@ -84,11 +88,12 @@ def _tick_briefing(co: dict, budget: float, reasons: list[str] | None,
 
 def _state_briefing(co: dict, mode: str = "focus",
                     budget: float | None = None,
-                    reasons: list[str] | None = None) -> str:
+                    reasons: list[str] | None = None,
+                    session_model: str | None = None) -> str:
     budget = budget if budget is not None else SESSION_BUDGET_USD
     if mode == "tick":
         return _tick_briefing(co, budget, reasons,
-                              _measured_per_turn(co, "tick"))
+                              _measured_per_turn(co, "tick", session_model))
     books = company.month_to_date(co["id"])
     cap = float(co["budget_monthly_usd"])
     runway = max(0.0, cap - books["burn_usd"])
@@ -139,7 +144,7 @@ def _state_briefing(co: dict, mode: str = "focus",
             "grid_json) and one personality sentence. This is YOUR choice — "
             "professional, hoodie, whatever feels like you. Do it early "
             "this session; it is how the owner will recognize you forever.")
-    per_turn = _measured_per_turn(co, mode)
+    per_turn = _measured_per_turn(co, mode, co.get("model"))
 
     team = staff.active_staff(co["id"])
     pay = staff.payroll(co["id"])
@@ -286,7 +291,7 @@ async def wake(mode: str = "focus", model: str | None = None,
             "reason": f"burn ${books['burn_usd']:.2f} of ${cap:.2f} cap. "
                       "Raise the cap or wait for the 1st."})
         print("budget_blocked")
-        return
+        return False
 
     _cli_err: list[str] = []
     options = ClaudeAgentOptions(
@@ -341,7 +346,7 @@ async def wake(mode: str = "focus", model: str | None = None,
       async with asyncio.timeout(int(os.environ.get("STRO_SESSION_MAX_S",
                                                     "2400"))):
         async for msg in query(prompt=_state_briefing(co, mode, session_budget,
-                                                  reasons),
+                                                  reasons, session_model),
                                options=options):
             if isinstance(msg, AssistantMessage):
                 turns += 1
@@ -457,7 +462,7 @@ async def wake(mode: str = "focus", model: str | None = None,
     # ignores — uncapped by construction.
     if mode != "focus":
         print(f"{status}: {turns} turns, ${cost:.4f}")
-        return
+        return True
     try:
         started = datetime.fromisoformat(
             co["created_at"].replace("Z", "+00:00"))
@@ -471,6 +476,7 @@ async def wake(mode: str = "focus", model: str | None = None,
     except Exception:  # noqa: BLE001 — narration never breaks the company
         pass
     print(f"{status}: {turns} turns, ${cost:.4f}")
+    return True
 
 
 if __name__ == "__main__":

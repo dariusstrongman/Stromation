@@ -33,7 +33,7 @@ def _save(company_id: str, state: dict) -> None:
     company.update("company", company_id, {"trigger_state": state})
 
 
-def _new_mail(state: dict) -> tuple[str | None, dict]:
+def _new_mail(state: dict, company_id: str = "") -> tuple[str | None, dict]:
     """Fires on mail newer than anything seen before — read or not.
 
     Deliberately does NOT use the \\Seen flag: whether the founder opened
@@ -48,7 +48,7 @@ def _new_mail(state: dict) -> tuple[str | None, dict]:
     try:
         m = imaplib.IMAP4_SSL(host, 993, timeout=25)
         m.login(user, pw)
-        _, sel = m.select("INBOX")
+        m.select("INBOX")
         validity = 0
         try:
             _, vd = m.status("INBOX", "(UIDVALIDITY)")
@@ -68,6 +68,18 @@ def _new_mail(state: dict) -> tuple[str | None, dict]:
     # mailbox is recreated or migrated, UIDs reset to low numbers and a
     # stale high-water mark would silence mail forever — the same bug with
     # the sign flipped. Re-baseline instead of comparing across generations.
+    if not validity and not state.get("uidvalidity_warned"):
+        # The guard is off and nothing would say so. Record it once.
+        state["uidvalidity_warned"] = True
+        try:
+            company.insert("journal", {
+                "company_id": company_id,
+                "entry_type": "problem",
+                "content": "This mailbox does not report UIDVALIDITY, so the "
+                           "mail trigger cannot detect a mailbox reset. If "
+                           "mail ever stops waking me, suspect that first."})
+        except Exception:  # noqa: BLE001
+            pass
     if validity and state.get("mail_uidvalidity") != validity:
         state["mail_uidvalidity"] = validity
         state["mail_uid"] = top
@@ -181,7 +193,7 @@ def check(co: dict, max_idle_min: int) -> list[str]:
         pass
     for fn in (_new_mail,):
         try:
-            r, state = fn(state)
+            r, state = fn(state, cid)
             if r:
                 found.append(r)
         except Exception:  # noqa: BLE001
